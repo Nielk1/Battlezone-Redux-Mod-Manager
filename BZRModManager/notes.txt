@@ -1,0 +1,128 @@
+My Documents\My Games\Battlezone Combat Commander\gogWorkshop
+
+
+
+
+
+
+Redirecting stderr to 'D:\Data\Programming\BZRModManager\BZRModManager\bin\steam
+cmd\logs\stderr.txt'
+[  0%] Checking for available updates...
+[----] Verifying installation...
+Steam Console Client (c) Valve Corporation
+-- type 'quit' to exit --
+Loading Steam API...OK.
+
+Steam>login anonymous
+
+Connecting anonymously to Steam Public...Logged in OK
+Waiting for user info...OK
+
+Steam>workshop_status
+
+Steam>workshop_status 624970
+Local workshop items for App 624970:
+ No workshop items referenced on client.
+
+Steam>workshop_download_item 1369551364
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 624970 1369551364
+Downloading item 1369551364 ...
+Success. Downloaded item 1369551364 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1369551364" (709772 bytes)
+Steam>workshop_status 624970
+Local workshop items for App 624970:
+ Workshop Content folder : "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop" - no update needed
+- Item 1369551364 : installed (709772 bytes, Tue Apr 24 14:02:24 2018),
+
+Steam>workshop_download_item 1369551365
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 624970 1369551365
+Downloading item 1369551365 ...
+ERROR! Download item 1369551365 failed (Access Denied).
+Steam>workshop_download_item 624970 1329976523
+Downloading item 1329976523 ...
+Success. Downloaded item 1329976523 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1329976523" (1736190673 bytes)
+Steam>workshop_download_item 6249701329659846
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 6249701325933293
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 6249701374955975
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 6249701374956537
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 6249701374955473
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 6249701374954711
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 6249701386405185
+ERROR! Missing parameters.
+
+Steam>workshop_download_item 624970 1329659846
+Downloading item 1329659846 ...
+Success. Downloaded item 1329659846 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1329659846" (753230735 bytes)
+Steam>workshop_download_item 624970 1325933293
+Downloading item 1325933293 ...
+Success. Downloaded item 1325933293 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293" (379069888 bytes)
+Steam>workshop_download_item 624970 1374955975
+Downloading item 1374955975 ...
+Success. Downloaded item 1374955975 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1374955975" (1006760 bytes)
+Steam>workshop_download_item 624970 1374956537
+Downloading item 1374956537 ...
+Success. Downloaded item 1374956537 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1374956537" (162314192 bytes)
+Steam>workshop_download_item 624970 1374955473
+Downloading item 1374955473 ...
+Success. Downloaded item 1374955473 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1374955473" (108815664 bytes)
+Steam>workshop_download_item 624970 1374954711
+Downloading item 1374954711 ...
+Success. Downloaded item 1374954711 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1374954711" (628725126 bytes)
+Steam>workshop_download_item 624970 1386405185
+Downloading item 1386405185 ...
+Success. Downloaded item 1386405185 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1386405185" (168116554 bytes)
+Steam>workshop_status 624970
+Local workshop items for App 624970:
+ Workshop Content folder : "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop" - no update needed
+- Item 1325933293 : installed (379069888 bytes, Mon May 14 18:20:25 2018),
+- Item 1329659846 : installed (753230735 bytes, Fri May 25 02:30:45 2018),
+- Item 1329976523 : installed (1736190673 bytes, Wed May 30 04:05:38 2018),
+- Item 1369551364 : installed (709772 bytes, Tue Apr 24 14:02:24 2018),
+- Item 1374954711 : installed (628725126 bytes, Tue May  1 01:25:24 2018),
+- Item 1374955473 : installed (108815664 bytes, Mon May  7 14:32:47 2018),
+- Item 1374955975 : installed (1006760 bytes, Tue May  1 01:28:04 2018),
+- Item 1374956537 : installed (162314192 bytes, Tue May  1 01:29:29 2018),
+- Item 1386405185 : installed (168116554 bytes, Tue May 15 03:06:19 2018),
+
+Steam>
+
+
+
+
+
+
+Steam>workshop_status 624970
+Local workshop items for App 624970:
+ Workshop Content folder : "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop" - updated needed
+- Item 1325933293 : installed (379069888 bytes, Mon May 14 18:20:25 2018),
+- Item 1329659846 : installed (753230735 bytes, Fri May 25 02:30:45 2018),
+- Item 1329976523 : installed (1736190673 bytes, Wed May 30 04:05:38 2018), updated required( 0/0 bytes ),
+- Item 1369551364 : installed (709772 bytes, Tue Apr 24 14:02:24 2018),
+- Item 1374954711 : installed (628725126 bytes, Tue May  1 01:25:24 2018),
+- Item 1374955473 : installed (108815664 bytes, Mon May  7 14:32:47 2018),
+- Item 1374955975 : installed (1006760 bytes, Tue May  1 01:28:04 2018),
+- Item 1374956537 : installed (162314192 bytes, Tue May  1 01:29:29 2018),
+- Item 1386405185 : installed (168116554 bytes, Tue May 15 03:06:19 2018),
+
+
+
+
+
+
+
+
