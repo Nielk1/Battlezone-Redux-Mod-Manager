@@ -529,6 +529,7 @@ namespace BZRModManager
                     string charsAll = string.Empty;
                     char tP = '\0';
                     char t = '\0';
+                    int SawCrCounter = 0;
                     bool forceOnce = true;
 
                     for (; ; )
@@ -559,18 +560,32 @@ namespace BZRModManager
                                 }
                                 break;
                             }
+                            if (t == '\r')
+                            {
+                                SawCrCounter++;
+                            }
                             if (tP == '\r' && t == '\n')
                             {
-                                if (chars.EndsWith(badstring))
+                                // we have now have a CRLF
+                                if (SawCrCounter > 1)
                                 {
-                                    // we have the bad string, so let's remove it as it's the real cause of our CRLF
+                                    // the only way this should happen is if we had a "bad string" get in the middle of a CRLF
+                                    t = '\r'; // pretend we just read the pre-"bad string" character
                                     chars = chars.Replace(badstring, string.Empty);
-                                    t = (char)0;
                                 }
                                 else
                                 {
-                                    // this is a normal end of line, we are good now
-                                    break;
+                                    if (chars.EndsWith(badstring))
+                                    {
+                                        // we have the bad string, so let's remove it as it's the real cause of our CRLF
+                                        chars = chars.Replace(badstring, string.Empty);
+                                        t = (char)0;
+                                    }
+                                    else
+                                    {
+                                        // this is a normal end of line, we are good now
+                                        break;
+                                    }
                                 }
                             }
                         }
