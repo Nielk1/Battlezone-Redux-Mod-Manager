@@ -36,6 +36,14 @@ namespace BZRModManager
         }
     }
 
+    class SteamCmdNotLoggedInException : SteamCmdException
+    {
+        public SteamCmdNotLoggedInException(string msg)
+            : base(msg)
+        {
+        }
+    }
+
     public enum SteamCmdStatus
     {
         Unknown,
@@ -135,7 +143,7 @@ namespace BZRModManager
         {
             get
             {
-                lock(procLock)
+                lock (procLock)
                 {
                     return proc != null && !proc.HasExited && proc.StartTime != null;
                 }
@@ -287,48 +295,60 @@ namespace BZRModManager
             {
                 lock (ioLock)
                 {
-                    OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("workshop_download_item", appId.ToString(), workshopId.ToString()));
-                    WriteLine($"workshop_download_item {appId} {workshopId}");
-                    //string commandLine = ReadLine();
-                    //string statusLine = ReadLine();
-                    //while(statusLine.Length == 0 || statusLine == "\r\n" || Regex.IsMatch(statusLine,@"Downloading item [0-9]+ \.\.\."))
-                    //{
-                    //    statusLine = ReadLine();
-                    //}
-
-                    SteamCmdLine output = null;
-                    while ((output = ReadLine()) == null || output.Blank || Regex.IsMatch(output.Line, @"Downloading item [0-9]+ \.\.\.")) { }
-                    string statusLine = output.Line;
-
-                    OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
-
-                    //Success. Downloaded item 1325933293 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293" (379069888 bytes)
-                    //ERROR! Download item 1 failed (File Not Found).
-                    //ERROR! Failed to start downloading item 0.
-
-                    //WaitForSteamPrompt();
-                    while (!ReadLine().Prompt) { }
-
-                    if (statusLine.StartsWith("ERROR! "))
+                    if (!Active)
                     {
-                        string errorText = statusLine.Split(new string[] { "ERROR! " }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
-                        throw new SteamCmdWorkshopDownloadException(errorText);
+                        throw new SteamCmdException("SteamCmd is not active");
                     }
-                    else if (statusLine.StartsWith("Success. "))
+                    else if (Status != SteamCmdStatus.LoggedIn && Status != SteamCmdStatus.LoggedInAnon)
                     {
-                        string successText = statusLine.Split(new string[] { "Success. " }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
-                        //string tmp = @"Downloaded item 1325933293 to ""D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293"" (379069888 bytes)";
-                        return successText;
-                    }
-                    else if (proc.HasExited)
-                    {
-                        Exception ex = new SteamCmdException("Application Terminated", new SteamCmdWorkshopDownloadException(statusLine));
-                        throw ex;
+                        throw new SteamCmdNotLoggedInException("SteamCmd is not logged in");
                     }
                     else
                     {
-                        Exception ex = new SteamCmdException("Unknown Error", new SteamCmdWorkshopDownloadException(statusLine));
-                        throw ex;
+
+                        OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("workshop_download_item", appId.ToString(), workshopId.ToString()));
+                        WriteLine($"workshop_download_item {appId} {workshopId}");
+                        //string commandLine = ReadLine();
+                        //string statusLine = ReadLine();
+                        //while(statusLine.Length == 0 || statusLine == "\r\n" || Regex.IsMatch(statusLine,@"Downloading item [0-9]+ \.\.\."))
+                        //{
+                        //    statusLine = ReadLine();
+                        //}
+
+                        SteamCmdLine output = null;
+                        while ((output = ReadLine()) == null || output.Blank || Regex.IsMatch(output.Line, @"Downloading item [0-9]+ \.\.\.")) { }
+                        string statusLine = output.Line;
+
+                        OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
+
+                        //Success. Downloaded item 1325933293 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293" (379069888 bytes)
+                        //ERROR! Download item 1 failed (File Not Found).
+                        //ERROR! Failed to start downloading item 0.
+
+                        //WaitForSteamPrompt();
+                        while (!ReadLine().Prompt) { }
+
+                        if (statusLine.StartsWith("ERROR! "))
+                        {
+                            string errorText = statusLine.Split(new string[] { "ERROR! " }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                            throw new SteamCmdWorkshopDownloadException(errorText);
+                        }
+                        else if (statusLine.StartsWith("Success. "))
+                        {
+                            string successText = statusLine.Split(new string[] { "Success. " }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                            //string tmp = @"Downloaded item 1325933293 to ""D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293"" (379069888 bytes)";
+                            return successText;
+                        }
+                        else if (proc.HasExited)
+                        {
+                            Exception ex = new SteamCmdException("SteamCmd Application Terminated", new SteamCmdWorkshopDownloadException(statusLine));
+                            throw ex;
+                        }
+                        else
+                        {
+                            Exception ex = new SteamCmdException("Unknown Error", new SteamCmdWorkshopDownloadException(statusLine));
+                            throw ex;
+                        }
                     }
                 }
             }
@@ -438,7 +458,7 @@ namespace BZRModManager
 
         private void WriteLine(string input)
         {
-            Debug.WriteLine($"WriteLine({input})", "SteamCmdContext");
+            Debug.WriteLine($"WriteLine(\"{input}\")", "SteamCmdContext");
 
             OnSteamCmdInput(input + "\r\n");
             proc.StandardInput.WriteLine(input);
@@ -469,6 +489,7 @@ namespace BZRModManager
                         retVal += tmpVal;
                     } while (tmpVal != null && !tmpVal.EndsWith("\r\n") && (retVal != "Steam>"));
 
+                    Debug.WriteLine($"return \"{retVal.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return new SteamCmdLine()
                     {
                         Line = retVal,
@@ -496,6 +517,7 @@ namespace BZRModManager
                     string retVal = string.Empty;
                     SteamCmdLine output = null;
                     while ((output = ReadLine()) == null || !output.Prompt) { retVal += output.Line; }
+                    Debug.WriteLine($"return \"{retVal.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return retVal;
                 }
             }
@@ -505,14 +527,11 @@ namespace BZRModManager
             }
         }
 
-        /*private string ReadLine()
-        {
-            lock (ioLock)
-            {
-                return ReadLineOrNullTimeout(1000);
-            }
-        }*/
-
+        /// <summary>
+        /// Read a block of text from the SteamCmd console
+        /// </summary>
+        /// <param name="timeout">Time before an empty stream is considered empty</param>
+        /// <returns>block of console text</returns>
         private string ReadLineOrNullTimeout(int timeout)
         {
             string badstring = "\\src\\common\\contentmanifest.cpp (650) : Assertion Failed: !m_bIsFinalized\r\n";
@@ -541,23 +560,31 @@ namespace BZRModManager
                             tP = t;
                             int tn = proc.StandardOutput.Read();
                             t = (char)tn;
-                            if (t == '\0') break;
+                            if (t == '\0')
+                            {
+                                Debug.WriteLine($"terminate read due to nul", "SteamCmdContext");
+                                break;
+                            }
                             //if (tn > 255) break;
                             chars += t;
                             charsAll += t;
+                            Debug.WriteLine($"append '{chars.ToString().Replace("\r", "\\r").Replace("\n", "\\n")}' {tn}", "SteamCmdContext");
                             if (chars == "Steam>")
                             {
+                                Debug.WriteLine($"see prompt", "SteamCmdContext");
                                 while (proc.StandardOutput.Peek() > -1)
                                 {
                                     // this should only happen if we have more badstrings
                                     if (proc.StandardOutput.Peek() == badstring[0])
                                     {
+                                        Debug.WriteLine($"chew off badstring", "SteamCmdContext");
                                         for (int i = 0; i < badstring.Length; i++)
                                         {
                                             proc.StandardOutput.Read();
                                         }
                                     }
                                 }
+                                Debug.WriteLine($"terminate read due to prompt", "SteamCmdContext");
                                 break;
                             }
                             if (t == '\r')
@@ -566,9 +593,11 @@ namespace BZRModManager
                             }
                             if (tP == '\r' && t == '\n')
                             {
+                                Debug.WriteLine($"see newline", "SteamCmdContext");
                                 // we have now have a CRLF
                                 if (SawCrCounter > 1)
                                 {
+                                    Debug.WriteLine($"badstring mid newline", "SteamCmdContext");
                                     // the only way this should happen is if we had a "bad string" get in the middle of a CRLF
                                     t = '\r'; // pretend we just read the pre-"bad string" character
                                     chars = chars.Replace(badstring, string.Empty);
@@ -577,12 +606,15 @@ namespace BZRModManager
                                 {
                                     if (chars.EndsWith(badstring))
                                     {
+                                        Debug.WriteLine($"removing badstring", "SteamCmdContext");
                                         // we have the bad string, so let's remove it as it's the real cause of our CRLF
                                         chars = chars.Replace(badstring, string.Empty);
                                         t = (char)0;
+                                        SawCrCounter--; // our \r was caused by this badline, so lets drop back to 0
                                     }
                                     else
                                     {
+                                        Debug.WriteLine($"terminate read due to newline", "SteamCmdContext");
                                         // this is a normal end of line, we are good now
                                         break;
                                     }
@@ -594,6 +626,7 @@ namespace BZRModManager
                             // we are null, which means it's time to timeout
                             if (timer >= timeout || proc.HasExited)
                             {
+                                Debug.WriteLine($"terminate read due to timeout", "SteamCmdContext");
                                 break;
                             }
                             else
@@ -616,136 +649,9 @@ namespace BZRModManager
             }
         }
 
-        /*private string WaitForSteamPrompt()
-        {
-            lock (ioLock)
-            {
-                StringBuilder output = new StringBuilder();
-
-                string raw = null;
-                while ((raw = ReadLineSkipNull()) != "Steam>" && !proc.HasExited)
-                {
-                    output.Append(raw);
-                }
-
-                return output.ToString();
-            }
-        }
-
-        private string ReadLine()
-        {
-
-            lock (ioLock)
-            {
-                string raw = string.Empty;
-
-                do
-                {
-                    raw += ReadLineSmart();
-                } while (!raw.EndsWith("\r\n") && !proc.HasExited);
-
-                return raw;
-            }
-        }
-
-        private string ReadLineSkipNull()
-        {
-            lock (ioLock)
-            {
-                string raw = null;
-                for (; !proc.HasExited;)
-                {
-                    raw = ReadLineSmart();
-                    if (raw != null) break;
-                    Thread.Sleep(100);
-                }
-                return raw;
-            }
-        }
-
-        // read a line ending with a newline or end of stream
-        // note a line read attempt is forced, even if the stream says it is empty, so we can lock up if not careful
-        private string ReadLineSmart()
-        {
-            string badstring = "\\src\\common\\contentmanifest.cpp (650) : Assertion Failed: !m_bIsFinalized\r\n";
-
-            lock (ioLock)
-            {
-                bool have = false;
-                string chars = string.Empty;
-                string chars2 = string.Empty;
-                // need to Read once even if Peak is -1 because this console stream breaks all logic
-                // hopefully we don't get trapped here forever as a result of waiting for a char that never comes
-                do
-                {
-                    if (proc.StandardOutput.Peek() == (int)'\r')
-                    {
-                        chars += (char)proc.StandardOutput.Read();
-                        chars2 += '\r';
-                        if (proc.StandardOutput.Peek() == (int)'\n')
-                        {
-                            chars += (char)proc.StandardOutput.Read();
-                            chars2 += '\n';
-                        }
-
-                        if (chars.EndsWith(badstring))
-                        {
-                            chars = chars.Replace(badstring, string.Empty);
-                            if (chars.Length == 0) have = false;
-
-                            if (proc.StandardOutput.Peek() == -1)
-                            {
-                                have = true; // force an output of an empty string if we must, this is a null terminated badstring so we'll get stuck in a null track otherwise
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    else if (proc.StandardOutput.Peek() == (int)'\n')
-                    {
-                        chars += (char)proc.StandardOutput.Read();
-                        chars2 += '\n';
-
-                        if (chars.EndsWith(badstring))
-                        {
-                            chars = chars.Replace(badstring, string.Empty);
-                            if (chars.Length == 0) have = false;
-
-                            if (proc.StandardOutput.Peek() == -1)
-                            {
-                                have = true; // force an output of an empty string if we must, this is a null terminated badstring so we'll get stuck in a null track otherwise
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    if (chars.Length > 0) have = true;
-
-                    if (proc.StandardOutput.Peek() == -1)
-                    {
-                        //have = true; // force an output of an empty string if we must, this is a null terminated badstring so we'll get stuck in a null track otherwise
-                        break;
-                    }
-
-                    char t = (char)proc.StandardOutput.Read();
-                    chars += t;
-                    chars2 += t;
-                } while (proc.StandardOutput.Peek() >= 0 && !proc.HasExited);
-                OnSteamCmdOutput(chars2);
-                if (!have) return null;
-                return chars;
-            }
-        }*/
-
-
-
+        /// <summary>
+        /// Tell SteamCmd to exit
+        /// </summary>
         public void Shutdown()
         {
             Debug.WriteLine("Shutdown", "SteamCmdContext");

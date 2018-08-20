@@ -12,15 +12,18 @@ using System.Windows.Forms;
 
 namespace BZRModManager
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         SteamCmdContext SteamCmd = SteamCmdContext.GetInstance();
+
+        int AppIdBZ98 = 301650;
+        int AppIdBZCC = 624970;
 
         object ModStatus = new object();
         Dictionary<long, BZ98RModItem> BZ98R_Mods = new Dictionary<long, BZ98RModItem>();
         Dictionary<long, BZCCModItem> BZCC_Mods = new Dictionary<long, BZCCModItem>();
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
 
@@ -95,8 +98,8 @@ namespace BZRModManager
                         this.SetSteamCmdStatusText(e.Status.ToString());
                     });
                     new Thread(() => {
-                        try { SteamCmd.WorkshopDownloadItem(301650, 1); } catch (SteamCmdWorkshopDownloadException) { }
-                        try { SteamCmd.WorkshopDownloadItem(624970, 1); } catch (SteamCmdWorkshopDownloadException) { }
+                        try { SteamCmd.WorkshopDownloadItem(AppIdBZ98, 1); } catch (SteamCmdWorkshopDownloadException) { }
+                        try { SteamCmd.WorkshopDownloadItem(AppIdBZCC, 1); } catch (SteamCmdWorkshopDownloadException) { }
                         this.Invoke((MethodInvoker)delegate
                         {
                             this.UpdateModLists();
@@ -125,7 +128,7 @@ namespace BZRModManager
         {
             lock (ModStatus)
             {
-                SteamCmd.WorkshopStatus(301650).ForEach(dr =>
+                SteamCmd.WorkshopStatus(AppIdBZ98).ForEach(dr =>
                 {
                     if (!BZ98R_Mods.ContainsKey(dr.WorkshopId))
                         BZ98R_Mods[dr.WorkshopId] = new BZ98RModItem();
@@ -142,7 +145,7 @@ namespace BZRModManager
         {
             lock (ModStatus)
             {
-                SteamCmd.WorkshopStatus(624970).ForEach(dr =>
+                SteamCmd.WorkshopStatus(AppIdBZCC).ForEach(dr =>
                 {
                     if (!BZCC_Mods.ContainsKey(dr.WorkshopId))
                         BZCC_Mods[dr.WorkshopId] = new BZCCModItem();
@@ -176,10 +179,11 @@ namespace BZRModManager
             {
                 if (text != null)
                 {
-                    Color orig = txtLogSteamCmd.SelectionColor;
+                    //Color orig = txtLogSteamCmd.SelectionColor;
                     if (input) txtLogSteamCmd.SelectionColor = Color.DarkGray;
                     txtLogSteamCmd.AppendText(text);
-                    txtLogSteamCmd.SelectionColor = orig;
+                    //txtLogSteamCmdFull.SelectionColor = orig;
+                    txtLogSteamCmd.SelectionColor = Color.White;
                 }
             }
         }
@@ -194,14 +198,15 @@ namespace BZRModManager
                 {
                     if (input)
                     {
-                        Color orig = txtLogSteamCmdFull.SelectionColor;
+                        //Color orig = txtLogSteamCmdFull.SelectionColor;
                         txtLogSteamCmdFull.SelectionColor = Color.DarkGray;
                         txtLogSteamCmdFull.AppendText(text);
-                        txtLogSteamCmdFull.SelectionColor = orig;
+                        //txtLogSteamCmdFull.SelectionColor = orig;
+                        txtLogSteamCmd.SelectionColor = Color.White;
                     }
                     else
                     {
-                        Color orig = txtLogSteamCmdFull.SelectionColor;
+                        //Color orig = txtLogSteamCmdFull.SelectionColor;
 
                         List<string> items = new List<string>() { text };
                         items = items.SelectMany(dr =>
@@ -210,11 +215,13 @@ namespace BZRModManager
 
                         items.ForEach(dr =>
                         {
-                            txtLogSteamCmdFull.SelectionColor = orig;
+                            //txtLogSteamCmdFull.SelectionColor = orig;
+                            txtLogSteamCmd.SelectionColor = Color.White;
                             if (dr == badstring) txtLogSteamCmdFull.SelectionColor = Color.Yellow;
                             txtLogSteamCmdFull.AppendText(dr);
                         });
-                        txtLogSteamCmdFull.SelectionColor = orig;
+                        //txtLogSteamCmdFull.SelectionColor = orig;
+                        txtLogSteamCmd.SelectionColor = Color.White;
                     }
                 }
             }
@@ -303,7 +310,7 @@ namespace BZRModManager
                     }
                     if (workshopID > -1)
                     {
-                        SteamCmd.WorkshopDownloadItem(301650, workshopID);
+                        SteamCmd.WorkshopDownloadItem(AppIdBZ98, workshopID);
                         UpdateBZ98RModLists();
                     }
                 }
@@ -329,7 +336,7 @@ namespace BZRModManager
                     }
                     if (workshopID > -1)
                     {
-                        SteamCmd.WorkshopDownloadItem(624970, workshopID);
+                        SteamCmd.WorkshopDownloadItem(AppIdBZCC, workshopID);
                         UpdateBZCCModLists();
                     }
                 }

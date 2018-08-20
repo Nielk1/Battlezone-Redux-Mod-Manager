@@ -1,6 +1,6 @@
 ﻿namespace BZRModManager
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -45,21 +45,21 @@
             this.txtLog = new System.Windows.Forms.TextBox();
             this.tpLogSteamCmd = new System.Windows.Forms.TabPage();
             this.txtLogSteamCmd = new System.Windows.Forms.RichTextBox();
+            this.tpLogSteamCmdFull = new System.Windows.Forms.TabPage();
+            this.txtLogSteamCmdFull = new System.Windows.Forms.RichTextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslSteamCmd = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslSteamCmdCommand = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tmrModUpdate = new System.Windows.Forms.Timer(this.components);
-            this.tpLogSteamCmdFull = new System.Windows.Forms.TabPage();
-            this.txtLogSteamCmdFull = new System.Windows.Forms.RichTextBox();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tpBZCC.SuspendLayout();
             this.tpLog.SuspendLayout();
             this.tpLogSteamCmd.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.tpLogSteamCmdFull.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -108,7 +108,7 @@
             // btnDownloadBZ98R
             // 
             this.btnDownloadBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZ98R.Location = new System.Drawing.Point(505, 6);
+            this.btnDownloadBZ98R.Location = new System.Drawing.Point(505, 7);
             this.btnDownloadBZ98R.Name = "btnDownloadBZ98R";
             this.btnDownloadBZ98R.Size = new System.Drawing.Size(75, 23);
             this.btnDownloadBZ98R.TabIndex = 2;
@@ -121,17 +121,17 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(107, 13);
+            this.label1.Size = new System.Drawing.Size(56, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Workshop Item URL:";
+            this.label1.Text = "Mod URL:";
             // 
             // txtDownloadBZ98R
             // 
             this.txtDownloadBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDownloadBZ98R.Location = new System.Drawing.Point(119, 9);
+            this.txtDownloadBZ98R.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZ98R.Name = "txtDownloadBZ98R";
-            this.txtDownloadBZ98R.Size = new System.Drawing.Size(380, 20);
+            this.txtDownloadBZ98R.Size = new System.Drawing.Size(431, 20);
             this.txtDownloadBZ98R.TabIndex = 0;
             // 
             // tpBZCC
@@ -162,7 +162,7 @@
             // btnDownloadBZCC
             // 
             this.btnDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZCC.Location = new System.Drawing.Point(505, 6);
+            this.btnDownloadBZCC.Location = new System.Drawing.Point(505, 7);
             this.btnDownloadBZCC.Name = "btnDownloadBZCC";
             this.btnDownloadBZCC.Size = new System.Drawing.Size(75, 23);
             this.btnDownloadBZCC.TabIndex = 5;
@@ -175,17 +175,17 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 12);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(107, 13);
+            this.label2.Size = new System.Drawing.Size(56, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Workshop Item URL:";
+            this.label2.Text = "Mod URL:";
             // 
             // txtDownloadBZCC
             // 
             this.txtDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDownloadBZCC.Location = new System.Drawing.Point(119, 9);
+            this.txtDownloadBZCC.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZCC.Name = "txtDownloadBZCC";
-            this.txtDownloadBZCC.Size = new System.Drawing.Size(380, 20);
+            this.txtDownloadBZCC.Size = new System.Drawing.Size(431, 20);
             this.txtDownloadBZCC.TabIndex = 3;
             // 
             // tpSettings
@@ -193,7 +193,7 @@
             this.tpSettings.Location = new System.Drawing.Point(4, 22);
             this.tpSettings.Name = "tpSettings";
             this.tpSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tpSettings.Size = new System.Drawing.Size(586, 319);
+            this.tpSettings.Size = new System.Drawing.Size(586, 320);
             this.tpSettings.TabIndex = 2;
             this.tpSettings.Text = "Settings";
             this.tpSettings.UseVisualStyleBackColor = true;
@@ -204,7 +204,7 @@
             this.tpLog.Location = new System.Drawing.Point(4, 22);
             this.tpLog.Name = "tpLog";
             this.tpLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLog.Size = new System.Drawing.Size(586, 319);
+            this.tpLog.Size = new System.Drawing.Size(586, 320);
             this.tpLog.TabIndex = 3;
             this.tpLog.Text = "Log";
             this.tpLog.UseVisualStyleBackColor = true;
@@ -217,7 +217,7 @@
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtLog.Size = new System.Drawing.Size(580, 313);
+            this.txtLog.Size = new System.Drawing.Size(580, 314);
             this.txtLog.TabIndex = 0;
             // 
             // tpLogSteamCmd
@@ -226,7 +226,7 @@
             this.tpLogSteamCmd.Location = new System.Drawing.Point(4, 22);
             this.tpLogSteamCmd.Name = "tpLogSteamCmd";
             this.tpLogSteamCmd.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLogSteamCmd.Size = new System.Drawing.Size(586, 319);
+            this.tpLogSteamCmd.Size = new System.Drawing.Size(586, 320);
             this.tpLogSteamCmd.TabIndex = 4;
             this.tpLogSteamCmd.Text = "SteamCmd";
             this.tpLogSteamCmd.UseVisualStyleBackColor = true;
@@ -240,9 +240,33 @@
             this.txtLogSteamCmd.Location = new System.Drawing.Point(3, 3);
             this.txtLogSteamCmd.Name = "txtLogSteamCmd";
             this.txtLogSteamCmd.ReadOnly = true;
-            this.txtLogSteamCmd.Size = new System.Drawing.Size(580, 313);
+            this.txtLogSteamCmd.Size = new System.Drawing.Size(580, 314);
             this.txtLogSteamCmd.TabIndex = 1;
             this.txtLogSteamCmd.Text = "";
+            // 
+            // tpLogSteamCmdFull
+            // 
+            this.tpLogSteamCmdFull.Controls.Add(this.txtLogSteamCmdFull);
+            this.tpLogSteamCmdFull.Location = new System.Drawing.Point(4, 22);
+            this.tpLogSteamCmdFull.Name = "tpLogSteamCmdFull";
+            this.tpLogSteamCmdFull.Padding = new System.Windows.Forms.Padding(3);
+            this.tpLogSteamCmdFull.Size = new System.Drawing.Size(586, 320);
+            this.tpLogSteamCmdFull.TabIndex = 5;
+            this.tpLogSteamCmdFull.Text = "SteamCmd Raw";
+            this.tpLogSteamCmdFull.UseVisualStyleBackColor = true;
+            // 
+            // txtLogSteamCmdFull
+            // 
+            this.txtLogSteamCmdFull.BackColor = System.Drawing.Color.Black;
+            this.txtLogSteamCmdFull.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLogSteamCmdFull.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLogSteamCmdFull.ForeColor = System.Drawing.Color.White;
+            this.txtLogSteamCmdFull.Location = new System.Drawing.Point(3, 3);
+            this.txtLogSteamCmdFull.Name = "txtLogSteamCmdFull";
+            this.txtLogSteamCmdFull.ReadOnly = true;
+            this.txtLogSteamCmdFull.Size = new System.Drawing.Size(580, 314);
+            this.txtLogSteamCmdFull.TabIndex = 2;
+            this.txtLogSteamCmdFull.Text = "";
             // 
             // statusStrip1
             // 
@@ -294,30 +318,6 @@
             this.tmrModUpdate.Interval = 300000;
             this.tmrModUpdate.Tick += new System.EventHandler(this.tmrModUpdate_Tick);
             // 
-            // tpLogSteamCmdFull
-            // 
-            this.tpLogSteamCmdFull.Controls.Add(this.txtLogSteamCmdFull);
-            this.tpLogSteamCmdFull.Location = new System.Drawing.Point(4, 22);
-            this.tpLogSteamCmdFull.Name = "tpLogSteamCmdFull";
-            this.tpLogSteamCmdFull.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLogSteamCmdFull.Size = new System.Drawing.Size(586, 319);
-            this.tpLogSteamCmdFull.TabIndex = 5;
-            this.tpLogSteamCmdFull.Text = "SteamCmd Raw";
-            this.tpLogSteamCmdFull.UseVisualStyleBackColor = true;
-            // 
-            // txtLogSteamCmdFull
-            // 
-            this.txtLogSteamCmdFull.BackColor = System.Drawing.Color.Black;
-            this.txtLogSteamCmdFull.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLogSteamCmdFull.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLogSteamCmdFull.ForeColor = System.Drawing.Color.White;
-            this.txtLogSteamCmdFull.Location = new System.Drawing.Point(3, 3);
-            this.txtLogSteamCmdFull.Name = "txtLogSteamCmdFull";
-            this.txtLogSteamCmdFull.ReadOnly = true;
-            this.txtLogSteamCmdFull.Size = new System.Drawing.Size(580, 313);
-            this.txtLogSteamCmdFull.TabIndex = 2;
-            this.txtLogSteamCmdFull.Text = "";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -336,9 +336,9 @@
             this.tpLog.ResumeLayout(false);
             this.tpLog.PerformLayout();
             this.tpLogSteamCmd.ResumeLayout(false);
+            this.tpLogSteamCmdFull.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.tpLogSteamCmdFull.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
