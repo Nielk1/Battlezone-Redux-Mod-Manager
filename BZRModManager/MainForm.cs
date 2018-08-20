@@ -16,16 +16,18 @@ namespace BZRModManager
     {
         SteamCmdContext SteamCmd = SteamCmdContext.GetInstance();
 
-        int AppIdBZ98 = 301650;
-        int AppIdBZCC = 624970;
+        const int AppIdBZ98 = 301650;
+        const int AppIdBZCC = 624970;
 
         object ModStatus = new object();
-        Dictionary<long, BZ98RModItem> BZ98R_Mods = new Dictionary<long, BZ98RModItem>();
-        Dictionary<long, BZCCModItem> BZCC_Mods = new Dictionary<long, BZCCModItem>();
+        Dictionary<int, Dictionary<string, ModItem>> Mods = new Dictionary<int, Dictionary<string, ModItem>>();
 
         public MainForm()
         {
             InitializeComponent();
+
+            Mods[AppIdBZ98] = new Dictionary<string, ModItem>();
+            Mods[AppIdBZCC] = new Dictionary<string, ModItem>();
 
             this.FormClosing += Form1_FormClosing;
             SteamCmd.SteamCmdStatusChange += Steam_SteamCmdStatusChange;
@@ -73,7 +75,7 @@ namespace BZRModManager
                 {
                     tsslSteamCmdCommand.Enabled = true;
                     tsslSteamCmdCommand.Text = e.Command;
-                    e?.Arguments?.ToList()?.ForEach(dr => tsslSteamCmdCommand.Text += ((dr != null) ? " " +  dr : " \\0"));
+                    e?.Arguments?.ToList()?.ForEach(dr => tsslSteamCmdCommand.Text += ((dr != null) ? " " + dr : " \\0"));
 
                     Log($"SteamCmd Command:\t\"{tsslSteamCmdCommand.Text}\"");
                 }
@@ -82,7 +84,7 @@ namespace BZRModManager
 
         private void Steam_SteamCmdStatusChange(object sender, SteamCmdStatusChangeEventArgs e)
         {
-            switch(e.Status)
+            switch (e.Status)
             {
                 case SteamCmdStatus.Active:
                     this.Invoke((MethodInvoker)delegate
@@ -130,14 +132,15 @@ namespace BZRModManager
             {
                 SteamCmd.WorkshopStatus(AppIdBZ98).ForEach(dr =>
                 {
-                    if (!BZ98R_Mods.ContainsKey(dr.WorkshopId))
-                        BZ98R_Mods[dr.WorkshopId] = new BZ98RModItem();
-                    BZ98R_Mods[dr.WorkshopId].Workshop = dr;
+                    string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
+                    if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                        Mods[AppIdBZ98][ModId] = new SteamCmdMod();
+                    ((SteamCmdMod)Mods[AppIdBZ98][ModId]).Workshop = dr;
                 });
 
                 lbModsBZ98R.BeginUpdate();
                 lbModsBZ98R.Items.Clear();
-                BZ98R_Mods.Select(dr => dr.Value).ToList().ForEach(dr => lbModsBZ98R.Items.Add(dr));
+                Mods[AppIdBZ98].Select(dr => dr.Value).ToList().ForEach(dr => lbModsBZ98R.Items.Add(dr));
                 lbModsBZ98R.EndUpdate();
             }
         }
@@ -147,14 +150,15 @@ namespace BZRModManager
             {
                 SteamCmd.WorkshopStatus(AppIdBZCC).ForEach(dr =>
                 {
-                    if (!BZCC_Mods.ContainsKey(dr.WorkshopId))
-                        BZCC_Mods[dr.WorkshopId] = new BZCCModItem();
-                    BZCC_Mods[dr.WorkshopId].Workshop = dr;
+                    string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
+                    if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                        Mods[AppIdBZCC][ModId] = new SteamCmdMod();
+                    ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
                 });
 
                 lbModsBZCC.BeginUpdate();
                 lbModsBZCC.Items.Clear();
-                BZCC_Mods.Select(dr => dr.Value).ToList().ForEach(dr => lbModsBZCC.Items.Add(dr));
+                Mods[AppIdBZCC].Select(dr => dr.Value).ToList().ForEach(dr => lbModsBZCC.Items.Add(dr));
                 lbModsBZCC.EndUpdate();
             }
         }
@@ -167,7 +171,7 @@ namespace BZRModManager
 
         private void Log(string text)
         {
-            lock(txtLog)
+            lock (txtLog)
             {
                 txtLog.AppendText(text + "\r\n");
             }
@@ -232,7 +236,7 @@ namespace BZRModManager
         {
             if (exiting)
             {
-                
+
             }
             else if (SteamCmd.Status == SteamCmdStatus.Closed)
             {
@@ -283,65 +287,36 @@ namespace BZRModManager
             }).Start();
         }
 
-        private void btnDownloadBZ98R_Click(object sender, EventArgs e)
+        private void btnDownloadBZ98R_Click(object sender, EventArgs e) { DownloadMod(txtDownloadBZ98R.Text, AppIdBZ98); }
+        private void btnDownloadBZCC_Click(object sender, EventArgs e) { DownloadMod(txtDownloadBZCC.Text, AppIdBZCC); }
+        private void DownloadMod(string text, int AppId)
         {
-            DownloadBZ98RMod();
-        }
-
-        private void btnDownloadBZCC_Click(object sender, EventArgs e)
-        {
-            DownloadBZCCMod();
-        }
-
-        private void DownloadBZ98RMod()
-        {
-            new Thread(() =>
+            try
             {
+                int workshopID = -1;
                 try
                 {
-                    int workshopID = -1;
-                    try
-                    {
-                        workshopID = int.Parse(HttpUtility.ParseQueryString(new Uri(txtDownloadBZ98R.Text).Query)["id"]);
-                    }
-                    catch (UriFormatException)
-                    {
-                        workshopID = int.Parse(txtDownloadBZ98R.Text);
-                    }
-                    if (workshopID > -1)
-                    {
-                        SteamCmd.WorkshopDownloadItem(AppIdBZ98, workshopID);
-                        UpdateBZ98RModLists();
-                    }
+                    workshopID = int.Parse(HttpUtility.ParseQueryString(new Uri(text).Query)["id"]);
                 }
-                catch { }
-            }).Start();
-        }
-
-        private void DownloadBZCCMod()
-        {
-            new Thread(() =>
-            {
-                try
+                catch (UriFormatException)
                 {
-
-                    int workshopID = -1;
-                    try
+                    workshopID = int.Parse(text);
+                }
+                if (workshopID > -1)
+                {
+                    SteamCmd.WorkshopDownloadItem(AppId, workshopID);
+                    switch(AppId)
                     {
-                        workshopID = int.Parse(HttpUtility.ParseQueryString(new Uri(txtDownloadBZCC.Text).Query)["id"]);
-                    }
-                    catch (UriFormatException)
-                    {
-                        workshopID = int.Parse(txtDownloadBZCC.Text);
-                    }
-                    if (workshopID > -1)
-                    {
-                        SteamCmd.WorkshopDownloadItem(AppIdBZCC, workshopID);
-                        UpdateBZCCModLists();
+                        case AppIdBZ98:
+                            UpdateBZ98RModLists();
+                            break;
+                        case AppIdBZCC:
+                            UpdateBZCCModLists();
+                            break;
                     }
                 }
-                catch { }
-            }).Start();
+            }
+            catch { }
         }
 
         private void tmrModUpdate_Tick(object sender, EventArgs e)
@@ -354,24 +329,54 @@ namespace BZRModManager
         }
     }
 
-    public class BZ98RModItem
+    public enum InstallStatus
     {
-        public WorkshopItemStatus Workshop { get; set; }
+        Uninstalled,
+        ForceDisabled,
+        ForceEnabled,
+        Linked,
+    }
+
+    public abstract class ModItem
+    {
+        public abstract string UniqueID { get; }
+        public abstract InstallStatus InstalledSteam { get; }
+        public abstract InstallStatus InstalledGog { get; }
 
         public override string ToString()
         {
-            if(Workshop != null) return Workshop.WorkshopId.ToString();
+            //if (Workshop != null) return Workshop.WorkshopId.ToString();
             return "UNKNOWN MOD";
         }
     }
-    public class BZCCModItem
+
+    public class SteamMod : ModItem
+    {
+        public override string UniqueID { get { return "UNKNOWN" + "-Steam"; } }
+        public override InstallStatus InstalledSteam { get { return InstallStatus.ForceEnabled; } } // forced
+        public override InstallStatus InstalledGog { get { return InstallStatus.Uninstalled; } } // TODO: Dynamic
+    }
+
+    public class SteamCmdMod : ModItem
     {
         public WorkshopItemStatus Workshop { get; set; }
+        public override string UniqueID { get { return GetUniqueId(Workshop.WorkshopId); } }
+        public static string GetUniqueId(long workshopId) { return workshopId.ToString().PadLeft(long.MaxValue.ToString().Length, '0') + "-SteamCmd"; }
+
+        public override InstallStatus InstalledSteam { get { return InstallStatus.ForceDisabled; } } // forced
+        public override InstallStatus InstalledGog { get { return InstallStatus.Uninstalled; } } // TODO: Dynamic
 
         public override string ToString()
         {
-            if (Workshop != null) return Workshop.WorkshopId.ToString();
-            return "UNKNOWN MOD";
+            return UniqueID;
         }
+    }
+
+    public class SteamGit : ModItem
+    {
+        public override string UniqueID { get { return "UNKNOWN" + "-Git"; } }
+
+        public override InstallStatus InstalledSteam { get { return InstallStatus.Uninstalled; } } // TODO: Dynamic
+        public override InstallStatus InstalledGog { get { return InstallStatus.Uninstalled; } } // TODO: Dynamic
     }
 }
