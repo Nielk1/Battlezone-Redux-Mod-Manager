@@ -43,23 +43,23 @@
             this.tpSettings = new System.Windows.Forms.TabPage();
             this.tpLog = new System.Windows.Forms.TabPage();
             this.txtLog = new System.Windows.Forms.TextBox();
-            this.tpLogSteamCMD = new System.Windows.Forms.TabPage();
-            this.txtLogSteamCMD = new System.Windows.Forms.RichTextBox();
+            this.tpLogSteamCmd = new System.Windows.Forms.TabPage();
+            this.txtLogSteamCmd = new System.Windows.Forms.RichTextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsslSteamCMD = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsslSteamCMDCommand = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslSteamCmd = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsslSteamCmdCommand = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tmrModUpdate = new System.Windows.Forms.Timer(this.components);
-            this.tpLogSteamCMDFull = new System.Windows.Forms.TabPage();
-            this.txtLogSteamCMDFull = new System.Windows.Forms.RichTextBox();
+            this.tpLogSteamCmdFull = new System.Windows.Forms.TabPage();
+            this.txtLogSteamCmdFull = new System.Windows.Forms.RichTextBox();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tpBZCC.SuspendLayout();
             this.tpLog.SuspendLayout();
-            this.tpLogSteamCMD.SuspendLayout();
+            this.tpLogSteamCmd.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.tpLogSteamCMDFull.SuspendLayout();
+            this.tpLogSteamCmdFull.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -71,8 +71,8 @@
             this.tabControl1.Controls.Add(this.tpBZCC);
             this.tabControl1.Controls.Add(this.tpSettings);
             this.tabControl1.Controls.Add(this.tpLog);
-            this.tabControl1.Controls.Add(this.tpLogSteamCMD);
-            this.tabControl1.Controls.Add(this.tpLogSteamCMDFull);
+            this.tabControl1.Controls.Add(this.tpLogSteamCmd);
+            this.tabControl1.Controls.Add(this.tpLogSteamCmdFull);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
@@ -220,36 +220,36 @@
             this.txtLog.Size = new System.Drawing.Size(580, 313);
             this.txtLog.TabIndex = 0;
             // 
-            // tpLogSteamCMD
+            // tpLogSteamCmd
             // 
-            this.tpLogSteamCMD.Controls.Add(this.txtLogSteamCMD);
-            this.tpLogSteamCMD.Location = new System.Drawing.Point(4, 22);
-            this.tpLogSteamCMD.Name = "tpLogSteamCMD";
-            this.tpLogSteamCMD.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLogSteamCMD.Size = new System.Drawing.Size(586, 319);
-            this.tpLogSteamCMD.TabIndex = 4;
-            this.tpLogSteamCMD.Text = "SteamCMD";
-            this.tpLogSteamCMD.UseVisualStyleBackColor = true;
+            this.tpLogSteamCmd.Controls.Add(this.txtLogSteamCmd);
+            this.tpLogSteamCmd.Location = new System.Drawing.Point(4, 22);
+            this.tpLogSteamCmd.Name = "tpLogSteamCmd";
+            this.tpLogSteamCmd.Padding = new System.Windows.Forms.Padding(3);
+            this.tpLogSteamCmd.Size = new System.Drawing.Size(586, 319);
+            this.tpLogSteamCmd.TabIndex = 4;
+            this.tpLogSteamCmd.Text = "SteamCmd";
+            this.tpLogSteamCmd.UseVisualStyleBackColor = true;
             // 
-            // txtLogSteamCMD
+            // txtLogSteamCmd
             // 
-            this.txtLogSteamCMD.BackColor = System.Drawing.Color.Black;
-            this.txtLogSteamCMD.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLogSteamCMD.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLogSteamCMD.ForeColor = System.Drawing.Color.White;
-            this.txtLogSteamCMD.Location = new System.Drawing.Point(3, 3);
-            this.txtLogSteamCMD.Name = "txtLogSteamCMD";
-            this.txtLogSteamCMD.ReadOnly = true;
-            this.txtLogSteamCMD.Size = new System.Drawing.Size(580, 313);
-            this.txtLogSteamCMD.TabIndex = 1;
-            this.txtLogSteamCMD.Text = "";
+            this.txtLogSteamCmd.BackColor = System.Drawing.Color.Black;
+            this.txtLogSteamCmd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLogSteamCmd.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLogSteamCmd.ForeColor = System.Drawing.Color.White;
+            this.txtLogSteamCmd.Location = new System.Drawing.Point(3, 3);
+            this.txtLogSteamCmd.Name = "txtLogSteamCmd";
+            this.txtLogSteamCmd.ReadOnly = true;
+            this.txtLogSteamCmd.Size = new System.Drawing.Size(580, 313);
+            this.txtLogSteamCmd.TabIndex = 1;
+            this.txtLogSteamCmd.Text = "";
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
-            this.tsslSteamCMD,
-            this.tsslSteamCMDCommand,
+            this.tsslSteamCmd,
+            this.tsslSteamCmdCommand,
             this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 361);
             this.statusStrip1.Name = "statusStrip1";
@@ -263,23 +263,23 @@
             this.toolStripStatusLabel1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(67, 17);
-            this.toolStripStatusLabel1.Text = "SteamCMD";
+            this.toolStripStatusLabel1.Text = "SteamCmd";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tsslSteamCMD
+            // tsslSteamCmd
             // 
-            this.tsslSteamCMD.Name = "tsslSteamCMD";
-            this.tsslSteamCMD.Size = new System.Drawing.Size(24, 17);
-            this.tsslSteamCMD.Text = "Off";
-            this.tsslSteamCMD.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.tsslSteamCmd.Name = "tsslSteamCmd";
+            this.tsslSteamCmd.Size = new System.Drawing.Size(24, 17);
+            this.tsslSteamCmd.Text = "Off";
+            this.tsslSteamCmd.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tsslSteamCMDCommand
+            // tsslSteamCmdCommand
             // 
-            this.tsslSteamCMDCommand.Enabled = false;
-            this.tsslSteamCMDCommand.Name = "tsslSteamCMDCommand";
-            this.tsslSteamCMDCommand.Size = new System.Drawing.Size(34, 17);
-            this.tsslSteamCMDCommand.Text = "none";
-            this.tsslSteamCMDCommand.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.tsslSteamCmdCommand.Enabled = false;
+            this.tsslSteamCmdCommand.Name = "tsslSteamCmdCommand";
+            this.tsslSteamCmdCommand.Size = new System.Drawing.Size(34, 17);
+            this.tsslSteamCmdCommand.Text = "none";
+            this.tsslSteamCmdCommand.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // toolStripStatusLabel2
             // 
@@ -294,29 +294,29 @@
             this.tmrModUpdate.Interval = 300000;
             this.tmrModUpdate.Tick += new System.EventHandler(this.tmrModUpdate_Tick);
             // 
-            // tpLogSteamCMDFull
+            // tpLogSteamCmdFull
             // 
-            this.tpLogSteamCMDFull.Controls.Add(this.txtLogSteamCMDFull);
-            this.tpLogSteamCMDFull.Location = new System.Drawing.Point(4, 22);
-            this.tpLogSteamCMDFull.Name = "tpLogSteamCMDFull";
-            this.tpLogSteamCMDFull.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLogSteamCMDFull.Size = new System.Drawing.Size(586, 319);
-            this.tpLogSteamCMDFull.TabIndex = 5;
-            this.tpLogSteamCMDFull.Text = "SteamCMD Raw";
-            this.tpLogSteamCMDFull.UseVisualStyleBackColor = true;
+            this.tpLogSteamCmdFull.Controls.Add(this.txtLogSteamCmdFull);
+            this.tpLogSteamCmdFull.Location = new System.Drawing.Point(4, 22);
+            this.tpLogSteamCmdFull.Name = "tpLogSteamCmdFull";
+            this.tpLogSteamCmdFull.Padding = new System.Windows.Forms.Padding(3);
+            this.tpLogSteamCmdFull.Size = new System.Drawing.Size(586, 319);
+            this.tpLogSteamCmdFull.TabIndex = 5;
+            this.tpLogSteamCmdFull.Text = "SteamCmd Raw";
+            this.tpLogSteamCmdFull.UseVisualStyleBackColor = true;
             // 
-            // txtLogSteamCMDFull
+            // txtLogSteamCmdFull
             // 
-            this.txtLogSteamCMDFull.BackColor = System.Drawing.Color.Black;
-            this.txtLogSteamCMDFull.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLogSteamCMDFull.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLogSteamCMDFull.ForeColor = System.Drawing.Color.White;
-            this.txtLogSteamCMDFull.Location = new System.Drawing.Point(3, 3);
-            this.txtLogSteamCMDFull.Name = "txtLogSteamCMDFull";
-            this.txtLogSteamCMDFull.ReadOnly = true;
-            this.txtLogSteamCMDFull.Size = new System.Drawing.Size(580, 313);
-            this.txtLogSteamCMDFull.TabIndex = 2;
-            this.txtLogSteamCMDFull.Text = "";
+            this.txtLogSteamCmdFull.BackColor = System.Drawing.Color.Black;
+            this.txtLogSteamCmdFull.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLogSteamCmdFull.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLogSteamCmdFull.ForeColor = System.Drawing.Color.White;
+            this.txtLogSteamCmdFull.Location = new System.Drawing.Point(3, 3);
+            this.txtLogSteamCmdFull.Name = "txtLogSteamCmdFull";
+            this.txtLogSteamCmdFull.ReadOnly = true;
+            this.txtLogSteamCmdFull.Size = new System.Drawing.Size(580, 313);
+            this.txtLogSteamCmdFull.TabIndex = 2;
+            this.txtLogSteamCmdFull.Text = "";
             // 
             // Form1
             // 
@@ -335,10 +335,10 @@
             this.tpBZCC.PerformLayout();
             this.tpLog.ResumeLayout(false);
             this.tpLog.PerformLayout();
-            this.tpLogSteamCMD.ResumeLayout(false);
+            this.tpLogSteamCmd.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.tpLogSteamCMDFull.ResumeLayout(false);
+            this.tpLogSteamCmdFull.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -360,16 +360,16 @@
         private System.Windows.Forms.ListBox lbModsBZ98R;
         private System.Windows.Forms.ListBox lbModsBZCC;
         private System.Windows.Forms.Timer tmrModUpdate;
-        private System.Windows.Forms.ToolStripStatusLabel tsslSteamCMD;
-        private System.Windows.Forms.ToolStripStatusLabel tsslSteamCMDCommand;
+        private System.Windows.Forms.ToolStripStatusLabel tsslSteamCmd;
+        private System.Windows.Forms.ToolStripStatusLabel tsslSteamCmdCommand;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.TabPage tpLog;
         private System.Windows.Forms.TextBox txtLog;
-        private System.Windows.Forms.TabPage tpLogSteamCMD;
-        private System.Windows.Forms.RichTextBox txtLogSteamCMD;
-        private System.Windows.Forms.TabPage tpLogSteamCMDFull;
-        private System.Windows.Forms.RichTextBox txtLogSteamCMDFull;
+        private System.Windows.Forms.TabPage tpLogSteamCmd;
+        private System.Windows.Forms.RichTextBox txtLogSteamCmd;
+        private System.Windows.Forms.TabPage tpLogSteamCmdFull;
+        private System.Windows.Forms.RichTextBox txtLogSteamCmdFull;
     }
 }
 

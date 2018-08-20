@@ -36,7 +36,7 @@ namespace BZRModManager
         {
             this.Invoke((MethodInvoker)delegate
             {
-                LogSteamCMD(msg, false);
+                LogSteamCmd(msg, false);
             });
         }
 
@@ -44,7 +44,7 @@ namespace BZRModManager
         {
             this.Invoke((MethodInvoker)delegate
             {
-                LogSteamCMDFull(msg, false);
+                LogSteamCmdFull(msg, false);
             });
         }
 
@@ -52,8 +52,8 @@ namespace BZRModManager
         {
             this.Invoke((MethodInvoker)delegate
             {
-                LogSteamCMD(msg, true);
-                LogSteamCMDFull(msg, true);
+                LogSteamCmd(msg, true);
+                LogSteamCmdFull(msg, true);
             });
         }
 
@@ -63,16 +63,16 @@ namespace BZRModManager
             {
                 if (string.IsNullOrWhiteSpace(e.Command))
                 {
-                    tsslSteamCMDCommand.Enabled = false;
-                    tsslSteamCMDCommand.Text = "none";
+                    tsslSteamCmdCommand.Enabled = false;
+                    tsslSteamCmdCommand.Text = "none";
                 }
                 else
                 {
-                    tsslSteamCMDCommand.Enabled = true;
-                    tsslSteamCMDCommand.Text = e.Command;
-                    e?.Arguments?.ToList()?.ForEach(dr => tsslSteamCMDCommand.Text += ((dr != null) ? " " +  dr : " \\0"));
+                    tsslSteamCmdCommand.Enabled = true;
+                    tsslSteamCmdCommand.Text = e.Command;
+                    e?.Arguments?.ToList()?.ForEach(dr => tsslSteamCmdCommand.Text += ((dr != null) ? " " +  dr : " \\0"));
 
-                    Log($"SteamCMD Command:\t\"{tsslSteamCMDCommand.Text}\"");
+                    Log($"SteamCmd Command:\t\"{tsslSteamCmdCommand.Text}\"");
                 }
             });
         }
@@ -84,7 +84,7 @@ namespace BZRModManager
                 case SteamCmdStatus.Active:
                     this.Invoke((MethodInvoker)delegate
                     {
-                        this.SetSteamCMDStatusText(e.Status.ToString());
+                        this.SetSteamCmdStatusText(e.Status.ToString());
                     });
                     new Thread(() => SteamCmd.LoginAnonymous()).Start();
                     break;
@@ -92,7 +92,7 @@ namespace BZRModManager
                 case SteamCmdStatus.LoggedInAnon:
                     this.Invoke((MethodInvoker)delegate
                     {
-                        this.SetSteamCMDStatusText(e.Status.ToString());
+                        this.SetSteamCmdStatusText(e.Status.ToString());
                     });
                     new Thread(() => {
                         try { SteamCmd.WorkshopDownloadItem(301650, 1); } catch (SteamCmdWorkshopDownloadException) { }
@@ -106,7 +106,7 @@ namespace BZRModManager
                 default:
                     this.Invoke((MethodInvoker)delegate
                     {
-                        this.SetSteamCMDStatusText(e.Status.ToString());
+                        this.SetSteamCmdStatusText(e.Status.ToString());
                     });
                     break;
             }
@@ -156,10 +156,10 @@ namespace BZRModManager
             }
         }
 
-        private void SetSteamCMDStatusText(string text)
+        private void SetSteamCmdStatusText(string text)
         {
-            tsslSteamCMD.Text = text;
-            Log($"SteamCMD Status:\t\t\"{text}\"");
+            tsslSteamCmd.Text = text;
+            Log($"SteamCmd Status:\t\t\"{text}\"");
         }
 
         private void Log(string text)
@@ -170,30 +170,52 @@ namespace BZRModManager
             }
         }
 
-        private void LogSteamCMD(string text, bool input)
+        private void LogSteamCmd(string text, bool input)
         {
-            lock (txtLogSteamCMD)
+            lock (txtLogSteamCmd)
             {
                 if (text != null)
                 {
-                    Color orig = txtLogSteamCMD.SelectionColor;
-                    if (input) txtLogSteamCMD.SelectionColor = Color.DarkGray;
-                    txtLogSteamCMD.AppendText(text);
-                    txtLogSteamCMD.SelectionColor = orig;
+                    Color orig = txtLogSteamCmd.SelectionColor;
+                    if (input) txtLogSteamCmd.SelectionColor = Color.DarkGray;
+                    txtLogSteamCmd.AppendText(text);
+                    txtLogSteamCmd.SelectionColor = orig;
                 }
             }
         }
 
-        private void LogSteamCMDFull(string text, bool input)
+        private void LogSteamCmdFull(string text, bool input)
         {
-            lock (txtLogSteamCMDFull)
+            string badstring = "\\src\\common\\contentmanifest.cpp (650) : Assertion Failed: !m_bIsFinalized\r\n";
+
+            lock (txtLogSteamCmdFull)
             {
                 if (text != null)
                 {
-                    Color orig = txtLogSteamCMDFull.SelectionColor;
-                    if (input) txtLogSteamCMDFull.SelectionColor = Color.DarkGray;
-                    txtLogSteamCMDFull.AppendText(text);
-                    txtLogSteamCMDFull.SelectionColor = orig;
+                    if (input)
+                    {
+                        Color orig = txtLogSteamCmdFull.SelectionColor;
+                        txtLogSteamCmdFull.SelectionColor = Color.DarkGray;
+                        txtLogSteamCmdFull.AppendText(text);
+                        txtLogSteamCmdFull.SelectionColor = orig;
+                    }
+                    else
+                    {
+                        Color orig = txtLogSteamCmdFull.SelectionColor;
+
+                        List<string> items = new List<string>() { text };
+                        items = items.SelectMany(dr =>
+                            dr.Split(new string[] { badstring }, StringSplitOptions.None)
+                                .SelectMany(dx => new string[] { badstring, dx })).Skip(1).ToList();
+
+                        items.ForEach(dr =>
+                        {
+                            txtLogSteamCmdFull.SelectionColor = orig;
+                            if (dr == badstring) txtLogSteamCmdFull.SelectionColor = Color.Yellow;
+                            txtLogSteamCmdFull.AppendText(dr);
+                        });
+                        txtLogSteamCmdFull.SelectionColor = orig;
+                    }
                 }
             }
         }

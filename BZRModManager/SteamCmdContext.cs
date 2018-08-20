@@ -74,7 +74,7 @@ namespace BZRModManager
 
     public class SteamCmdContext : IDisposable
     {
-        private static string SteamCMDDownloadURL = @"https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
+        private static string SteamCmdDownloadURL = @"https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
 
         private static readonly object CoreInstanceMutex = new object();
         private static SteamCmdContext CoreInstance;
@@ -165,12 +165,12 @@ namespace BZRModManager
             lock (procLock)
             {
                 if (File.Exists("steamcmd\\steamcmd.exe")) return;
-                string steamcmdzip = Path.GetFileName(SteamCMDDownloadURL);
+                string steamcmdzip = Path.GetFileName(SteamCmdDownloadURL);
                 if (!File.Exists(steamcmdzip))
                 {
                     OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Downloading));
                     WebClient client = new WebClient();
-                    client.DownloadFile(SteamCMDDownloadURL, steamcmdzip);
+                    client.DownloadFile(SteamCmdDownloadURL, steamcmdzip);
                 }
                 if (!Directory.Exists("steamcmd")) Directory.CreateDirectory("steamcmd");
                 OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Extracting));
@@ -186,7 +186,7 @@ namespace BZRModManager
             lock (procLock)
             {
                 if (!Directory.Exists("steamcmd")) throw new SteamCmdMissingException("steamcmd directory missing");
-                if (!File.Exists("steamcmd\\steamcmd.exe")) throw new SteamCmdMissingException("steamcmd.exe");
+                if (!File.Exists("steamcmd\\steamcmd.exe")) throw new SteamCmdMissingException("SteamCmdContext.exe");
 
                 proc = new Process()
                 {
@@ -260,61 +260,81 @@ namespace BZRModManager
 
         public void LoginAnonymous()
         {
-            OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("login", "anonymous"));
-            WriteLine("login anonymous");
-            //string output = WaitForSteamPrompt();
-            while (!ReadLine().Prompt) { }
-            OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
-            OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.LoggedInAnon));
+            Debug.WriteLine("LoginAnonymous", "SteamCmdContext");
+            Debug.Indent();
+
+            try
+            {
+                OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("login", "anonymous"));
+                WriteLine("login anonymous");
+                //string output = WaitForSteamPrompt();
+                while (!ReadLine().Prompt) { }
+                OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
+                OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.LoggedInAnon));
+            }
+            finally
+            {
+                Debug.Unindent();
+            }
         }
 
         public string WorkshopDownloadItem(int appId, int workshopId)
         {
-            lock(ioLock)
+            Debug.WriteLine($"WorkshopDownloadItem({appId},{workshopId})", "SteamCmdContext");
+            Debug.Indent();
+
+            try
             {
-                OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("workshop_download_item", appId.ToString(), workshopId.ToString()));
-                WriteLine($"workshop_download_item {appId} {workshopId}");
-                //string commandLine = ReadLine();
-                //string statusLine = ReadLine();
-                //while(statusLine.Length == 0 || statusLine == "\r\n" || Regex.IsMatch(statusLine,@"Downloading item [0-9]+ \.\.\."))
-                //{
-                //    statusLine = ReadLine();
-                //}
-
-                SteamCmdLine output = null;
-                while ((output = ReadLine()) == null || output.Blank || Regex.IsMatch(output.Line, @"Downloading item [0-9]+ \.\.\.")) { }
-                string statusLine = output.Line;
-
-                OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
-
-                //Success. Downloaded item 1325933293 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293" (379069888 bytes)
-                //ERROR! Download item 1 failed (File Not Found).
-                //ERROR! Failed to start downloading item 0.
-
-                //WaitForSteamPrompt();
-                while (!ReadLine().Prompt) { }
-
-                if (statusLine.StartsWith("ERROR! "))
+                lock (ioLock)
                 {
-                    string errorText = statusLine.Split(new string[] { "ERROR! " }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
-                    throw new SteamCmdWorkshopDownloadException(errorText);
+                    OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("workshop_download_item", appId.ToString(), workshopId.ToString()));
+                    WriteLine($"workshop_download_item {appId} {workshopId}");
+                    //string commandLine = ReadLine();
+                    //string statusLine = ReadLine();
+                    //while(statusLine.Length == 0 || statusLine == "\r\n" || Regex.IsMatch(statusLine,@"Downloading item [0-9]+ \.\.\."))
+                    //{
+                    //    statusLine = ReadLine();
+                    //}
+
+                    SteamCmdLine output = null;
+                    while ((output = ReadLine()) == null || output.Blank || Regex.IsMatch(output.Line, @"Downloading item [0-9]+ \.\.\.")) { }
+                    string statusLine = output.Line;
+
+                    OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
+
+                    //Success. Downloaded item 1325933293 to "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293" (379069888 bytes)
+                    //ERROR! Download item 1 failed (File Not Found).
+                    //ERROR! Failed to start downloading item 0.
+
+                    //WaitForSteamPrompt();
+                    while (!ReadLine().Prompt) { }
+
+                    if (statusLine.StartsWith("ERROR! "))
+                    {
+                        string errorText = statusLine.Split(new string[] { "ERROR! " }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                        throw new SteamCmdWorkshopDownloadException(errorText);
+                    }
+                    else if (statusLine.StartsWith("Success. "))
+                    {
+                        string successText = statusLine.Split(new string[] { "Success. " }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                        //string tmp = @"Downloaded item 1325933293 to ""D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293"" (379069888 bytes)";
+                        return successText;
+                    }
+                    else if (proc.HasExited)
+                    {
+                        Exception ex = new SteamCmdException("Application Terminated", new SteamCmdWorkshopDownloadException(statusLine));
+                        throw ex;
+                    }
+                    else
+                    {
+                        Exception ex = new SteamCmdException("Unknown Error", new SteamCmdWorkshopDownloadException(statusLine));
+                        throw ex;
+                    }
                 }
-                else if (statusLine.StartsWith("Success. "))
-                {
-                    string successText = statusLine.Split(new string[] { "Success. " }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
-                    //string tmp = @"Downloaded item 1325933293 to ""D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop\content\624970\1325933293"" (379069888 bytes)";
-                    return successText;
-                }
-                else if(proc.HasExited)
-                {
-                    Exception ex = new SteamCmdException("Application Terminated", new SteamCmdWorkshopDownloadException(statusLine));
-                    throw ex;
-                }
-                else
-                {
-                    Exception ex = new SteamCmdException("Unknown Error", new SteamCmdWorkshopDownloadException(statusLine));
-                    throw ex;
-                }
+            }
+            finally
+            {
+                Debug.Unindent();
             }
         }
 
@@ -332,82 +352,94 @@ namespace BZRModManager
 
         public List<WorkshopItemStatus> WorkshopStatus(int appId)
         {
-            lock (ioLock)
+            Debug.WriteLine($"WorkshopStatus({appId})", "SteamCmdContext");
+            Debug.Indent();
+
+            try
             {
-                OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("workshop_status", appId.ToString()));
-                WriteLine($"workshop_status {appId}");
-                ////string commandLine = ReadLine();
-                //string statusLine = ReadLine();
-                //while (statusLine.Length == 0 || statusLine == "\r\n" || Regex.IsMatch(statusLine, @"Local workshop items for App [0-9]+: "))
-                //{
-                //    statusLine = ReadLine();
-                //}
-
-                SteamCmdLine output = null;
-                while ((output = ReadLine()) == null || output.Blank || Regex.IsMatch(output.Line, @"Local workshop items for App [0-9]+: ")) { }
-                string statusLine = output.Line;
-
-                OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
-
-                if (statusLine.Equals(" No workshop items referenced on client."))
+                lock (ioLock)
                 {
-                    //WaitForSteamPrompt(); // should just be 1 null line
-                    while (!ReadLine().Prompt) { }
-                    return null;
-                }
-                else if (statusLine.StartsWith(" Workshop Content folder : "))
-                {
-                    string mods = WaitForSteamPrompt();
+                    OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("workshop_status", appId.ToString()));
+                    WriteLine($"workshop_status {appId}");
+                    ////string commandLine = ReadLine();
+                    //string statusLine = ReadLine();
+                    //while (statusLine.Length == 0 || statusLine == "\r\n" || Regex.IsMatch(statusLine, @"Local workshop items for App [0-9]+: "))
+                    //{
+                    //    statusLine = ReadLine();
+                    //}
 
-                    return mods
-                        .Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(dr => WorkshopStatusPattern.Match(dr))
-                        .Where(dr => dr.Success)
-                        .Select(dr =>
-                        {
-                            string datetimeString = $"{dr.Groups["day"].Value} {dr.Groups["month"].Value} {dr.Groups["year"].Value} {dr.Groups["hour"].Value}:{dr.Groups["minutes"].Value}:{dr.Groups["seconds"].Value}";
+                    SteamCmdLine output = null;
+                    while ((output = ReadLine()) == null || output.Blank || Regex.IsMatch(output.Line, @"Local workshop items for App [0-9]+: ")) { }
+                    string statusLine = output.Line;
 
-                            return new WorkshopItemStatus()
+                    OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
+
+                    if (statusLine.Equals(" No workshop items referenced on client."))
+                    {
+                        //WaitForSteamPrompt(); // should just be 1 null line
+                        while (!ReadLine().Prompt) { }
+                        return null;
+                    }
+                    else if (statusLine.StartsWith(" Workshop Content folder : "))
+                    {
+                        string mods = WaitForSteamPrompt();
+
+                        return mods
+                            .Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(dr => WorkshopStatusPattern.Match(dr))
+                            .Where(dr => dr.Success)
+                            .Select(dr =>
                             {
-                                WorkshopId = long.Parse(dr.Groups["workshopId"].Value),
-                                Status = dr.Groups["status"].Value,
-                                Size = long.Parse(dr.Groups["size"].Value),
-                                DateTime = DateTime.Parse(datetimeString),
-                                HasUpdate = dr.Groups["status2"]?.Value == "updated" && dr.Groups["status3"]?.Value == "required",
-                            };
-                        })
-                        .ToList();
+                                string datetimeString = $"{dr.Groups["day"].Value} {dr.Groups["month"].Value} {dr.Groups["year"].Value} {dr.Groups["hour"].Value}:{dr.Groups["minutes"].Value}:{dr.Groups["seconds"].Value}";
+
+                                return new WorkshopItemStatus()
+                                {
+                                    WorkshopId = long.Parse(dr.Groups["workshopId"].Value),
+                                    Status = dr.Groups["status"].Value,
+                                    Size = long.Parse(dr.Groups["size"].Value),
+                                    DateTime = DateTime.Parse(datetimeString),
+                                    HasUpdate = dr.Groups["status2"]?.Value == "updated" && dr.Groups["status3"]?.Value == "required",
+                                };
+                            })
+                            .ToList();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                    //Steam>workshop_status 301650
+                    //Local workshop items for App 301650:
+                    // No workshop items referenced on client.
+                    //
+                    //Steam>workshop_download_item 301650 1
+                    //Downloading item 1 ...
+                    //ERROR! Download item 1 failed (File Not Found).
+                    //Steam>workshop_status 301650
+                    //Local workshop items for App 301650:
+                    // Workshop Content folder : "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop" - no update needed
+                    //- Item 1316733327 : installed (13058599 bytes, Thu Mar  1 00:11:28 2018),
+                    //- Item 1325933293 : installed (379069888 bytes, Mon May 14 18:20:25 2018),
+                    //- Item 1329659846 : installed (753230735 bytes, Fri May 25 02:30:45 2018),
+                    //- Item 1329976523 : installed (1736190673 bytes, Wed May 30 04:05:38 2018), updated required( 0/0 bytes ),
+                    //- Item 1369551364 : installed (709772 bytes, Tue Apr 24 14:02:24 2018),
+                    //- Item 1374954711 : installed (628725126 bytes, Tue May  1 01:25:24 2018),
+                    //- Item 1374955473 : installed (108815664 bytes, Mon May  7 14:32:47 2018),
+                    //- Item 1374955975 : installed (1006760 bytes, Tue May  1 01:28:04 2018),
+                    //- Item 1374956537 : installed (162314192 bytes, Tue May  1 01:29:29 2018),
+                    //- Item 1386405185 : installed (168116554 bytes, Tue May 15 03:06:19 2018),
+                    //
                 }
-                else
-                {
-                    return null;
-                }
-//Steam>workshop_status 301650
-//Local workshop items for App 301650:
-// No workshop items referenced on client.
-//
-//Steam>workshop_download_item 301650 1
-//Downloading item 1 ...
-//ERROR! Download item 1 failed (File Not Found).
-//Steam>workshop_status 301650
-//Local workshop items for App 301650:
-// Workshop Content folder : "D:\Data\Programming\BZRModManager\BZRModManager\bin\steamcmd\steamapps\workshop" - no update needed
-//- Item 1316733327 : installed (13058599 bytes, Thu Mar  1 00:11:28 2018),
-//- Item 1325933293 : installed (379069888 bytes, Mon May 14 18:20:25 2018),
-//- Item 1329659846 : installed (753230735 bytes, Fri May 25 02:30:45 2018),
-//- Item 1329976523 : installed (1736190673 bytes, Wed May 30 04:05:38 2018), updated required( 0/0 bytes ),
-//- Item 1369551364 : installed (709772 bytes, Tue Apr 24 14:02:24 2018),
-//- Item 1374954711 : installed (628725126 bytes, Tue May  1 01:25:24 2018),
-//- Item 1374955473 : installed (108815664 bytes, Mon May  7 14:32:47 2018),
-//- Item 1374955975 : installed (1006760 bytes, Tue May  1 01:28:04 2018),
-//- Item 1374956537 : installed (162314192 bytes, Tue May  1 01:29:29 2018),
-//- Item 1386405185 : installed (168116554 bytes, Tue May 15 03:06:19 2018),
-//
+            }
+            finally
+            {
+                Debug.Unindent();
             }
         }
 
         private void WriteLine(string input)
         {
+            Debug.WriteLine($"WriteLine({input})", "SteamCmdContext");
+
             OnSteamCmdInput(input + "\r\n");
             proc.StandardInput.WriteLine(input);
         }
@@ -421,35 +453,55 @@ namespace BZRModManager
         }
         private SteamCmdLine ReadLine()
         {
-            lock (ioLock)
+            Debug.WriteLine("ReadLine()", "SteamCmdContext");
+            Debug.Indent();
+
+            try
             {
-                string retVal = string.Empty;
-                string tmpVal = null;
-
-                do
+                lock (ioLock)
                 {
-                    tmpVal = ReadLineOrNullTimeout(1000);
-                    retVal += tmpVal;
-                } while (tmpVal != null && !tmpVal.EndsWith("\r\n") && (retVal != "Steam>"));
+                    string retVal = string.Empty;
+                    string tmpVal = null;
 
-                return new SteamCmdLine()
-                {
-                    Line = retVal,
-                    Prompt = (retVal == "Steam>"),
-                    ProcDead = proc.HasExited,
-                    Blank = retVal.Trim().Length == 0
-                };
+                    do
+                    {
+                        tmpVal = ReadLineOrNullTimeout(1000);
+                        retVal += tmpVal;
+                    } while (tmpVal != null && !tmpVal.EndsWith("\r\n") && (retVal != "Steam>"));
+
+                    return new SteamCmdLine()
+                    {
+                        Line = retVal,
+                        Prompt = (retVal == "Steam>"),
+                        ProcDead = proc.HasExited,
+                        Blank = retVal.Trim().Length == 0
+                    };
+                }
+            }
+            finally
+            {
+                Debug.Unindent();
             }
         }
 
         private string WaitForSteamPrompt()
         {
-            lock (ioLock)
+            Debug.WriteLine("WaitForSteamPrompt()", "SteamCmdContext");
+            Debug.Indent();
+
+            try
             {
-                string retVal = string.Empty;
-                SteamCmdLine output = null;
-                while ((output = ReadLine()) == null || !output.Prompt) { retVal += output.Line; }
-                return retVal;
+                lock (ioLock)
+                {
+                    string retVal = string.Empty;
+                    SteamCmdLine output = null;
+                    while ((output = ReadLine()) == null || !output.Prompt) { retVal += output.Line; }
+                    return retVal;
+                }
+            }
+            finally
+            {
+                Debug.Unindent();
             }
         }
 
@@ -465,44 +517,49 @@ namespace BZRModManager
         {
             string badstring = "\\src\\common\\contentmanifest.cpp (650) : Assertion Failed: !m_bIsFinalized\r\n";
 
-            lock (ioLock)
+            Debug.WriteLine($"ReadLineOrNullTimeout({timeout})", "SteamCmdContext");
+            Debug.Indent();
+
+            try
             {
-                int timer = 0;
-                string chars = string.Empty;
-                string charsAll = string.Empty;
-                char tP = '\0';
-                char t = '\0';
-                int SawCrCounter = 0;
-                bool forceOnce = true;
-
-                for (; ; )
+                lock (ioLock)
                 {
-                    if (forceOnce || proc.StandardOutput.Peek() > -1)
-                    {
-                        forceOnce = false;
+                    int timer = 0;
+                    string chars = string.Empty;
+                    string charsAll = string.Empty;
+                    char tP = '\0';
+                    char t = '\0';
+                    bool forceOnce = true;
 
-                        tP = t;
-                        int tn = proc.StandardOutput.Read();
-                        t = (char)tn;
-                        if (t == '\0') break;
-                        //if (tn > 255) break;
-                        chars += t;
-                        charsAll += t;
-                        if (chars == "Steam>") break;
-                        if (t == '\r')
+                    for (; ; )
+                    {
+                        if (forceOnce || proc.StandardOutput.Peek() > -1)
                         {
-                            SawCrCounter++;
-                        }
-                        if (tP == '\r' && t == '\n')
-                        {
-                            // we have now have a CRLF
-                            if (SawCrCounter > 1)
+                            forceOnce = false;
+
+                            tP = t;
+                            int tn = proc.StandardOutput.Read();
+                            t = (char)tn;
+                            if (t == '\0') break;
+                            //if (tn > 255) break;
+                            chars += t;
+                            charsAll += t;
+                            if (chars == "Steam>")
                             {
-                                // the only way this should happen is if we had a "bad string" get in the middle of a CRLF
-                                t = '\r'; // pretend we just read the pre-"bad string" character
-                                chars = chars.Replace(badstring, string.Empty);
+                                while (proc.StandardOutput.Peek() > -1)
+                                {
+                                    // this should only happen if we have more badstrings
+                                    if (proc.StandardOutput.Peek() == badstring[0])
+                                    {
+                                        for (int i = 0; i < badstring.Length; i++)
+                                        {
+                                            proc.StandardOutput.Read();
+                                        }
+                                    }
+                                }
+                                break;
                             }
-                            else
+                            if (tP == '\r' && t == '\n')
                             {
                                 if (chars.EndsWith(badstring))
                                 {
@@ -517,25 +574,30 @@ namespace BZRModManager
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        // we are null, which means it's time to timeout
-                        if (timer >= timeout || proc.HasExited)
-                        {
-                            break;
-                        }
                         else
                         {
-                            Thread.Sleep(10);
-                            timer += 10;
+                            // we are null, which means it's time to timeout
+                            if (timer >= timeout || proc.HasExited)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                Thread.Sleep(10);
+                                timer += 10;
+                            }
                         }
                     }
-                }
 
-                OnSteamCmdOutputFull(charsAll);
-                OnSteamCmdOutput(chars);
-                return chars;
+                    OnSteamCmdOutputFull(charsAll);
+                    OnSteamCmdOutput(chars);
+                    Debug.WriteLine($"return \"{chars.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
+                    return chars;
+                }
+            }
+            finally
+            {
+                Debug.Unindent();
             }
         }
 
@@ -671,18 +733,27 @@ namespace BZRModManager
 
         public void Shutdown()
         {
-            lock (procLock)
-                lock (ioLock)
-                {
-                    if (Active)
+            Debug.WriteLine("Shutdown", "SteamCmdContext");
+            Debug.Indent();
+            try
+            {
+                lock (procLock)
+                    lock (ioLock)
                     {
-                        OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Exiting));
-                        OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("exit"));
-                        proc.StandardInput.WriteLine("exit");
+                        if (Active)
+                        {
+                            OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Exiting));
+                            OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("exit"));
+                            WriteLine("exit");//proc.StandardInput.WriteLine("exit");
+                        }
                     }
-                }
-            proc.WaitForExit();
-            OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Closed));
+                proc.WaitForExit();
+                OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Closed));
+            }
+            finally
+            {
+                Debug.Unindent();
+            }
         }
     }
 
