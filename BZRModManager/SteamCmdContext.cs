@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DEBUG_STEAMCMD_PARSE
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -286,7 +288,7 @@ namespace BZRModManager
             }
         }
 
-        public string WorkshopDownloadItem(int appId, int workshopId)
+        public string WorkshopDownloadItem(int appId, long workshopId)
         {
             Debug.WriteLine($"WorkshopDownloadItem({appId},{workshopId})", "SteamCmdContext");
             Debug.Indent();
@@ -562,29 +564,39 @@ namespace BZRModManager
                             t = (char)tn;
                             if (t == '\0')
                             {
+#if DEBUG_STEAMCMD_PARSE
                                 Debug.WriteLine($"terminate read due to nul", "SteamCmdContext");
+#endif
                                 break;
                             }
                             //if (tn > 255) break;
                             chars += t;
                             charsAll += t;
+#if DEBUG_STEAMCMD_PARSE
                             Debug.WriteLine($"append '{chars.ToString().Replace("\r", "\\r").Replace("\n", "\\n")}' {tn}", "SteamCmdContext");
+#endif
                             if (chars == "Steam>")
                             {
+#if DEBUG_STEAMCMD_PARSE
                                 Debug.WriteLine($"see prompt", "SteamCmdContext");
+#endif
                                 while (proc.StandardOutput.Peek() > -1)
                                 {
                                     // this should only happen if we have more badstrings
                                     if (proc.StandardOutput.Peek() == badstring[0])
                                     {
+#if DEBUG_STEAMCMD_PARSE
                                         Debug.WriteLine($"chew off badstring", "SteamCmdContext");
+#endif
                                         for (int i = 0; i < badstring.Length; i++)
                                         {
                                             proc.StandardOutput.Read();
                                         }
                                     }
                                 }
+#if DEBUG_STEAMCMD_PARSE
                                 Debug.WriteLine($"terminate read due to prompt", "SteamCmdContext");
+#endif
                                 break;
                             }
                             if (t == '\r')
@@ -593,11 +605,15 @@ namespace BZRModManager
                             }
                             if (tP == '\r' && t == '\n')
                             {
+#if DEBUG_STEAMCMD_PARSE
                                 Debug.WriteLine($"see newline", "SteamCmdContext");
+#endif
                                 // we have now have a CRLF
                                 if (SawCrCounter > 1)
                                 {
+#if DEBUG_STEAMCMD_PARSE
                                     Debug.WriteLine($"badstring mid newline", "SteamCmdContext");
+#endif
                                     // the only way this should happen is if we had a "bad string" get in the middle of a CRLF
                                     t = '\r'; // pretend we just read the pre-"bad string" character
                                     chars = chars.Replace(badstring, string.Empty);
@@ -606,7 +622,9 @@ namespace BZRModManager
                                 {
                                     if (chars.EndsWith(badstring))
                                     {
+#if DEBUG_STEAMCMD_PARSE
                                         Debug.WriteLine($"removing badstring", "SteamCmdContext");
+#endif
                                         // we have the bad string, so let's remove it as it's the real cause of our CRLF
                                         chars = chars.Replace(badstring, string.Empty);
                                         t = (char)0;
@@ -614,7 +632,9 @@ namespace BZRModManager
                                     }
                                     else
                                     {
+#if DEBUG_STEAMCMD_PARSE
                                         Debug.WriteLine($"terminate read due to newline", "SteamCmdContext");
+#endif
                                         // this is a normal end of line, we are good now
                                         break;
                                     }
@@ -626,7 +646,9 @@ namespace BZRModManager
                             // we are null, which means it's time to timeout
                             if (timer >= timeout || proc.HasExited)
                             {
+#if DEBUG_STEAMCMD_PARSE
                                 Debug.WriteLine($"terminate read due to timeout", "SteamCmdContext");
+#endif
                                 break;
                             }
                             else

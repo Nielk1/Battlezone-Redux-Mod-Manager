@@ -31,12 +31,17 @@
             this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpBZ98R = new System.Windows.Forms.TabPage();
-            this.lbModsBZ98R = new System.Windows.Forms.ListBox();
+            this.btnUpdateBZ98R = new System.Windows.Forms.Button();
+            this.btnRefreshBZ98R = new System.Windows.Forms.Button();
+            this.lvModsBZ98R = new BZRModManager.LinqListView();
             this.btnDownloadBZ98R = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDownloadBZ98R = new System.Windows.Forms.TextBox();
             this.tpBZCC = new System.Windows.Forms.TabPage();
-            this.lbModsBZCC = new System.Windows.Forms.ListBox();
+            this.btnDependenciesBZ98R = new System.Windows.Forms.Button();
+            this.btnUpdateBZCC = new System.Windows.Forms.Button();
+            this.btnRefreshBZCC = new System.Windows.Forms.Button();
+            this.lvModsBZCC = new BZRModManager.LinqListView();
             this.btnDownloadBZCC = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
@@ -52,7 +57,7 @@
             this.tsslSteamCmd = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslSteamCmdCommand = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tmrModUpdate = new System.Windows.Forms.Timer(this.components);
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tpBZCC.SuspendLayout();
@@ -82,7 +87,9 @@
             // 
             // tpBZ98R
             // 
-            this.tpBZ98R.Controls.Add(this.lbModsBZ98R);
+            this.tpBZ98R.Controls.Add(this.btnUpdateBZ98R);
+            this.tpBZ98R.Controls.Add(this.btnRefreshBZ98R);
+            this.tpBZ98R.Controls.Add(this.lvModsBZ98R);
             this.tpBZ98R.Controls.Add(this.btnDownloadBZ98R);
             this.tpBZ98R.Controls.Add(this.label1);
             this.tpBZ98R.Controls.Add(this.txtDownloadBZ98R);
@@ -94,21 +101,49 @@
             this.tpBZ98R.Text = "BZ98R";
             this.tpBZ98R.UseVisualStyleBackColor = true;
             // 
-            // lbModsBZ98R
+            // btnUpdateBZ98R
             // 
-            this.lbModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.btnUpdateBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdateBZ98R.Location = new System.Drawing.Point(528, 7);
+            this.btnUpdateBZ98R.Name = "btnUpdateBZ98R";
+            this.btnUpdateBZ98R.Size = new System.Drawing.Size(23, 23);
+            this.btnUpdateBZ98R.TabIndex = 7;
+            this.btnUpdateBZ98R.Text = "U";
+            this.toolTip1.SetToolTip(this.btnUpdateBZ98R, "Update Mods");
+            this.btnUpdateBZ98R.UseVisualStyleBackColor = true;
+            this.btnUpdateBZ98R.Click += new System.EventHandler(this.btnUpdateBZ98R_Click);
+            // 
+            // btnRefreshBZ98R
+            // 
+            this.btnRefreshBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefreshBZ98R.Location = new System.Drawing.Point(557, 7);
+            this.btnRefreshBZ98R.Name = "btnRefreshBZ98R";
+            this.btnRefreshBZ98R.Size = new System.Drawing.Size(23, 23);
+            this.btnRefreshBZ98R.TabIndex = 6;
+            this.btnRefreshBZ98R.Text = "R";
+            this.toolTip1.SetToolTip(this.btnRefreshBZ98R, "Refresh List");
+            this.btnRefreshBZ98R.UseVisualStyleBackColor = true;
+            this.btnRefreshBZ98R.Click += new System.EventHandler(this.btnRefreshBZ98R_Click);
+            // 
+            // lvModsBZ98R
+            // 
+            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbModsBZ98R.FormattingEnabled = true;
-            this.lbModsBZ98R.Location = new System.Drawing.Point(9, 35);
-            this.lbModsBZ98R.Name = "lbModsBZ98R";
-            this.lbModsBZ98R.Size = new System.Drawing.Size(571, 277);
-            this.lbModsBZ98R.TabIndex = 3;
+            this.lvModsBZ98R.FullRowSelect = true;
+            this.lvModsBZ98R.GridLines = true;
+            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 35);
+            this.lvModsBZ98R.Name = "lvModsBZ98R";
+            this.lvModsBZ98R.Size = new System.Drawing.Size(574, 279);
+            this.lvModsBZ98R.TabIndex = 5;
+            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
+            this.lvModsBZ98R.VirtualMode = true;
             // 
             // btnDownloadBZ98R
             // 
             this.btnDownloadBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZ98R.Location = new System.Drawing.Point(505, 7);
+            this.btnDownloadBZ98R.Location = new System.Drawing.Point(447, 7);
             this.btnDownloadBZ98R.Name = "btnDownloadBZ98R";
             this.btnDownloadBZ98R.Size = new System.Drawing.Size(75, 23);
             this.btnDownloadBZ98R.TabIndex = 2;
@@ -131,12 +166,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDownloadBZ98R.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZ98R.Name = "txtDownloadBZ98R";
-            this.txtDownloadBZ98R.Size = new System.Drawing.Size(431, 20);
+            this.txtDownloadBZ98R.Size = new System.Drawing.Size(373, 20);
             this.txtDownloadBZ98R.TabIndex = 0;
             // 
             // tpBZCC
             // 
-            this.tpBZCC.Controls.Add(this.lbModsBZCC);
+            this.tpBZCC.Controls.Add(this.btnDependenciesBZ98R);
+            this.tpBZCC.Controls.Add(this.btnUpdateBZCC);
+            this.tpBZCC.Controls.Add(this.btnRefreshBZCC);
+            this.tpBZCC.Controls.Add(this.lvModsBZCC);
             this.tpBZCC.Controls.Add(this.btnDownloadBZCC);
             this.tpBZCC.Controls.Add(this.label2);
             this.tpBZCC.Controls.Add(this.txtDownloadBZCC);
@@ -148,21 +186,61 @@
             this.tpBZCC.Text = "BZCC";
             this.tpBZCC.UseVisualStyleBackColor = true;
             // 
-            // lbModsBZCC
+            // btnDependenciesBZ98R
             // 
-            this.lbModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.btnDependenciesBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDependenciesBZ98R.Location = new System.Drawing.Point(499, 7);
+            this.btnDependenciesBZ98R.Name = "btnDependenciesBZ98R";
+            this.btnDependenciesBZ98R.Size = new System.Drawing.Size(23, 23);
+            this.btnDependenciesBZ98R.TabIndex = 10;
+            this.btnDependenciesBZ98R.Text = "D";
+            this.toolTip1.SetToolTip(this.btnDependenciesBZ98R, "Download Dependencies");
+            this.btnDependenciesBZ98R.UseVisualStyleBackColor = true;
+            this.btnDependenciesBZ98R.Click += new System.EventHandler(this.btnDependenciesBZ98R_Click);
+            // 
+            // btnUpdateBZCC
+            // 
+            this.btnUpdateBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdateBZCC.Location = new System.Drawing.Point(528, 7);
+            this.btnUpdateBZCC.Name = "btnUpdateBZCC";
+            this.btnUpdateBZCC.Size = new System.Drawing.Size(23, 23);
+            this.btnUpdateBZCC.TabIndex = 9;
+            this.btnUpdateBZCC.Text = "U";
+            this.toolTip1.SetToolTip(this.btnUpdateBZCC, "Update Mods");
+            this.btnUpdateBZCC.UseVisualStyleBackColor = true;
+            this.btnUpdateBZCC.Click += new System.EventHandler(this.btnUpdateBZCC_Click);
+            // 
+            // btnRefreshBZCC
+            // 
+            this.btnRefreshBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefreshBZCC.Location = new System.Drawing.Point(557, 7);
+            this.btnRefreshBZCC.Name = "btnRefreshBZCC";
+            this.btnRefreshBZCC.Size = new System.Drawing.Size(23, 23);
+            this.btnRefreshBZCC.TabIndex = 8;
+            this.btnRefreshBZCC.Text = "R";
+            this.toolTip1.SetToolTip(this.btnRefreshBZCC, "Refresh List");
+            this.btnRefreshBZCC.UseVisualStyleBackColor = true;
+            this.btnRefreshBZCC.Click += new System.EventHandler(this.btnRefreshBZCC_Click);
+            // 
+            // lvModsBZCC
+            // 
+            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbModsBZCC.FormattingEnabled = true;
-            this.lbModsBZCC.Location = new System.Drawing.Point(9, 35);
-            this.lbModsBZCC.Name = "lbModsBZCC";
-            this.lbModsBZCC.Size = new System.Drawing.Size(571, 277);
-            this.lbModsBZCC.TabIndex = 6;
+            this.lvModsBZCC.FullRowSelect = true;
+            this.lvModsBZCC.GridLines = true;
+            this.lvModsBZCC.Location = new System.Drawing.Point(6, 35);
+            this.lvModsBZCC.Name = "lvModsBZCC";
+            this.lvModsBZCC.Size = new System.Drawing.Size(574, 279);
+            this.lvModsBZCC.TabIndex = 6;
+            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
+            this.lvModsBZCC.VirtualMode = true;
             // 
             // btnDownloadBZCC
             // 
             this.btnDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZCC.Location = new System.Drawing.Point(505, 7);
+            this.btnDownloadBZCC.Location = new System.Drawing.Point(418, 7);
             this.btnDownloadBZCC.Name = "btnDownloadBZCC";
             this.btnDownloadBZCC.Size = new System.Drawing.Size(75, 23);
             this.btnDownloadBZCC.TabIndex = 5;
@@ -185,7 +263,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDownloadBZCC.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZCC.Name = "txtDownloadBZCC";
-            this.txtDownloadBZCC.Size = new System.Drawing.Size(431, 20);
+            this.txtDownloadBZCC.Size = new System.Drawing.Size(344, 20);
             this.txtDownloadBZCC.TabIndex = 3;
             // 
             // tpSettings
@@ -312,20 +390,14 @@
             this.toolStripStatusLabel2.Spring = true;
             this.toolStripStatusLabel2.Text = "-";
             // 
-            // tmrModUpdate
-            // 
-            this.tmrModUpdate.Enabled = true;
-            this.tmrModUpdate.Interval = 300000;
-            this.tmrModUpdate.Tick += new System.EventHandler(this.tmrModUpdate_Tick);
-            // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(618, 383);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabControl1);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Battlezone Redux Mod Manager";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
@@ -357,9 +429,6 @@
         private System.Windows.Forms.Button btnDownloadBZCC;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtDownloadBZCC;
-        private System.Windows.Forms.ListBox lbModsBZ98R;
-        private System.Windows.Forms.ListBox lbModsBZCC;
-        private System.Windows.Forms.Timer tmrModUpdate;
         private System.Windows.Forms.ToolStripStatusLabel tsslSteamCmd;
         private System.Windows.Forms.ToolStripStatusLabel tsslSteamCmdCommand;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
@@ -370,6 +439,14 @@
         private System.Windows.Forms.RichTextBox txtLogSteamCmd;
         private System.Windows.Forms.TabPage tpLogSteamCmdFull;
         private System.Windows.Forms.RichTextBox txtLogSteamCmdFull;
+        private LinqListView lvModsBZ98R;
+        private System.Windows.Forms.Button btnRefreshBZ98R;
+        private System.Windows.Forms.Button btnUpdateBZ98R;
+        private LinqListView lvModsBZCC;
+        private System.Windows.Forms.Button btnUpdateBZCC;
+        private System.Windows.Forms.Button btnRefreshBZCC;
+        private System.Windows.Forms.Button btnDependenciesBZ98R;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 
