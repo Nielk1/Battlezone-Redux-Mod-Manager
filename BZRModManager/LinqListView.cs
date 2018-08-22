@@ -77,11 +77,11 @@ namespace BZRModManager
                 int column = Math.Abs(sorts[0]) - 1;
                 if (sign == 1)
                 {
-                    this.SetSortIcon(column, SortOrder.Descending);
+                    this.SetSortIcon(column, SortOrder.Ascending);
                 }
                 else if (sign == -1)
                 {
-                    this.SetSortIcon(column, SortOrder.Ascending);
+                    this.SetSortIcon(column, SortOrder.Descending);
                 }
                 else
                 {

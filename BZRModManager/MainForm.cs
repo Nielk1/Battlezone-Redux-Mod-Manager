@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,11 @@ namespace BZRModManager
         object ModStatus = new object();
         Dictionary<int, Dictionary<string, ModItem>> Mods = new Dictionary<int, Dictionary<string, ModItem>>();
 
+        FileStream steamcmd_log = null;
+        TextWriter steamcmd_log_writer = null;
+        FileStream steamcmdfull_log = null;
+        TextWriter steamcmdfull_log_writer = null;
+
         public MainForm()
         {
             InitializeComponent();
@@ -36,6 +42,44 @@ namespace BZRModManager
             SteamCmd.SteamCmdOutput += Steam_SteamCmdOutput;
             SteamCmd.SteamCmdOutputFull += Steam_SteamCmdOutputFull;
             SteamCmd.SteamCmdInput += Steam_SteamCmdInput;
+
+            string logdate = DateTime.Now.ToString("yyyyMMddHHmmss");
+            Trace.Listeners.Add(new TextWriterTraceListener($"{logdate}-bzrmodmanager.log"));
+            Trace.AutoFlush = true;
+
+            steamcmd_log = File.OpenWrite($"{logdate}-steamcmd.log");
+            steamcmd_log_writer = new StreamWriter(steamcmd_log);
+            steamcmdfull_log = File.OpenWrite($"{logdate}-steamcmd-full.log");
+            steamcmdfull_log_writer = new StreamWriter(steamcmdfull_log);
+
+            SteamCmd.SteamCmdOutput += SteamCmd_Log;
+            SteamCmd.SteamCmdOutputFull += SteamCmdFull_Log;
+            SteamCmd.SteamCmdInput += SteamCmd_Log;
+            SteamCmd.SteamCmdInput += SteamCmdFull_Log;
+        }
+
+        ~MainForm()
+        {
+            steamcmd_log_writer.Close();
+            steamcmdfull_log_writer.Close();
+        }
+
+        private void SteamCmdFull_Log(object sender, string msg)
+        {
+            lock (steamcmd_log_writer)
+            {
+                steamcmd_log_writer.Write(msg);
+                steamcmd_log_writer.Flush();
+            }
+        }
+
+        private void SteamCmd_Log(object sender, string msg)
+        {
+            lock (steamcmdfull_log_writer)
+            {
+                steamcmdfull_log_writer.Write(msg);
+                steamcmdfull_log_writer.Flush();
+            }
         }
 
         private void Steam_SteamCmdOutput(object sender, string msg)
@@ -270,7 +314,10 @@ namespace BZRModManager
                         SteamCmd.ForceKill();
                     }
                 }).Start();
-                SteamCmd.Shutdown();
+                new Thread(() =>
+                {
+                    SteamCmd.Shutdown();
+                }).Start();
                 e.Cancel = true;
             }
         }

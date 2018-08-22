@@ -270,33 +270,39 @@ namespace BZRModManager
 
         public void LoginAnonymous()
         {
-            Debug.WriteLine("LoginAnonymous", "SteamCmdContext");
-            Debug.Indent();
+            Trace.WriteLine("LoginAnonymous", "SteamCmdContext");
+            lock (ioLock)
+            {
+                Trace.WriteLine("LoginAnonymous[locked]", "SteamCmdContext");
+                Trace.Indent();
 
-            try
-            {
-                OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("login", "anonymous"));
-                WriteLine("login anonymous");
-                //string output = WaitForSteamPrompt();
-                while (!ReadLine().Prompt) { }
-                OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
-                OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.LoggedInAnon));
-            }
-            finally
-            {
-                Debug.Unindent();
+                try
+                {
+                    OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("login", "anonymous"));
+                    WriteLine("login anonymous");
+                    //string output = WaitForSteamPrompt();
+                    while (!ReadLine().Prompt) { }
+                    OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
+                    OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.LoggedInAnon));
+                }
+                finally
+                {
+                    Trace.Unindent();
+                }
             }
         }
 
         public string WorkshopDownloadItem(int appId, long workshopId)
         {
-            Debug.WriteLine($"WorkshopDownloadItem({appId},{workshopId})", "SteamCmdContext");
-            Debug.Indent();
-
-            try
+            Trace.WriteLine($"WorkshopDownloadItem({appId},{workshopId})", "SteamCmdContext");
+            lock (ioLock)
             {
-                lock (ioLock)
+                Trace.WriteLine($"WorkshopDownloadItem({appId},{workshopId})[locked]", "SteamCmdContext");
+                Trace.Indent();
+
+                try
                 {
+
                     if (!Active)
                     {
                         throw new SteamCmdException("SteamCmd is not active");
@@ -353,10 +359,10 @@ namespace BZRModManager
                         }
                     }
                 }
-            }
-            finally
-            {
-                Debug.Unindent();
+                finally
+                {
+                    Trace.Unindent();
+                }
             }
         }
 
@@ -374,12 +380,13 @@ namespace BZRModManager
 
         public List<WorkshopItemStatus> WorkshopStatus(int appId)
         {
-            Debug.WriteLine($"WorkshopStatus({appId})", "SteamCmdContext");
-            Debug.Indent();
-
-            try
+            Trace.WriteLine($"WorkshopStatus({appId})", "SteamCmdContext");
+            lock (ioLock)
             {
-                lock (ioLock)
+                Trace.WriteLine($"WorkshopStatus({appId})[locked]", "SteamCmdContext");
+                Trace.Indent();
+
+                try
                 {
                     OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("workshop_status", appId.ToString()));
                     WriteLine($"workshop_status {appId}");
@@ -451,19 +458,23 @@ namespace BZRModManager
                     //- Item 1386405185 : installed (168116554 bytes, Tue May 15 03:06:19 2018),
                     //
                 }
-            }
-            finally
-            {
-                Debug.Unindent();
+                finally
+                {
+                    Trace.Unindent();
+                }
             }
         }
 
         private void WriteLine(string input)
         {
-            Debug.WriteLine($"WriteLine(\"{input}\")", "SteamCmdContext");
+            Trace.WriteLine($"WriteLine(\"{input}\")", "SteamCmdContext");
+            lock (ioLock)
+            {
+                Trace.WriteLine($"WriteLine(\"{input}\")[locked]", "SteamCmdContext");
 
-            OnSteamCmdInput(input + "\r\n");
-            proc.StandardInput.WriteLine(input);
+                OnSteamCmdInput(input + "\r\n");
+                proc.StandardInput.WriteLine(input);
+            }
         }
 
         private class SteamCmdLine
@@ -475,12 +486,13 @@ namespace BZRModManager
         }
         private SteamCmdLine ReadLine()
         {
-            Debug.WriteLine("ReadLine()", "SteamCmdContext");
-            Debug.Indent();
-
-            try
+            Trace.WriteLine("ReadLine()", "SteamCmdContext");
+            lock (ioLock)
             {
-                lock (ioLock)
+                Trace.WriteLine("ReadLine()[locked]", "SteamCmdContext");
+                Trace.Indent();
+
+                try
                 {
                     string retVal = string.Empty;
                     string tmpVal = null;
@@ -491,7 +503,7 @@ namespace BZRModManager
                         retVal += tmpVal;
                     } while (tmpVal != null && !tmpVal.EndsWith("\r\n") && (retVal != "Steam>"));
 
-                    Debug.WriteLine($"return \"{retVal.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
+                    Trace.WriteLine($"return \"{retVal.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return new SteamCmdLine()
                     {
                         Line = retVal,
@@ -500,32 +512,33 @@ namespace BZRModManager
                         Blank = retVal.Trim().Length == 0
                     };
                 }
-            }
-            finally
-            {
-                Debug.Unindent();
+                finally
+                {
+                    Trace.Unindent();
+                }
             }
         }
 
         private string WaitForSteamPrompt()
         {
-            Debug.WriteLine("WaitForSteamPrompt()", "SteamCmdContext");
-            Debug.Indent();
-
-            try
+            Trace.WriteLine("WaitForSteamPrompt()", "SteamCmdContext");
+            lock (ioLock)
             {
-                lock (ioLock)
+                Trace.WriteLine("WaitForSteamPrompt()[locked]", "SteamCmdContext");
+                Trace.Indent();
+
+                try
                 {
                     string retVal = string.Empty;
                     SteamCmdLine output = null;
                     while ((output = ReadLine()) == null || !output.Prompt) { retVal += output.Line; }
-                    Debug.WriteLine($"return \"{retVal.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
+                    Trace.WriteLine($"return \"{retVal.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return retVal;
                 }
-            }
-            finally
-            {
-                Debug.Unindent();
+                finally
+                {
+                    Trace.Unindent();
+                }
             }
         }
 
@@ -538,12 +551,14 @@ namespace BZRModManager
         {
             string badstring = "\\src\\common\\contentmanifest.cpp (650) : Assertion Failed: !m_bIsFinalized\r\n";
 
-            Debug.WriteLine($"ReadLineOrNullTimeout({timeout})", "SteamCmdContext");
-            Debug.Indent();
+            Trace.WriteLine($"ReadLineOrNullTimeout({timeout})", "SteamCmdContext");
 
-            try
+            lock (ioLock)
             {
-                lock (ioLock)
+                Trace.WriteLine($"ReadLineOrNullTimeout({timeout})[locked]", "SteamCmdContext");
+                Trace.Indent();
+
+                try
                 {
                     int timer = 0;
                     string chars = string.Empty;
@@ -565,7 +580,7 @@ namespace BZRModManager
                             if (t == '\0')
                             {
 #if DEBUG_STEAMCMD_PARSE
-                                Debug.WriteLine($"terminate read due to nul", "SteamCmdContext");
+                                Trace.WriteLine($"terminate read due to nul", "SteamCmdContext");
 #endif
                                 break;
                             }
@@ -573,12 +588,12 @@ namespace BZRModManager
                             chars += t;
                             charsAll += t;
 #if DEBUG_STEAMCMD_PARSE
-                            Debug.WriteLine($"append '{chars.ToString().Replace("\r", "\\r").Replace("\n", "\\n")}' {tn}", "SteamCmdContext");
+                            Trace.WriteLine($"append '{chars.ToString().Replace("\r", "\\r").Replace("\n", "\\n")}' {tn}", "SteamCmdContext");
 #endif
                             if (chars == "Steam>")
                             {
 #if DEBUG_STEAMCMD_PARSE
-                                Debug.WriteLine($"see prompt", "SteamCmdContext");
+                                Trace.WriteLine($"see prompt", "SteamCmdContext");
 #endif
                                 while (proc.StandardOutput.Peek() > -1)
                                 {
@@ -586,7 +601,7 @@ namespace BZRModManager
                                     if (proc.StandardOutput.Peek() == badstring[0])
                                     {
 #if DEBUG_STEAMCMD_PARSE
-                                        Debug.WriteLine($"chew off badstring", "SteamCmdContext");
+                                        Trace.WriteLine($"chew off badstring", "SteamCmdContext");
 #endif
                                         for (int i = 0; i < badstring.Length; i++)
                                         {
@@ -595,7 +610,7 @@ namespace BZRModManager
                                     }
                                 }
 #if DEBUG_STEAMCMD_PARSE
-                                Debug.WriteLine($"terminate read due to prompt", "SteamCmdContext");
+                                Trace.WriteLine($"terminate read due to prompt", "SteamCmdContext");
 #endif
                                 break;
                             }
@@ -606,13 +621,13 @@ namespace BZRModManager
                             if (tP == '\r' && t == '\n')
                             {
 #if DEBUG_STEAMCMD_PARSE
-                                Debug.WriteLine($"see newline", "SteamCmdContext");
+                                Trace.WriteLine($"see newline", "SteamCmdContext");
 #endif
                                 // we have now have a CRLF
                                 if (SawCrCounter > 1)
                                 {
 #if DEBUG_STEAMCMD_PARSE
-                                    Debug.WriteLine($"badstring mid newline", "SteamCmdContext");
+                                    Trace.WriteLine($"badstring mid newline", "SteamCmdContext");
 #endif
                                     // the only way this should happen is if we had a "bad string" get in the middle of a CRLF
                                     t = '\r'; // pretend we just read the pre-"bad string" character
@@ -623,7 +638,7 @@ namespace BZRModManager
                                     if (chars.EndsWith(badstring))
                                     {
 #if DEBUG_STEAMCMD_PARSE
-                                        Debug.WriteLine($"removing badstring", "SteamCmdContext");
+                                        Trace.WriteLine($"removing badstring", "SteamCmdContext");
 #endif
                                         // we have the bad string, so let's remove it as it's the real cause of our CRLF
                                         chars = chars.Replace(badstring, string.Empty);
@@ -633,7 +648,7 @@ namespace BZRModManager
                                     else
                                     {
 #if DEBUG_STEAMCMD_PARSE
-                                        Debug.WriteLine($"terminate read due to newline", "SteamCmdContext");
+                                        Trace.WriteLine($"terminate read due to newline", "SteamCmdContext");
 #endif
                                         // this is a normal end of line, we are good now
                                         break;
@@ -647,7 +662,7 @@ namespace BZRModManager
                             if (timer >= timeout || proc.HasExited)
                             {
 #if DEBUG_STEAMCMD_PARSE
-                                Debug.WriteLine($"terminate read due to timeout", "SteamCmdContext");
+                                Trace.WriteLine($"terminate read due to timeout", "SteamCmdContext");
 #endif
                                 break;
                             }
@@ -661,13 +676,13 @@ namespace BZRModManager
 
                     OnSteamCmdOutputFull(charsAll);
                     OnSteamCmdOutput(chars);
-                    Debug.WriteLine($"return \"{chars.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
+                    Trace.WriteLine($"return \"{chars.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return chars;
                 }
-            }
-            finally
-            {
-                Debug.Unindent();
+                finally
+                {
+                    Trace.Unindent();
+                }
             }
         }
 
@@ -676,26 +691,30 @@ namespace BZRModManager
         /// </summary>
         public void Shutdown()
         {
-            Debug.WriteLine("Shutdown", "SteamCmdContext");
-            Debug.Indent();
-            try
+            Trace.WriteLine("Shutdown", "SteamCmdContext");
+            lock (procLock)
             {
-                lock (procLock)
-                    lock (ioLock)
+                lock (ioLock)
+                {
+                    Trace.WriteLine("Shutdown[locked]", "SteamCmdContext");
+                    Trace.Indent();
+                    try
                     {
+
                         if (Active)
                         {
                             OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Exiting));
                             OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("exit"));
                             WriteLine("exit");//proc.StandardInput.WriteLine("exit");
                         }
+                        proc.WaitForExit();
+                        OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Closed));
                     }
-                proc.WaitForExit();
-                OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Closed));
-            }
-            finally
-            {
-                Debug.Unindent();
+                    finally
+                    {
+                        Trace.Unindent();
+                    }
+                }
             }
         }
     }
