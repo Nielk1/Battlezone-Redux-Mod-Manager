@@ -24,12 +24,48 @@ namespace BZRModManager
             //base.SelectedIndexChanged += new EventHandler(
             //                   MyListView_SelectedIndexChanged);
             base.ColumnClick += new ColumnClickEventHandler(LinqListView_ColumnClick);
+            base.MouseDoubleClick += LinqListView_MouseDoubleClick;
         }
 
+        private void LinqListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Left)
+            {
+                ListViewItem item = this.GetItemAt(5, e.Y);
+                if (item == null) return;
+                for (int ix = item.SubItems.Count - 1; ix >= 0; --ix)
+                    if (item.SubItems[ix].Bounds.Contains(e.Location))
+                    {
+                        if (ix == 4)
+                        {
+                            ILinqListViesItem temp = (item.Tag as ILinqListViesItem);
+                            if (temp != null)
+                            {
+                                temp.ToggleSteam();
+                                source.Where(dx => dx.WorkshopIdOutput == temp.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
+                                this.Refresh();
+                            }
+                        }
+                        if (ix == 5)
+                        {
+                            ILinqListViesItem temp = (item.Tag as ILinqListViesItem);
+                            if (temp != null)
+                            {
+                                temp.ToggleGog();
+                                source.Where(dx => dx.WorkshopIdOutput == temp.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
+                                this.Refresh();
+                            }
+                        }
+                        break;
+                    }
+            }
+        }
+
+        private IContainer components;
         List<int> sorts = new List<int>();
         private void LinqListView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            if (e.Column == 2) return;
+            if (e.Column == 6) return;
             int sortCol = (e.Column + 1);
             if (sorts.Count == 0)
             {
@@ -111,6 +147,38 @@ namespace BZRModManager
                         if (first) query = source.OrderByDescending(dr => dr.ModType);
                         if (!first) query = query.ThenByDescending(dr => dr.ModType);
                         break;
+                    case 3:
+                        if (first) query = source.OrderBy(dr => dr.ModSource);
+                        if (!first) query = query.ThenBy(dr => dr.ModSource);
+                        break;
+                    case -3:
+                        if (first) query = source.OrderByDescending(dr => dr.ModSource);
+                        if (!first) query = query.ThenByDescending(dr => dr.ModSource);
+                        break;
+                    case 4:
+                        if (first) query = source.OrderBy(dr => dr.WorkshopIdOutput);
+                        if (!first) query = query.ThenBy(dr => dr.WorkshopIdOutput);
+                        break;
+                    case -4:
+                        if (first) query = source.OrderByDescending(dr => dr.WorkshopIdOutput);
+                        if (!first) query = query.ThenByDescending(dr => dr.WorkshopIdOutput);
+                        break;
+                    case 5:
+                        if (first) query = source.OrderBy(dr => dr.InstalledSteam);
+                        if (!first) query = query.ThenBy(dr => dr.InstalledSteam);
+                        break;
+                    case -5:
+                        if (first) query = source.OrderByDescending(dr => dr.InstalledSteam);
+                        if (!first) query = query.ThenByDescending(dr => dr.InstalledSteam);
+                        break;
+                    case 6:
+                        if (first) query = source.OrderBy(dr => dr.InstalledGog);
+                        if (!first) query = query.ThenBy(dr => dr.InstalledGog);
+                        break;
+                    case -6:
+                        if (first) query = source.OrderByDescending(dr => dr.InstalledGog);
+                        if (!first) query = query.ThenByDescending(dr => dr.InstalledGog);
+                        break;
                 }
                 first = false;
             }
@@ -145,8 +213,69 @@ namespace BZRModManager
             }
 
             ListViewItem lvi = new ListViewItem(item.Name, LargeImageList.Images.IndexOfKey(item.IconKey));
+            lvi.UseItemStyleForSubItems = false;
             lvi.Tag = item;
             lvi.SubItems.Add(item.ModType);
+            lvi.SubItems.Add(item.ModSource);
+            lvi.SubItems.Add(item.WorkshopIdOutput);
+            ListViewItem.ListViewSubItem stat1 = null;
+            ListViewItem.ListViewSubItem stat2 = null;
+            switch (item.InstalledSteam)
+            {
+                case InstallStatus.Unknown:
+                    stat1 = lvi.SubItems.Add(string.Empty);
+                    break;
+                case InstallStatus.Uninstalled:
+                    stat1 = lvi.SubItems.Add("N");
+                    stat1.BackColor = Color.Red;
+                    break;
+                case InstallStatus.ForceDisabled:
+                    stat1 = lvi.SubItems.Add("N");
+                    stat1.BackColor = Color.Pink;
+                    stat1.ForeColor = Color.Gray;
+                    break;
+                case InstallStatus.ForceEnabled:
+                    stat1 = lvi.SubItems.Add("Y");
+                    stat1.BackColor = Color.LightGreen;
+                    stat1.ForeColor = Color.Gray;
+                    break;
+                case InstallStatus.Linked:
+                    stat1 = lvi.SubItems.Add("Y");
+                    stat1.BackColor = Color.Green;
+                    break;
+                case InstallStatus.Collision:
+                    stat1 = lvi.SubItems.Add("C");
+                    stat1.BackColor = Color.Purple;
+                    break;
+            }
+            switch (item.InstalledGog)
+            {
+                case InstallStatus.Unknown:
+                    stat2 = lvi.SubItems.Add(string.Empty);
+                    break;
+                case InstallStatus.Uninstalled:
+                    stat2 = lvi.SubItems.Add("N");
+                    stat2.BackColor = Color.Red;
+                    break;
+                case InstallStatus.ForceDisabled:
+                    stat2 = lvi.SubItems.Add("N");
+                    stat2.BackColor = Color.Pink;
+                    stat2.ForeColor = Color.Gray;
+                    break;
+                case InstallStatus.ForceEnabled:
+                    stat2 = lvi.SubItems.Add("Y");
+                    stat2.BackColor = Color.LightGreen;
+                    stat2.ForeColor = Color.Gray;
+                    break;
+                case InstallStatus.Linked:
+                    stat2 = lvi.SubItems.Add("Y");
+                    stat2.BackColor = Color.Green;
+                    break;
+                case InstallStatus.Collision:
+                    stat2 = lvi.SubItems.Add("C");
+                    stat2.BackColor = Color.Purple;
+                    break;
+            }
             lvi.SubItems.Add(string.Join(",", item.ModTags));
             //lvi.SubItems.Add(item.Version);
             //lvi.SubItems.Add(item.Vendor);
@@ -218,6 +347,10 @@ namespace BZRModManager
             {
                 Columns.Add("Name", "Name", 350);
                 Columns.Add("ModType", "Type", 85);
+                Columns.Add("ModSource", "Source", 85);
+                Columns.Add("WorkshopIdOutput", "WorkshopID", 85);
+                Columns.Add("InstalledSteam", "Steam", 45, HorizontalAlignment.Center, 0);
+                Columns.Add("InstalledGog", "GOG", 45, HorizontalAlignment.Center, 0);
                 Columns.Add("ModTags", "Tags", 200);
                 //Columns.Add("WebName", "Web Name", 200);
                 //Columns.Add("Version", "Version", 50);
@@ -250,6 +383,13 @@ namespace BZRModManager
             }
             this.EndUpdate();
         }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            this.ResumeLayout(false);
+
+        }
     }
 
     public interface ILinqListViesItem
@@ -259,6 +399,11 @@ namespace BZRModManager
 
         string ModType { get; }
         string[] ModTags { get; }
+        string WorkshopIdOutput { get; }
+        string ModSource { get; }
+
+        InstallStatus InstalledSteam { get; }
+        InstallStatus InstalledGog { get; }
 
         //string FileName { get; }
         //string WebName { get; }
@@ -269,6 +414,9 @@ namespace BZRModManager
         //string NokiaCategory { get; }
         //string ScreenSize { get; }
         ListViewItem ListViewItemCache { get; set; }
+
+        void ToggleGog();
+        void ToggleSteam();
     }
 
 }

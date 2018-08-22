@@ -85,6 +85,8 @@ namespace BZRModManager
     public class SteamCmdContext : IDisposable
     {
         private static string SteamCmdDownloadURL = @"https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
+        string badstring = "\\src\\common\\contentmanifest.cpp (650) : Assertion Failed: !m_bIsFinalized\r\n";
+        string badstringShort = "\\src\\common\\contentmanifest.cpp (650) : Assertion Failed: !m_bIsFinalized";
 
         private static readonly object CoreInstanceMutex = new object();
         private static SteamCmdContext CoreInstance;
@@ -503,7 +505,7 @@ namespace BZRModManager
                         retVal += tmpVal;
                     } while (tmpVal != null && !tmpVal.EndsWith("\r\n") && (retVal != "Steam>"));
 
-                    Trace.WriteLine($"return \"{retVal.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
+                    Trace.WriteLine($"return \"{retVal.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return new SteamCmdLine()
                     {
                         Line = retVal,
@@ -532,7 +534,7 @@ namespace BZRModManager
                     string retVal = string.Empty;
                     SteamCmdLine output = null;
                     while ((output = ReadLine()) == null || !output.Prompt) { retVal += output.Line; }
-                    Trace.WriteLine($"return \"{retVal.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
+                    Trace.WriteLine($"return \"{retVal.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return retVal;
                 }
                 finally
@@ -549,8 +551,6 @@ namespace BZRModManager
         /// <returns>block of console text</returns>
         private string ReadLineOrNullTimeout(int timeout)
         {
-            string badstring = "\\src\\common\\contentmanifest.cpp (650) : Assertion Failed: !m_bIsFinalized\r\n";
-
             Trace.WriteLine($"ReadLineOrNullTimeout({timeout})", "SteamCmdContext");
 
             lock (ioLock)
@@ -588,7 +588,7 @@ namespace BZRModManager
                             chars += t;
                             charsAll += t;
 #if DEBUG_STEAMCMD_PARSE
-                            Trace.WriteLine($"append '{chars.ToString().Replace("\r", "\\r").Replace("\n", "\\n")}' {tn}", "SteamCmdContext");
+                            Trace.WriteLine($"append '{chars.ToString().Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n")}' {tn}", "SteamCmdContext");
 #endif
                             if (chars == "Steam>")
                             {
@@ -661,10 +661,21 @@ namespace BZRModManager
                             // we are null, which means it's time to timeout
                             if (timer >= timeout || proc.HasExited)
                             {
+                                if (chars.EndsWith(badstringShort))
+                                {
+                                    // we have a wierd case here of a partial bad string
+                                    forceOnce = true;
 #if DEBUG_STEAMCMD_PARSE
-                                Trace.WriteLine($"terminate read due to timeout", "SteamCmdContext");
+                                    Trace.WriteLine($"timeout but in badstring missing newline, force parse continue", "SteamCmdContext");
 #endif
-                                break;
+                                }
+                                else
+                                {
+#if DEBUG_STEAMCMD_PARSE
+                                    Trace.WriteLine($"terminate read due to timeout", "SteamCmdContext");
+#endif
+                                    break;
+                                }
                             }
                             else
                             {
@@ -676,7 +687,7 @@ namespace BZRModManager
 
                     OnSteamCmdOutputFull(charsAll);
                     OnSteamCmdOutput(chars);
-                    Trace.WriteLine($"return \"{chars.Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
+                    Trace.WriteLine($"return \"{chars.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return chars;
                 }
                 finally

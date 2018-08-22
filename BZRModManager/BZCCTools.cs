@@ -20,6 +20,7 @@ namespace BZRModManager
         public static string GetModType(string path)
         {
             string pathini = GetIni(path);
+            if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
             return data["WORKSHOP"]["modType"]?.Trim('"');
@@ -28,6 +29,7 @@ namespace BZRModManager
         public static string GetModName(string path)
         {
             string pathini = GetIni(path);
+            if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
             return data["WORKSHOP"]["modName"]?.Trim('"');
@@ -36,6 +38,7 @@ namespace BZRModManager
         public static string[] GetModTags(string path)
         {
             string pathini = GetIni(path);
+            if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
             return data["WORKSHOP"]["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
@@ -44,6 +47,7 @@ namespace BZRModManager
         public static string[] GetAssetDependencies(string path)
         {
             string pathini = GetIni(path);
+            if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
             return data["WORKSHOP"]["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
