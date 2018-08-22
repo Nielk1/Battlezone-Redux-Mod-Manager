@@ -189,14 +189,17 @@ namespace BZRModManager
                     }
                 });
 
-                SteamContext.WorkshopItemsOnDrive(settings.BZ98RSteamPath, AppIdBZ98).ForEach(dr =>
+                if (settings.BZ98RSteamPath != null)
                 {
-                    string ModId = SteamMod.GetUniqueId(dr);
-                    if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                    SteamContext.WorkshopItemsOnDrive(settings.BZ98RSteamPath, AppIdBZ98).ForEach(dr =>
                     {
-                        Mods[AppIdBZ98][ModId] = new SteamMod(AppIdBZ98, dr);
-                    }
-                });
+                        string ModId = SteamMod.GetUniqueId(dr);
+                        if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                        {
+                            Mods[AppIdBZ98][ModId] = new SteamMod(AppIdBZ98, dr);
+                        }
+                    });
+                }
 
                 lvModsBZ98R.BeginUpdate();
                 lvModsBZ98R.DataSource = Mods[AppIdBZ98].Values.ToList<ILinqListViesItem>();
@@ -220,14 +223,17 @@ namespace BZRModManager
                     }
                 });
 
-                SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC).ForEach(dr =>
+                if (settings.BZ98RSteamPath != null)
                 {
-                    string ModId = SteamMod.GetUniqueId(dr);
-                    if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                    SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC).ForEach(dr =>
                     {
-                        Mods[AppIdBZCC][ModId] = new SteamMod(AppIdBZCC, dr);
-                    }
-                });
+                        string ModId = SteamMod.GetUniqueId(dr);
+                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                        {
+                            Mods[AppIdBZCC][ModId] = new SteamMod(AppIdBZCC, dr);
+                        }
+                    });
+                }
 
                 lvModsBZCC.BeginUpdate();
                 lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViesItem>();
