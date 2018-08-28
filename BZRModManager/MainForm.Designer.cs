@@ -44,6 +44,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
             this.tpSettings = new System.Windows.Forms.TabPage();
+            this.btnGOGBZCCASMAbout = new System.Windows.Forms.Button();
+            this.btnGOGBZCCASM = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.txtBZCCMyDocs = new System.Windows.Forms.TextBox();
             this.btnBZCCMyDocsApply = new System.Windows.Forms.Button();
@@ -56,6 +58,8 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtBZ98RSteam = new System.Windows.Forms.TextBox();
             this.btnBZ98RSteamApply = new System.Windows.Forms.Button();
+            this.tpTasks = new System.Windows.Forms.TabPage();
+            this.pnlTasks = new System.Windows.Forms.TableLayoutPanel();
             this.tpLog = new System.Windows.Forms.TabPage();
             this.txtLog = new System.Windows.Forms.TextBox();
             this.tpLogSteamCmd = new System.Windows.Forms.TabPage();
@@ -68,11 +72,9 @@
             this.tsslSteamCmdCommand = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.btnGOGBZCCASM = new System.Windows.Forms.Button();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
             this.lvModsBZ98R = new BZRModManager.LinqListView();
             this.lvModsBZCC = new BZRModManager.LinqListView();
-            this.btnGOGBZCCASMAbout = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tpBZCC.SuspendLayout();
@@ -81,6 +83,7 @@
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tpTasks.SuspendLayout();
             this.tpLog.SuspendLayout();
             this.tpLogSteamCmd.SuspendLayout();
             this.tpLogSteamCmdFull.SuspendLayout();
@@ -95,6 +98,7 @@
             this.tabControl1.Controls.Add(this.tpBZ98R);
             this.tabControl1.Controls.Add(this.tpBZCC);
             this.tabControl1.Controls.Add(this.tpSettings);
+            this.tabControl1.Controls.Add(this.tpTasks);
             this.tabControl1.Controls.Add(this.tpLog);
             this.tabControl1.Controls.Add(this.tpLogSteamCmd);
             this.tabControl1.Controls.Add(this.tpLogSteamCmdFull);
@@ -273,6 +277,29 @@
             this.tpSettings.Text = "Settings";
             this.tpSettings.UseVisualStyleBackColor = true;
             // 
+            // btnGOGBZCCASMAbout
+            // 
+            this.btnGOGBZCCASMAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGOGBZCCASMAbout.Location = new System.Drawing.Point(663, 230);
+            this.btnGOGBZCCASMAbout.Name = "btnGOGBZCCASMAbout";
+            this.btnGOGBZCCASMAbout.Size = new System.Drawing.Size(65, 23);
+            this.btnGOGBZCCASMAbout.TabIndex = 17;
+            this.btnGOGBZCCASMAbout.Text = "About";
+            this.btnGOGBZCCASMAbout.UseVisualStyleBackColor = true;
+            this.btnGOGBZCCASMAbout.Click += new System.EventHandler(this.btnGOGBZCCASMAbout_Click);
+            // 
+            // btnGOGBZCCASM
+            // 
+            this.btnGOGBZCCASM.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGOGBZCCASM.Location = new System.Drawing.Point(6, 230);
+            this.btnGOGBZCCASM.Name = "btnGOGBZCCASM";
+            this.btnGOGBZCCASM.Size = new System.Drawing.Size(651, 23);
+            this.btnGOGBZCCASM.TabIndex = 16;
+            this.btnGOGBZCCASM.Text = "Apply GOG BZCC ASM Patch";
+            this.btnGOGBZCCASM.UseVisualStyleBackColor = true;
+            this.btnGOGBZCCASM.Click += new System.EventHandler(this.btnGOGBZCCASM_Click);
+            // 
             // groupBox4
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -405,6 +432,31 @@
             this.btnBZ98RSteamApply.UseVisualStyleBackColor = true;
             this.btnBZ98RSteamApply.Click += new System.EventHandler(this.btnBZ98RSteamApply_Click);
             // 
+            // tpTasks
+            // 
+            this.tpTasks.Controls.Add(this.pnlTasks);
+            this.tpTasks.Location = new System.Drawing.Point(4, 22);
+            this.tpTasks.Name = "tpTasks";
+            this.tpTasks.Padding = new System.Windows.Forms.Padding(3);
+            this.tpTasks.Size = new System.Drawing.Size(734, 320);
+            this.tpTasks.TabIndex = 6;
+            this.tpTasks.Text = "Tasks";
+            this.tpTasks.UseVisualStyleBackColor = true;
+            // 
+            // pnlTasks
+            // 
+            this.pnlTasks.AutoSize = true;
+            this.pnlTasks.ColumnCount = 1;
+            this.pnlTasks.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.pnlTasks.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlTasks.Location = new System.Drawing.Point(3, 3);
+            this.pnlTasks.Name = "pnlTasks";
+            this.pnlTasks.RowCount = 1;
+            this.pnlTasks.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.pnlTasks.Size = new System.Drawing.Size(728, 314);
+            this.pnlTasks.TabIndex = 0;
+            this.pnlTasks.Resize += new System.EventHandler(this.pnlTasks_Resize);
+            // 
             // tpLog
             // 
             this.tpLog.Controls.Add(this.txtLog);
@@ -519,18 +571,6 @@
             this.toolStripStatusLabel2.Spring = true;
             this.toolStripStatusLabel2.Text = "-";
             // 
-            // btnGOGBZCCASM
-            // 
-            this.btnGOGBZCCASM.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGOGBZCCASM.Location = new System.Drawing.Point(6, 230);
-            this.btnGOGBZCCASM.Name = "btnGOGBZCCASM";
-            this.btnGOGBZCCASM.Size = new System.Drawing.Size(651, 23);
-            this.btnGOGBZCCASM.TabIndex = 16;
-            this.btnGOGBZCCASM.Text = "Apply GOG BZCC ASM Patch";
-            this.btnGOGBZCCASM.UseVisualStyleBackColor = true;
-            this.btnGOGBZCCASM.Click += new System.EventHandler(this.btnGOGBZCCASM_Click);
-            // 
             // ofdGOGBZCCASM
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
@@ -567,17 +607,6 @@
             this.lvModsBZCC.View = System.Windows.Forms.View.Details;
             this.lvModsBZCC.VirtualMode = true;
             // 
-            // btnGOGBZCCASMAbout
-            // 
-            this.btnGOGBZCCASMAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGOGBZCCASMAbout.Location = new System.Drawing.Point(663, 230);
-            this.btnGOGBZCCASMAbout.Name = "btnGOGBZCCASMAbout";
-            this.btnGOGBZCCASMAbout.Size = new System.Drawing.Size(65, 23);
-            this.btnGOGBZCCASMAbout.TabIndex = 17;
-            this.btnGOGBZCCASMAbout.Text = "About";
-            this.btnGOGBZCCASMAbout.UseVisualStyleBackColor = true;
-            this.btnGOGBZCCASMAbout.Click += new System.EventHandler(this.btnGOGBZCCASMAbout_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -602,6 +631,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tpTasks.ResumeLayout(false);
+            this.tpTasks.PerformLayout();
             this.tpLog.ResumeLayout(false);
             this.tpLog.PerformLayout();
             this.tpLogSteamCmd.ResumeLayout(false);
@@ -659,6 +690,8 @@
         private System.Windows.Forms.Button btnGOGBZCCASM;
         private System.Windows.Forms.OpenFileDialog ofdGOGBZCCASM;
         private System.Windows.Forms.Button btnGOGBZCCASMAbout;
+        private System.Windows.Forms.TabPage tpTasks;
+        private System.Windows.Forms.TableLayoutPanel pnlTasks;
     }
 }
 
