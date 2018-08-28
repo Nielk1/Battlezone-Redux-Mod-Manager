@@ -174,71 +174,85 @@ namespace BZRModManager
 
         private void UpdateBZ98RModLists()
         {
-            lock (ModStatus)
+            Task.Factory.StartNew(() =>
             {
-                SteamCmd.WorkshopStatus(AppIdBZ98).ForEach(dr =>
+                lock (ModStatus)
                 {
-                    string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
-                    if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                    List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatus(AppIdBZ98);
+                    this.Invoke((MethodInvoker)delegate
                     {
-                        Mods[AppIdBZ98][ModId] = new SteamCmdMod(AppIdBZ98, dr);
-                    }
-                    else
-                    {
-                        ((SteamCmdMod)Mods[AppIdBZ98][ModId]).Workshop = dr;
-                    }
-                });
-
-                if (settings.BZ98RSteamPath != null)
-                {
-                    SteamContext.WorkshopItemsOnDrive(settings.BZ98RSteamPath, AppIdBZ98).ForEach(dr =>
-                    {
-                        string ModId = SteamMod.GetUniqueId(dr);
-                        if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                        stats.ForEach(dr =>
                         {
-                            Mods[AppIdBZ98][ModId] = new SteamMod(AppIdBZ98, dr);
+                            string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
+                            if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                            {
+                                Mods[AppIdBZ98][ModId] = new SteamCmdMod(AppIdBZ98, dr);
+                            }
+                            else
+                            {
+                                ((SteamCmdMod)Mods[AppIdBZ98][ModId]).Workshop = dr;
+                            }
+                        });
+
+                        if (settings.BZ98RSteamPath != null)
+                        {
+                            SteamContext.WorkshopItemsOnDrive(settings.BZ98RSteamPath, AppIdBZ98).ForEach(dr =>
+                            {
+                                string ModId = SteamMod.GetUniqueId(dr);
+                                if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                                {
+                                    Mods[AppIdBZ98][ModId] = new SteamMod(AppIdBZ98, dr);
+                                }
+                            });
                         }
+
+                        lvModsBZ98R.BeginUpdate();
+                        lvModsBZ98R.DataSource = Mods[AppIdBZ98].Values.ToList<ILinqListViesItem>();
+                        lvModsBZ98R.EndUpdate();
                     });
                 }
-
-                lvModsBZ98R.BeginUpdate();
-                lvModsBZ98R.DataSource = Mods[AppIdBZ98].Values.ToList<ILinqListViesItem>();
-                lvModsBZ98R.EndUpdate();
-            }
+            });
         }
         private void UpdateBZCCModLists()
         {
-            lock (ModStatus)
+            Task.Factory.StartNew(() =>
             {
-                SteamCmd.WorkshopStatus(AppIdBZCC).ForEach(dr =>
+                lock (ModStatus)
                 {
-                    string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
-                    if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                    List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatus(AppIdBZCC);
+                    this.Invoke((MethodInvoker)delegate
                     {
-                        Mods[AppIdBZCC][ModId] = new SteamCmdMod(AppIdBZCC, dr);
-                    }
-                    else
-                    {
-                        ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
-                    }
-                });
-
-                if (settings.BZ98RSteamPath != null)
-                {
-                    SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC).ForEach(dr =>
-                    {
-                        string ModId = SteamMod.GetUniqueId(dr);
-                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                        stats.ForEach(dr =>
                         {
-                            Mods[AppIdBZCC][ModId] = new SteamMod(AppIdBZCC, dr);
+                            string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
+                            if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                            {
+                                Mods[AppIdBZCC][ModId] = new SteamCmdMod(AppIdBZCC, dr);
+                            }
+                            else
+                            {
+                                ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
+                            }
+                        });
+
+                        if (settings.BZ98RSteamPath != null)
+                        {
+                            SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC).ForEach(dr =>
+                            {
+                                string ModId = SteamMod.GetUniqueId(dr);
+                                if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                {
+                                    Mods[AppIdBZCC][ModId] = new SteamMod(AppIdBZCC, dr);
+                                }
+                            });
                         }
+
+                        lvModsBZCC.BeginUpdate();
+                        lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViesItem>();
+                        lvModsBZCC.EndUpdate();
                     });
                 }
-
-                lvModsBZCC.BeginUpdate();
-                lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViesItem>();
-                lvModsBZCC.EndUpdate();
-            }
+            });
         }
 
         private void SetSteamCmdStatusText(string text)
@@ -388,16 +402,22 @@ namespace BZRModManager
                 }
                 if (workshopID > -1)
                 {
-                    SteamCmd.WorkshopDownloadItem(AppId, workshopID);
-                    switch(AppId)
+                    Task.Factory.StartNew(() =>
                     {
-                        case AppIdBZ98:
-                            UpdateBZ98RModLists();
-                            break;
-                        case AppIdBZCC:
-                            UpdateBZCCModLists();
-                            break;
-                    }
+                        SteamCmd.WorkshopDownloadItem(AppId, workshopID);
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            switch (AppId)
+                            {
+                                case AppIdBZ98:
+                                    UpdateBZ98RModLists();
+                                    break;
+                                case AppIdBZCC:
+                                    UpdateBZCCModLists();
+                                    break;
+                            }
+                        });
+                    });
                 }
             }
             catch { }
@@ -531,6 +551,41 @@ namespace BZRModManager
         {
             settings.BZCCMyDocsPath = txtBZCCMyDocs.Text;
             SaveSettings();
+        }
+
+        private void btnGOGBZCCASM_Click(object sender, EventArgs e)
+        {
+            if(ofdGOGBZCCASM.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if (BZCCTools.CheckGameNeedsAsmPatch(ofdGOGBZCCASM.FileName))
+                    {
+                        try
+                        {
+                            BZCCTools.ApplyGameAsmPatch(ofdGOGBZCCASM.FileName);
+                            MessageBox.Show("File patched, a backup of the original was created.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("File does not appear to require patching.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void btnGOGBZCCASMAbout_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(@"Version 2.0.180 of Battlezone Combat Commander has a bug that prevents joining some modded Multiplayer Games. When a modded game uses a mod that has dependencies, GOG is unable to join the session because it thinks it doesn't have them. Steam is unaffected because it can download mods, so this check is skipped. This patch will skip checking all mods except the first (the config mod) which will validate properly.", "About", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
     }
 
