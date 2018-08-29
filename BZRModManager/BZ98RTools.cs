@@ -24,19 +24,25 @@ namespace BZRModManager
             return paths.ToList().Select(dr =>
             {
                 IniData data = parser.ReadFile(dr);
-                return data["WORKSHOP"]["mapType"].Trim('"');
-            }).Distinct().OrderBy(dr => dr).ToArray();
+                return data?["WORKSHOP"]?["mapType"]?.Trim('"');
+            }).Where(dr => !string.IsNullOrWhiteSpace(dr)).Distinct().OrderBy(dr => dr).ToArray();
         }
 
         public static string[] GetModNames(string path)
         {
             IEnumerable<string> paths = GetInis(path);
             FileIniDataParser parser = new FileIniDataParser();
+            string[] niceNames = paths.ToList().Select(dr =>
+            {
+                IniData data = parser.ReadFile(dr);
+                return data?["MODMANAGER"]?["name"]?.Trim('"');
+            }).Where(dr => !string.IsNullOrWhiteSpace(dr)).Distinct().OrderBy(dr => dr).ToArray();
+            if (niceNames.Length > 0) return niceNames;
             return paths.ToList().Select(dr =>
             {
                 IniData data = parser.ReadFile(dr);
-                return data["DESCRIPTION"]["missionName"].Trim('"');
-            }).Distinct().OrderBy(dr => dr).ToArray();
+                return data?["DESCRIPTION"]?["missionName"]?.Trim('"');
+            }).Where(dr => !string.IsNullOrWhiteSpace(dr)).Distinct().OrderBy(dr => dr).ToArray();
         }
 
         public static string[] GetModTags(string path)
@@ -46,8 +52,8 @@ namespace BZRModManager
             return paths.ToList().SelectMany(dr =>
             {
                 IniData data = parser.ReadFile(dr);
-                return data["WORKSHOP"]["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
-            }).Where(dr => dr != null).GroupBy(dr => dr).OrderByDescending(dr => dr.Count()).ThenBy(dr => dr.Key).Select(dr => dr.Key).ToArray();
+                return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
+            }).Where(dr => !string.IsNullOrWhiteSpace(dr)).GroupBy(dr => dr).OrderByDescending(dr => dr.Count()).ThenBy(dr => dr.Key).Select(dr => dr.Key).ToArray();
         }
     }
 }

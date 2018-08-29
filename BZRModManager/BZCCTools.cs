@@ -25,7 +25,7 @@ namespace BZRModManager
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
-            return data["WORKSHOP"]["modType"]?.Trim('"');
+            return data?["WORKSHOP"]?["modType"]?.Trim('"');
         }
 
         public static string GetModName(string path)
@@ -34,7 +34,9 @@ namespace BZRModManager
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
-            return data["WORKSHOP"]["modName"]?.Trim('"');
+            string prettyName = data?["MODMANAGER"]?["name"]?.Trim('"');
+            if (!string.IsNullOrWhiteSpace(prettyName)) return prettyName;
+            return data?["WORKSHOP"]?["modName"]?.Trim('"');
         }
 
         public static string[] GetModTags(string path)
@@ -43,7 +45,7 @@ namespace BZRModManager
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
-            return data["WORKSHOP"]["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
+            return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
         }
 
         public static string[] GetAssetDependencies(string path)
@@ -52,7 +54,7 @@ namespace BZRModManager
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
-            return data["WORKSHOP"]["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
+            return data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
         }
 
         public static bool CheckGameNeedsAsmPatch(string path)

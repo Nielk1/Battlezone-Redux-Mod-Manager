@@ -103,11 +103,50 @@ namespace BZRModManager
             }
         }
 
+        private int baseHeight;
+
         public TaskControl(string Text, int Maximum)
         {
             InitializeComponent();
             this.Text = Text;
             this.Maximum = Maximum;
+            baseHeight = this.Height;
+        }
+
+        public TaskControl AddTask(string Name, int MaxValue)
+        {
+            TaskControl ctrl = new TaskControl(Name, MaxValue);
+            this.Invoke((MethodInvoker)delegate
+            {
+                ctrl.Margin = new Padding(0);
+                pnlTasks.Controls.Add(ctrl);
+                FixHeight();
+                //pnlTasks.Refresh();
+                this.Refresh();
+            });
+            return ctrl;
+        }
+        public void EndTask(TaskControl ctrl)
+        {
+            if (ctrl != null)
+                this.Invoke((MethodInvoker)delegate
+                {
+                    pnlTasks.Controls.Remove(ctrl);
+                    FixHeight();
+                    //pnlTasks.Refresh();
+                    this.Refresh();
+                });
+        }
+
+        public int FixHeight()
+        {
+            int totalHeight = baseHeight;
+            foreach(var control in pnlTasks.Controls)
+            {
+                totalHeight += (control as TaskControl).FixHeight();
+            }
+            this.Height = totalHeight;
+            return totalHeight;
         }
     }
 }

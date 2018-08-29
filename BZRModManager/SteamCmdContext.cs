@@ -325,9 +325,30 @@ namespace BZRModManager
                         //    statusLine = ReadLine();
                         //}
 
-                        SteamCmdLine output = null;
-                        while ((output = ReadLine()) == null || output.Blank || Regex.IsMatch(output.Line, @"Downloading item [0-9]+ \.\.\.")) { }
-                        string statusLine = output.Line;
+                        //SteamCmdLine output = null;
+                        //while ((output = ReadLine()) == null
+                        //    || output.Blank
+                        //    || Regex.IsMatch(output.Line, @"Downloading item [0-9]+ \.\.\.")
+                        //    || output.Line == "Retrying. . . "
+                        //    || output.Line == "Login Failure: Service Unavailable ") { }
+                        //string statusLine = output.Line;
+
+                        string statusLine = null;
+                        string FullOutput = WaitForSteamPrompt();
+                        string[] OutputLines = FullOutput.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach(string OutputLine in OutputLines)
+                        {
+                            if(OutputLine.Contains("ERROR! "))
+                            {
+                                statusLine = OutputLine.Substring(OutputLine.IndexOf("ERROR! "));
+                                break;
+                            }
+                            if (OutputLine.StartsWith("Success. "))
+                            {
+                                statusLine = OutputLine;
+                                break;
+                            }
+                        }
 
                         OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
 
@@ -336,7 +357,7 @@ namespace BZRModManager
                         //ERROR! Failed to start downloading item 0.
 
                         //WaitForSteamPrompt();
-                        while (!ReadLine().Prompt) { }
+                        //while (!ReadLine().Prompt) { }
 
                         if (statusLine.StartsWith("ERROR! "))
                         {
@@ -351,12 +372,12 @@ namespace BZRModManager
                         }
                         else if (proc.HasExited)
                         {
-                            Exception ex = new SteamCmdException("SteamCmd Application Terminated", new SteamCmdWorkshopDownloadException(statusLine));
+                            Exception ex = new SteamCmdException("SteamCmd Application Terminated", new SteamCmdWorkshopDownloadException(FullOutput));
                             throw ex;
                         }
                         else
                         {
-                            Exception ex = new SteamCmdException("Unknown Error", new SteamCmdWorkshopDownloadException(statusLine));
+                            Exception ex = new SteamCmdException("Unknown Error", new SteamCmdWorkshopDownloadException(FullOutput));
                             throw ex;
                         }
                     }
