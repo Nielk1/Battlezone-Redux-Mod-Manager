@@ -57,13 +57,13 @@ namespace BZRModManager
             SteamCmd.SteamCmdOutputFull += Steam_SteamCmdOutputFull;
             SteamCmd.SteamCmdInput += Steam_SteamCmdInput;
 
+            if (!Directory.Exists("log")) Directory.CreateDirectory("log");
             string logdate = DateTime.Now.ToString("yyyyMMddHHmmss");
-            Trace.Listeners.Add(new TextWriterTraceListener($"{logdate}-bzrmodmanager.log"));
+            Trace.Listeners.Add(new TextWriterTraceListener($"log\\{logdate}-bzrmodmanager.log"));
             Trace.AutoFlush = true;
-
-            steamcmd_log = File.OpenWrite($"{logdate}-steamcmd.log");
+            steamcmd_log = File.OpenWrite($"log\\{logdate}-steamcmd.log");
             steamcmd_log_writer = new StreamWriter(steamcmd_log);
-            steamcmdfull_log = File.OpenWrite($"{logdate}-steamcmd-full.log");
+            steamcmdfull_log = File.OpenWrite($"log\\{logdate}-steamcmd-full.log");
             steamcmdfull_log_writer = new StreamWriter(steamcmdfull_log);
 
             SteamCmd.SteamCmdOutput += SteamCmd_Log;

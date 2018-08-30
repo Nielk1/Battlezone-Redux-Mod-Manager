@@ -26,3 +26,6 @@ To utilize the manager, directories must be properly configured. An example of s
 `N` status indicators may be double clicked to install a mod.
 
 `Y` status indicators may be double clicked to uninstall a mod.
+
+## Git Mods
+For git mods to function your system must have git installed or `git.exe` must be placed in the application directory.
