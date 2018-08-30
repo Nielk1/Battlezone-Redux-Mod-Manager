@@ -8,7 +8,7 @@ To utilize the manager, directories must be properly configured. An example of s
 ![My image](https://github.com/Nielk1/Battlezone-Redux-Mod-Manager/blob/master/images/image2.jpg?raw=true)
 
 ## Main Interface
-![My image](https://github.com/Nielk1/Battlezone-Redux-Mod-Manager/blob/master/images/image1.jpg?raw=true)
+![My image](https://github.com/Nielk1/Battlezone-Redux-Mod-Manager/blob/master/images/image1.jpg?raw=true&_=0)
 
 `[R]` - Refresh Mod List
 
