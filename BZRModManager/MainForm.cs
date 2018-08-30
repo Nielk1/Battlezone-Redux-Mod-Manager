@@ -276,6 +276,7 @@ namespace BZRModManager
                         this.Invoke((MethodInvoker)delegate
                         {
                             lvModsBZ98R.BeginUpdate();
+                            Mods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
                             lvModsBZ98R.DataSource = Mods[AppIdBZ98].Values.ToList<ILinqListViesItem>();
                             lvModsBZ98R.EndUpdate();
 
@@ -359,6 +360,7 @@ namespace BZRModManager
                         this.Invoke((MethodInvoker)delegate
                         {
                             lvModsBZCC.BeginUpdate();
+                            Mods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
                             lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViesItem>();
                             lvModsBZCC.EndUpdate();
 
@@ -1535,10 +1537,10 @@ namespace BZRModManager
                 if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
                 {
                     string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
-                    string[] ModTypes = BZ98RTools.GetModTypes(Path.Combine(workshopFolder, Workshop.ModWorkshopId));
-                    if (ModTypes?.Length > 0)
+                    string[] ModNames = BZ98RTools.GetModNames(Path.Combine(workshopFolder, Workshop.ModWorkshopId));
+                    if (ModNames?.Length > 0)
                     {
-                        return string.Join(", ", ModTypes);
+                        return string.Join(" / ", ModNames);
                     }
                 }
             }
@@ -1547,8 +1549,8 @@ namespace BZRModManager
                 if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
                 {
                     string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
-                    string ModType = BZCCTools.GetModType(Path.Combine(workshopFolder, Workshop.ModWorkshopId));
-                    if (ModType != null) return ModType;
+                    string ModName = BZCCTools.GetModName(Path.Combine(workshopFolder, Workshop.ModWorkshopId));
+                    if (ModName != null) return ModName;
                 }
             }
             return "UNKNOWN MOD";
