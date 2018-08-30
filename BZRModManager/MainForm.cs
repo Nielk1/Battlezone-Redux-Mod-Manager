@@ -215,7 +215,7 @@ namespace BZRModManager
                 {
                     lock (ModStatus)
                     {
-                        Semaphore loadSemaphore = new Semaphore(0, 1);
+                        Semaphore loadSemaphore = new Semaphore(0, 2);
                         Task.Factory.StartNew(() =>
                         {
                             TaskControl UpdateTask = UpdateBZ98RModListsTaskControl.AddTask("Update BZ98 Mod List (SteamCmd)", 0);
@@ -236,6 +236,26 @@ namespace BZRModManager
                             loadSemaphore.Release();
                         });
 
+                        Task.Factory.StartNew(() =>
+                        {
+                            TaskControl UpdateTask = UpdateBZ98RModListsTaskControl.AddTask("Update BZ98 Mod List (Git)", 0);
+                            List<GitModStatus> stats = GitContext.WorkshopItemsOnDrive(AppIdBZ98);
+                            stats.ForEach(dr =>
+                            {
+                                string ModId = GitMod.GetUniqueId(dr.ModWorkshopId);
+                                if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                                {
+                                    Mods[AppIdBZ98][ModId] = new GitMod(AppIdBZ98, dr);
+                                }
+                                else
+                                {
+                                    ((GitMod)Mods[AppIdBZ98][ModId]).Workshop = dr;
+                                }
+                            });
+                            UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
+                            loadSemaphore.Release();
+                        });
+
                         if (settings.BZ98RSteamPath != null)
                         {
                             TaskControl UpdateTask = UpdateBZ98RModListsTaskControl.AddTask("Update BZ98 Mod List (Steam)", 0);
@@ -250,6 +270,7 @@ namespace BZRModManager
                             UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
                         }
 
+                        loadSemaphore.WaitOne();
                         loadSemaphore.WaitOne();
 
                         this.Invoke((MethodInvoker)delegate
@@ -280,7 +301,7 @@ namespace BZRModManager
                 {
                     lock (ModStatus)
                     {
-                        Semaphore loadSemaphore = new Semaphore(0, 1);
+                        Semaphore loadSemaphore = new Semaphore(0, 2);
                         Task.Factory.StartNew(() =>
                         {
                             TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (SteamCmd)", 0);
@@ -300,8 +321,26 @@ namespace BZRModManager
                             UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
                             loadSemaphore.Release();
                         });
-
-                        if (settings.BZ98RSteamPath != null)
+                        Task.Factory.StartNew(() =>
+                        {
+                            TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Git)", 0);
+                            List<GitModStatus> stats = GitContext.WorkshopItemsOnDrive(AppIdBZCC);
+                            stats.ForEach(dr =>
+                            {
+                                string ModId = GitMod.GetUniqueId(dr.ModWorkshopId);
+                                if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                {
+                                    Mods[AppIdBZCC][ModId] = new GitMod(AppIdBZCC, dr);
+                                }
+                                else
+                                {
+                                    ((GitMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
+                                }
+                            });
+                            UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
+                            loadSemaphore.Release();
+                        });
+                        if (settings.BZCCSteamPath != null)
                         {
                             TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Steam)", 0);
                             SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC).ForEach(dr =>
@@ -314,7 +353,7 @@ namespace BZRModManager
                             });
                             UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
                         }
-
+                        loadSemaphore.WaitOne();
                         loadSemaphore.WaitOne();
 
                         this.Invoke((MethodInvoker)delegate
@@ -461,10 +500,12 @@ namespace BZRModManager
             }).Start();
         }
 
-        private void btnDownloadBZ98R_Click(object sender, EventArgs e) { DownloadMod(txtDownloadBZ98R.Text, AppIdBZ98); }
-        private void btnDownloadBZCC_Click(object sender, EventArgs e) { DownloadMod(txtDownloadBZCC.Text, AppIdBZCC); }
-        private void DownloadMod(string text, int AppId)
+        private void btnDownloadBZ98R_Click(object sender, EventArgs e) { if(DownloadMod(txtDownloadBZ98R.Text, AppIdBZ98)) txtDownloadBZ98R.Clear(); }
+        private void btnDownloadBZCC_Click(object sender, EventArgs e) { if (DownloadMod(txtDownloadBZCC.Text, AppIdBZCC)) txtDownloadBZCC.Clear(); }
+        private bool DownloadMod(string text, int AppId)
         {
+            bool success = false;
+
             try
             {
                 int workshopID = -1;
@@ -478,7 +519,8 @@ namespace BZRModManager
                 }
                 if (workshopID > -1)
                 {
-                    TaskControl DownloadModTaskControl = AddTask($"Download BZ98 Mod - SteamCmd - {workshopID}", 0);
+                    success = true;
+                    TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - SteamCmd - {workshopID}", 0);
                     Task.Factory.StartNew(() =>
                     {
                         SteamCmd.WorkshopDownloadItem(AppId, workshopID);
@@ -499,18 +541,51 @@ namespace BZRModManager
                 }
             }
             catch { }
+
+            try
+            {
+                if (!success)
+                {
+                    string[] branches = GitContext.GetModBranches(text);
+                    if (branches.Length > 0)
+                    {
+                        success = true;
+                        TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - Git - \"{text}\"", 0);
+                        Task.Factory.StartNew(() =>
+                        {
+                            GitContext.WorkshopDownloadItem(AppId, text, branches);
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                switch (AppId)
+                                {
+                                    case AppIdBZ98:
+                                        UpdateBZ98RModLists();
+                                        break;
+                                    case AppIdBZCC:
+                                        UpdateBZCCModLists();
+                                        break;
+                                }
+                            });
+                            EndTask(DownloadModTaskControl);
+                        });
+                    }
+                }
+            }
+            catch { }
+
+            return success;
         }
 
         private void btnRefreshBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RModLists(); }
         private void btnRefreshBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCModLists(); }
 
-        private void btnUpdateBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RMods(); }
-        private void btnUpdateBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCMods(); }
+        private void btnUpdateBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RMods(Control.ModifierKeys == Keys.Shift); }
+        private void btnUpdateBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCMods(Control.ModifierKeys == Keys.Shift); }
 
         private void btnDependenciesBZ98R_Click(object sender, EventArgs e) { this.GetDependenciesBZCCMods(); }
 
         Task UpdateBZ98RModsTask = null;
-        private void UpdateBZ98RMods()
+        private void UpdateBZ98RMods(bool agressive)
         {
             if (UpdateBZ98RModsTask == null
               || UpdateBZ98RModsTask.IsCanceled
@@ -538,19 +613,20 @@ namespace BZRModManager
                         {
                             SteamCmdMods.ForEach(dr =>
                             {
-                                SteamCmdMod mod = dr.Value as SteamCmdMod;
-                                if (mod != null)
+                                if (agressive)
                                 {
-                                    TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - SteamCmd - {mod.Workshop.WorkshopId} - {mod.Name}", 0);
-
-                                    
-                                    SteamCmdWorkshopDownloadException ex_ = null;
-                                    do
+                                    SteamCmdMod mod = dr.Value as SteamCmdMod;
+                                    if (mod != null)
                                     {
-                                        ex_ = null;
-                                        try { SteamCmd.WorkshopDownloadItem(AppIdBZ98, mod.Workshop.WorkshopId); } catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
-                                    } while (ex_ != null && ex_.Message.StartsWith("ERROR! Timeout downloading item "));
-                                    UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - SteamCmd - {mod.Workshop.WorkshopId} - {mod.Name}", 0);
+                                        SteamCmdWorkshopDownloadException ex_ = null;
+                                        do
+                                        {
+                                            ex_ = null;
+                                            try { SteamCmd.WorkshopDownloadItem(AppIdBZ98, mod.Workshop.WorkshopId); } catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
+                                        } while (ex_ != null && ex_.Message.StartsWith("ERROR! Timeout downloading item "));
+                                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                    }
                                 }
                                 lock (CounterClock)
                                 {
@@ -564,8 +640,9 @@ namespace BZRModManager
                             GitMod mod = dr.Value as GitMod;
                             if (mod != null)
                             {
-                                //TaskControl DownloadModTaskControl = AddTask($"Download BZCC Mod - Git - {mod.Workshop.WorkshopId} - {mod.Name}", 0);
-                                //EndTask(DownloadModTaskControl);
+                                TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - Git - {mod.Workshop.ModWorkshopId} - {mod.Name}", 0);
+                                GitContext.Pull(mod.Workshop.GitPath);
+                                UpdateTaskControl.EndTask(DownloadModTaskControl);
                             }
                             lock (CounterClock)
                             {
@@ -580,7 +657,7 @@ namespace BZRModManager
         }
 
         Task UpdateBZCCModsTask = null;
-        private void UpdateBZCCMods()
+        private void UpdateBZCCMods(bool agressive)
         {
             if (UpdateBZCCModsTask == null
               || UpdateBZCCModsTask.IsCanceled
@@ -608,17 +685,20 @@ namespace BZRModManager
                         {
                             SteamCmdMods.ForEach(dr =>
                             {
-                                SteamCmdMod mod = dr.Value as SteamCmdMod;
-                                if (mod != null)
+                                if (agressive)
                                 {
-                                    TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {mod.Workshop.WorkshopId} - {mod.Name}", 0);
-                                    SteamCmdWorkshopDownloadException ex_ = null;
-                                    do
+                                    SteamCmdMod mod = dr.Value as SteamCmdMod;
+                                    if (mod != null)
                                     {
-                                        ex_ = null;
-                                        try { SteamCmd.WorkshopDownloadItem(AppIdBZCC, mod.Workshop.WorkshopId); } catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
-                                    } while (ex_ != null && ex_.Message.StartsWith("ERROR! Timeout downloading item "));
-                                    UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {mod.Workshop.WorkshopId} - {mod.Name}", 0);
+                                        SteamCmdWorkshopDownloadException ex_ = null;
+                                        do
+                                        {
+                                            ex_ = null;
+                                            try { SteamCmd.WorkshopDownloadItem(AppIdBZCC, mod.Workshop.WorkshopId); } catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
+                                        } while (ex_ != null && ex_.Message.StartsWith("ERROR! Timeout downloading item "));
+                                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                    }
                                 }
                                 lock (CounterClock)
                                 {
@@ -632,8 +712,9 @@ namespace BZRModManager
                             GitMod mod = dr.Value as GitMod;
                             if (mod != null)
                             {
-                                //TaskControl DownloadModTaskControl = AddTask($"Download BZCC Mod - Git - {mod.Workshop.WorkshopId} - {mod.Name}", 0);
-                                //EndTask(DownloadModTaskControl);
+                                TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - Git - {mod.Workshop.ModWorkshopId} - {mod.Name}", 0);
+                                GitContext.Pull(mod.Workshop.GitPath);
+                                UpdateTaskControl.EndTask(DownloadModTaskControl);
                             }
                             lock (CounterClock)
                             {
@@ -1209,25 +1290,268 @@ namespace BZRModManager
 
     public class GitMod : ModItem
     {
-        public override string UniqueID { get { return "UNKNOWN" + "-Git"; } }
+        public GitModStatus Workshop { get; set; }
 
-        public override InstallStatus InstalledSteam { get { return InstallStatus.Uninstalled; } } // TODO: Dynamic
-        public override InstallStatus InstalledGog { get { return InstallStatus.Uninstalled; } } // TODO: Dynamic
+        public override string UniqueID { get { return GetUniqueId(Workshop.ModWorkshopId); } }
 
-        public override string ModType { get { return "UNKNON"; } }
-        public override string[] ModTags { get { return new string[] { "UNKNON" }; } }
+        public override InstallStatus InstalledSteam
+        {
+            get
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0 && (MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
+                    {
+                        string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(workshopFolder, Workshop.ModWorkshopId);
 
-        public override string WorkshopIdOutput { get { return "UNKNON"; } }
+                        if (!Directory.Exists(destinationFolder)) return InstallStatus.Uninstalled;
+                        if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) == sourceFolder) return InstallStatus.Linked;
+                        return InstallStatus.Collision;
+                    }
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    if ((MainForm.settings?.BZCCSteamPath?.Length ?? 0) > 0 && (MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
+                    {
+                        string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(workshopFolder, Workshop.ModWorkshopId);
+
+                        if (!Directory.Exists(destinationFolder)) return InstallStatus.Uninstalled;
+                        if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) == sourceFolder) return InstallStatus.Linked;
+                        return InstallStatus.Collision;
+                    }
+                }
+                return InstallStatus.Uninstalled;
+            }
+        } // TODO: Dynamic
+        public override InstallStatus InstalledGog
+        {
+            get
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0 && (MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
+                    {
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(MainForm.settings.BZ98RGogPath, "mods", Workshop.ModWorkshopId);
+
+                        if (!Directory.Exists(destinationFolder)) return InstallStatus.Uninstalled;
+                        if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) == sourceFolder) return InstallStatus.Linked;
+                        return InstallStatus.Collision;
+                    }
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    if ((MainForm.settings?.BZCCSteamPath?.Length ?? 0) > 0 && (MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
+                    {
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", Workshop.ModWorkshopId);
+
+                        if (!Directory.Exists(destinationFolder)) return InstallStatus.Uninstalled;
+                        if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) == sourceFolder) return InstallStatus.Linked;
+                        return InstallStatus.Collision;
+                    }
+                }
+                return InstallStatus.Uninstalled;
+            }
+        } // TODO: Dynamic
+
+        public override string ModType
+        {
+            get
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    string[] ModTypes = BZ98RTools.GetModTypes(Workshop.ModPath);
+                    if (ModTypes?.Length > 0)
+                    {
+                        return string.Join(", ", ModTypes);
+                    }
+
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    string ModType = BZCCTools.GetModType(Workshop.ModPath, Workshop.ModWorkshopId);
+                    if (ModType != null) return ModType;
+                }
+                return "UNKNOWN";
+            }
+        }
+        public override string[] ModTags
+        {
+            get
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    string[] ModTags = BZ98RTools.GetModTags(Workshop.ModPath);
+                    return ModTags;
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    string[] ModTags = BZCCTools.GetModTags(Workshop.ModPath, Workshop.ModWorkshopId);
+                    return ModTags;
+                }
+                return new string[] { "UNKNON" };
+            }
+        }
+
+        public override string WorkshopIdOutput { get { return Workshop.ModWorkshopId.ToString(); } }
         public override string ModSource { get { return "Git"; } }
+
+        public static string GetUniqueId(string modWorkshopId)
+        {
+            return modWorkshopId + "-Git";
+        }
+
+        public GitMod(int AppId, GitModStatus Workshop)
+        {
+            this.AppId = AppId;
+            this.Workshop = Workshop;
+        }
 
         public override void ToggleGog()
         {
-            
+            if (InstalledGog == InstallStatus.Uninstalled)
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    if ((MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
+                    {
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(MainForm.settings.BZ98RGogPath, "mods", Workshop.ModWorkshopId);
+
+                        if (Directory.Exists(destinationFolder)) return;
+                        JunctionPoint.Create(destinationFolder, sourceFolder, false);
+                    }
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    if ((MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
+                    {
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", Workshop.ModWorkshopId);
+
+                        if (Directory.Exists(destinationFolder)) return;
+                        JunctionPoint.Create(destinationFolder, sourceFolder, false);
+                    }
+                }
+            }
+            else if (InstalledGog == InstallStatus.Linked)
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    if ((MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
+                    {
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(MainForm.settings.BZ98RGogPath, "mods", Workshop.ModWorkshopId);
+
+                        if (!Directory.Exists(destinationFolder)) return;
+                        if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) != sourceFolder) return;
+                        JunctionPoint.Delete(destinationFolder);
+                    }
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    if ((MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
+                    {
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", Workshop.ModWorkshopId);
+
+                        if (!Directory.Exists(destinationFolder)) return;
+                        if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) != sourceFolder) return;
+                        JunctionPoint.Delete(destinationFolder);
+                    }
+                }
+            }
         }
         public override void ToggleSteam()
         {
-            //if (InstalledSteam == InstallStatus.Uninstalled) { }
-            //ListViewItemCache = null;
+            if (InstalledSteam == InstallStatus.Uninstalled)
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    if ((MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
+                    {
+                        string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(workshopFolder, Workshop.ModWorkshopId);
+
+                        if (Directory.Exists(destinationFolder)) return;
+                        JunctionPoint.Create(destinationFolder, sourceFolder, false);
+                    }
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    if ((MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
+                    {
+                        string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(workshopFolder, Workshop.ModWorkshopId);
+
+                        if (Directory.Exists(destinationFolder)) return;
+                        JunctionPoint.Create(destinationFolder, sourceFolder, false);
+                    }
+                }
+            }
+            else if (InstalledSteam == InstallStatus.Linked)
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    if ((MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
+                    {
+                        string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(workshopFolder, Workshop.ModWorkshopId);
+
+                        if (!Directory.Exists(destinationFolder)) return;
+                        if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) != sourceFolder) return;
+                        JunctionPoint.Delete(destinationFolder);
+                    }
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    if ((MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
+                    {
+                        string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
+                        string sourceFolder = Path.GetFullPath(Workshop.ModPath);
+                        string destinationFolder = Path.Combine(workshopFolder, Workshop.ModWorkshopId);
+
+                        if (!Directory.Exists(destinationFolder)) return;
+                        if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) != sourceFolder) return;
+                        JunctionPoint.Delete(destinationFolder);
+                    }
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrWhiteSpace(Workshop.ModName)) return Workshop.ModName;
+            if (AppId == MainForm.AppIdBZ98)
+            {
+                if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
+                {
+                    string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
+                    string[] ModTypes = BZ98RTools.GetModTypes(Path.Combine(workshopFolder, Workshop.ModWorkshopId));
+                    if (ModTypes?.Length > 0)
+                    {
+                        return string.Join(", ", ModTypes);
+                    }
+                }
+            }
+            if (AppId == MainForm.AppIdBZCC)
+            {
+                if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
+                {
+                    string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
+                    string ModType = BZCCTools.GetModType(Path.Combine(workshopFolder, Workshop.ModWorkshopId));
+                    if (ModType != null) return ModType;
+                }
+            }
+            return "UNKNOWN MOD";
         }
     }
 }

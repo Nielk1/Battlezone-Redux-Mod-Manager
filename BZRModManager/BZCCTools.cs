@@ -13,24 +13,25 @@ namespace BZRModManager
 {
     class BZCCTools
     {
-        private static string GetIni(string path)
+        private static string GetIni(string path, string workshopID)
         {
+            if(workshopID != null) return Path.Combine(path, workshopID + ".ini");
             string ID = Path.GetFileName(path);
             return Path.Combine(path, ID + ".ini");
         }
 
-        public static string GetModType(string path)
+        public static string GetModType(string path, string workshopID = null)
         {
-            string pathini = GetIni(path);
+            string pathini = GetIni(path, workshopID);
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
             return data?["WORKSHOP"]?["modType"]?.Trim('"');
         }
 
-        public static string GetModName(string path)
+        public static string GetModName(string path, string workshopID = null)
         {
-            string pathini = GetIni(path);
+            string pathini = GetIni(path, workshopID);
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
@@ -39,18 +40,18 @@ namespace BZRModManager
             return data?["WORKSHOP"]?["modName"]?.Trim('"');
         }
 
-        public static string[] GetModTags(string path)
+        public static string[] GetModTags(string path, string workshopID = null)
         {
-            string pathini = GetIni(path);
+            string pathini = GetIni(path, workshopID);
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
             return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
         }
 
-        public static string[] GetAssetDependencies(string path)
+        public static string[] GetAssetDependencies(string path, string workshopID = null)
         {
-            string pathini = GetIni(path);
+            string pathini = GetIni(path, workshopID);
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
