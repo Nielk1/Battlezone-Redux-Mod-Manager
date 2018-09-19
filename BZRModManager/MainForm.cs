@@ -234,6 +234,7 @@ namespace BZRModManager
                                     {
                                         ((SteamCmdMod)Mods[AppIdBZ98][ModId]).Workshop = dr;
                                     }
+                                    Mods[AppIdBZ98][ModId].HasUpdate = dr.HasUpdate;
                                 });
                                 UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
                             }
@@ -331,6 +332,7 @@ namespace BZRModManager
                                 {
                                     ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
                                 }
+                                Mods[AppIdBZCC][ModId].HasUpdate = dr.HasUpdate;
                             });
                             UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
                             loadSemaphore.Release();
@@ -547,7 +549,7 @@ namespace BZRModManager
             }).Start();
         }
 
-        private void btnDownloadBZ98R_Click(object sender, EventArgs e) { if(DownloadMod(txtDownloadBZ98R.Text, AppIdBZ98)) txtDownloadBZ98R.Clear(); }
+        private void btnDownloadBZ98R_Click(object sender, EventArgs e) { if (DownloadMod(txtDownloadBZ98R.Text, AppIdBZ98)) txtDownloadBZ98R.Clear(); }
         private void btnDownloadBZCC_Click(object sender, EventArgs e) { if (DownloadMod(txtDownloadBZCC.Text, AppIdBZCC)) txtDownloadBZCC.Clear(); }
         private bool DownloadMod(string text, int AppId)
         {
@@ -660,17 +662,17 @@ namespace BZRModManager
                         {
                             SteamCmdMods.ForEach(dr =>
                             {
-                                if (agressive)
+                                SteamCmdMod modSteam = dr.Value as SteamCmdMod;
+                                if (agressive || (modSteam?.HasUpdate ?? false))
                                 {
-                                    SteamCmdMod mod = dr.Value as SteamCmdMod;
-                                    if (mod != null)
+                                    if (modSteam != null)
                                     {
-                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - SteamCmd - {mod.Workshop.WorkshopId} - {mod.Name}", 0);
+                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
                                         SteamCmdWorkshopDownloadException ex_ = null;
                                         do
                                         {
                                             ex_ = null;
-                                            try { SteamCmd.WorkshopDownloadItem(AppIdBZ98, mod.Workshop.WorkshopId); } catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
+                                            try { SteamCmd.WorkshopDownloadItem(AppIdBZ98, modSteam.Workshop.WorkshopId); } catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
                                         } while (ex_ != null && ex_.Message.StartsWith("ERROR! Timeout downloading item "));
                                         UpdateTaskControl.EndTask(DownloadModTaskControl);
                                     }
@@ -698,6 +700,8 @@ namespace BZRModManager
                         });
                         MergeTasks.WaitOne();
                         EndTask(UpdateTaskControl);
+
+                        UpdateBZ98RModLists();
                     }
                 });
             }
@@ -732,17 +736,17 @@ namespace BZRModManager
                         {
                             SteamCmdMods.ForEach(dr =>
                             {
-                                if (agressive)
+                                SteamCmdMod modSteam = dr.Value as SteamCmdMod;
+                                if (agressive || (modSteam?.HasUpdate ?? false))
                                 {
-                                    SteamCmdMod mod = dr.Value as SteamCmdMod;
-                                    if (mod != null)
+                                    if (modSteam != null)
                                     {
-                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {mod.Workshop.WorkshopId} - {mod.Name}", 0);
+                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
                                         SteamCmdWorkshopDownloadException ex_ = null;
                                         do
                                         {
                                             ex_ = null;
-                                            try { SteamCmd.WorkshopDownloadItem(AppIdBZCC, mod.Workshop.WorkshopId); } catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
+                                            try { SteamCmd.WorkshopDownloadItem(AppIdBZCC, modSteam.Workshop.WorkshopId); } catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
                                         } while (ex_ != null && ex_.Message.StartsWith("ERROR! Timeout downloading item "));
                                         UpdateTaskControl.EndTask(DownloadModTaskControl);
                                     }
@@ -770,6 +774,8 @@ namespace BZRModManager
                         });
                         MergeTasks.WaitOne();
                         EndTask(UpdateTaskControl);
+
+                        UpdateBZCCModLists();
                     }
                 });
             }
@@ -983,6 +989,7 @@ namespace BZRModManager
         public Image LargeIcon { get; set; }
         public Image SmallIcon { get; set; }
         public ListViewItem ListViewItemCache { get; set; }
+        public bool HasUpdate { get; internal set; }
 
         public override string ToString()
         {
