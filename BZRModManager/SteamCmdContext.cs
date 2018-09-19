@@ -22,6 +22,14 @@ namespace BZRModManager
         }
     }
 
+    class SteamCmdInactiveException : SteamCmdException
+    {
+        public SteamCmdInactiveException(string msg)
+            : base(msg)
+        {
+        }
+    }
+
     class SteamCmdMissingException : SteamCmdException
     {
         public SteamCmdMissingException(string msg)
@@ -147,9 +155,16 @@ namespace BZRModManager
         {
             get
             {
-                lock (procLock)
+                //lock (procLock)
                 {
-                    return proc != null && !proc.HasExited && proc.StartTime != null;
+                    try
+                    {
+                        return proc != null && !proc.HasExited && proc.StartTime != null;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -283,7 +298,7 @@ namespace BZRModManager
                     OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("login", "anonymous"));
                     WriteLine("login anonymous");
                     //string output = WaitForSteamPrompt();
-                    while (!ReadLine().Prompt) { }
+                    while (!ReadLine().Prompt && Active) { }
                     OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs(null));
                     OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.LoggedInAnon));
                 }
@@ -307,7 +322,7 @@ namespace BZRModManager
 
                     if (!Active)
                     {
-                        throw new SteamCmdException("SteamCmd is not active");
+                        throw new SteamCmdInactiveException("SteamCmd is not active");
                     }
                     else if (Status != SteamCmdStatus.LoggedIn && Status != SteamCmdStatus.LoggedInAnon)
                     {
@@ -315,7 +330,6 @@ namespace BZRModManager
                     }
                     else
                     {
-
                         OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("workshop_download_item", appId.ToString(), workshopId.ToString()));
                         WriteLine($"workshop_download_item {appId} {workshopId}");
                         //string commandLine = ReadLine();
@@ -524,7 +538,7 @@ namespace BZRModManager
                     {
                         tmpVal = ReadLineOrNullTimeout(1000);
                         retVal += tmpVal;
-                    } while (tmpVal != null && !tmpVal.EndsWith("\r\n") && (retVal != "Steam>"));
+                    } while (Active && tmpVal != null && !tmpVal.EndsWith("\r\n") && (retVal != "Steam>"));
 
                     Trace.WriteLine($"return \"{retVal.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n")}\"", "SteamCmdContext");
                     return new SteamCmdLine()
@@ -736,10 +750,25 @@ namespace BZRModManager
                         if (Active)
                         {
                             OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Exiting));
-                            OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("exit"));
-                            WriteLine("exit");//proc.StandardInput.WriteLine("exit");
+                            //OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("exit"));
+                            OnSteamCmdCommandChange(new SteamCmdCommandChangeEventArgs("quit"));
+                            //WriteLine("exit");//proc.StandardInput.WriteLine("exit");
+                            WriteLine("quit");//proc.StandardInput.WriteLine("exit");
                         }
-                        proc.WaitForExit();
+                        int timeCount = 0;
+                        try
+                        {
+                            while (proc != null && !proc.HasExited)//proc.WaitForExit();
+                            {
+                                Thread.Sleep(100);
+                                timeCount += 100;
+                                if (timeCount > 5000)
+                                {
+                                    proc.Close(); // force close it, we told it to exit 5 seconds ago
+                                }
+                            }
+                        }
+                        catch { }
                         OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Closed));
                     }
                     finally
