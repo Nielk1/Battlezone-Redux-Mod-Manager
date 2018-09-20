@@ -213,7 +213,7 @@ namespace BZRModManager
             lock (procLock)
             {
                 if (!Directory.Exists("steamcmd")) throw new SteamCmdMissingException("steamcmd directory missing");
-                if (!File.Exists("steamcmd\\steamcmd.exe")) throw new SteamCmdMissingException("SteamCmdContext.exe");
+                if (!File.Exists("steamcmd\\steamcmd.exe")) throw new SteamCmdMissingException("steamcmd.exe missing");
 
                 proc = new Process()
                 {
@@ -226,9 +226,10 @@ namespace BZRModManager
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
                         RedirectStandardInput = true,
-                        RedirectStandardError = true,
                         StandardOutputEncoding = Encoding.Unicode,
-                        StandardErrorEncoding = Encoding.Unicode,
+                        // the below broke GadenKerensky's W10 instance so it just spewed 0xffff on loop
+                        //RedirectStandardError = true,
+                        //StandardErrorEncoding = Encoding.Unicode,
                     }
                 };
 
@@ -250,6 +251,12 @@ namespace BZRModManager
             Process
             .GetProcessesByName("steamcmd")
             .Where(dr => dr.MainModule?.FileName == Path.GetFullPath("steamcmd\\steamcmd.exe"))
+            .ToList()
+            .ForEach(dr => dr.Kill());
+
+            Process
+            .GetProcessesByName("ConsoleBufferProxy")
+            .Where(dr => dr.MainModule?.FileName == Path.GetFullPath("ConsoleBufferProxy.exe"))
             .ToList()
             .ForEach(dr => dr.Kill());
         }
