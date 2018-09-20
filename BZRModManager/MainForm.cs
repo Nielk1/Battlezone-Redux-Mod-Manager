@@ -33,12 +33,16 @@ namespace BZRModManager
         TextWriter steamcmdfull_log_writer = null;
 
         public static SettingsContainer settings;
+        private bool cbFallbackSteamCmdWindowHandlingSet = false;
 
         public MainForm()
         {
             LoadSettings();
-
+            SteamCmd.ShowProcessWindow = settings.FallbackSteamCmdHandling;
             InitializeComponent();
+            cbFallbackSteamCmdWindowHandling.Checked = settings.FallbackSteamCmdHandling;
+            cbFallbackSteamCmdWindowHandlingSet = true;
+
 
             pnlTasks.HorizontalScroll.Maximum = 0;
             pnlTasks.AutoScroll = false;
@@ -528,7 +532,12 @@ namespace BZRModManager
 
             if (exitingStage == 3)
             {
-                //exit
+                if(restart)
+                {
+                    string file = this.GetType().Assembly.Location;
+                    string app = System.IO.Path.GetFileNameWithoutExtension(file);
+                    Process.Start(app);
+                }
             }
         }
 
@@ -849,6 +858,7 @@ namespace BZRModManager
             public string BZCCSteamPath { get; set; }
             public string BZ98RGogPath { get; set; }
             public string BZCCMyDocsPath { get; set; }
+            public bool FallbackSteamCmdHandling { get; set; }
         }
         private void LoadSettings()
         {
@@ -895,6 +905,21 @@ namespace BZRModManager
         {
             settings.BZCCMyDocsPath = txtBZCCMyDocs.Text;
             SaveSettings();
+        }
+
+        bool restart = false;
+        private void cbFallbackSteamCmdWindowHandling_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbFallbackSteamCmdWindowHandlingSet)
+            {
+                settings.FallbackSteamCmdHandling = cbFallbackSteamCmdWindowHandling.Checked;
+                SaveSettings();
+                if (MessageBox.Show("The application must restart to apply this setting. Restart?", "Notice", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                {
+                    restart = true;
+                    this.Close();
+                }
+            }
         }
 
         private void btnGOGBZCCASM_Click(object sender, EventArgs e)

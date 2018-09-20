@@ -171,6 +171,7 @@ namespace BZRModManager
 
         public SteamCmdStatus Status { get; private set; }
         public string Command { get; private set; }
+        public bool ShowProcessWindow { get; internal set; }
 
         public delegate void SteamCmdStatusChangeEventHandler(object sender, SteamCmdStatusChangeEventArgs e);
         public event SteamCmdStatusChangeEventHandler SteamCmdStatusChange;
@@ -223,13 +224,12 @@ namespace BZRModManager
                         FileName = "ConsoleBufferProxy.exe",
                         Arguments = "steamcmd\\steamcmd.exe",
                         UseShellExecute = false,
-                        CreateNoWindow = true,
+                        CreateNoWindow = !ShowProcessWindow, // hack fix for some users that have broken SteamCmd
                         RedirectStandardOutput = true,
                         RedirectStandardInput = true,
                         StandardOutputEncoding = Encoding.Unicode,
-                        // the below broke GadenKerensky's W10 instance so it just spewed 0xffff on loop
-                        //RedirectStandardError = true,
-                        //StandardErrorEncoding = Encoding.Unicode,
+                        RedirectStandardError = true,
+                        StandardErrorEncoding = Encoding.Unicode,
                     }
                 };
 
@@ -240,6 +240,7 @@ namespace BZRModManager
 
                 OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Starting));
                 proc.Start();
+                proc.BeginErrorReadLine();
                 //string waitOutput = WaitForSteamPrompt();
                 while (!ReadLine().Prompt) { }
                 OnSteamCmdStatusChange(new SteamCmdStatusChangeEventArgs(SteamCmdStatus.Active));
