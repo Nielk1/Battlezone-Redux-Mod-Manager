@@ -28,10 +28,10 @@ namespace BZRModManager
         object ModStatus = new object();
         Dictionary<int, Dictionary<string, ModItem>> Mods = new Dictionary<int, Dictionary<string, ModItem>>();
 
-        //FileStream steamcmd_log = null;
-        //TextWriter steamcmd_log_writer = null;
-        //FileStream steamcmdfull_log = null;
-        //TextWriter steamcmdfull_log_writer = null;
+        FileStream steamcmd_log = null;
+        TextWriter steamcmd_log_writer = null;
+        FileStream steamcmdfull_log = null;
+        TextWriter steamcmdfull_log_writer = null;
 
         public static SettingsContainer settings;
         private bool cbFallbackSteamCmdWindowHandlingSet = false;
@@ -58,18 +58,18 @@ namespace BZRModManager
             this.FormClosing += Form1_FormClosing;
             SteamCmd.SteamCmdStatusChange += Steam_SteamCmdStatusChange;
             //SteamCmd.SteamCmdCommandChange += Steam_SteamCmdCommandChange;
-            //SteamCmd.SteamCmdOutput += Steam_SteamCmdOutput;
-            //SteamCmd.SteamCmdOutputFull += Steam_SteamCmdOutputFull;
-            //SteamCmd.SteamCmdInput += Steam_SteamCmdInput;
+            SteamCmd.SteamCmdOutput += Steam_SteamCmdOutput;
+            SteamCmd.SteamCmdOutputFull += Steam_SteamCmdOutputFull;
+            SteamCmd.SteamCmdArgs += Steam_SteamCmdArgs;
 
             if (!Directory.Exists("log")) Directory.CreateDirectory("log");
             string logdate = DateTime.Now.ToString("yyyyMMddHHmmss");
             Trace.Listeners.Add(new TextWriterTraceListener($"log\\{logdate}-bzrmodmanager.log"));
             Trace.AutoFlush = true;
-            //steamcmd_log = File.OpenWrite($"log\\{logdate}-steamcmd.log");
-            //steamcmd_log_writer = new StreamWriter(steamcmd_log);
-            //steamcmdfull_log = File.OpenWrite($"log\\{logdate}-steamcmd-full.log");
-            //steamcmdfull_log_writer = new StreamWriter(steamcmdfull_log);
+            steamcmd_log = File.OpenWrite($"log\\{logdate}-steamcmd.log");
+            steamcmd_log_writer = new StreamWriter(steamcmd_log);
+            steamcmdfull_log = File.OpenWrite($"log\\{logdate}-steamcmd-full.log");
+            steamcmdfull_log_writer = new StreamWriter(steamcmdfull_log);
 
             //SteamCmd.SteamCmdOutput += SteamCmd_Log;
             //SteamCmd.SteamCmdOutputFull += SteamCmdFull_Log;
@@ -79,52 +79,53 @@ namespace BZRModManager
 
         ~MainForm()
         {
-            //steamcmd_log_writer.Close();
-            //steamcmdfull_log_writer.Close();
+            steamcmd_log_writer.Close();
+            steamcmdfull_log_writer.Close();
         }
 
-        /*private void SteamCmdFull_Log(object sender, string msg)
+        private void SteamCmdFull_Log(object sender, string msg)
         {
             lock (steamcmdfull_log_writer)
             {
                 steamcmdfull_log_writer.Write(msg);
                 steamcmdfull_log_writer.Flush();
             }
-        }*/
+        }
 
-        /*private void SteamCmd_Log(object sender, string msg)
+        private void SteamCmd_Log(object sender, string msg)
         {
             lock (steamcmd_log_writer)
             {
                 steamcmd_log_writer.Write(msg);
                 steamcmd_log_writer.Flush();
             }
-        }*/
+        }
 
-        /*private void Steam_SteamCmdOutput(object sender, string msg)
+        private void Steam_SteamCmdOutput(object sender, string msg)
         {
             this.Invoke((MethodInvoker)delegate
             {
                 LogSteamCmd(msg, false);
             });
-        }*/
+        }
 
-        /*private void Steam_SteamCmdOutputFull(object sender, string msg)
+        private void Steam_SteamCmdOutputFull(object sender, string msg)
         {
             this.Invoke((MethodInvoker)delegate
             {
                 LogSteamCmdFull(msg, false);
             });
-        }/*
+        }
 
-        /*private void Steam_SteamCmdInput(object sender, string msg)
+        private void Steam_SteamCmdArgs(object sender, string msg)
         {
             this.Invoke((MethodInvoker)delegate
             {
-                LogSteamCmd(msg, true);
-                LogSteamCmdFull(msg, true);
+                Log($"SteamCmd Started:\t\t{msg}");
+                LogSteamCmd(msg + "\r\n", true);
+                LogSteamCmdFull(msg + "\r\n", true);
             });
-        }*/
+        }
 
         /*private void Steam_SteamCmdCommandChange(object sender, SteamCmdCommandChangeEventArgs e)
         {
@@ -149,22 +150,18 @@ namespace BZRModManager
         TaskControl ActivatingSteamCmd = null;
         private void Steam_SteamCmdStatusChange(object sender, SteamCmdStatusChangeEventArgs e)
         {
-            /*switch (e.Status)
+            switch (e.Status)
             {
-                case SteamCmdStatus.Active:
+                case ESteamCmdStatus.Closed:
                     this.Invoke((MethodInvoker)delegate
                     {
-                        this.SetSteamCmdStatusText(e.Status.ToString());
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            LogSteamCmd("\r\nEXIT\r\n\r\n", true);
+                            LogSteamCmdFull("\r\nEXIT\r\n\r\n", true);
+                            this.SetSteamCmdStatusText(e.Status.ToString());
+                        });
                     });
-                    new Thread(() => SteamCmd.LoginAnonymous()).Start();
-                    break;
-                case SteamCmdStatus.LoggedIn:
-                case SteamCmdStatus.LoggedInAnon:
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        this.SetSteamCmdStatusText(e.Status.ToString());
-                    });
-
                     break;
                 default:
                     this.Invoke((MethodInvoker)delegate
@@ -172,11 +169,7 @@ namespace BZRModManager
                         this.SetSteamCmdStatusText(e.Status.ToString());
                     });
                     break;
-            }*/
-            this.Invoke((MethodInvoker)delegate
-            {
-                this.SetSteamCmdStatusText(e.Status.ToString());
-            });
+            }
         }
 
         public TaskControl AddTask(string Name, int MaxValue)
