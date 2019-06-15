@@ -46,6 +46,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
             this.tpSettings = new System.Windows.Forms.TabPage();
+            this.cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
             this.btnGOGBZCCASMAbout = new System.Windows.Forms.Button();
             this.btnGOGBZCCASM = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -75,7 +76,6 @@
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
-            this.cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tpBZCC.SuspendLayout();
@@ -310,6 +310,18 @@
             this.tpSettings.TabIndex = 2;
             this.tpSettings.Text = "Settings";
             this.tpSettings.UseVisualStyleBackColor = true;
+            // 
+            // cbFallbackSteamCmdWindowHandling
+            // 
+            this.cbFallbackSteamCmdWindowHandling.AutoSize = true;
+            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 259);
+            this.cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
+            this.cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(207, 17);
+            this.cbFallbackSteamCmdWindowHandling.TabIndex = 18;
+            this.cbFallbackSteamCmdWindowHandling.Text = "Fallback SteamCmd Window Handling";
+            this.cbFallbackSteamCmdWindowHandling.UseVisualStyleBackColor = true;
+            this.cbFallbackSteamCmdWindowHandling.Visible = false;
+            this.cbFallbackSteamCmdWindowHandling.CheckedChanged += new System.EventHandler(this.cbFallbackSteamCmdWindowHandling_CheckedChanged);
             // 
             // btnGOGBZCCASMAbout
             // 
@@ -608,17 +620,6 @@
             // ofdGOGBZCCASM
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
-            // 
-            // cbFallbackSteamCmdWindowHandling
-            // 
-            this.cbFallbackSteamCmdWindowHandling.AutoSize = true;
-            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 259);
-            this.cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
-            this.cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(207, 17);
-            this.cbFallbackSteamCmdWindowHandling.TabIndex = 18;
-            this.cbFallbackSteamCmdWindowHandling.Text = "Fallback SteamCmd Window Handling";
-            this.cbFallbackSteamCmdWindowHandling.UseVisualStyleBackColor = true;
-            this.cbFallbackSteamCmdWindowHandling.CheckedChanged += new System.EventHandler(this.cbFallbackSteamCmdWindowHandling_CheckedChanged);
             // 
             // MainForm
             // 

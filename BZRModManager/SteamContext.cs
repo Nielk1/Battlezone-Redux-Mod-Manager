@@ -18,6 +18,8 @@ namespace BZRModManager
         public static List<long> WorkshopItemsOnDrive(string steamPath, int appId)
         {
             string workshopFolder = WorkshopFolder(steamPath, appId);
+            if (!Directory.Exists(workshopFolder))
+                return null;
             return Directory.EnumerateDirectories(workshopFolder)
                 .Where(dr => !JunctionPoint.Exists(dr)) // not a junction
                 .Select(dr =>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -58,6 +59,8 @@ namespace BZRModManager
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, ref HDITEM lParam);
 
+        public delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
+
         public static void SetSortIcon(this ListView listViewControl, int columnIndex, SortOrder order)
         {
             IntPtr columnHeader = SendMessage(listViewControl.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
@@ -98,6 +101,11 @@ namespace BZRModManager
                     throw new Win32Exception();
                 }
             }
+        }
+
+        public static IntPtr SendMessage(this Process p, UInt32 msg, IntPtr wParam, IntPtr lParam)
+        {
+            return SendMessage(new IntPtr(p.Id), msg, wParam, lParam);
         }
     }
 }

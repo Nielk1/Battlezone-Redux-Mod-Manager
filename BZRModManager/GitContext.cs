@@ -40,7 +40,7 @@ namespace BZRModManager
             return lines.Select(dr => dr.Split('\t')[1]).Where(dr => dr == "refs/heads/baked" || dr == "refs/heads/baked-dev").Select(dr => dr.Substring(11)).ToArray();
         }
 
-        public static void WorkshopDownloadItem(int appId, string url, string[] branches)
+        public static void WorkshopDownloadItem(UInt32 appId, string url, string[] branches)
         {
             string name = url.Split('/').Last();
             if (name.EndsWith(".git")) name = name.Substring(0, name.LastIndexOf(".git"));

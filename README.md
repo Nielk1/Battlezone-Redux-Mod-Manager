@@ -31,3 +31,6 @@ To utilize the manager, directories must be properly configured. An example of s
 For git mods to function your system must have git installed or `git.exe` must be placed in the application directory.
 
 For a git mod to be detected it must have a `baked` or `baked-dev` branch and the `config.json` meta-file.  `-dev` branches should have unique IDs so they can be installed simultaneously with release mods.  An example of a properly configured git-mod: https://github.com/Nielk1/BZCC-Advanced-Lua-API/tree/baked
+
+## Compile Notes:
+To compile you must also use the project SteamVent.SteamCmd from https://github.com/Nielk1/SteamVent
