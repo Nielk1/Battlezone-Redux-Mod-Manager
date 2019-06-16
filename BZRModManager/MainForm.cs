@@ -547,8 +547,6 @@ namespace BZRModManager
             new Thread(() =>
             {
                 SteamCmd.Download();
-                try { SteamCmd.WorkshopDownloadItem(AppIdBZ98, 1); } catch (SteamCmdWorkshopDownloadException) { }// catch (SteamCmdInactiveException) { }
-                try { SteamCmd.WorkshopDownloadItem(AppIdBZCC, 1); } catch (SteamCmdWorkshopDownloadException) { }// catch (SteamCmdInactiveException) { }
                 if (exitingStage > 1) return;
                 this.Invoke((MethodInvoker)delegate
                 {
