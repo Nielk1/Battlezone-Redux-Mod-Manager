@@ -33,7 +33,6 @@
             this.tpBZ98R = new System.Windows.Forms.TabPage();
             this.btnUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnRefreshBZ98R = new System.Windows.Forms.Button();
-            this.lvModsBZ98R = new BZRModManager.LinqListView();
             this.btnDownloadBZ98R = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDownloadBZ98R = new System.Windows.Forms.TextBox();
@@ -41,7 +40,6 @@
             this.btnDependenciesBZ98R = new System.Windows.Forms.Button();
             this.btnUpdateBZCC = new System.Windows.Forms.Button();
             this.btnRefreshBZCC = new System.Windows.Forms.Button();
-            this.lvModsBZCC = new BZRModManager.LinqListView();
             this.btnDownloadBZCC = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
@@ -72,10 +70,11 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslSteamCmd = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsslSteamCmdCommand = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
+            this.lvModsBZ98R = new BZRModManager.LinqListView();
+            this.lvModsBZCC = new BZRModManager.LinqListView();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tpBZCC.SuspendLayout();
@@ -150,22 +149,6 @@
             this.toolTip1.SetToolTip(this.btnRefreshBZ98R, "Refresh List");
             this.btnRefreshBZ98R.UseVisualStyleBackColor = true;
             this.btnRefreshBZ98R.Click += new System.EventHandler(this.btnRefreshBZ98R_Click);
-            // 
-            // lvModsBZ98R
-            // 
-            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZ98R.FullRowSelect = true;
-            this.lvModsBZ98R.GridLines = true;
-            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 35);
-            this.lvModsBZ98R.MultiSelect = false;
-            this.lvModsBZ98R.Name = "lvModsBZ98R";
-            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 279);
-            this.lvModsBZ98R.TabIndex = 5;
-            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
-            this.lvModsBZ98R.VirtualMode = true;
             // 
             // btnDownloadBZ98R
             // 
@@ -248,22 +231,6 @@
             this.toolTip1.SetToolTip(this.btnRefreshBZCC, "Refresh List");
             this.btnRefreshBZCC.UseVisualStyleBackColor = true;
             this.btnRefreshBZCC.Click += new System.EventHandler(this.btnRefreshBZCC_Click);
-            // 
-            // lvModsBZCC
-            // 
-            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZCC.FullRowSelect = true;
-            this.lvModsBZCC.GridLines = true;
-            this.lvModsBZCC.Location = new System.Drawing.Point(6, 35);
-            this.lvModsBZCC.MultiSelect = false;
-            this.lvModsBZCC.Name = "lvModsBZCC";
-            this.lvModsBZCC.Size = new System.Drawing.Size(722, 279);
-            this.lvModsBZCC.TabIndex = 6;
-            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
-            this.lvModsBZCC.VirtualMode = true;
             // 
             // btnDownloadBZCC
             // 
@@ -578,7 +545,6 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.tsslSteamCmd,
-            this.tsslSteamCmdCommand,
             this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 361);
             this.statusStrip1.Name = "statusStrip1";
@@ -602,24 +568,48 @@
             this.tsslSteamCmd.Text = "Off";
             this.tsslSteamCmd.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tsslSteamCmdCommand
-            // 
-            this.tsslSteamCmdCommand.Enabled = false;
-            this.tsslSteamCmdCommand.Name = "tsslSteamCmdCommand";
-            this.tsslSteamCmdCommand.Size = new System.Drawing.Size(34, 17);
-            this.tsslSteamCmdCommand.Text = "none";
-            this.tsslSteamCmdCommand.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(626, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(660, 17);
             this.toolStripStatusLabel2.Spring = true;
             this.toolStripStatusLabel2.Text = "-";
             // 
             // ofdGOGBZCCASM
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
+            // 
+            // lvModsBZ98R
+            // 
+            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvModsBZ98R.FullRowSelect = true;
+            this.lvModsBZ98R.GridLines = true;
+            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 35);
+            this.lvModsBZ98R.MultiSelect = false;
+            this.lvModsBZ98R.Name = "lvModsBZ98R";
+            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 279);
+            this.lvModsBZ98R.TabIndex = 5;
+            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
+            this.lvModsBZ98R.VirtualMode = true;
+            // 
+            // lvModsBZCC
+            // 
+            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvModsBZCC.FullRowSelect = true;
+            this.lvModsBZCC.GridLines = true;
+            this.lvModsBZCC.Location = new System.Drawing.Point(6, 35);
+            this.lvModsBZCC.MultiSelect = false;
+            this.lvModsBZCC.Name = "lvModsBZCC";
+            this.lvModsBZCC.Size = new System.Drawing.Size(722, 279);
+            this.lvModsBZCC.TabIndex = 6;
+            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
+            this.lvModsBZCC.VirtualMode = true;
             // 
             // MainForm
             // 
@@ -673,7 +663,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtDownloadBZCC;
         private System.Windows.Forms.ToolStripStatusLabel tsslSteamCmd;
-        private System.Windows.Forms.ToolStripStatusLabel tsslSteamCmdCommand;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.TabPage tpLog;

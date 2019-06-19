@@ -71,10 +71,10 @@ namespace BZRModManager
             steamcmdfull_log = File.OpenWrite($"log\\{logdate}-steamcmd-full.log");
             steamcmdfull_log_writer = new StreamWriter(steamcmdfull_log);
 
-            //SteamCmd.SteamCmdOutput += SteamCmd_Log;
-            //SteamCmd.SteamCmdOutputFull += SteamCmdFull_Log;
-            //SteamCmd.SteamCmdInput += SteamCmd_Log;
-            //SteamCmd.SteamCmdInput += SteamCmdFull_Log;
+            SteamCmd.SteamCmdOutput += SteamCmd_Log;
+            SteamCmd.SteamCmdOutputFull += SteamCmdFull_Log;
+            SteamCmd.SteamCmdArgs += SteamCmd_Log;
+            SteamCmd.SteamCmdArgs += SteamCmdFull_Log;
         }
 
         ~MainForm()
