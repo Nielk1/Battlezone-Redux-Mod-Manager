@@ -276,7 +276,7 @@ namespace BZRModManager
                     stat2.BackColor = Color.Purple;
                     break;
             }
-            lvi.SubItems.Add(string.Join(",", item.ModTags));
+            lvi.SubItems.Add(item.ModTags != null ? string.Join(",", item.ModTags) : string.Empty);
             //lvi.SubItems.Add(item.Version);
             //lvi.SubItems.Add(item.Vendor);
             //lvi.SubItems.Add(item.NokiaCategory);
