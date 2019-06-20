@@ -127,26 +127,6 @@ namespace BZRModManager
             });
         }
 
-        /*private void Steam_SteamCmdCommandChange(object sender, SteamCmdCommandChangeEventArgs e)
-        {
-            this.Invoke((MethodInvoker)delegate
-            {
-                if (string.IsNullOrWhiteSpace(e.Command))
-                {
-                    tsslSteamCmdCommand.Enabled = false;
-                    tsslSteamCmdCommand.Text = "none";
-                }
-                else
-                {
-                    tsslSteamCmdCommand.Enabled = true;
-                    tsslSteamCmdCommand.Text = e.Command;
-                    e?.Arguments?.ToList()?.ForEach(dr => tsslSteamCmdCommand.Text += ((dr != null) ? " " + dr : " \\0"));
-
-                    Log($"SteamCmd Command:\t\"{tsslSteamCmdCommand.Text}\"");
-                }
-            });
-        }*/
-
         TaskControl ActivatingSteamCmd = null;
         private void Steam_SteamCmdStatusChange(object sender, SteamCmdStatusChangeEventArgs e)
         {
@@ -155,12 +135,9 @@ namespace BZRModManager
                 case ESteamCmdStatus.Closed:
                     this.Invoke((MethodInvoker)delegate
                     {
-                        this.Invoke((MethodInvoker)delegate
-                        {
-                            LogSteamCmd("\r\nEXIT\r\n\r\n", true);
-                            LogSteamCmdFull("\r\nEXIT\r\n\r\n", true);
-                            this.SetSteamCmdStatusText(e.Status.ToString());
-                        });
+                        LogSteamCmd("\r\nEXIT\r\n\r\n", true);
+                        LogSteamCmdFull("\r\nEXIT\r\n\r\n", true);
+                        this.SetSteamCmdStatusText(e.Status.ToString());
                     });
                     break;
                 default:
@@ -263,18 +240,33 @@ namespace BZRModManager
 
                         if (settings.BZ98RSteamPath != null)
                         {
-                            TaskControl UpdateTask = UpdateBZ98RModListsTaskControl.AddTask("Update BZ98 Mod List (Steam)", 0);
-                            SteamContext.WorkshopItemsOnDrive(settings.BZ98RSteamPath, AppIdBZ98)?.ForEach(dr =>
+                            Task.Factory.StartNew(() =>
                             {
-                                string ModId = SteamMod.GetUniqueId(dr);
-                                if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                                try
                                 {
-                                    Mods[AppIdBZ98][ModId] = new SteamMod(AppIdBZ98, dr);
+                                    TaskControl UpdateTask = UpdateBZ98RModListsTaskControl.AddTask("Update BZ98 Mod List (Steam)", 0);
+                                    SteamContext.WorkshopItemsOnDrive(settings.BZ98RSteamPath, AppIdBZ98)?.ForEach(dr =>
+                                    {
+                                        string ModId = SteamMod.GetUniqueId(dr);
+                                        if (!Mods[AppIdBZ98].ContainsKey(ModId))
+                                        {
+                                            Mods[AppIdBZ98][ModId] = new SteamMod(AppIdBZ98, dr);
+                                        }
+                                    });
+                                    UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
+                                }
+                                finally
+                                {
+                                    loadSemaphore.Release();
                                 }
                             });
-                            UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
+                        }
+                        else
+                        {
+                            loadSemaphore.Release();
                         }
 
+                        loadSemaphore.WaitOne();
                         loadSemaphore.WaitOne();
                         loadSemaphore.WaitOne();
 
@@ -307,59 +299,86 @@ namespace BZRModManager
                 {
                     lock (ModStatus)
                     {
-                        Semaphore loadSemaphore = new Semaphore(0, 2);
+                        Semaphore loadSemaphore = new Semaphore(0, 3);
                         Task.Factory.StartNew(() =>
                         {
-                            TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (SteamCmd)", 0);
-                            List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatus(AppIdBZCC);
-                            stats?.ForEach(dr =>
+                            try
                             {
-                                string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
-                                if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (SteamCmd)", 0);
+                                List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatus(AppIdBZCC);
+                                stats?.ForEach(dr =>
                                 {
-                                    Mods[AppIdBZCC][ModId] = new SteamCmdMod(AppIdBZCC, dr);
-                                }
-                                else
-                                {
-                                    ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
-                                }
-                                Mods[AppIdBZCC][ModId].HasUpdate = dr.HasUpdate;
-                            });
-                            UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
-                            loadSemaphore.Release();
+                                    string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
+                                    if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                    {
+                                        Mods[AppIdBZCC][ModId] = new SteamCmdMod(AppIdBZCC, dr);
+                                    }
+                                    else
+                                    {
+                                        ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
+                                    }
+                                    Mods[AppIdBZCC][ModId].HasUpdate = dr.HasUpdate;
+                                });
+                                UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
+                            }
+                            finally
+                            {
+                                loadSemaphore.Release();
+                            }
                         });
                         Task.Factory.StartNew(() =>
                         {
-                            TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Git)", 0);
-                            List<GitModStatus> stats = GitContext.WorkshopItemsOnDrive(AppIdBZCC);
-                            stats?.ForEach(dr =>
+                            try
                             {
-                                string ModId = GitMod.GetUniqueId(dr.ModWorkshopId);
-                                if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Git)", 0);
+                                List<GitModStatus> stats = GitContext.WorkshopItemsOnDrive(AppIdBZCC);
+                                stats?.ForEach(dr =>
                                 {
-                                    Mods[AppIdBZCC][ModId] = new GitMod(AppIdBZCC, dr);
-                                }
-                                else
-                                {
-                                    ((GitMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
-                                }
-                            });
-                            UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
-                            loadSemaphore.Release();
+                                    string ModId = GitMod.GetUniqueId(dr.ModWorkshopId);
+                                    if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                    {
+                                        Mods[AppIdBZCC][ModId] = new GitMod(AppIdBZCC, dr);
+                                    }
+                                    else
+                                    {
+                                        ((GitMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
+                                    }
+                                });
+                                UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
+                            }
+                            finally
+                            {
+                                loadSemaphore.Release();
+                            }
                         });
                         if (settings.BZCCSteamPath != null)
                         {
-                            TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Steam)", 0);
-                            SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC)?.ForEach(dr =>
+                            Task.Factory.StartNew(() =>
                             {
-                                string ModId = SteamMod.GetUniqueId(dr);
-                                if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                try
                                 {
-                                    Mods[AppIdBZCC][ModId] = new SteamMod(AppIdBZCC, dr);
+                                    TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Steam)", 0);
+                                    SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC)?.ForEach(dr =>
+                                    {
+                                        string ModId = SteamMod.GetUniqueId(dr);
+                                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                        {
+                                            Mods[AppIdBZCC][ModId] = new SteamMod(AppIdBZCC, dr);
+                                        }
+                                    });
+                                    UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
+                                }
+                                finally
+                                {
+                                    loadSemaphore.Release();
                                 }
                             });
-                            UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
                         }
+                        else
+                        {
+                            loadSemaphore.Release();
+                        }
+                        loadSemaphore.WaitOne();
                         loadSemaphore.WaitOne();
                         loadSemaphore.WaitOne();
 
@@ -478,7 +497,7 @@ namespace BZRModManager
                 // normal wait till it closes loop
                 new Thread(() =>
                 {
-                while (SteamCmd.Status != ESteamCmdStatus.Closed)// && SteamCmd.Active)
+                    while (SteamCmd.Status != ESteamCmdStatus.Closed)// && SteamCmd.Active)
                     {
                         Thread.Sleep(100);
                     }
