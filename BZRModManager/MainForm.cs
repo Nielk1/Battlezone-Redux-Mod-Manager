@@ -149,6 +149,19 @@ namespace BZRModManager
             }
         }
 
+        private void UpdateActiveTaskStatus()
+        {
+            lock(ActiveTasksLock)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    tsslActiveTasks.Text = ActiveTasks.ToString();
+                });
+            }
+        }
+
+        object ActiveTasksLock = new object();
+        int ActiveTasks = 0;
         public TaskControl AddTask(string Name, int MaxValue)
         {
             TaskControl ctrl = new TaskControl(Name, MaxValue);
@@ -157,16 +170,28 @@ namespace BZRModManager
                 pnlTasks.Controls.Add(ctrl);
                 pnlTasks.Refresh();
             });
+            lock (ActiveTasksLock)
+            {
+                ActiveTasks++;
+                UpdateActiveTaskStatus();
+            }
             return ctrl;
         }
         public void EndTask(TaskControl ctrl)
         {
             if (ctrl != null)
+            {
                 this.Invoke((MethodInvoker)delegate
                 {
                     pnlTasks.Controls.Remove(ctrl);
                     pnlTasks.Refresh();
                 });
+                lock (ActiveTasksLock)
+                {
+                    ActiveTasks--;
+                    UpdateActiveTaskStatus();
+                }
+            }
         }
 
         Task UpdateBZ98RModListsTask = null;
@@ -1094,10 +1119,15 @@ namespace BZRModManager
                     if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
                     {
                         string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
-                        string[] ModTypes = BZ98RTools.GetModTypes(Path.Combine(workshopFolder, WorkshopId.ToString()));
+                        bool hadError;
+                        string[] ModTypes = BZ98RTools.GetModTypes(Path.Combine(workshopFolder, WorkshopId.ToString()), out hadError);
                         if (ModTypes?.Length > 0)
                         {
-                            return string.Join(", ", ModTypes);
+                            return (hadError ? "!" : string.Empty) + string.Join(", ", ModTypes);
+                        }
+                        if (hadError)
+                        {
+                            return "PARSE ERROR";
                         }
                     }
                 }
@@ -1154,11 +1184,15 @@ namespace BZRModManager
                 if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
                 {
                     string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
-                    string[] ModNames = BZ98RTools.GetModNames(Path.Combine(workshopFolder, WorkshopId.ToString()));
+                    bool hadError;
+                    string[] ModNames = BZ98RTools.GetModNames(Path.Combine(workshopFolder, WorkshopId.ToString()), out hadError);
                     if (ModNames?.Length > 0)
                     {
-                        if (ModNames.Length == 1) return ModNames[0];
-                        return string.Join(" / ", ModNames);
+                        return (hadError ? "!" : string.Empty) + string.Join(" / ", ModNames);
+                    }
+                    if (hadError)
+                    {
+                        return WorkshopId.ToString() + " (PARSE ERROR)";
                     }
                 }
 
@@ -1287,12 +1321,16 @@ namespace BZRModManager
             {
                 if (AppId == MainForm.AppIdBZ98)
                 {
-                    string[] ModTypes = BZ98RTools.GetModTypes($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                    bool hadError;
+                    string[] ModTypes = BZ98RTools.GetModTypes($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}", out hadError);
                     if (ModTypes?.Length > 0)
                     {
-                        return string.Join(", ", ModTypes);
+                        return (hadError ? "!" : string.Empty) + string.Join(", ", ModTypes);
                     }
-
+                    if (hadError)
+                    {
+                        return "PARSE ERROR";
+                    }
                 }
                 if (AppId == MainForm.AppIdBZCC)
                 {
@@ -1333,11 +1371,15 @@ namespace BZRModManager
         {
             if (AppId == MainForm.AppIdBZ98)
             {
-                string[] ModNames = BZ98RTools.GetModNames($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                bool hadError;
+                string[] ModNames = BZ98RTools.GetModNames($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}", out hadError);
                 if (ModNames?.Length > 0)
                 {
-                    if (ModNames.Length == 1) return ModNames[0];
-                    return string.Join(" / ", ModNames);
+                    return (hadError ? "!" : string.Empty) + string.Join(" / ", ModNames);
+                }
+                if (hadError)
+                {
+                    return Workshop.WorkshopId + " (PARSE ERROR)";
                 }
 
             }
@@ -1488,12 +1530,16 @@ namespace BZRModManager
             {
                 if (AppId == MainForm.AppIdBZ98)
                 {
-                    string[] ModTypes = BZ98RTools.GetModTypes(Workshop.ModPath);
+                    bool hadError;
+                    string[] ModTypes = BZ98RTools.GetModTypes(Workshop.ModPath, out hadError);
                     if (ModTypes?.Length > 0)
                     {
-                        return string.Join(", ", ModTypes);
+                        return (hadError ? "!" : string.Empty) + string.Join(", ", ModTypes);
                     }
-
+                    if (hadError)
+                    {
+                        return "PARSE ERROR";
+                    }
                 }
                 if (AppId == MainForm.AppIdBZCC)
                 {
@@ -1658,10 +1704,15 @@ namespace BZRModManager
                 if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
                 {
                     string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
-                    string[] ModNames = BZ98RTools.GetModNames(Path.Combine(workshopFolder, Workshop.ModWorkshopId));
+                    bool hadError;
+                    string[] ModNames = BZ98RTools.GetModNames(Path.Combine(workshopFolder, Workshop.ModWorkshopId), out hadError);
                     if (ModNames?.Length > 0)
                     {
-                        return string.Join(" / ", ModNames);
+                        return (hadError ? "!" : string.Empty) + string.Join(" / ", ModNames);
+                    }
+                    if (hadError)
+                    {
+                        return Workshop.ModWorkshopId + " (PARSE ERROR)";
                     }
                 }
             }
