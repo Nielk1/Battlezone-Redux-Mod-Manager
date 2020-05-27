@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace BZRModManager
 {
@@ -25,6 +27,95 @@ namespace BZRModManager
             //                   MyListView_SelectedIndexChanged);
             base.ColumnClick += new ColumnClickEventHandler(LinqListView_ColumnClick);
             base.MouseDoubleClick += LinqListView_MouseDoubleClick;
+            _resizeTimer.Tick += _resizeTimer_Tick;
+            base.Resize += LinqListView_Resize;
+            base.ColumnWidthChanging += LinqListView_ColumnWidthChanging;
+            base.ColumnWidthChanged += LinqListView_ColumnWidthChanged;
+        }
+
+        private void LinqListView_ColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
+        {
+            ListChangedRecently = false;
+            this.Invalidate();
+        }
+
+        private void LinqListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        {
+            ListChangedRecently = true;
+        }
+
+        bool ListChangedRecently = false;
+        DispatcherTimer _resizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
+        private void LinqListView_Resize(object sender, EventArgs e)
+        {
+            _resizeTimer.Stop();
+            ListChangedRecently = true;
+            _resizeTimer.IsEnabled = true;
+            _resizeTimer.Start();
+        }
+        void _resizeTimer_Tick(object sender, EventArgs e)
+        {
+            _resizeTimer.IsEnabled = false;
+            ListChangedRecently = false;
+            this.Invalidate();
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct NMHDR
+        {
+            public IntPtr hwndFrom;
+            public uint idFrom;
+            public uint code;
+        }
+
+        private const uint NM_CUSTOMDRAW = unchecked((uint)-12);
+
+        protected override void WndProc(ref Message m)
+        {
+            switch (m.Msg)
+            {
+                //case 0x0214: // WM_SIZING
+                //case 0x0005: // WM_SIZE
+                //    {
+                //        ListChangedRecently = true;
+                //    }
+                //    break;
+                //case 0x0232: // WM_EXITSIZEMOVE
+                //    {
+                //        //ListChangedRecently = false;
+                //        //this.Invalidate();
+                //    }
+                //    break;
+                case 0x115: // Trap WM_VSCROLL
+                    {
+                        ScrollEventType ScrollType = (ScrollEventType)(m.WParam.ToInt32() & 0xffff);
+                        if (ScrollType == ScrollEventType.EndScroll)
+                        {
+                            ListChangedRecently = false;
+                            this.Invalidate();
+                        }
+                        else
+                        {
+                            ListChangedRecently = true;
+                        }
+                    }
+                    break;
+                case 0x204E:
+                    {
+                        if (ListChangedRecently)
+                        {
+                            NMHDR hdr = (NMHDR)m.GetLParam(typeof(NMHDR));
+                            if (hdr.code == NM_CUSTOMDRAW)
+                            {
+                                m.Result = (IntPtr)0;
+                                return;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            base.WndProc(ref m);
         }
 
         private void LinqListView_MouseDoubleClick(object sender, MouseEventArgs e)
