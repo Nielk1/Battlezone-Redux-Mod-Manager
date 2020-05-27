@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BZRModManager
@@ -19,6 +20,9 @@ namespace BZRModManager
 
         public static string[] GetModTypes(string path, out bool error)
         {
+            Regex TargetHeader = new Regex("^\\[WORKSHOP\\]", RegexOptions.IgnoreCase);
+            Regex AnyHeader = new Regex("^\\[[^\\]]*\\]", RegexOptions.IgnoreCase);
+
             IEnumerable<string> paths = GetInis(path);
             FileIniDataParser parser = new FileIniDataParser();
             bool hadIniParseError = false;
@@ -31,8 +35,21 @@ namespace BZRModManager
                 }
                 catch (IniParser.Exceptions.ParsingException)
                 {
-                    hadIniParseError = true;
-                    return null;
+                    // try more agressive parsing
+                    string[] RawIniLines = File.ReadAllLines(dr);
+                    RawIniLines = RawIniLines.SkipWhile(line => !TargetHeader.IsMatch(line)).TakeWhile(line => !AnyHeader.IsMatch(line) || TargetHeader.IsMatch(line)).ToArray();
+                    try
+                    {
+                        IniData data = parser.Parser.Parse(string.Join("\r\n", RawIniLines));
+                        var retVal = data?["WORKSHOP"]?["mapType"]?.Trim('"');
+                        hadIniParseError = true; // we still had an error as we had to use agressive selection
+                        return retVal;
+                    }
+                    catch (IniParser.Exceptions.ParsingException)
+                    {
+                        hadIniParseError = true;
+                        return null;
+                    }
                 }
             }).Where(dr => !string.IsNullOrWhiteSpace(dr)).Distinct().OrderBy(dr => dr).ToArray();
             error = hadIniParseError;
@@ -41,6 +58,9 @@ namespace BZRModManager
 
         public static string[] GetModNames(string path, out bool error)
         {
+            Regex TargetHeader = new Regex("^\\[DESCRIPTION\\]", RegexOptions.IgnoreCase);
+            Regex AnyHeader = new Regex("^\\[[^\\]]*\\]", RegexOptions.IgnoreCase);
+
             IEnumerable<string> paths = GetInis(path);
             FileIniDataParser parser = new FileIniDataParser();
             bool hadIniParseError = false;
@@ -67,8 +87,21 @@ namespace BZRModManager
                 }
                 catch (IniParser.Exceptions.ParsingException)
                 {
-                    hadIniParseError = true;
-                    return null;
+                    // try more agressive parsing
+                    string[] RawIniLines = File.ReadAllLines(dr);
+                    RawIniLines = RawIniLines.SkipWhile(line => !TargetHeader.IsMatch(line)).TakeWhile(line => !AnyHeader.IsMatch(line) || TargetHeader.IsMatch(line)).ToArray();
+                    try
+                    {
+                        IniData data = parser.Parser.Parse(string.Join("\r\n", RawIniLines));
+                        var retVal = data?["DESCRIPTION"]?["missionName"]?.Trim('"');
+                        hadIniParseError = true; // we still had an error as we had to use agressive selection
+                        return retVal;
+                    }
+                    catch (IniParser.Exceptions.ParsingException)
+                    {
+                        hadIniParseError = true;
+                        return null;
+                    }
                 }
             }).Where(dr => !string.IsNullOrWhiteSpace(dr)).Distinct().OrderBy(dr => dr).ToArray();
             error = hadIniParseError;
@@ -77,6 +110,9 @@ namespace BZRModManager
 
         public static string[] GetModTags(string path)
         {
+            Regex TargetHeader = new Regex("^\\[WORKSHOP\\]", RegexOptions.IgnoreCase);
+            Regex AnyHeader = new Regex("^\\[[^\\]]*\\]", RegexOptions.IgnoreCase);
+
             IEnumerable<string> paths = GetInis(path);
             FileIniDataParser parser = new FileIniDataParser();
             bool hadIniParseError = false;
@@ -89,8 +125,21 @@ namespace BZRModManager
                 }
                 catch (IniParser.Exceptions.ParsingException)
                 {
-                    hadIniParseError = true;
-                    return new string[] { };
+                    // try more agressive parsing
+                    string[] RawIniLines = File.ReadAllLines(dr);
+                    RawIniLines = RawIniLines.SkipWhile(line => !TargetHeader.IsMatch(line)).TakeWhile(line => !AnyHeader.IsMatch(line) || TargetHeader.IsMatch(line)).ToArray();
+                    try
+                    {
+                        IniData data = parser.Parser.Parse(string.Join("\r\n", RawIniLines));
+                        var retVal = data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
+                        hadIniParseError = true; // we still had an error as we had to use agressive selection
+                        return retVal;
+                    }
+                    catch (IniParser.Exceptions.ParsingException)
+                    {
+                        hadIniParseError = true;
+                        return new string[] { };
+                    }
                 }
             }).Where(dr => !string.IsNullOrWhiteSpace(dr)).GroupBy(dr => dr).OrderByDescending(dr => dr.Count()).ThenBy(dr => dr.Key).Select(dr => dr.Key).ToArray();
             if (hadIniParseError)
