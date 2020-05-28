@@ -385,14 +385,39 @@ namespace BZRModManager
                                 try
                                 {
                                     TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Steam)", 0);
+                                    HashSet<long> Dependencies = new HashSet<long>();
                                     SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC)?.ForEach(dr =>
                                     {
                                         string ModId = SteamMod.GetUniqueId(dr);
                                         if (!Mods[AppIdBZCC].ContainsKey(ModId))
                                         {
-                                            Mods[AppIdBZCC][ModId] = new SteamMod(AppIdBZCC, dr);
+                                            SteamMod mod = new SteamMod(AppIdBZCC, dr);
+                                            Mods[AppIdBZCC][ModId] = mod;
+
+                                            string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, MainForm.AppIdBZCC);
+                                            string[] Deps = BZCCTools.GetAssetDependencies(Path.Combine(workshopFolder, mod.WorkshopId.ToString()));
+                                            if (Deps != null)
+                                            {
+                                                foreach (string Dep in Deps)
+                                                {
+                                                    long DepL;
+                                                    if (long.TryParse(Dep, out DepL))
+                                                    {
+                                                        Dependencies.Add(DepL);
+                                                    }
+                                                }
+                                            }
                                         }
                                     });
+                                    foreach(var dr in Dependencies)
+                                    {
+                                        string ModId = SteamMod.GetUniqueId(dr);
+                                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                        {
+                                            SteamMod mod = new SteamMod(AppIdBZCC, dr);
+                                            Mods[AppIdBZCC][ModId] = mod;
+                                        }
+                                    }
                                     UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
                                 }
                                 finally
@@ -627,7 +652,18 @@ namespace BZRModManager
                     TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - SteamCmd - {workshopID}", 0);
                     Task.Factory.StartNew(() =>
                     {
-                        SteamCmd.WorkshopDownloadItem(AppId, workshopID);
+                        SteamCmdException ex_ = null;
+                        int OtherErrorCounter = 0;
+                        do
+                        {
+                            ex_ = null;
+                            try
+                            {
+                                SteamCmd.WorkshopDownloadItem(AppId, workshopID);
+                            }
+                            catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
+                            catch (SteamCmdException ex) { ex_ = ex; OtherErrorCounter++; }
+                        } while (ex_ != null && (ex_ is SteamCmdWorkshopDownloadException && ex_.Message.StartsWith("ERROR! Timeout downloading item ") || OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR));
                         this.Invoke((MethodInvoker)delegate
                         {
                             switch (AppId)
@@ -1089,6 +1125,7 @@ namespace BZRModManager
         ForceEnabled,
         Linked,
         Collision,
+        Missing,
     }
 
     public abstract class ModItem : ILinqListViesItem
@@ -1125,7 +1162,23 @@ namespace BZRModManager
 
         public override string UniqueID { get { return GetUniqueId(WorkshopId); } }
         public static string GetUniqueId(long workshopId) { return workshopId.ToString().PadLeft(long.MaxValue.ToString().Length, '0') + "-Steam"; }
-        public override InstallStatus InstalledSteam { get { return InstallStatus.ForceEnabled; } } // forced
+        public override InstallStatus InstalledSteam {
+            get
+            {
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    if ((MainForm.settings?.BZCCSteamPath?.Length ?? 0) > 0)
+                    {
+                        string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
+                        if (!Directory.Exists(Path.Combine(workshopFolder, WorkshopId.ToString())))
+                        {
+                            return InstallStatus.Missing;
+                        }
+                    }
+                }
+                return InstallStatus.ForceEnabled;
+            }
+        } // forced
         public override InstallStatus InstalledGog
         {
             get
@@ -1151,6 +1204,7 @@ namespace BZRModManager
                         string sourceFolder = Path.Combine(workshopFolder, WorkshopId.ToString());
                         string destinationFolder = Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", WorkshopId.ToString());
 
+                        if (!Directory.Exists(Path.Combine(workshopFolder, WorkshopId.ToString()))) return InstallStatus.Missing;
                         if (!Directory.Exists(destinationFolder)) return InstallStatus.Uninstalled;
                         if (JunctionPoint.Exists(destinationFolder) && JunctionPoint.GetTarget(destinationFolder) == sourceFolder) return InstallStatus.Linked;
                         return InstallStatus.Collision;
@@ -1182,12 +1236,14 @@ namespace BZRModManager
                 }
                 if (AppId == MainForm.AppIdBZCC)
                 {
-                    if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
+                    if ((MainForm.settings?.BZCCSteamPath?.Length ?? 0) > 0)
                     {
                         string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
                         string ModType = BZCCTools.GetModType(Path.Combine(workshopFolder, WorkshopId.ToString()));
                         if (ModType != null) return ModType;
                     }
+                    if (InstalledSteam == InstallStatus.Missing)
+                        return "asset?";
                 }
                 return "UNKNOWN";
             }
@@ -1207,7 +1263,7 @@ namespace BZRModManager
                 }
                 if (AppId == MainForm.AppIdBZCC)
                 {
-                    if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
+                    if ((MainForm.settings?.BZCCSteamPath?.Length ?? 0) > 0)
                     {
                         string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
                         string[] ModTags = BZCCTools.GetModTags(Path.Combine(workshopFolder, WorkshopId.ToString()));
@@ -1248,7 +1304,7 @@ namespace BZRModManager
             }
             if (AppId == MainForm.AppIdBZCC)
             {
-                if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
+                if ((MainForm.settings?.BZCCSteamPath?.Length ?? 0) > 0)
                 {
                     string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
                     string ModName = BZCCTools.GetModName(Path.Combine(workshopFolder, WorkshopId.ToString()));
@@ -1260,7 +1316,11 @@ namespace BZRModManager
 
         public override void ToggleGog()
         {
-            if (InstalledGog == InstallStatus.Uninstalled)
+            if (InstalledGog == InstallStatus.Missing)
+            {
+                
+            }
+            else if (InstalledGog == InstallStatus.Uninstalled)
             {
                 if (AppId == MainForm.AppIdBZ98)
                 {
@@ -1319,8 +1379,10 @@ namespace BZRModManager
         }
         public override void ToggleSteam()
         {
-            //if (InstalledSteam == InstallStatus.Uninstalled) { }
-            //ListViewItemCache = null;
+            if (InstalledSteam == InstallStatus.Missing)
+            {
+                Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={WorkshopId}");
+            }
         }
     }
 

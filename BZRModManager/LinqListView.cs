@@ -152,7 +152,6 @@ namespace BZRModManager
             }
         }
 
-        private IContainer components;
         List<int> sorts = new List<int>();
         public List<string> TypeFilter { get { return _TypeFilter; } set { _TypeFilter = value; ApplySortAndFilter(); } }
         private List<string> _TypeFilter;
@@ -323,18 +322,22 @@ namespace BZRModManager
                 case InstallStatus.Unknown:
                     stat1 = lvi.SubItems.Add(string.Empty);
                     break;
+                case InstallStatus.Missing:
+                    stat1 = lvi.SubItems.Add("M");
+                    stat1.BackColor = Color.Orange;
+                    break;
                 case InstallStatus.Uninstalled:
                     stat1 = lvi.SubItems.Add("N");
                     stat1.BackColor = Color.Red;
                     break;
                 case InstallStatus.ForceDisabled:
                     stat1 = lvi.SubItems.Add("N");
-                    stat1.BackColor = Color.Pink;
+                    //stat1.BackColor = Color.Pink;
                     stat1.ForeColor = Color.Gray;
                     break;
                 case InstallStatus.ForceEnabled:
                     stat1 = lvi.SubItems.Add("Y");
-                    stat1.BackColor = Color.LightGreen;
+                    //stat1.BackColor = Color.LightGreen;
                     stat1.ForeColor = Color.Gray;
                     break;
                 case InstallStatus.Linked:
@@ -350,6 +353,9 @@ namespace BZRModManager
             {
                 case InstallStatus.Unknown:
                     stat2 = lvi.SubItems.Add(string.Empty);
+                    break;
+                case InstallStatus.Missing:
+                    stat2 = lvi.SubItems.Add("X");
                     break;
                 case InstallStatus.Uninstalled:
                     stat2 = lvi.SubItems.Add("N");
