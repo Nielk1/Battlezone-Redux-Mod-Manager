@@ -683,8 +683,10 @@ namespace BZRModManager
         private void btnRefreshBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RModLists(); }
         private void btnRefreshBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCModLists(); }
 
-        private void btnUpdateBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RMods(Control.ModifierKeys == Keys.Shift); }
-        private void btnUpdateBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCMods(Control.ModifierKeys == Keys.Shift); }
+        private void btnUpdateBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RMods(false); }
+        private void btnHardUpdateBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RMods(true); }
+        private void btnUpdateBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCMods(false); }
+        private void btnHardUpdateBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCMods(true); }
 
         private void btnDependenciesBZ98R_Click(object sender, EventArgs e) { this.GetDependenciesBZCCMods(); }
 
@@ -1051,6 +1053,31 @@ namespace BZRModManager
             txtBZCCSteam.Enabled = false;
             txtDownloadBZ98R.Enabled = false;
             txtDownloadBZCC.Enabled = false;
+        }
+
+        private void cbBZ98RType_CheckedChanged(object sender, EventArgs e)
+        {
+            List<string> Filters = new List<string>();
+            if (cbBZ98RTypeMod.Checked) Filters.Add("mod");
+            if (cbBZ98RTypeMultiplayer.Checked) Filters.Add("multiplayer");
+            if (cbBZ98RTypeInstantAction.Checked) Filters.Add("instant_action");
+            if (cbBZ98RTypeCampaign.Checked) Filters.Add("campaign");
+            if (cbBZ98RTypeError.Checked) Filters.Add("!");
+
+            lvModsBZ98R.TypeFilter = Filters;
+            lvModsBZ98R.Refresh();
+        }
+
+        private void cbBZCCType_CheckedChanged(object sender, EventArgs e)
+        {
+            List<string> Filters = new List<string>();
+            if (cbBZCCTypeAddon.Checked) Filters.Add("addon");
+            if (cbBZCCTypeConfig.Checked) Filters.Add("config");
+            if (cbBZCCTypeAsset.Checked) Filters.Add("asset");
+            if (cbBZCCTypeError.Checked) Filters.Add("UNKNOWN");
+
+            lvModsBZCC.TypeFilter = Filters;
+            lvModsBZCC.Refresh();
         }
     }
 

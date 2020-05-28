@@ -31,6 +31,13 @@
             this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpBZ98R = new System.Windows.Forms.TabPage();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.cbBZ98RTypeError = new System.Windows.Forms.CheckBox();
+            this.cbBZ98RTypeCampaign = new System.Windows.Forms.CheckBox();
+            this.cbBZ98RTypeInstantAction = new System.Windows.Forms.CheckBox();
+            this.cbBZ98RTypeMultiplayer = new System.Windows.Forms.CheckBox();
+            this.cbBZ98RTypeMod = new System.Windows.Forms.CheckBox();
+            this.btnHardUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnRefreshBZ98R = new System.Windows.Forms.Button();
             this.lvModsBZ98R = new BZRModManager.LinqListView();
@@ -76,10 +83,16 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
+            this.btnHardUpdateBZCC = new System.Windows.Forms.Button();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.cbBZCCTypeError = new System.Windows.Forms.CheckBox();
+            this.cbBZCCTypeConfig = new System.Windows.Forms.CheckBox();
+            this.cbBZCCTypeAddon = new System.Windows.Forms.CheckBox();
+            this.cbBZCCTypeAsset = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.tpBZCC.SuspendLayout();
             this.tpSettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -91,6 +104,7 @@
             this.tpLogSteamCmd.SuspendLayout();
             this.tpLogSteamCmdFull.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -109,12 +123,14 @@
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(742, 346);
+            this.tabControl1.Size = new System.Drawing.Size(742, 407);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tpBZ98R
             // 
+            this.tpBZ98R.Controls.Add(this.tableLayoutPanel1);
+            this.tpBZ98R.Controls.Add(this.btnHardUpdateBZ98R);
             this.tpBZ98R.Controls.Add(this.btnUpdateBZ98R);
             this.tpBZ98R.Controls.Add(this.btnRefreshBZ98R);
             this.tpBZ98R.Controls.Add(this.lvModsBZ98R);
@@ -124,32 +140,128 @@
             this.tpBZ98R.Location = new System.Drawing.Point(4, 22);
             this.tpBZ98R.Name = "tpBZ98R";
             this.tpBZ98R.Padding = new System.Windows.Forms.Padding(3);
-            this.tpBZ98R.Size = new System.Drawing.Size(734, 320);
+            this.tpBZ98R.Size = new System.Drawing.Size(734, 381);
             this.tpBZ98R.TabIndex = 0;
             this.tpBZ98R.Text = "BZ98R";
             this.tpBZ98R.UseVisualStyleBackColor = true;
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeError, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeCampaign, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeInstantAction, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeMultiplayer, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeMod, 0, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 35);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(434, 23);
+            this.tableLayoutPanel1.TabIndex = 10;
+            // 
+            // cbBZ98RTypeError
+            // 
+            this.cbBZ98RTypeError.AutoSize = true;
+            this.cbBZ98RTypeError.Checked = true;
+            this.cbBZ98RTypeError.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZ98RTypeError.Location = new System.Drawing.Point(312, 3);
+            this.cbBZ98RTypeError.Name = "cbBZ98RTypeError";
+            this.cbBZ98RTypeError.Size = new System.Drawing.Size(47, 17);
+            this.cbBZ98RTypeError.TabIndex = 13;
+            this.cbBZ98RTypeError.Text = "error";
+            this.cbBZ98RTypeError.UseVisualStyleBackColor = true;
+            this.cbBZ98RTypeError.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            // 
+            // cbBZ98RTypeCampaign
+            // 
+            this.cbBZ98RTypeCampaign.AutoSize = true;
+            this.cbBZ98RTypeCampaign.Checked = true;
+            this.cbBZ98RTypeCampaign.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZ98RTypeCampaign.Location = new System.Drawing.Point(234, 3);
+            this.cbBZ98RTypeCampaign.Name = "cbBZ98RTypeCampaign";
+            this.cbBZ98RTypeCampaign.Size = new System.Drawing.Size(72, 17);
+            this.cbBZ98RTypeCampaign.TabIndex = 12;
+            this.cbBZ98RTypeCampaign.Text = "campaign";
+            this.cbBZ98RTypeCampaign.UseVisualStyleBackColor = true;
+            this.cbBZ98RTypeCampaign.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            // 
+            // cbBZ98RTypeInstantAction
+            // 
+            this.cbBZ98RTypeInstantAction.AutoSize = true;
+            this.cbBZ98RTypeInstantAction.Checked = true;
+            this.cbBZ98RTypeInstantAction.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZ98RTypeInstantAction.Location = new System.Drawing.Point(136, 3);
+            this.cbBZ98RTypeInstantAction.Name = "cbBZ98RTypeInstantAction";
+            this.cbBZ98RTypeInstantAction.Size = new System.Drawing.Size(92, 17);
+            this.cbBZ98RTypeInstantAction.TabIndex = 11;
+            this.cbBZ98RTypeInstantAction.Text = "instant_action";
+            this.cbBZ98RTypeInstantAction.UseVisualStyleBackColor = true;
+            this.cbBZ98RTypeInstantAction.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            // 
+            // cbBZ98RTypeMultiplayer
+            // 
+            this.cbBZ98RTypeMultiplayer.AutoSize = true;
+            this.cbBZ98RTypeMultiplayer.Checked = true;
+            this.cbBZ98RTypeMultiplayer.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZ98RTypeMultiplayer.Location = new System.Drawing.Point(55, 3);
+            this.cbBZ98RTypeMultiplayer.Name = "cbBZ98RTypeMultiplayer";
+            this.cbBZ98RTypeMultiplayer.Size = new System.Drawing.Size(75, 17);
+            this.cbBZ98RTypeMultiplayer.TabIndex = 10;
+            this.cbBZ98RTypeMultiplayer.Text = "multiplayer";
+            this.cbBZ98RTypeMultiplayer.UseVisualStyleBackColor = true;
+            this.cbBZ98RTypeMultiplayer.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            // 
+            // cbBZ98RTypeMod
+            // 
+            this.cbBZ98RTypeMod.AutoSize = true;
+            this.cbBZ98RTypeMod.Checked = true;
+            this.cbBZ98RTypeMod.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZ98RTypeMod.Location = new System.Drawing.Point(3, 3);
+            this.cbBZ98RTypeMod.Name = "cbBZ98RTypeMod";
+            this.cbBZ98RTypeMod.Size = new System.Drawing.Size(46, 17);
+            this.cbBZ98RTypeMod.TabIndex = 9;
+            this.cbBZ98RTypeMod.Text = "mod";
+            this.cbBZ98RTypeMod.UseVisualStyleBackColor = true;
+            this.cbBZ98RTypeMod.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            // 
+            // btnHardUpdateBZ98R
+            // 
+            this.btnHardUpdateBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnHardUpdateBZ98R.Location = new System.Drawing.Point(446, 35);
+            this.btnHardUpdateBZ98R.Name = "btnHardUpdateBZ98R";
+            this.btnHardUpdateBZ98R.Size = new System.Drawing.Size(90, 23);
+            this.btnHardUpdateBZ98R.TabIndex = 8;
+            this.btnHardUpdateBZ98R.Text = "Hard Update";
+            this.btnHardUpdateBZ98R.UseVisualStyleBackColor = true;
+            this.btnHardUpdateBZ98R.Click += new System.EventHandler(this.btnHardUpdateBZ98R_Click);
+            // 
             // btnUpdateBZ98R
             // 
             this.btnUpdateBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdateBZ98R.Location = new System.Drawing.Point(676, 7);
+            this.btnUpdateBZ98R.Location = new System.Drawing.Point(542, 35);
             this.btnUpdateBZ98R.Name = "btnUpdateBZ98R";
-            this.btnUpdateBZ98R.Size = new System.Drawing.Size(23, 23);
+            this.btnUpdateBZ98R.Size = new System.Drawing.Size(90, 23);
             this.btnUpdateBZ98R.TabIndex = 7;
-            this.btnUpdateBZ98R.Text = "U";
-            this.toolTip1.SetToolTip(this.btnUpdateBZ98R, "Update Mods");
+            this.btnUpdateBZ98R.Text = "Update Mods";
             this.btnUpdateBZ98R.UseVisualStyleBackColor = true;
             this.btnUpdateBZ98R.Click += new System.EventHandler(this.btnUpdateBZ98R_Click);
             // 
             // btnRefreshBZ98R
             // 
             this.btnRefreshBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefreshBZ98R.Location = new System.Drawing.Point(705, 7);
+            this.btnRefreshBZ98R.Location = new System.Drawing.Point(638, 35);
             this.btnRefreshBZ98R.Name = "btnRefreshBZ98R";
-            this.btnRefreshBZ98R.Size = new System.Drawing.Size(23, 23);
+            this.btnRefreshBZ98R.Size = new System.Drawing.Size(90, 23);
             this.btnRefreshBZ98R.TabIndex = 6;
-            this.btnRefreshBZ98R.Text = "R";
-            this.toolTip1.SetToolTip(this.btnRefreshBZ98R, "Refresh List");
+            this.btnRefreshBZ98R.Text = "Refresh List";
             this.btnRefreshBZ98R.UseVisualStyleBackColor = true;
             this.btnRefreshBZ98R.Click += new System.EventHandler(this.btnRefreshBZ98R_Click);
             // 
@@ -161,11 +273,12 @@
             this.lvModsBZ98R.FullRowSelect = true;
             this.lvModsBZ98R.GridLines = true;
             this.lvModsBZ98R.HideSelection = false;
-            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 35);
+            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 64);
             this.lvModsBZ98R.MultiSelect = false;
             this.lvModsBZ98R.Name = "lvModsBZ98R";
-            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 279);
+            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 311);
             this.lvModsBZ98R.TabIndex = 5;
+            this.lvModsBZ98R.TypeFilter = null;
             this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
             this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
             this.lvModsBZ98R.VirtualMode = true;
@@ -173,9 +286,9 @@
             // btnDownloadBZ98R
             // 
             this.btnDownloadBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZ98R.Location = new System.Drawing.Point(595, 7);
+            this.btnDownloadBZ98R.Location = new System.Drawing.Point(638, 7);
             this.btnDownloadBZ98R.Name = "btnDownloadBZ98R";
-            this.btnDownloadBZ98R.Size = new System.Drawing.Size(75, 23);
+            this.btnDownloadBZ98R.Size = new System.Drawing.Size(90, 23);
             this.btnDownloadBZ98R.TabIndex = 2;
             this.btnDownloadBZ98R.Text = "Download";
             this.btnDownloadBZ98R.UseVisualStyleBackColor = true;
@@ -196,11 +309,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDownloadBZ98R.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZ98R.Name = "txtDownloadBZ98R";
-            this.txtDownloadBZ98R.Size = new System.Drawing.Size(521, 20);
+            this.txtDownloadBZ98R.Size = new System.Drawing.Size(564, 20);
             this.txtDownloadBZ98R.TabIndex = 0;
             // 
             // tpBZCC
             // 
+            this.tpBZCC.Controls.Add(this.tableLayoutPanel2);
+            this.tpBZCC.Controls.Add(this.btnHardUpdateBZCC);
             this.tpBZCC.Controls.Add(this.btnDependenciesBZ98R);
             this.tpBZCC.Controls.Add(this.btnUpdateBZCC);
             this.tpBZCC.Controls.Add(this.btnRefreshBZCC);
@@ -211,7 +326,7 @@
             this.tpBZCC.Location = new System.Drawing.Point(4, 22);
             this.tpBZCC.Name = "tpBZCC";
             this.tpBZCC.Padding = new System.Windows.Forms.Padding(3);
-            this.tpBZCC.Size = new System.Drawing.Size(734, 320);
+            this.tpBZCC.Size = new System.Drawing.Size(734, 381);
             this.tpBZCC.TabIndex = 1;
             this.tpBZCC.Text = "BZCC";
             this.tpBZCC.UseVisualStyleBackColor = true;
@@ -219,36 +334,33 @@
             // btnDependenciesBZ98R
             // 
             this.btnDependenciesBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDependenciesBZ98R.Location = new System.Drawing.Point(647, 7);
+            this.btnDependenciesBZ98R.Location = new System.Drawing.Point(300, 35);
             this.btnDependenciesBZ98R.Name = "btnDependenciesBZ98R";
-            this.btnDependenciesBZ98R.Size = new System.Drawing.Size(23, 23);
+            this.btnDependenciesBZ98R.Size = new System.Drawing.Size(140, 23);
             this.btnDependenciesBZ98R.TabIndex = 10;
-            this.btnDependenciesBZ98R.Text = "D";
-            this.toolTip1.SetToolTip(this.btnDependenciesBZ98R, "Download Dependencies");
+            this.btnDependenciesBZ98R.Text = "Download Dependencies";
             this.btnDependenciesBZ98R.UseVisualStyleBackColor = true;
             this.btnDependenciesBZ98R.Click += new System.EventHandler(this.btnDependenciesBZ98R_Click);
             // 
             // btnUpdateBZCC
             // 
             this.btnUpdateBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdateBZCC.Location = new System.Drawing.Point(676, 7);
+            this.btnUpdateBZCC.Location = new System.Drawing.Point(542, 35);
             this.btnUpdateBZCC.Name = "btnUpdateBZCC";
-            this.btnUpdateBZCC.Size = new System.Drawing.Size(23, 23);
+            this.btnUpdateBZCC.Size = new System.Drawing.Size(90, 23);
             this.btnUpdateBZCC.TabIndex = 9;
-            this.btnUpdateBZCC.Text = "U";
-            this.toolTip1.SetToolTip(this.btnUpdateBZCC, "Update Mods");
+            this.btnUpdateBZCC.Text = "Update Mods";
             this.btnUpdateBZCC.UseVisualStyleBackColor = true;
             this.btnUpdateBZCC.Click += new System.EventHandler(this.btnUpdateBZCC_Click);
             // 
             // btnRefreshBZCC
             // 
             this.btnRefreshBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefreshBZCC.Location = new System.Drawing.Point(705, 7);
+            this.btnRefreshBZCC.Location = new System.Drawing.Point(638, 35);
             this.btnRefreshBZCC.Name = "btnRefreshBZCC";
-            this.btnRefreshBZCC.Size = new System.Drawing.Size(23, 23);
+            this.btnRefreshBZCC.Size = new System.Drawing.Size(90, 23);
             this.btnRefreshBZCC.TabIndex = 8;
-            this.btnRefreshBZCC.Text = "R";
-            this.toolTip1.SetToolTip(this.btnRefreshBZCC, "Refresh List");
+            this.btnRefreshBZCC.Text = "Refresh List";
             this.btnRefreshBZCC.UseVisualStyleBackColor = true;
             this.btnRefreshBZCC.Click += new System.EventHandler(this.btnRefreshBZCC_Click);
             // 
@@ -260,11 +372,12 @@
             this.lvModsBZCC.FullRowSelect = true;
             this.lvModsBZCC.GridLines = true;
             this.lvModsBZCC.HideSelection = false;
-            this.lvModsBZCC.Location = new System.Drawing.Point(6, 35);
+            this.lvModsBZCC.Location = new System.Drawing.Point(6, 64);
             this.lvModsBZCC.MultiSelect = false;
             this.lvModsBZCC.Name = "lvModsBZCC";
-            this.lvModsBZCC.Size = new System.Drawing.Size(722, 279);
+            this.lvModsBZCC.Size = new System.Drawing.Size(722, 311);
             this.lvModsBZCC.TabIndex = 6;
+            this.lvModsBZCC.TypeFilter = null;
             this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
             this.lvModsBZCC.View = System.Windows.Forms.View.Details;
             this.lvModsBZCC.VirtualMode = true;
@@ -272,9 +385,9 @@
             // btnDownloadBZCC
             // 
             this.btnDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZCC.Location = new System.Drawing.Point(566, 7);
+            this.btnDownloadBZCC.Location = new System.Drawing.Point(638, 7);
             this.btnDownloadBZCC.Name = "btnDownloadBZCC";
-            this.btnDownloadBZCC.Size = new System.Drawing.Size(75, 23);
+            this.btnDownloadBZCC.Size = new System.Drawing.Size(90, 23);
             this.btnDownloadBZCC.TabIndex = 5;
             this.btnDownloadBZCC.Text = "Download";
             this.btnDownloadBZCC.UseVisualStyleBackColor = true;
@@ -295,7 +408,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDownloadBZCC.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZCC.Name = "txtDownloadBZCC";
-            this.txtDownloadBZCC.Size = new System.Drawing.Size(492, 20);
+            this.txtDownloadBZCC.Size = new System.Drawing.Size(564, 20);
             this.txtDownloadBZCC.TabIndex = 3;
             // 
             // tpSettings
@@ -310,7 +423,7 @@
             this.tpSettings.Location = new System.Drawing.Point(4, 22);
             this.tpSettings.Name = "tpSettings";
             this.tpSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tpSettings.Size = new System.Drawing.Size(734, 320);
+            this.tpSettings.Size = new System.Drawing.Size(734, 381);
             this.tpSettings.TabIndex = 2;
             this.tpSettings.Text = "Settings";
             this.tpSettings.UseVisualStyleBackColor = true;
@@ -488,7 +601,7 @@
             this.tpTasks.Location = new System.Drawing.Point(4, 22);
             this.tpTasks.Name = "tpTasks";
             this.tpTasks.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTasks.Size = new System.Drawing.Size(734, 320);
+            this.tpTasks.Size = new System.Drawing.Size(734, 381);
             this.tpTasks.TabIndex = 6;
             this.tpTasks.Text = "Tasks";
             this.tpTasks.UseVisualStyleBackColor = true;
@@ -503,7 +616,7 @@
             this.pnlTasks.Name = "pnlTasks";
             this.pnlTasks.RowCount = 1;
             this.pnlTasks.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.pnlTasks.Size = new System.Drawing.Size(728, 314);
+            this.pnlTasks.Size = new System.Drawing.Size(728, 375);
             this.pnlTasks.TabIndex = 0;
             this.pnlTasks.Resize += new System.EventHandler(this.pnlTasks_Resize);
             // 
@@ -513,7 +626,7 @@
             this.tpLog.Location = new System.Drawing.Point(4, 22);
             this.tpLog.Name = "tpLog";
             this.tpLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLog.Size = new System.Drawing.Size(734, 320);
+            this.tpLog.Size = new System.Drawing.Size(734, 381);
             this.tpLog.TabIndex = 3;
             this.tpLog.Text = "Log";
             this.tpLog.UseVisualStyleBackColor = true;
@@ -526,7 +639,7 @@
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtLog.Size = new System.Drawing.Size(728, 314);
+            this.txtLog.Size = new System.Drawing.Size(728, 375);
             this.txtLog.TabIndex = 0;
             // 
             // tpLogSteamCmd
@@ -535,7 +648,7 @@
             this.tpLogSteamCmd.Location = new System.Drawing.Point(4, 22);
             this.tpLogSteamCmd.Name = "tpLogSteamCmd";
             this.tpLogSteamCmd.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLogSteamCmd.Size = new System.Drawing.Size(734, 320);
+            this.tpLogSteamCmd.Size = new System.Drawing.Size(734, 381);
             this.tpLogSteamCmd.TabIndex = 4;
             this.tpLogSteamCmd.Text = "SteamCmd";
             this.tpLogSteamCmd.UseVisualStyleBackColor = true;
@@ -549,7 +662,7 @@
             this.txtLogSteamCmd.Location = new System.Drawing.Point(3, 3);
             this.txtLogSteamCmd.Name = "txtLogSteamCmd";
             this.txtLogSteamCmd.ReadOnly = true;
-            this.txtLogSteamCmd.Size = new System.Drawing.Size(728, 314);
+            this.txtLogSteamCmd.Size = new System.Drawing.Size(728, 375);
             this.txtLogSteamCmd.TabIndex = 1;
             this.txtLogSteamCmd.Text = "";
             // 
@@ -559,7 +672,7 @@
             this.tpLogSteamCmdFull.Location = new System.Drawing.Point(4, 22);
             this.tpLogSteamCmdFull.Name = "tpLogSteamCmdFull";
             this.tpLogSteamCmdFull.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLogSteamCmdFull.Size = new System.Drawing.Size(734, 320);
+            this.tpLogSteamCmdFull.Size = new System.Drawing.Size(734, 381);
             this.tpLogSteamCmdFull.TabIndex = 5;
             this.tpLogSteamCmdFull.Text = "SteamCmd Raw";
             this.tpLogSteamCmdFull.UseVisualStyleBackColor = true;
@@ -573,7 +686,7 @@
             this.txtLogSteamCmdFull.Location = new System.Drawing.Point(3, 3);
             this.txtLogSteamCmdFull.Name = "txtLogSteamCmdFull";
             this.txtLogSteamCmdFull.ReadOnly = true;
-            this.txtLogSteamCmdFull.Size = new System.Drawing.Size(728, 314);
+            this.txtLogSteamCmdFull.Size = new System.Drawing.Size(728, 375);
             this.txtLogSteamCmdFull.TabIndex = 2;
             this.txtLogSteamCmdFull.Text = "";
             // 
@@ -586,7 +699,7 @@
             this.toolStripStatusLabel3,
             this.tsslActiveTasks,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 361);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 422);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(766, 22);
             this.statusStrip1.TabIndex = 1;
@@ -611,7 +724,7 @@
             // toolStripStatusLabel5
             // 
             this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
-            this.toolStripStatusLabel5.Size = new System.Drawing.Size(274, 17);
+            this.toolStripStatusLabel5.Size = new System.Drawing.Size(290, 17);
             this.toolStripStatusLabel5.Spring = true;
             this.toolStripStatusLabel5.Text = "-";
             // 
@@ -634,7 +747,7 @@
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(274, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(290, 17);
             this.toolStripStatusLabel2.Spring = true;
             this.toolStripStatusLabel2.Text = "-";
             // 
@@ -642,11 +755,95 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
+            // btnHardUpdateBZCC
+            // 
+            this.btnHardUpdateBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnHardUpdateBZCC.Location = new System.Drawing.Point(446, 35);
+            this.btnHardUpdateBZCC.Name = "btnHardUpdateBZCC";
+            this.btnHardUpdateBZCC.Size = new System.Drawing.Size(90, 23);
+            this.btnHardUpdateBZCC.TabIndex = 11;
+            this.btnHardUpdateBZCC.Text = "Hard Update";
+            this.btnHardUpdateBZCC.UseVisualStyleBackColor = true;
+            this.btnHardUpdateBZCC.Click += new System.EventHandler(this.btnHardUpdateBZCC_Click);
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.ColumnCount = 4;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Controls.Add(this.cbBZCCTypeAsset, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.cbBZCCTypeError, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.cbBZCCTypeConfig, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.cbBZCCTypeAddon, 0, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 35);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(288, 23);
+            this.tableLayoutPanel2.TabIndex = 12;
+            // 
+            // cbBZCCTypeError
+            // 
+            this.cbBZCCTypeError.AutoSize = true;
+            this.cbBZCCTypeError.Checked = true;
+            this.cbBZCCTypeError.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZCCTypeError.Location = new System.Drawing.Point(183, 3);
+            this.cbBZCCTypeError.Name = "cbBZCCTypeError";
+            this.cbBZCCTypeError.Size = new System.Drawing.Size(47, 17);
+            this.cbBZCCTypeError.TabIndex = 11;
+            this.cbBZCCTypeError.Text = "error";
+            this.cbBZCCTypeError.UseVisualStyleBackColor = true;
+            this.cbBZCCTypeError.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
+            // 
+            // cbBZCCTypeConfig
+            // 
+            this.cbBZCCTypeConfig.AutoSize = true;
+            this.cbBZCCTypeConfig.Checked = true;
+            this.cbBZCCTypeConfig.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZCCTypeConfig.Location = new System.Drawing.Point(122, 3);
+            this.cbBZCCTypeConfig.Name = "cbBZCCTypeConfig";
+            this.cbBZCCTypeConfig.Size = new System.Drawing.Size(55, 17);
+            this.cbBZCCTypeConfig.TabIndex = 10;
+            this.cbBZCCTypeConfig.Text = "config";
+            this.cbBZCCTypeConfig.UseVisualStyleBackColor = true;
+            this.cbBZCCTypeConfig.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
+            // 
+            // cbBZCCTypeAddon
+            // 
+            this.cbBZCCTypeAddon.AutoSize = true;
+            this.cbBZCCTypeAddon.Checked = true;
+            this.cbBZCCTypeAddon.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZCCTypeAddon.Location = new System.Drawing.Point(3, 3);
+            this.cbBZCCTypeAddon.Name = "cbBZCCTypeAddon";
+            this.cbBZCCTypeAddon.Size = new System.Drawing.Size(56, 17);
+            this.cbBZCCTypeAddon.TabIndex = 9;
+            this.cbBZCCTypeAddon.Text = "addon";
+            this.cbBZCCTypeAddon.UseVisualStyleBackColor = true;
+            this.cbBZCCTypeAddon.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
+            // 
+            // cbBZCCTypeAsset
+            // 
+            this.cbBZCCTypeAsset.AutoSize = true;
+            this.cbBZCCTypeAsset.Checked = true;
+            this.cbBZCCTypeAsset.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBZCCTypeAsset.Location = new System.Drawing.Point(65, 3);
+            this.cbBZCCTypeAsset.Name = "cbBZCCTypeAsset";
+            this.cbBZCCTypeAsset.Size = new System.Drawing.Size(51, 17);
+            this.cbBZCCTypeAsset.TabIndex = 12;
+            this.cbBZCCTypeAsset.Text = "asset";
+            this.cbBZCCTypeAsset.UseVisualStyleBackColor = true;
+            this.cbBZCCTypeAsset.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(766, 383);
+            this.ClientSize = new System.Drawing.Size(766, 444);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabControl1);
             this.Name = "MainForm";
@@ -655,6 +852,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tpBZ98R.ResumeLayout(false);
             this.tpBZ98R.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.tpBZCC.ResumeLayout(false);
             this.tpBZCC.PerformLayout();
             this.tpSettings.ResumeLayout(false);
@@ -675,6 +874,8 @@
             this.tpLogSteamCmdFull.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -709,7 +910,6 @@
         private System.Windows.Forms.Button btnUpdateBZCC;
         private System.Windows.Forms.Button btnRefreshBZCC;
         private System.Windows.Forms.Button btnDependenciesBZ98R;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox txtBZCCMyDocs;
         private System.Windows.Forms.Button btnBZCCMyDocsApply;
@@ -731,6 +931,19 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel tsslActiveTasks;
+        private System.Windows.Forms.Button btnHardUpdateBZ98R;
+        private System.Windows.Forms.CheckBox cbBZ98RTypeMod;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.CheckBox cbBZ98RTypeMultiplayer;
+        private System.Windows.Forms.CheckBox cbBZ98RTypeError;
+        private System.Windows.Forms.CheckBox cbBZ98RTypeCampaign;
+        private System.Windows.Forms.CheckBox cbBZ98RTypeInstantAction;
+        private System.Windows.Forms.Button btnHardUpdateBZCC;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.CheckBox cbBZCCTypeError;
+        private System.Windows.Forms.CheckBox cbBZCCTypeConfig;
+        private System.Windows.Forms.CheckBox cbBZCCTypeAddon;
+        private System.Windows.Forms.CheckBox cbBZCCTypeAsset;
     }
 }
 

@@ -154,6 +154,8 @@ namespace BZRModManager
 
         private IContainer components;
         List<int> sorts = new List<int>();
+        public List<string> TypeFilter { get { return _TypeFilter; } set { _TypeFilter = value; ApplySortAndFilter(); } }
+        private List<string> _TypeFilter;
         private void LinqListView_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (e.Column == 6) return;
@@ -192,9 +194,9 @@ namespace BZRModManager
                 }
             }*/
 
-            ApplySort();
+            ApplySortAndFilter();
         }
-        private void ApplySort()
+        private void ApplySortAndFilter()
         {
             Console.WriteLine($"Sorting by {string.Join(",", sorts)}");
 
@@ -223,57 +225,62 @@ namespace BZRModManager
                 switch (sort)
                 {
                     case 1:
-                        if(first) query = source.OrderBy(dr => dr.Name);
+                        if(first) query = internal_source.OrderBy(dr => dr.Name);
                         if(!first) query = query.ThenBy(dr => dr.Name);
                         break;
                     case -1:
-                        if (first) query = source.OrderByDescending(dr => dr.Name);
+                        if (first) query = internal_source.OrderByDescending(dr => dr.Name);
                         if (!first) query = query.ThenByDescending(dr => dr.Name);
                         break;
                     case 2:
-                        if (first) query = source.OrderBy(dr => dr.ModType);
+                        if (first) query = internal_source.OrderBy(dr => dr.ModType);
                         if (!first) query = query.ThenBy(dr => dr.ModType);
                         break;
                     case -2:
-                        if (first) query = source.OrderByDescending(dr => dr.ModType);
+                        if (first) query = internal_source.OrderByDescending(dr => dr.ModType);
                         if (!first) query = query.ThenByDescending(dr => dr.ModType);
                         break;
                     case 3:
-                        if (first) query = source.OrderBy(dr => dr.ModSource);
+                        if (first) query = internal_source.OrderBy(dr => dr.ModSource);
                         if (!first) query = query.ThenBy(dr => dr.ModSource);
                         break;
                     case -3:
-                        if (first) query = source.OrderByDescending(dr => dr.ModSource);
+                        if (first) query = internal_source.OrderByDescending(dr => dr.ModSource);
                         if (!first) query = query.ThenByDescending(dr => dr.ModSource);
                         break;
                     case 4:
-                        if (first) query = source.OrderBy(dr => dr.WorkshopIdOutput);
+                        if (first) query = internal_source.OrderBy(dr => dr.WorkshopIdOutput);
                         if (!first) query = query.ThenBy(dr => dr.WorkshopIdOutput);
                         break;
                     case -4:
-                        if (first) query = source.OrderByDescending(dr => dr.WorkshopIdOutput);
+                        if (first) query = internal_source.OrderByDescending(dr => dr.WorkshopIdOutput);
                         if (!first) query = query.ThenByDescending(dr => dr.WorkshopIdOutput);
                         break;
                     case 5:
-                        if (first) query = source.OrderBy(dr => dr.InstalledSteam);
+                        if (first) query = internal_source.OrderBy(dr => dr.InstalledSteam);
                         if (!first) query = query.ThenBy(dr => dr.InstalledSteam);
                         break;
                     case -5:
-                        if (first) query = source.OrderByDescending(dr => dr.InstalledSteam);
+                        if (first) query = internal_source.OrderByDescending(dr => dr.InstalledSteam);
                         if (!first) query = query.ThenByDescending(dr => dr.InstalledSteam);
                         break;
                     case 6:
-                        if (first) query = source.OrderBy(dr => dr.InstalledGog);
+                        if (first) query = internal_source.OrderBy(dr => dr.InstalledGog);
                         if (!first) query = query.ThenBy(dr => dr.InstalledGog);
                         break;
                     case -6:
-                        if (first) query = source.OrderByDescending(dr => dr.InstalledGog);
+                        if (first) query = internal_source.OrderByDescending(dr => dr.InstalledGog);
                         if (!first) query = query.ThenByDescending(dr => dr.InstalledGog);
                         break;
                 }
                 first = false;
             }
-            source = query?.ToList() ?? source;
+            source = query?.ToList() ?? internal_source;
+            if (TypeFilter != null)
+            {
+                source = source.Where(dr => TypeFilter.Any(dx => dr.ModType.Contains(dx))).ToList();
+            }
+            VirtualListSize = source.Count;
             this.Refresh();
         }
 
@@ -379,6 +386,7 @@ namespace BZRModManager
         }
 
         private List<ILinqListViesItem> source;
+        private List<ILinqListViesItem> internal_source;
 
         //[Bindable(true)]
         [Bindable(false)]
@@ -389,26 +397,27 @@ namespace BZRModManager
         {
             get
             {
-                return source;
+                return internal_source;
             }
             set
             {
-                if (source != null)
+                if (internal_source != null)
                 {
-                    source.Clear();
+                    internal_source.Clear();
                     if (value != null)
                     {
-                        source.AddRange(value);
+                        internal_source.AddRange(value);
                     }
                 }
                 else
                 {
-                    source = value;
+                    internal_source = value;
                 }
                 bind();
-                ApplySort();
+                ApplySortAndFilter();
             }
         }
+
 
         /*[Browsable(false)]
         public new SortOrder Sorting
