@@ -1026,41 +1026,6 @@ namespace BZRModManager
             }
         }
 
-        private void btnGOGBZCCASM_Click(object sender, EventArgs e)
-        {
-            if(ofdGOGBZCCASM.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    if (BZCCTools.CheckGameNeedsAsmPatch(ofdGOGBZCCASM.FileName))
-                    {
-                        try
-                        {
-                            BZCCTools.ApplyGameAsmPatch(ofdGOGBZCCASM.FileName);
-                            MessageBox.Show("File patched, a backup of the original was created.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("File does not appear to require patching.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private void btnGOGBZCCASMAbout_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(@"Version 2.0.180 of Battlezone Combat Commander has a bug that prevents joining some modded Multiplayer Games. When a modded game uses a mod that has dependencies, GOG is unable to join the session because it thinks it doesn't have them. Steam is unaffected because it can download mods, so this check is skipped. This patch will skip checking all mods except the first (the config mod) which will validate properly.", "About", MessageBoxButtons.OK, MessageBoxIcon.Question);
-        }
-
         private void pnlTasks_Resize(object sender, EventArgs e)
         {
             pnlTasks.Refresh();
@@ -1076,12 +1041,12 @@ namespace BZRModManager
             btnDependenciesBZ98R.Enabled = false;
             btnDownloadBZ98R.Enabled = false;
             btnDownloadBZCC.Enabled = false;
-            btnGOGBZCCASM.Enabled = false;
-            btnGOGBZCCASMAbout.Enabled = false;
             btnRefreshBZ98R.Enabled = false;
             btnRefreshBZCC.Enabled = false;
             btnUpdateBZ98R.Enabled = false;
             btnUpdateBZCC.Enabled = false;
+            btnHardUpdateBZ98R.Enabled = false;
+            btnHardUpdateBZCC.Enabled = false;
             txtBZ98RGogApply.Enabled = false;
             txtBZ98RGog.Enabled = false;
             txtBZ98RSteam.Enabled = false;
@@ -1089,6 +1054,15 @@ namespace BZRModManager
             txtBZCCSteam.Enabled = false;
             txtDownloadBZ98R.Enabled = false;
             txtDownloadBZCC.Enabled = false;
+            cbBZ98RTypeMod.Enabled = false;
+            cbBZ98RTypeMultiplayer.Enabled = false;
+            cbBZ98RTypeError.Enabled = false;
+            cbBZ98RTypeCampaign.Enabled = false;
+            cbBZ98RTypeInstantAction.Enabled = false;
+            cbBZCCTypeError.Enabled = false;
+            cbBZCCTypeConfig.Enabled = false;
+            cbBZCCTypeAddon.Enabled = false;
+            cbBZCCTypeAsset.Enabled = false;
         }
 
         private void cbBZ98RType_CheckedChanged(object sender, EventArgs e)
