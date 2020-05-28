@@ -134,6 +134,10 @@
       <Project>{852b5e00-2423-4d74-8aff-b38248ba6b36}</Project>
       <Name>SteamVent.SteamCmd</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SteamVent\SteamVent\SteamVent.csproj">
+      <Project>{b78bb558-69d0-4d28-991a-261903988d1a}</Project>
+      <Name>SteamVent</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

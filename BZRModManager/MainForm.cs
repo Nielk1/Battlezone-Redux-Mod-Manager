@@ -1,4 +1,5 @@
-﻿using Monitor.Core.Utilities;
+﻿using Microsoft.Win32;
+using Monitor.Core.Utilities;
 using Newtonsoft.Json;
 using SteamVent.SteamCmd;
 using System;
@@ -1047,7 +1048,7 @@ namespace BZRModManager
             btnUpdateBZCC.Enabled = false;
             btnHardUpdateBZ98R.Enabled = false;
             btnHardUpdateBZCC.Enabled = false;
-            txtBZ98RGogApply.Enabled = false;
+            btnBZ98RGogApply.Enabled = false;
             txtBZ98RGog.Enabled = false;
             txtBZ98RSteam.Enabled = false;
             txtBZCCMyDocs.Enabled = false;
@@ -1088,6 +1089,52 @@ namespace BZRModManager
 
             lvModsBZCC.TypeFilter = Filters;
             lvModsBZCC.Refresh();
+        }
+
+        private void btnBZ98RGogFind_Click(object sender, EventArgs e)
+        {
+            string path = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\GOG.com\Games\1454067812", "path", null) as string;
+            txtBZ98RGog.Text = path;
+        }
+
+        private void btnBZCCMyDocsFind_Click(object sender, EventArgs e)
+        {
+            string docsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            txtBZCCMyDocs.Text = Path.Combine(docsPath, "My Games", "Battlezone Combat Commander");
+        }
+
+        private void btnBZ98RSteamFind_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                foreach(string basePath in SteamVent.FileSystem.SteamProcessInfo.GetSteamLibraryPaths())
+                {
+                    string gameFolder = Path.Combine(basePath, "steamapps", "common", "Battlezone 98 Redux");
+                    if (Directory.Exists(gameFolder) && File.Exists(Path.Combine(gameFolder, "battlezone98redux.exe")))
+                    {
+                        txtBZ98RSteam.Text = Path.Combine(basePath, "steamapps");
+                        return;
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private void btnBZCCSteamFind_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                foreach(string basePath in SteamVent.FileSystem.SteamProcessInfo.GetSteamLibraryPaths())
+                {
+                    string gameFolder = Path.Combine(basePath, "steamapps", "common", "BZ2R");
+                    if (Directory.Exists(gameFolder) && File.Exists(Path.Combine(gameFolder, "battlezone2.exe")))
+                    {
+                        txtBZCCSteam.Text = Path.Combine(basePath, "steamapps");
+                        return;
+                    }
+                }
+            }
+            catch { }
         }
     }
 

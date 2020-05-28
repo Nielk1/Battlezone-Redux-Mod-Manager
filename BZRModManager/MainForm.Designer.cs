@@ -62,8 +62,9 @@
             this.txtBZCCMyDocs = new System.Windows.Forms.TextBox();
             this.btnBZCCMyDocsApply = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnBZ98RGogFind = new System.Windows.Forms.Button();
             this.txtBZ98RGog = new System.Windows.Forms.TextBox();
-            this.txtBZ98RGogApply = new System.Windows.Forms.Button();
+            this.btnBZ98RGogApply = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtBZCCSteam = new System.Windows.Forms.TextBox();
             this.btnBZCCSteamApply = new System.Windows.Forms.Button();
@@ -86,8 +87,11 @@
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
+            this.btnBZCCMyDocsFind = new System.Windows.Forms.Button();
             this.lvModsBZ98R = new BZRModManager.LinqListView();
             this.lvModsBZCC = new BZRModManager.LinqListView();
+            this.btnBZCCSteamFind = new System.Windows.Forms.Button();
+            this.btnBZ98RSteamFind = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -488,6 +492,7 @@
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.btnBZCCMyDocsFind);
             this.groupBox4.Controls.Add(this.txtBZCCMyDocs);
             this.groupBox4.Controls.Add(this.btnBZCCMyDocsApply);
             this.groupBox4.Location = new System.Drawing.Point(6, 174);
@@ -501,9 +506,9 @@
             // 
             this.txtBZCCMyDocs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZCCMyDocs.Location = new System.Drawing.Point(6, 21);
+            this.txtBZCCMyDocs.Location = new System.Drawing.Point(86, 21);
             this.txtBZCCMyDocs.Name = "txtBZCCMyDocs";
-            this.txtBZCCMyDocs.Size = new System.Drawing.Size(649, 20);
+            this.txtBZCCMyDocs.Size = new System.Drawing.Size(569, 20);
             this.txtBZCCMyDocs.TabIndex = 6;
             // 
             // btnBZCCMyDocsApply
@@ -521,8 +526,9 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.btnBZ98RGogFind);
             this.groupBox3.Controls.Add(this.txtBZ98RGog);
-            this.groupBox3.Controls.Add(this.txtBZ98RGogApply);
+            this.groupBox3.Controls.Add(this.btnBZ98RGogApply);
             this.groupBox3.Location = new System.Drawing.Point(6, 118);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(723, 50);
@@ -530,30 +536,41 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "GOG install of BZ98R";
             // 
+            // btnBZ98RGogFind
+            // 
+            this.btnBZ98RGogFind.Location = new System.Drawing.Point(6, 19);
+            this.btnBZ98RGogFind.Name = "btnBZ98RGogFind";
+            this.btnBZ98RGogFind.Size = new System.Drawing.Size(74, 23);
+            this.btnBZ98RGogFind.TabIndex = 9;
+            this.btnBZ98RGogFind.Text = "Quick Find";
+            this.btnBZ98RGogFind.UseVisualStyleBackColor = true;
+            this.btnBZ98RGogFind.Click += new System.EventHandler(this.btnBZ98RGogFind_Click);
+            // 
             // txtBZ98RGog
             // 
             this.txtBZ98RGog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZ98RGog.Location = new System.Drawing.Point(6, 21);
+            this.txtBZ98RGog.Location = new System.Drawing.Point(86, 21);
             this.txtBZ98RGog.Name = "txtBZ98RGog";
-            this.txtBZ98RGog.Size = new System.Drawing.Size(649, 20);
+            this.txtBZ98RGog.Size = new System.Drawing.Size(569, 20);
             this.txtBZ98RGog.TabIndex = 6;
             // 
-            // txtBZ98RGogApply
+            // btnBZ98RGogApply
             // 
-            this.txtBZ98RGogApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZ98RGogApply.Location = new System.Drawing.Point(661, 19);
-            this.txtBZ98RGogApply.Name = "txtBZ98RGogApply";
-            this.txtBZ98RGogApply.Size = new System.Drawing.Size(57, 23);
-            this.txtBZ98RGogApply.TabIndex = 8;
-            this.txtBZ98RGogApply.Text = "Apply";
-            this.txtBZ98RGogApply.UseVisualStyleBackColor = true;
-            this.txtBZ98RGogApply.Click += new System.EventHandler(this.txtBZ98RGogApply_Click);
+            this.btnBZ98RGogApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBZ98RGogApply.Location = new System.Drawing.Point(661, 19);
+            this.btnBZ98RGogApply.Name = "btnBZ98RGogApply";
+            this.btnBZ98RGogApply.Size = new System.Drawing.Size(57, 23);
+            this.btnBZ98RGogApply.TabIndex = 8;
+            this.btnBZ98RGogApply.Text = "Apply";
+            this.btnBZ98RGogApply.UseVisualStyleBackColor = true;
+            this.btnBZ98RGogApply.Click += new System.EventHandler(this.txtBZ98RGogApply_Click);
             // 
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.btnBZCCSteamFind);
             this.groupBox2.Controls.Add(this.txtBZCCSteam);
             this.groupBox2.Controls.Add(this.btnBZCCSteamApply);
             this.groupBox2.Location = new System.Drawing.Point(6, 62);
@@ -567,9 +584,9 @@
             // 
             this.txtBZCCSteam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZCCSteam.Location = new System.Drawing.Point(6, 21);
+            this.txtBZCCSteam.Location = new System.Drawing.Point(86, 21);
             this.txtBZCCSteam.Name = "txtBZCCSteam";
-            this.txtBZCCSteam.Size = new System.Drawing.Size(649, 20);
+            this.txtBZCCSteam.Size = new System.Drawing.Size(569, 20);
             this.txtBZCCSteam.TabIndex = 6;
             // 
             // btnBZCCSteamApply
@@ -587,6 +604,7 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.btnBZ98RSteamFind);
             this.groupBox1.Controls.Add(this.txtBZ98RSteam);
             this.groupBox1.Controls.Add(this.btnBZ98RSteamApply);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
@@ -600,9 +618,9 @@
             // 
             this.txtBZ98RSteam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZ98RSteam.Location = new System.Drawing.Point(6, 21);
+            this.txtBZ98RSteam.Location = new System.Drawing.Point(86, 21);
             this.txtBZ98RSteam.Name = "txtBZ98RSteam";
-            this.txtBZ98RSteam.Size = new System.Drawing.Size(649, 20);
+            this.txtBZ98RSteam.Size = new System.Drawing.Size(569, 20);
             this.txtBZ98RSteam.TabIndex = 6;
             // 
             // btnBZ98RSteamApply
@@ -776,6 +794,16 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
+            // btnBZCCMyDocsFind
+            // 
+            this.btnBZCCMyDocsFind.Location = new System.Drawing.Point(6, 19);
+            this.btnBZCCMyDocsFind.Name = "btnBZCCMyDocsFind";
+            this.btnBZCCMyDocsFind.Size = new System.Drawing.Size(74, 23);
+            this.btnBZCCMyDocsFind.TabIndex = 10;
+            this.btnBZCCMyDocsFind.Text = "Quick Find";
+            this.btnBZCCMyDocsFind.UseVisualStyleBackColor = true;
+            this.btnBZCCMyDocsFind.Click += new System.EventHandler(this.btnBZCCMyDocsFind_Click);
+            // 
             // lvModsBZ98R
             // 
             this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -811,6 +839,26 @@
             this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
             this.lvModsBZCC.View = System.Windows.Forms.View.Details;
             this.lvModsBZCC.VirtualMode = true;
+            // 
+            // btnBZCCSteamFind
+            // 
+            this.btnBZCCSteamFind.Location = new System.Drawing.Point(6, 19);
+            this.btnBZCCSteamFind.Name = "btnBZCCSteamFind";
+            this.btnBZCCSteamFind.Size = new System.Drawing.Size(74, 23);
+            this.btnBZCCSteamFind.TabIndex = 10;
+            this.btnBZCCSteamFind.Text = "Quick Find";
+            this.btnBZCCSteamFind.UseVisualStyleBackColor = true;
+            this.btnBZCCSteamFind.Click += new System.EventHandler(this.btnBZCCSteamFind_Click);
+            // 
+            // btnBZ98RSteamFind
+            // 
+            this.btnBZ98RSteamFind.Location = new System.Drawing.Point(6, 19);
+            this.btnBZ98RSteamFind.Name = "btnBZ98RSteamFind";
+            this.btnBZ98RSteamFind.Size = new System.Drawing.Size(74, 23);
+            this.btnBZ98RSteamFind.TabIndex = 10;
+            this.btnBZ98RSteamFind.Text = "Quick Find";
+            this.btnBZ98RSteamFind.UseVisualStyleBackColor = true;
+            this.btnBZ98RSteamFind.Click += new System.EventHandler(this.btnBZ98RSteamFind_Click);
             // 
             // MainForm
             // 
@@ -888,7 +936,7 @@
         private System.Windows.Forms.Button btnBZCCMyDocsApply;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox txtBZ98RGog;
-        private System.Windows.Forms.Button txtBZ98RGogApply;
+        private System.Windows.Forms.Button btnBZ98RGogApply;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox txtBZCCSteam;
         private System.Windows.Forms.Button btnBZCCSteamApply;
@@ -915,6 +963,10 @@
         private System.Windows.Forms.CheckBox cbBZCCTypeConfig;
         private System.Windows.Forms.CheckBox cbBZCCTypeAddon;
         private System.Windows.Forms.CheckBox cbBZCCTypeAsset;
+        private System.Windows.Forms.Button btnBZ98RGogFind;
+        private System.Windows.Forms.Button btnBZCCMyDocsFind;
+        private System.Windows.Forms.Button btnBZCCSteamFind;
+        private System.Windows.Forms.Button btnBZ98RSteamFind;
     }
 }
 
