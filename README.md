@@ -36,5 +36,8 @@ For git mods to function your system must have git installed or `git.exe` must b
 
 For a git mod to be detected it must have a `config.json` meta-file.  Any branches can be selected though `baked` or a branch starting with `baked-` will auto-select in the branch selection list. `baked-something` branches should have unique IDs so they can be installed simultaneously with release mods.  An example of a properly configured git-mod: https://github.com/Nielk1/BZCC-Advanced-Lua-API/tree/baked
 
+## Antivirus Note
+Antivirus programs may complain about `steamcmdprox.exe` and `steamcmdinj.dll`. The SteamCmdProxy application is used to read realtime output from SteamCmd wich normally prevents this. The SteamCmdInjection DLL is injected into SteamCmd by SteamCmdProxy to force it to always run in English. This is required for automations to work properly on non-english computers.
+
 ## Compile Notes:
 To compile you must also use the project SteamVent.SteamCmd from https://github.com/Nielk1/SteamVent
