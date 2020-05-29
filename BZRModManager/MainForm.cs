@@ -687,28 +687,45 @@ namespace BZRModManager
             {
                 if (!success)
                 {
-                    string[] branches = GitContext.GetModBranches(text);
-                    if (branches.Length > 0)
+                    try
                     {
-                        success = true;
-                        TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - Git - \"{text}\"", 0);
-                        Task.Factory.StartNew(() =>
+                        string[] branches = GitContext.GetModBranches(text);
+                        if (branches.Length > 0)
                         {
-                            GitContext.WorkshopDownloadItem(AppId, text, branches);
-                            this.Invoke((MethodInvoker)delegate
+                            success = true;
+
+                            using (MultiSelectDialog dlg = new MultiSelectDialog("Branch Select", branches.Select(dr => new Tuple<string, bool>(dr, dr == "baked" || dr.StartsWith("baked-")))))
                             {
-                                switch (AppId)
+                                if (dlg.ShowDialog() == DialogResult.OK)
                                 {
-                                    case AppIdBZ98:
-                                        UpdateBZ98RModLists();
-                                        break;
-                                    case AppIdBZCC:
-                                        UpdateBZCCModLists();
-                                        break;
+                                    TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - Git - \"{text}\"", 0);
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        GitContext.WorkshopDownloadItem(AppId, text, dlg.Selected);
+                                        this.Invoke((MethodInvoker)delegate
+                                        {
+                                            switch (AppId)
+                                            {
+                                                case AppIdBZ98:
+                                                    UpdateBZ98RModLists();
+                                                    break;
+                                                case AppIdBZCC:
+                                                    UpdateBZCCModLists();
+                                                    break;
+                                            }
+                                        });
+                                        EndTask(DownloadModTaskControl);
+                                    });
                                 }
-                            });
-                            EndTask(DownloadModTaskControl);
-                        });
+                            }
+                        }
+                    }
+                    catch (System.ComponentModel.Win32Exception ex)
+                    {
+                        if(ex.Message == @"The system cannot find the file specified")
+                        {
+                            MessageBox.Show("Workshop ID was not detected, GIT download attempted.\r\ngit.exe not found in PATH.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }

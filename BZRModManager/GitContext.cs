@@ -12,11 +12,6 @@ namespace BZRModManager
 {
     class GitContext
     {
-        public static bool HaveGit()
-        {
-            return File.Exists("git.exe");
-        }
-
         public static string[] GetModBranches(string url)
         {
             ProcessStartInfo info = new ProcessStartInfo()
@@ -37,7 +32,8 @@ namespace BZRModManager
             { Thread.Sleep(100); }
             string output = ischkout.ReadToEnd();
             string[] lines = output.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
-            return lines.Select(dr => dr.Split('\t')[1]).Where(dr => dr == "refs/heads/baked" || dr == "refs/heads/baked-dev").Select(dr => dr.Substring(11)).ToArray();
+            //return lines.Select(dr => dr.Split('\t')[1]).Where(dr => dr == "refs/heads/baked" || dr == "refs/heads/baked-dev").Select(dr => dr.Substring(11)).ToArray();
+            return lines.Select(dr => dr.Split('\t')[1]).Where(dr => dr.StartsWith("refs/heads/")).Select(dr => dr.Substring(11)).ToArray();
         }
 
         public static void WorkshopDownloadItem(UInt32 appId, string url, string[] branches)
