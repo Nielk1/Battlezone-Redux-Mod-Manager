@@ -7,7 +7,7 @@ To utilize the manager, directories must be properly configured. These directori
 
 ## Main Interface
 
-`Download` - Attempt to download a mod from the URL in the Mod URL box.
+`Download` - Attempt to download a mod from the URL in the Mod URL box. Steam workshop URLs, workship ID#s, or git URLs accepted.
 
 `Refresh List` - Rescan local storage for mods.
 
@@ -18,18 +18,21 @@ To utilize the manager, directories must be properly configured. These directori
 `Download Dependencies` - For BZCC mods downloaded with SteamCmd download any missing dependent asset type mods with SteamCmd.
 
 ## Installation Statuses
+The small colored letters in the GOG and Steam columns indicate the status of a mod and when double clicked perform an action. Be sure you double click specificly on these cells as double clicking any other part of the list will do nothing.
 
-`N` - Mod is not installed, double click to insatll.
+`N` - Mod is not installed, double click to install.
 
 `Y` - Mod is installed, double click to uninstall.
 
-`C` - Mod cannot be insatlled because an installed mod shares the same ID.
+`C` - Mod cannot be installed because an installed mod shares the same ID.
 
 `M` - Mod is missing but required for another insatlled mod. This only applies to Steam downloaded mods as missing dependencies under SteamCmd can easily be downloaded just by clicking the `Download Dependencies` button. Double click to open the workshop page in Steam to subscribe to the mod.
 
 `X` - Nothing can be done.
 
 Note that greyed our `Y` and `N` markers on mods means no action can be taken. These statues apply to mods downloaded by Steam always being `Y` in Steam and mods download by SteamCmd always being blocked from being `N` because they cannot be placed into Steam without causing a conflict.
+
+Generally, a normal user with all mods installed should see only green or greyed out statuses. Some users may see purple C statuses if maintaining a mod set in both Steam and GOG but this is uncommon.
 
 ## Git Mods
 For git mods to function your system must have git installed or `git.exe` must be placed in the application directory.
