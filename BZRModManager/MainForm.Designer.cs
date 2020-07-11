@@ -40,6 +40,7 @@
             this.btnHardUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnRefreshBZ98R = new System.Windows.Forms.Button();
+            this.lvModsBZ98R = new BZRModManager.LinqListView();
             this.btnDownloadBZ98R = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDownloadBZ98R = new System.Windows.Forms.TextBox();
@@ -53,12 +54,14 @@
             this.btnDependenciesBZ98R = new System.Windows.Forms.Button();
             this.btnUpdateBZCC = new System.Windows.Forms.Button();
             this.btnRefreshBZCC = new System.Windows.Forms.Button();
+            this.lvModsBZCC = new BZRModManager.LinqListView();
             this.btnDownloadBZCC = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
             this.tpSettings = new System.Windows.Forms.TabPage();
             this.cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnBZCCMyDocsFind = new System.Windows.Forms.Button();
             this.txtBZCCMyDocs = new System.Windows.Forms.TextBox();
             this.btnBZCCMyDocsApply = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -66,9 +69,11 @@
             this.txtBZ98RGog = new System.Windows.Forms.TextBox();
             this.btnBZ98RGogApply = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnBZCCSteamFind = new System.Windows.Forms.Button();
             this.txtBZCCSteam = new System.Windows.Forms.TextBox();
             this.btnBZCCSteamApply = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnBZ98RSteamFind = new System.Windows.Forms.Button();
             this.txtBZ98RSteam = new System.Windows.Forms.TextBox();
             this.btnBZ98RSteamApply = new System.Windows.Forms.Button();
             this.tpTasks = new System.Windows.Forms.TabPage();
@@ -87,11 +92,8 @@
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
-            this.btnBZCCMyDocsFind = new System.Windows.Forms.Button();
-            this.lvModsBZ98R = new BZRModManager.LinqListView();
-            this.lvModsBZCC = new BZRModManager.LinqListView();
-            this.btnBZCCSteamFind = new System.Windows.Forms.Button();
-            this.btnBZ98RSteamFind = new System.Windows.Forms.Button();
+            this.btnFindModsBZ98R = new System.Windows.Forms.Button();
+            this.btnFindModsBZCC = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -131,6 +133,7 @@
             // 
             // tpBZ98R
             // 
+            this.tpBZ98R.Controls.Add(this.btnFindModsBZ98R);
             this.tpBZ98R.Controls.Add(this.tableLayoutPanel1);
             this.tpBZ98R.Controls.Add(this.btnHardUpdateBZ98R);
             this.tpBZ98R.Controls.Add(this.btnUpdateBZ98R);
@@ -177,7 +180,7 @@
             this.cbBZ98RTypeError.Location = new System.Drawing.Point(312, 3);
             this.cbBZ98RTypeError.Name = "cbBZ98RTypeError";
             this.cbBZ98RTypeError.Size = new System.Drawing.Size(47, 17);
-            this.cbBZ98RTypeError.TabIndex = 13;
+            this.cbBZ98RTypeError.TabIndex = 9;
             this.cbBZ98RTypeError.Text = "error";
             this.cbBZ98RTypeError.UseVisualStyleBackColor = true;
             this.cbBZ98RTypeError.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
@@ -190,7 +193,7 @@
             this.cbBZ98RTypeCampaign.Location = new System.Drawing.Point(234, 3);
             this.cbBZ98RTypeCampaign.Name = "cbBZ98RTypeCampaign";
             this.cbBZ98RTypeCampaign.Size = new System.Drawing.Size(72, 17);
-            this.cbBZ98RTypeCampaign.TabIndex = 12;
+            this.cbBZ98RTypeCampaign.TabIndex = 8;
             this.cbBZ98RTypeCampaign.Text = "campaign";
             this.cbBZ98RTypeCampaign.UseVisualStyleBackColor = true;
             this.cbBZ98RTypeCampaign.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
@@ -203,7 +206,7 @@
             this.cbBZ98RTypeInstantAction.Location = new System.Drawing.Point(136, 3);
             this.cbBZ98RTypeInstantAction.Name = "cbBZ98RTypeInstantAction";
             this.cbBZ98RTypeInstantAction.Size = new System.Drawing.Size(92, 17);
-            this.cbBZ98RTypeInstantAction.TabIndex = 11;
+            this.cbBZ98RTypeInstantAction.TabIndex = 7;
             this.cbBZ98RTypeInstantAction.Text = "instant_action";
             this.cbBZ98RTypeInstantAction.UseVisualStyleBackColor = true;
             this.cbBZ98RTypeInstantAction.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
@@ -216,7 +219,7 @@
             this.cbBZ98RTypeMultiplayer.Location = new System.Drawing.Point(55, 3);
             this.cbBZ98RTypeMultiplayer.Name = "cbBZ98RTypeMultiplayer";
             this.cbBZ98RTypeMultiplayer.Size = new System.Drawing.Size(75, 17);
-            this.cbBZ98RTypeMultiplayer.TabIndex = 10;
+            this.cbBZ98RTypeMultiplayer.TabIndex = 6;
             this.cbBZ98RTypeMultiplayer.Text = "multiplayer";
             this.cbBZ98RTypeMultiplayer.UseVisualStyleBackColor = true;
             this.cbBZ98RTypeMultiplayer.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
@@ -229,7 +232,7 @@
             this.cbBZ98RTypeMod.Location = new System.Drawing.Point(3, 3);
             this.cbBZ98RTypeMod.Name = "cbBZ98RTypeMod";
             this.cbBZ98RTypeMod.Size = new System.Drawing.Size(46, 17);
-            this.cbBZ98RTypeMod.TabIndex = 9;
+            this.cbBZ98RTypeMod.TabIndex = 5;
             this.cbBZ98RTypeMod.Text = "mod";
             this.cbBZ98RTypeMod.UseVisualStyleBackColor = true;
             this.cbBZ98RTypeMod.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
@@ -240,7 +243,7 @@
             this.btnHardUpdateBZ98R.Location = new System.Drawing.Point(446, 35);
             this.btnHardUpdateBZ98R.Name = "btnHardUpdateBZ98R";
             this.btnHardUpdateBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnHardUpdateBZ98R.TabIndex = 8;
+            this.btnHardUpdateBZ98R.TabIndex = 10;
             this.btnHardUpdateBZ98R.Text = "Hard Update";
             this.btnHardUpdateBZ98R.UseVisualStyleBackColor = true;
             this.btnHardUpdateBZ98R.Click += new System.EventHandler(this.btnHardUpdateBZ98R_Click);
@@ -251,7 +254,7 @@
             this.btnUpdateBZ98R.Location = new System.Drawing.Point(542, 35);
             this.btnUpdateBZ98R.Name = "btnUpdateBZ98R";
             this.btnUpdateBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnUpdateBZ98R.TabIndex = 7;
+            this.btnUpdateBZ98R.TabIndex = 11;
             this.btnUpdateBZ98R.Text = "Update Mods";
             this.btnUpdateBZ98R.UseVisualStyleBackColor = true;
             this.btnUpdateBZ98R.Click += new System.EventHandler(this.btnUpdateBZ98R_Click);
@@ -262,18 +265,36 @@
             this.btnRefreshBZ98R.Location = new System.Drawing.Point(638, 35);
             this.btnRefreshBZ98R.Name = "btnRefreshBZ98R";
             this.btnRefreshBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnRefreshBZ98R.TabIndex = 6;
+            this.btnRefreshBZ98R.TabIndex = 12;
             this.btnRefreshBZ98R.Text = "Refresh List";
             this.btnRefreshBZ98R.UseVisualStyleBackColor = true;
             this.btnRefreshBZ98R.Click += new System.EventHandler(this.btnRefreshBZ98R_Click);
             // 
+            // lvModsBZ98R
+            // 
+            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvModsBZ98R.FullRowSelect = true;
+            this.lvModsBZ98R.GridLines = true;
+            this.lvModsBZ98R.HideSelection = false;
+            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 64);
+            this.lvModsBZ98R.MultiSelect = false;
+            this.lvModsBZ98R.Name = "lvModsBZ98R";
+            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 311);
+            this.lvModsBZ98R.TabIndex = 13;
+            this.lvModsBZ98R.TypeFilter = null;
+            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
+            this.lvModsBZ98R.VirtualMode = true;
+            // 
             // btnDownloadBZ98R
             // 
             this.btnDownloadBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZ98R.Location = new System.Drawing.Point(638, 7);
+            this.btnDownloadBZ98R.Location = new System.Drawing.Point(542, 7);
             this.btnDownloadBZ98R.Name = "btnDownloadBZ98R";
             this.btnDownloadBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnDownloadBZ98R.TabIndex = 2;
+            this.btnDownloadBZ98R.TabIndex = 3;
             this.btnDownloadBZ98R.Text = "Download";
             this.btnDownloadBZ98R.UseVisualStyleBackColor = true;
             this.btnDownloadBZ98R.Click += new System.EventHandler(this.btnDownloadBZ98R_Click);
@@ -293,11 +314,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDownloadBZ98R.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZ98R.Name = "txtDownloadBZ98R";
-            this.txtDownloadBZ98R.Size = new System.Drawing.Size(564, 20);
-            this.txtDownloadBZ98R.TabIndex = 0;
+            this.txtDownloadBZ98R.Size = new System.Drawing.Size(468, 20);
+            this.txtDownloadBZ98R.TabIndex = 2;
             // 
             // tpBZCC
             // 
+            this.tpBZCC.Controls.Add(this.btnFindModsBZCC);
             this.tpBZCC.Controls.Add(this.tableLayoutPanel2);
             this.tpBZCC.Controls.Add(this.btnHardUpdateBZCC);
             this.tpBZCC.Controls.Add(this.btnDependenciesBZ98R);
@@ -344,7 +366,7 @@
             this.cbBZCCTypeAsset.Location = new System.Drawing.Point(65, 3);
             this.cbBZCCTypeAsset.Name = "cbBZCCTypeAsset";
             this.cbBZCCTypeAsset.Size = new System.Drawing.Size(51, 17);
-            this.cbBZCCTypeAsset.TabIndex = 12;
+            this.cbBZCCTypeAsset.TabIndex = 6;
             this.cbBZCCTypeAsset.Text = "asset";
             this.cbBZCCTypeAsset.UseVisualStyleBackColor = true;
             this.cbBZCCTypeAsset.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
@@ -357,7 +379,7 @@
             this.cbBZCCTypeError.Location = new System.Drawing.Point(183, 3);
             this.cbBZCCTypeError.Name = "cbBZCCTypeError";
             this.cbBZCCTypeError.Size = new System.Drawing.Size(47, 17);
-            this.cbBZCCTypeError.TabIndex = 11;
+            this.cbBZCCTypeError.TabIndex = 8;
             this.cbBZCCTypeError.Text = "error";
             this.cbBZCCTypeError.UseVisualStyleBackColor = true;
             this.cbBZCCTypeError.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
@@ -370,7 +392,7 @@
             this.cbBZCCTypeConfig.Location = new System.Drawing.Point(122, 3);
             this.cbBZCCTypeConfig.Name = "cbBZCCTypeConfig";
             this.cbBZCCTypeConfig.Size = new System.Drawing.Size(55, 17);
-            this.cbBZCCTypeConfig.TabIndex = 10;
+            this.cbBZCCTypeConfig.TabIndex = 7;
             this.cbBZCCTypeConfig.Text = "config";
             this.cbBZCCTypeConfig.UseVisualStyleBackColor = true;
             this.cbBZCCTypeConfig.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
@@ -383,7 +405,7 @@
             this.cbBZCCTypeAddon.Location = new System.Drawing.Point(3, 3);
             this.cbBZCCTypeAddon.Name = "cbBZCCTypeAddon";
             this.cbBZCCTypeAddon.Size = new System.Drawing.Size(56, 17);
-            this.cbBZCCTypeAddon.TabIndex = 9;
+            this.cbBZCCTypeAddon.TabIndex = 5;
             this.cbBZCCTypeAddon.Text = "addon";
             this.cbBZCCTypeAddon.UseVisualStyleBackColor = true;
             this.cbBZCCTypeAddon.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
@@ -394,7 +416,7 @@
             this.btnHardUpdateBZCC.Location = new System.Drawing.Point(446, 35);
             this.btnHardUpdateBZCC.Name = "btnHardUpdateBZCC";
             this.btnHardUpdateBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnHardUpdateBZCC.TabIndex = 11;
+            this.btnHardUpdateBZCC.TabIndex = 10;
             this.btnHardUpdateBZCC.Text = "Hard Update";
             this.btnHardUpdateBZCC.UseVisualStyleBackColor = true;
             this.btnHardUpdateBZCC.Click += new System.EventHandler(this.btnHardUpdateBZCC_Click);
@@ -405,7 +427,7 @@
             this.btnDependenciesBZ98R.Location = new System.Drawing.Point(300, 35);
             this.btnDependenciesBZ98R.Name = "btnDependenciesBZ98R";
             this.btnDependenciesBZ98R.Size = new System.Drawing.Size(140, 23);
-            this.btnDependenciesBZ98R.TabIndex = 10;
+            this.btnDependenciesBZ98R.TabIndex = 9;
             this.btnDependenciesBZ98R.Text = "Download Dependencies";
             this.btnDependenciesBZ98R.UseVisualStyleBackColor = true;
             this.btnDependenciesBZ98R.Click += new System.EventHandler(this.btnDependenciesBZ98R_Click);
@@ -416,7 +438,7 @@
             this.btnUpdateBZCC.Location = new System.Drawing.Point(542, 35);
             this.btnUpdateBZCC.Name = "btnUpdateBZCC";
             this.btnUpdateBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnUpdateBZCC.TabIndex = 9;
+            this.btnUpdateBZCC.TabIndex = 11;
             this.btnUpdateBZCC.Text = "Update Mods";
             this.btnUpdateBZCC.UseVisualStyleBackColor = true;
             this.btnUpdateBZCC.Click += new System.EventHandler(this.btnUpdateBZCC_Click);
@@ -427,18 +449,36 @@
             this.btnRefreshBZCC.Location = new System.Drawing.Point(638, 35);
             this.btnRefreshBZCC.Name = "btnRefreshBZCC";
             this.btnRefreshBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnRefreshBZCC.TabIndex = 8;
+            this.btnRefreshBZCC.TabIndex = 12;
             this.btnRefreshBZCC.Text = "Refresh List";
             this.btnRefreshBZCC.UseVisualStyleBackColor = true;
             this.btnRefreshBZCC.Click += new System.EventHandler(this.btnRefreshBZCC_Click);
             // 
+            // lvModsBZCC
+            // 
+            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvModsBZCC.FullRowSelect = true;
+            this.lvModsBZCC.GridLines = true;
+            this.lvModsBZCC.HideSelection = false;
+            this.lvModsBZCC.Location = new System.Drawing.Point(6, 64);
+            this.lvModsBZCC.MultiSelect = false;
+            this.lvModsBZCC.Name = "lvModsBZCC";
+            this.lvModsBZCC.Size = new System.Drawing.Size(722, 311);
+            this.lvModsBZCC.TabIndex = 13;
+            this.lvModsBZCC.TypeFilter = null;
+            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
+            this.lvModsBZCC.VirtualMode = true;
+            // 
             // btnDownloadBZCC
             // 
             this.btnDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZCC.Location = new System.Drawing.Point(638, 7);
+            this.btnDownloadBZCC.Location = new System.Drawing.Point(542, 7);
             this.btnDownloadBZCC.Name = "btnDownloadBZCC";
             this.btnDownloadBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnDownloadBZCC.TabIndex = 5;
+            this.btnDownloadBZCC.TabIndex = 3;
             this.btnDownloadBZCC.Text = "Download";
             this.btnDownloadBZCC.UseVisualStyleBackColor = true;
             this.btnDownloadBZCC.Click += new System.EventHandler(this.btnDownloadBZCC_Click);
@@ -449,7 +489,7 @@
             this.label2.Location = new System.Drawing.Point(6, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(56, 13);
-            this.label2.TabIndex = 4;
+            this.label2.TabIndex = 1;
             this.label2.Text = "Mod URL:";
             // 
             // txtDownloadBZCC
@@ -458,8 +498,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDownloadBZCC.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZCC.Name = "txtDownloadBZCC";
-            this.txtDownloadBZCC.Size = new System.Drawing.Size(564, 20);
-            this.txtDownloadBZCC.TabIndex = 3;
+            this.txtDownloadBZCC.Size = new System.Drawing.Size(468, 20);
+            this.txtDownloadBZCC.TabIndex = 2;
             // 
             // tpSettings
             // 
@@ -482,7 +522,7 @@
             this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 230);
             this.cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
             this.cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(207, 17);
-            this.cbFallbackSteamCmdWindowHandling.TabIndex = 18;
+            this.cbFallbackSteamCmdWindowHandling.TabIndex = 17;
             this.cbFallbackSteamCmdWindowHandling.Text = "Fallback SteamCmd Window Handling";
             this.cbFallbackSteamCmdWindowHandling.UseVisualStyleBackColor = true;
             this.cbFallbackSteamCmdWindowHandling.Visible = false;
@@ -498,9 +538,19 @@
             this.groupBox4.Location = new System.Drawing.Point(6, 174);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(723, 50);
-            this.groupBox4.TabIndex = 15;
+            this.groupBox4.TabIndex = 13;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "BZCC Folder in My Docs/My Games";
+            // 
+            // btnBZCCMyDocsFind
+            // 
+            this.btnBZCCMyDocsFind.Location = new System.Drawing.Point(6, 19);
+            this.btnBZCCMyDocsFind.Name = "btnBZCCMyDocsFind";
+            this.btnBZCCMyDocsFind.Size = new System.Drawing.Size(74, 23);
+            this.btnBZCCMyDocsFind.TabIndex = 14;
+            this.btnBZCCMyDocsFind.Text = "Quick Find";
+            this.btnBZCCMyDocsFind.UseVisualStyleBackColor = true;
+            this.btnBZCCMyDocsFind.Click += new System.EventHandler(this.btnBZCCMyDocsFind_Click);
             // 
             // txtBZCCMyDocs
             // 
@@ -509,7 +559,7 @@
             this.txtBZCCMyDocs.Location = new System.Drawing.Point(86, 21);
             this.txtBZCCMyDocs.Name = "txtBZCCMyDocs";
             this.txtBZCCMyDocs.Size = new System.Drawing.Size(569, 20);
-            this.txtBZCCMyDocs.TabIndex = 6;
+            this.txtBZCCMyDocs.TabIndex = 15;
             // 
             // btnBZCCMyDocsApply
             // 
@@ -517,7 +567,7 @@
             this.btnBZCCMyDocsApply.Location = new System.Drawing.Point(661, 19);
             this.btnBZCCMyDocsApply.Name = "btnBZCCMyDocsApply";
             this.btnBZCCMyDocsApply.Size = new System.Drawing.Size(57, 23);
-            this.btnBZCCMyDocsApply.TabIndex = 8;
+            this.btnBZCCMyDocsApply.TabIndex = 16;
             this.btnBZCCMyDocsApply.Text = "Apply";
             this.btnBZCCMyDocsApply.UseVisualStyleBackColor = true;
             this.btnBZCCMyDocsApply.Click += new System.EventHandler(this.btnBZCCMyDocsApply_Click);
@@ -532,7 +582,7 @@
             this.groupBox3.Location = new System.Drawing.Point(6, 118);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(723, 50);
-            this.groupBox3.TabIndex = 14;
+            this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "GOG install of BZ98R";
             // 
@@ -541,7 +591,7 @@
             this.btnBZ98RGogFind.Location = new System.Drawing.Point(6, 19);
             this.btnBZ98RGogFind.Name = "btnBZ98RGogFind";
             this.btnBZ98RGogFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZ98RGogFind.TabIndex = 9;
+            this.btnBZ98RGogFind.TabIndex = 10;
             this.btnBZ98RGogFind.Text = "Quick Find";
             this.btnBZ98RGogFind.UseVisualStyleBackColor = true;
             this.btnBZ98RGogFind.Click += new System.EventHandler(this.btnBZ98RGogFind_Click);
@@ -553,7 +603,7 @@
             this.txtBZ98RGog.Location = new System.Drawing.Point(86, 21);
             this.txtBZ98RGog.Name = "txtBZ98RGog";
             this.txtBZ98RGog.Size = new System.Drawing.Size(569, 20);
-            this.txtBZ98RGog.TabIndex = 6;
+            this.txtBZ98RGog.TabIndex = 11;
             // 
             // btnBZ98RGogApply
             // 
@@ -561,7 +611,7 @@
             this.btnBZ98RGogApply.Location = new System.Drawing.Point(661, 19);
             this.btnBZ98RGogApply.Name = "btnBZ98RGogApply";
             this.btnBZ98RGogApply.Size = new System.Drawing.Size(57, 23);
-            this.btnBZ98RGogApply.TabIndex = 8;
+            this.btnBZ98RGogApply.TabIndex = 12;
             this.btnBZ98RGogApply.Text = "Apply";
             this.btnBZ98RGogApply.UseVisualStyleBackColor = true;
             this.btnBZ98RGogApply.Click += new System.EventHandler(this.txtBZ98RGogApply_Click);
@@ -576,9 +626,19 @@
             this.groupBox2.Location = new System.Drawing.Point(6, 62);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(723, 50);
-            this.groupBox2.TabIndex = 13;
+            this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "steamapps folder that contains BZCC";
+            // 
+            // btnBZCCSteamFind
+            // 
+            this.btnBZCCSteamFind.Location = new System.Drawing.Point(6, 19);
+            this.btnBZCCSteamFind.Name = "btnBZCCSteamFind";
+            this.btnBZCCSteamFind.Size = new System.Drawing.Size(74, 23);
+            this.btnBZCCSteamFind.TabIndex = 6;
+            this.btnBZCCSteamFind.Text = "Quick Find";
+            this.btnBZCCSteamFind.UseVisualStyleBackColor = true;
+            this.btnBZCCSteamFind.Click += new System.EventHandler(this.btnBZCCSteamFind_Click);
             // 
             // txtBZCCSteam
             // 
@@ -587,7 +647,7 @@
             this.txtBZCCSteam.Location = new System.Drawing.Point(86, 21);
             this.txtBZCCSteam.Name = "txtBZCCSteam";
             this.txtBZCCSteam.Size = new System.Drawing.Size(569, 20);
-            this.txtBZCCSteam.TabIndex = 6;
+            this.txtBZCCSteam.TabIndex = 7;
             // 
             // btnBZCCSteamApply
             // 
@@ -610,9 +670,19 @@
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(723, 50);
-            this.groupBox1.TabIndex = 12;
+            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "steamapps folder that contains BZ98R";
+            // 
+            // btnBZ98RSteamFind
+            // 
+            this.btnBZ98RSteamFind.Location = new System.Drawing.Point(6, 19);
+            this.btnBZ98RSteamFind.Name = "btnBZ98RSteamFind";
+            this.btnBZ98RSteamFind.Size = new System.Drawing.Size(74, 23);
+            this.btnBZ98RSteamFind.TabIndex = 2;
+            this.btnBZ98RSteamFind.Text = "Quick Find";
+            this.btnBZ98RSteamFind.UseVisualStyleBackColor = true;
+            this.btnBZ98RSteamFind.Click += new System.EventHandler(this.btnBZ98RSteamFind_Click);
             // 
             // txtBZ98RSteam
             // 
@@ -621,7 +691,7 @@
             this.txtBZ98RSteam.Location = new System.Drawing.Point(86, 21);
             this.txtBZ98RSteam.Name = "txtBZ98RSteam";
             this.txtBZ98RSteam.Size = new System.Drawing.Size(569, 20);
-            this.txtBZ98RSteam.TabIndex = 6;
+            this.txtBZ98RSteam.TabIndex = 3;
             // 
             // btnBZ98RSteamApply
             // 
@@ -629,7 +699,7 @@
             this.btnBZ98RSteamApply.Location = new System.Drawing.Point(661, 19);
             this.btnBZ98RSteamApply.Name = "btnBZ98RSteamApply";
             this.btnBZ98RSteamApply.Size = new System.Drawing.Size(57, 23);
-            this.btnBZ98RSteamApply.TabIndex = 8;
+            this.btnBZ98RSteamApply.TabIndex = 4;
             this.btnBZ98RSteamApply.Text = "Apply";
             this.btnBZ98RSteamApply.UseVisualStyleBackColor = true;
             this.btnBZ98RSteamApply.Click += new System.EventHandler(this.btnBZ98RSteamApply_Click);
@@ -794,71 +864,25 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
-            // btnBZCCMyDocsFind
+            // btnFindModsBZ98R
             // 
-            this.btnBZCCMyDocsFind.Location = new System.Drawing.Point(6, 19);
-            this.btnBZCCMyDocsFind.Name = "btnBZCCMyDocsFind";
-            this.btnBZCCMyDocsFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZCCMyDocsFind.TabIndex = 10;
-            this.btnBZCCMyDocsFind.Text = "Quick Find";
-            this.btnBZCCMyDocsFind.UseVisualStyleBackColor = true;
-            this.btnBZCCMyDocsFind.Click += new System.EventHandler(this.btnBZCCMyDocsFind_Click);
+            this.btnFindModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFindModsBZ98R.Location = new System.Drawing.Point(638, 7);
+            this.btnFindModsBZ98R.Name = "btnFindModsBZ98R";
+            this.btnFindModsBZ98R.Size = new System.Drawing.Size(90, 23);
+            this.btnFindModsBZ98R.TabIndex = 4;
+            this.btnFindModsBZ98R.Text = "Find Mods";
+            this.btnFindModsBZ98R.UseVisualStyleBackColor = true;
             // 
-            // lvModsBZ98R
+            // btnFindModsBZCC
             // 
-            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZ98R.FullRowSelect = true;
-            this.lvModsBZ98R.GridLines = true;
-            this.lvModsBZ98R.HideSelection = false;
-            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 64);
-            this.lvModsBZ98R.MultiSelect = false;
-            this.lvModsBZ98R.Name = "lvModsBZ98R";
-            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 311);
-            this.lvModsBZ98R.TabIndex = 5;
-            this.lvModsBZ98R.TypeFilter = null;
-            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
-            this.lvModsBZ98R.VirtualMode = true;
-            // 
-            // lvModsBZCC
-            // 
-            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZCC.FullRowSelect = true;
-            this.lvModsBZCC.GridLines = true;
-            this.lvModsBZCC.HideSelection = false;
-            this.lvModsBZCC.Location = new System.Drawing.Point(6, 64);
-            this.lvModsBZCC.MultiSelect = false;
-            this.lvModsBZCC.Name = "lvModsBZCC";
-            this.lvModsBZCC.Size = new System.Drawing.Size(722, 311);
-            this.lvModsBZCC.TabIndex = 6;
-            this.lvModsBZCC.TypeFilter = null;
-            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
-            this.lvModsBZCC.VirtualMode = true;
-            // 
-            // btnBZCCSteamFind
-            // 
-            this.btnBZCCSteamFind.Location = new System.Drawing.Point(6, 19);
-            this.btnBZCCSteamFind.Name = "btnBZCCSteamFind";
-            this.btnBZCCSteamFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZCCSteamFind.TabIndex = 10;
-            this.btnBZCCSteamFind.Text = "Quick Find";
-            this.btnBZCCSteamFind.UseVisualStyleBackColor = true;
-            this.btnBZCCSteamFind.Click += new System.EventHandler(this.btnBZCCSteamFind_Click);
-            // 
-            // btnBZ98RSteamFind
-            // 
-            this.btnBZ98RSteamFind.Location = new System.Drawing.Point(6, 19);
-            this.btnBZ98RSteamFind.Name = "btnBZ98RSteamFind";
-            this.btnBZ98RSteamFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZ98RSteamFind.TabIndex = 10;
-            this.btnBZ98RSteamFind.Text = "Quick Find";
-            this.btnBZ98RSteamFind.UseVisualStyleBackColor = true;
-            this.btnBZ98RSteamFind.Click += new System.EventHandler(this.btnBZ98RSteamFind_Click);
+            this.btnFindModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFindModsBZCC.Location = new System.Drawing.Point(638, 7);
+            this.btnFindModsBZCC.Name = "btnFindModsBZCC";
+            this.btnFindModsBZCC.Size = new System.Drawing.Size(90, 23);
+            this.btnFindModsBZCC.TabIndex = 4;
+            this.btnFindModsBZCC.Text = "Find Mods";
+            this.btnFindModsBZCC.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -967,6 +991,8 @@
         private System.Windows.Forms.Button btnBZCCMyDocsFind;
         private System.Windows.Forms.Button btnBZCCSteamFind;
         private System.Windows.Forms.Button btnBZ98RSteamFind;
+        private System.Windows.Forms.Button btnFindModsBZ98R;
+        private System.Windows.Forms.Button btnFindModsBZCC;
     }
 }
 
