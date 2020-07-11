@@ -460,7 +460,7 @@ namespace BZRModManager
             lock (txtLog)
             {
                 txtLog.AppendText(text + "\r\n");
-                txtLog.ScrollToCaret();
+                //txtLog.ScrollToCaret();
             }
         }
 
@@ -475,7 +475,7 @@ namespace BZRModManager
                     txtLogSteamCmd.AppendText(text);
                     //txtLogSteamCmdFull.SelectionColor = orig;
                     txtLogSteamCmd.SelectionColor = Color.White;
-                    txtLogSteamCmd.ScrollToCaret();
+                    //txtLogSteamCmd.ScrollToCaret();
                 }
             }
         }
@@ -515,7 +515,7 @@ namespace BZRModManager
                         //txtLogSteamCmdFull.SelectionColor = orig;
                         txtLogSteamCmdFull.SelectionColor = Color.White;
                     }
-                    txtLogSteamCmdFull.ScrollToCaret();
+                    //txtLogSteamCmdFull.ScrollToCaret();
                 }
             }
         }
