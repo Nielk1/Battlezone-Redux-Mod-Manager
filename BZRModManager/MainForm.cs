@@ -412,7 +412,7 @@ namespace BZRModManager
                                 try
                                 {
                                     TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Steam)", 0);
-                                    HashSet<long> Dependencies = new HashSet<long>();
+                                    HashSet<UInt64> Dependencies = new HashSet<UInt64>();
                                     SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC)?.ForEach(dr =>
                                     {
                                         string ModId = SteamMod.GetUniqueId(dr);
@@ -427,8 +427,8 @@ namespace BZRModManager
                                             {
                                                 foreach (string Dep in Deps)
                                                 {
-                                                    long DepL;
-                                                    if (long.TryParse(Dep, out DepL))
+                                                    UInt64 DepL;
+                                                    if (UInt64.TryParse(Dep, out DepL))
                                                     {
                                                         Dependencies.Add(DepL);
                                                     }
@@ -704,9 +704,20 @@ namespace BZRModManager
                             {
                                 SteamCmd.WorkshopDownloadItem(AppId, workshopID);
                             }
-                            catch (SteamCmdWorkshopDownloadException ex) { ex_ = ex; }
-                            catch (SteamCmdException ex) { ex_ = ex; OtherErrorCounter++; }
-                        } while (ex_ != null && (ex_ is SteamCmdWorkshopDownloadException && ex_.Message.StartsWith("ERROR! Timeout downloading item ") || OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR));
+                            catch (SteamCmdWorkshopDownloadException ex)
+                            {
+                                ex_ = ex;
+                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
+                                    OtherErrorCounter++;
+                            }
+                            catch (SteamCmdException ex)
+                            {
+                                ex_ = ex;
+                                OtherErrorCounter++;
+                            }
+                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+
+
                         this.Invoke((MethodInvoker)delegate
                         {
                             switch (AppId)
@@ -841,7 +852,7 @@ namespace BZRModManager
                                                 ex_ = ex;
                                                 OtherErrorCounter++;
                                             }
-                                        } while (ex_ != null || OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+                                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
                                         UpdateTaskControl.EndTask(DownloadModTaskControl);
                                     }
                                 }
@@ -930,7 +941,7 @@ namespace BZRModManager
                                                 ex_ = ex;
                                                 OtherErrorCounter++;
                                             }
-                                        } while (ex_ != null || OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+                                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
                                         UpdateTaskControl.EndTask(DownloadModTaskControl);
                                     }
                                 }
@@ -1030,7 +1041,7 @@ namespace BZRModManager
                                         ex_ = ex;
                                         OtherErrorCounter++;
                                     }
-                                } while (ex_ != null || OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+                                } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
                                 UpdateTaskControl.EndTask(DownloadModTaskControl);
                             }
                             lock (CounterClock)
@@ -1415,10 +1426,10 @@ namespace BZRModManager
 
     public class SteamMod : ModItem
     {
-        public long WorkshopId { get; set; }
+        public UInt64 WorkshopId { get; set; }
 
         public override string UniqueID { get { return GetUniqueId(WorkshopId); } }
-        public static string GetUniqueId(long workshopId) { return workshopId.ToString().PadLeft(long.MaxValue.ToString().Length, '0') + "-Steam"; }
+        public static string GetUniqueId(UInt64 workshopId) { return workshopId.ToString().PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"; }
         public override InstallStatus InstalledSteam {
             get
             {
@@ -1540,7 +1551,7 @@ namespace BZRModManager
         public override string WorkshopIdOutput { get { return WorkshopId.ToString(); } }
         public override string ModSource { get { return "Steam"; } }
 
-        public SteamMod(int AppId, long WorkshopId)
+        public SteamMod(int AppId, UInt64 WorkshopId)
         {
             this.AppId = AppId;
             this.WorkshopId = WorkshopId;

@@ -15,7 +15,7 @@ namespace BZRModManager
             return Path.Combine(steamPath, "workshop", "content", appId.ToString());
         }
 
-        public static List<long> WorkshopItemsOnDrive(string steamPath, int appId)
+        public static List<UInt64> WorkshopItemsOnDrive(string steamPath, int appId)
         {
             string workshopFolder = WorkshopFolder(steamPath, appId);
             if (!Directory.Exists(workshopFolder))
@@ -24,14 +24,14 @@ namespace BZRModManager
                 .Where(dr => !JunctionPoint.Exists(dr)) // not a junction
                 .Select(dr =>
                 {
-                    long tmp = -1;
-                    if (!long.TryParse(Path.GetFileName(dr), out tmp))
+                    UInt64 tmp = 0;
+                    if (!UInt64.TryParse(Path.GetFileName(dr), out tmp))
                     {
-                        tmp = -1;
+                        tmp = 0;
                     }
                     return tmp;
                 })
-                .Where(dr => dr > -1) // not numeric
+                .Where(dr => dr > 0) // not numeric (0 is not valid)
                 .Where(dr => Directory.GetFiles(Path.Combine(workshopFolder, dr.ToString())).Length > 0) // not empty
                 .ToList();
         }
