@@ -317,7 +317,7 @@ namespace BZRModManager
 
                             lock (Mods[AppIdBZ98])
                             {
-                                lock (FoundMods[AppIdBZ98])
+                                //lock (FoundMods[AppIdBZ98]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
                                 {
                                     foreach (var kv in Mods[AppIdBZ98])
                                     {
@@ -470,7 +470,7 @@ namespace BZRModManager
 
                             lock (Mods[AppIdBZCC])
                             {
-                                lock (FoundMods[AppIdBZCC])
+                                //lock (FoundMods[AppIdBZCC]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
                                 {
                                     foreach (var kv in Mods[AppIdBZCC])
                                     {
@@ -1268,7 +1268,7 @@ namespace BZRModManager
                     //lock (ModStatus)
                     lock (Mods[AppIdBZ98])
                     {
-                        lock (FoundMods[AppIdBZ98])
+                        //lock (FoundMods[AppIdBZ98]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
                         {
                             FoundMods[AppIdBZ98].Clear();
                             foreach (WorkshopMod mod in ModsFound)
@@ -1307,7 +1307,7 @@ namespace BZRModManager
                     //lock (ModStatus)
                     lock (Mods[AppIdBZCC])
                     {
-                        lock (FoundMods[AppIdBZCC])
+                        //lock (FoundMods[AppIdBZCC]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
                         {
                             FoundMods[AppIdBZCC].Clear();
                             foreach (WorkshopMod mod in ModsFound)
