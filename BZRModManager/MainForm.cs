@@ -1344,9 +1344,16 @@ namespace BZRModManager
             {
                 if ((MainForm.settings?.BZCCSteamPath?.Length ?? 0) > 0)
                 {
+                    try
+                {
                     string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
                     string ModName = BZCCTools.GetModName(Path.Combine(workshopFolder, WorkshopId.ToString()));
                     if (ModName != null) return ModName;
+                }
+                    catch
+                    {
+                        return WorkshopId + " (PARSE ERROR)";
+                    }
                 }
             }
             return UniqueID;
@@ -1534,8 +1541,15 @@ namespace BZRModManager
             }
             if (AppId == MainForm.AppIdBZCC)
             {
+                try
+            {
                 string ModName = BZCCTools.GetModName($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                 if (ModName != null) return ModName;
+            }
+                catch
+                {
+                    return Workshop.WorkshopId + " (PARSE ERROR)";
+                }
             }
             return UniqueID;
         }
@@ -1869,9 +1883,16 @@ namespace BZRModManager
             {
                 if ((MainForm.settings?.BZ98RSteamPath?.Length ?? 0) > 0)
                 {
+                    try
+                {
                     string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
                     string ModName = BZCCTools.GetModName(Path.Combine(workshopFolder, Workshop.ModWorkshopId));
                     if (ModName != null) return ModName;
+                }
+                    catch
+                    {
+                        return Workshop.ModWorkshopId + " (PARSE ERROR)";
+                    }
                 }
             }
             return "UNKNOWN MOD";
