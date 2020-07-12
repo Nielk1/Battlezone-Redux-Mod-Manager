@@ -40,7 +40,6 @@
             this.btnHardUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnRefreshBZ98R = new System.Windows.Forms.Button();
-            this.lvModsBZ98R = new BZRModManager.LinqListView();
             this.btnDownloadBZ98R = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDownloadBZ98R = new System.Windows.Forms.TextBox();
@@ -54,10 +53,17 @@
             this.btnDependenciesBZ98R = new System.Windows.Forms.Button();
             this.btnUpdateBZCC = new System.Windows.Forms.Button();
             this.btnRefreshBZCC = new System.Windows.Forms.Button();
-            this.lvModsBZCC = new BZRModManager.LinqListView();
             this.btnDownloadBZCC = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
+            this.tpFindMods = new System.Windows.Forms.TabPage();
+            this.cbFindModsNewOnly = new System.Windows.Forms.CheckBox();
+            this.rbFindModsTable = new System.Windows.Forms.RadioButton();
+            this.btnFindMods = new System.Windows.Forms.Button();
+            this.rbFindModsIcon = new System.Windows.Forms.RadioButton();
+            this.tcFindMods = new System.Windows.Forms.TabControl();
+            this.tpFindModsBZ98R = new System.Windows.Forms.TabPage();
+            this.tpFindModsBZCC = new System.Windows.Forms.TabPage();
             this.tpSettings = new System.Windows.Forms.TabPage();
             this.cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -92,13 +98,20 @@
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
-            this.btnFindModsBZ98R = new System.Windows.Forms.Button();
-            this.btnFindModsBZCC = new System.Windows.Forms.Button();
+            this.lvModsBZ98R = new BZRModManager.LinqListView();
+            this.lvModsBZCC = new BZRModManager.LinqListView();
+            this.lvFindModsBZ98R = new BZRModManager.LinqListView2();
+            this.lvFindModsBZCC = new BZRModManager.LinqListView2();
+            this.btnDownloadSelectedFoundMods = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tpBZCC.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.tpFindMods.SuspendLayout();
+            this.tcFindMods.SuspendLayout();
+            this.tpFindModsBZ98R.SuspendLayout();
+            this.tpFindModsBZCC.SuspendLayout();
             this.tpSettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -118,6 +131,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tpBZ98R);
             this.tabControl1.Controls.Add(this.tpBZCC);
+            this.tabControl1.Controls.Add(this.tpFindMods);
             this.tabControl1.Controls.Add(this.tpSettings);
             this.tabControl1.Controls.Add(this.tpTasks);
             this.tabControl1.Controls.Add(this.tpLog);
@@ -133,7 +147,6 @@
             // 
             // tpBZ98R
             // 
-            this.tpBZ98R.Controls.Add(this.btnFindModsBZ98R);
             this.tpBZ98R.Controls.Add(this.tableLayoutPanel1);
             this.tpBZ98R.Controls.Add(this.btnHardUpdateBZ98R);
             this.tpBZ98R.Controls.Add(this.btnUpdateBZ98R);
@@ -270,28 +283,10 @@
             this.btnRefreshBZ98R.UseVisualStyleBackColor = true;
             this.btnRefreshBZ98R.Click += new System.EventHandler(this.btnRefreshBZ98R_Click);
             // 
-            // lvModsBZ98R
-            // 
-            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZ98R.FullRowSelect = true;
-            this.lvModsBZ98R.GridLines = true;
-            this.lvModsBZ98R.HideSelection = false;
-            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 64);
-            this.lvModsBZ98R.MultiSelect = false;
-            this.lvModsBZ98R.Name = "lvModsBZ98R";
-            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 311);
-            this.lvModsBZ98R.TabIndex = 13;
-            this.lvModsBZ98R.TypeFilter = null;
-            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
-            this.lvModsBZ98R.VirtualMode = true;
-            // 
             // btnDownloadBZ98R
             // 
             this.btnDownloadBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZ98R.Location = new System.Drawing.Point(542, 7);
+            this.btnDownloadBZ98R.Location = new System.Drawing.Point(638, 7);
             this.btnDownloadBZ98R.Name = "btnDownloadBZ98R";
             this.btnDownloadBZ98R.Size = new System.Drawing.Size(90, 23);
             this.btnDownloadBZ98R.TabIndex = 3;
@@ -314,12 +309,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDownloadBZ98R.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZ98R.Name = "txtDownloadBZ98R";
-            this.txtDownloadBZ98R.Size = new System.Drawing.Size(468, 20);
+            this.txtDownloadBZ98R.Size = new System.Drawing.Size(564, 20);
             this.txtDownloadBZ98R.TabIndex = 2;
             // 
             // tpBZCC
             // 
-            this.tpBZCC.Controls.Add(this.btnFindModsBZCC);
             this.tpBZCC.Controls.Add(this.tableLayoutPanel2);
             this.tpBZCC.Controls.Add(this.btnHardUpdateBZCC);
             this.tpBZCC.Controls.Add(this.btnDependenciesBZ98R);
@@ -454,28 +448,10 @@
             this.btnRefreshBZCC.UseVisualStyleBackColor = true;
             this.btnRefreshBZCC.Click += new System.EventHandler(this.btnRefreshBZCC_Click);
             // 
-            // lvModsBZCC
-            // 
-            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZCC.FullRowSelect = true;
-            this.lvModsBZCC.GridLines = true;
-            this.lvModsBZCC.HideSelection = false;
-            this.lvModsBZCC.Location = new System.Drawing.Point(6, 64);
-            this.lvModsBZCC.MultiSelect = false;
-            this.lvModsBZCC.Name = "lvModsBZCC";
-            this.lvModsBZCC.Size = new System.Drawing.Size(722, 311);
-            this.lvModsBZCC.TabIndex = 13;
-            this.lvModsBZCC.TypeFilter = null;
-            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
-            this.lvModsBZCC.VirtualMode = true;
-            // 
             // btnDownloadBZCC
             // 
             this.btnDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZCC.Location = new System.Drawing.Point(542, 7);
+            this.btnDownloadBZCC.Location = new System.Drawing.Point(638, 7);
             this.btnDownloadBZCC.Name = "btnDownloadBZCC";
             this.btnDownloadBZCC.Size = new System.Drawing.Size(90, 23);
             this.btnDownloadBZCC.TabIndex = 3;
@@ -498,8 +474,110 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDownloadBZCC.Location = new System.Drawing.Point(68, 9);
             this.txtDownloadBZCC.Name = "txtDownloadBZCC";
-            this.txtDownloadBZCC.Size = new System.Drawing.Size(468, 20);
+            this.txtDownloadBZCC.Size = new System.Drawing.Size(564, 20);
             this.txtDownloadBZCC.TabIndex = 2;
+            // 
+            // tpFindMods
+            // 
+            this.tpFindMods.Controls.Add(this.btnDownloadSelectedFoundMods);
+            this.tpFindMods.Controls.Add(this.cbFindModsNewOnly);
+            this.tpFindMods.Controls.Add(this.rbFindModsTable);
+            this.tpFindMods.Controls.Add(this.btnFindMods);
+            this.tpFindMods.Controls.Add(this.rbFindModsIcon);
+            this.tpFindMods.Controls.Add(this.tcFindMods);
+            this.tpFindMods.Location = new System.Drawing.Point(4, 22);
+            this.tpFindMods.Name = "tpFindMods";
+            this.tpFindMods.Padding = new System.Windows.Forms.Padding(3);
+            this.tpFindMods.Size = new System.Drawing.Size(734, 381);
+            this.tpFindMods.TabIndex = 7;
+            this.tpFindMods.Text = "Find Mods";
+            this.tpFindMods.UseVisualStyleBackColor = true;
+            // 
+            // cbFindModsNewOnly
+            // 
+            this.cbFindModsNewOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbFindModsNewOnly.AutoSize = true;
+            this.cbFindModsNewOnly.Checked = true;
+            this.cbFindModsNewOnly.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbFindModsNewOnly.Location = new System.Drawing.Point(307, 7);
+            this.cbFindModsNewOnly.Name = "cbFindModsNewOnly";
+            this.cbFindModsNewOnly.Size = new System.Drawing.Size(72, 17);
+            this.cbFindModsNewOnly.TabIndex = 9;
+            this.cbFindModsNewOnly.Text = "New Only";
+            this.cbFindModsNewOnly.UseVisualStyleBackColor = true;
+            this.cbFindModsNewOnly.CheckedChanged += new System.EventHandler(this.cbFindModsNewOnly_CheckedChanged);
+            // 
+            // rbFindModsTable
+            // 
+            this.rbFindModsTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.rbFindModsTable.AutoSize = true;
+            this.rbFindModsTable.Location = new System.Drawing.Point(385, 6);
+            this.rbFindModsTable.Name = "rbFindModsTable";
+            this.rbFindModsTable.Size = new System.Drawing.Size(52, 17);
+            this.rbFindModsTable.TabIndex = 2;
+            this.rbFindModsTable.Text = "Table";
+            this.rbFindModsTable.UseVisualStyleBackColor = true;
+            this.rbFindModsTable.CheckedChanged += new System.EventHandler(this.rbFindMods_CheckedChanged);
+            // 
+            // btnFindMods
+            // 
+            this.btnFindMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFindMods.Location = new System.Drawing.Point(634, 3);
+            this.btnFindMods.Name = "btnFindMods";
+            this.btnFindMods.Size = new System.Drawing.Size(93, 23);
+            this.btnFindMods.TabIndex = 4;
+            this.btnFindMods.Text = "Find Mods";
+            this.btnFindMods.UseVisualStyleBackColor = true;
+            this.btnFindMods.Click += new System.EventHandler(this.btnFindMods_Click);
+            // 
+            // rbFindModsIcon
+            // 
+            this.rbFindModsIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.rbFindModsIcon.AutoSize = true;
+            this.rbFindModsIcon.Checked = true;
+            this.rbFindModsIcon.Location = new System.Drawing.Point(443, 6);
+            this.rbFindModsIcon.Name = "rbFindModsIcon";
+            this.rbFindModsIcon.Size = new System.Drawing.Size(46, 17);
+            this.rbFindModsIcon.TabIndex = 3;
+            this.rbFindModsIcon.TabStop = true;
+            this.rbFindModsIcon.Text = "Icon";
+            this.rbFindModsIcon.UseVisualStyleBackColor = true;
+            this.rbFindModsIcon.CheckedChanged += new System.EventHandler(this.rbFindMods_CheckedChanged);
+            // 
+            // tcFindMods
+            // 
+            this.tcFindMods.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tcFindMods.Controls.Add(this.tpFindModsBZ98R);
+            this.tcFindMods.Controls.Add(this.tpFindModsBZCC);
+            this.tcFindMods.Location = new System.Drawing.Point(6, 7);
+            this.tcFindMods.Name = "tcFindMods";
+            this.tcFindMods.SelectedIndex = 0;
+            this.tcFindMods.Size = new System.Drawing.Size(722, 368);
+            this.tcFindMods.TabIndex = 1;
+            // 
+            // tpFindModsBZ98R
+            // 
+            this.tpFindModsBZ98R.Controls.Add(this.lvFindModsBZ98R);
+            this.tpFindModsBZ98R.Location = new System.Drawing.Point(4, 22);
+            this.tpFindModsBZ98R.Name = "tpFindModsBZ98R";
+            this.tpFindModsBZ98R.Padding = new System.Windows.Forms.Padding(3);
+            this.tpFindModsBZ98R.Size = new System.Drawing.Size(714, 342);
+            this.tpFindModsBZ98R.TabIndex = 0;
+            this.tpFindModsBZ98R.Text = "BZ98R";
+            this.tpFindModsBZ98R.UseVisualStyleBackColor = true;
+            // 
+            // tpFindModsBZCC
+            // 
+            this.tpFindModsBZCC.Controls.Add(this.lvFindModsBZCC);
+            this.tpFindModsBZCC.Location = new System.Drawing.Point(4, 22);
+            this.tpFindModsBZCC.Name = "tpFindModsBZCC";
+            this.tpFindModsBZCC.Padding = new System.Windows.Forms.Padding(3);
+            this.tpFindModsBZCC.Size = new System.Drawing.Size(714, 342);
+            this.tpFindModsBZCC.TabIndex = 1;
+            this.tpFindModsBZCC.Text = "BZCC";
+            this.tpFindModsBZCC.UseVisualStyleBackColor = true;
             // 
             // tpSettings
             // 
@@ -864,25 +942,84 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
-            // btnFindModsBZ98R
+            // lvModsBZ98R
             // 
-            this.btnFindModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFindModsBZ98R.Location = new System.Drawing.Point(638, 7);
-            this.btnFindModsBZ98R.Name = "btnFindModsBZ98R";
-            this.btnFindModsBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnFindModsBZ98R.TabIndex = 4;
-            this.btnFindModsBZ98R.Text = "Find Mods";
-            this.btnFindModsBZ98R.UseVisualStyleBackColor = true;
+            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvModsBZ98R.FullRowSelect = true;
+            this.lvModsBZ98R.GridLines = true;
+            this.lvModsBZ98R.HideSelection = false;
+            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 64);
+            this.lvModsBZ98R.MultiSelect = false;
+            this.lvModsBZ98R.Name = "lvModsBZ98R";
+            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 311);
+            this.lvModsBZ98R.TabIndex = 13;
+            this.lvModsBZ98R.TypeFilter = null;
+            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
+            this.lvModsBZ98R.VirtualMode = true;
             // 
-            // btnFindModsBZCC
+            // lvModsBZCC
             // 
-            this.btnFindModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFindModsBZCC.Location = new System.Drawing.Point(638, 7);
-            this.btnFindModsBZCC.Name = "btnFindModsBZCC";
-            this.btnFindModsBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnFindModsBZCC.TabIndex = 4;
-            this.btnFindModsBZCC.Text = "Find Mods";
-            this.btnFindModsBZCC.UseVisualStyleBackColor = true;
+            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvModsBZCC.FullRowSelect = true;
+            this.lvModsBZCC.GridLines = true;
+            this.lvModsBZCC.HideSelection = false;
+            this.lvModsBZCC.Location = new System.Drawing.Point(6, 64);
+            this.lvModsBZCC.MultiSelect = false;
+            this.lvModsBZCC.Name = "lvModsBZCC";
+            this.lvModsBZCC.Size = new System.Drawing.Size(722, 311);
+            this.lvModsBZCC.TabIndex = 13;
+            this.lvModsBZCC.TypeFilter = null;
+            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
+            this.lvModsBZCC.VirtualMode = true;
+            // 
+            // lvFindModsBZ98R
+            // 
+            this.lvFindModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvFindModsBZ98R.FullRowSelect = true;
+            this.lvFindModsBZ98R.GridLines = true;
+            this.lvFindModsBZ98R.HideSelection = false;
+            this.lvFindModsBZ98R.Location = new System.Drawing.Point(3, 3);
+            this.lvFindModsBZ98R.Name = "lvFindModsBZ98R";
+            this.lvFindModsBZ98R.Size = new System.Drawing.Size(708, 336);
+            this.lvFindModsBZ98R.TabIndex = 0;
+            this.lvFindModsBZ98R.TypeFilter = null;
+            this.lvFindModsBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvFindModsBZ98R.VirtualMode = true;
+            // 
+            // lvFindModsBZCC
+            // 
+            this.lvFindModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvFindModsBZCC.FullRowSelect = true;
+            this.lvFindModsBZCC.GridLines = true;
+            this.lvFindModsBZCC.HideSelection = false;
+            this.lvFindModsBZCC.Location = new System.Drawing.Point(3, 3);
+            this.lvFindModsBZCC.Name = "lvFindModsBZCC";
+            this.lvFindModsBZCC.Size = new System.Drawing.Size(708, 336);
+            this.lvFindModsBZCC.TabIndex = 1;
+            this.lvFindModsBZCC.TypeFilter = null;
+            this.lvFindModsBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvFindModsBZCC.VirtualMode = true;
+            // 
+            // btnDownloadSelectedFoundMods
+            // 
+            this.btnDownloadSelectedFoundMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDownloadSelectedFoundMods.Location = new System.Drawing.Point(495, 3);
+            this.btnDownloadSelectedFoundMods.Name = "btnDownloadSelectedFoundMods";
+            this.btnDownloadSelectedFoundMods.Size = new System.Drawing.Size(133, 23);
+            this.btnDownloadSelectedFoundMods.TabIndex = 10;
+            this.btnDownloadSelectedFoundMods.Text = "Download Selected";
+            this.btnDownloadSelectedFoundMods.UseVisualStyleBackColor = true;
+            this.btnDownloadSelectedFoundMods.Click += new System.EventHandler(this.btnDownloadSelectedFoundMods_Click);
             // 
             // MainForm
             // 
@@ -903,6 +1040,11 @@
             this.tpBZCC.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.tpFindMods.ResumeLayout(false);
+            this.tpFindMods.PerformLayout();
+            this.tcFindMods.ResumeLayout(false);
+            this.tpFindModsBZ98R.ResumeLayout(false);
+            this.tpFindModsBZCC.ResumeLayout(false);
             this.tpSettings.ResumeLayout(false);
             this.tpSettings.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -991,8 +1133,17 @@
         private System.Windows.Forms.Button btnBZCCMyDocsFind;
         private System.Windows.Forms.Button btnBZCCSteamFind;
         private System.Windows.Forms.Button btnBZ98RSteamFind;
-        private System.Windows.Forms.Button btnFindModsBZ98R;
-        private System.Windows.Forms.Button btnFindModsBZCC;
+        private System.Windows.Forms.TabPage tpFindMods;
+        private System.Windows.Forms.Button btnFindMods;
+        private System.Windows.Forms.TabControl tcFindMods;
+        private System.Windows.Forms.TabPage tpFindModsBZ98R;
+        private System.Windows.Forms.TabPage tpFindModsBZCC;
+        private LinqListView2 lvFindModsBZ98R;
+        private LinqListView2 lvFindModsBZCC;
+        private System.Windows.Forms.RadioButton rbFindModsIcon;
+        private System.Windows.Forms.RadioButton rbFindModsTable;
+        private System.Windows.Forms.CheckBox cbFindModsNewOnly;
+        private System.Windows.Forms.Button btnDownloadSelectedFoundMods;
     }
 }
 

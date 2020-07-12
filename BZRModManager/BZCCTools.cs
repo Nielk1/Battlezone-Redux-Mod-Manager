@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BZRModManager
@@ -42,11 +43,51 @@ namespace BZRModManager
 
         public static string[] GetModTags(string path, string workshopID = null)
         {
-            string pathini = GetIni(path, workshopID);
-            if (!File.Exists(pathini)) return null;
+            Regex TargetHeader = new Regex("^\\[WORKSHOP\\]", RegexOptions.IgnoreCase);
+            Regex AnyHeader = new Regex("^\\[[^\\]]*\\]", RegexOptions.IgnoreCase);
+
+            string[] paths = new string[] { GetIni(path, workshopID) };
             FileIniDataParser parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(pathini);
-            return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
+            bool hadIniParseError = false;
+            string[] tags = paths.ToList().SelectMany(dr =>
+            {
+                try
+                {
+                    IniData data = parser.ReadFile(dr);
+                    return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
+                }
+                catch (IniParser.Exceptions.ParsingException)
+                {
+                    try
+                    {
+                        // try more agressive parsing
+                        string[] RawIniLines = File.ReadAllLines(dr);
+                        RawIniLines = RawIniLines.SkipWhile(line => !TargetHeader.IsMatch(line)).TakeWhile(line => !AnyHeader.IsMatch(line) || TargetHeader.IsMatch(line)).ToArray();
+                        IniData data = parser.Parser.Parse(string.Join("\r\n", RawIniLines));
+                        var retVal = data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
+                        hadIniParseError = true; // we still had an error as we had to use agressive selection
+                        return retVal;
+                    }
+                    catch (IniParser.Exceptions.ParsingException)
+                    {
+                        hadIniParseError = true;
+                        return new string[] { };
+                    }
+                    catch (System.IO.FileNotFoundException)
+                    {
+                        hadIniParseError = true;
+                        return new string[] { };
+                    }
+                    catch (System.IO.DirectoryNotFoundException)
+                    {
+                        hadIniParseError = true;
+                        return new string[] { };
+                    }
+                }
+            }).Where(dr => !string.IsNullOrWhiteSpace(dr)).GroupBy(dr => dr).OrderByDescending(dr => dr.Count()).ThenBy(dr => dr.Key).Select(dr => dr.Key).ToArray();
+            if (hadIniParseError)
+                return new string[] { "PARSE ERROR" }.Union(tags).ToArray();
+            return tags;
         }
 
         public static string[] GetAssetDependencies(string path, string workshopID = null)

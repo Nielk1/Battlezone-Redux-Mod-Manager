@@ -19,7 +19,7 @@ namespace BZRModManager
             // This call is required by the Windows.Forms Form Designer.
             //InitializeComponent();
 
-            DataSource = new List<ILinqListViesItem>();
+            DataSource = new List<ILinqListViewItem>();
 
             base.RetrieveVirtualItem += LinqListView_RetrieveVirtualItem;
 
@@ -129,7 +129,7 @@ namespace BZRModManager
                     {
                         if (ix == 4)
                         {
-                            ILinqListViesItem temp = (item.Tag as ILinqListViesItem);
+                            ILinqListViewItem temp = (item.Tag as ILinqListViewItem);
                             if (temp != null)
                             {
                                 temp.ToggleSteam();
@@ -139,7 +139,7 @@ namespace BZRModManager
                         }
                         if (ix == 5)
                         {
-                            ILinqListViesItem temp = (item.Tag as ILinqListViesItem);
+                            ILinqListViewItem temp = (item.Tag as ILinqListViewItem);
                             if (temp != null)
                             {
                                 temp.ToggleGog();
@@ -217,7 +217,7 @@ namespace BZRModManager
                 }
             }
 
-            IOrderedEnumerable<ILinqListViesItem> query = null;
+            IOrderedEnumerable<ILinqListViewItem> query = null;
             bool first = true;
             foreach (int sort in sorts)
             {
@@ -285,8 +285,8 @@ namespace BZRModManager
 
         private void LinqListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            //ILinqListViesItem item = source[e.ItemIndex];
-            ILinqListViesItem item = source.ElementAt(e.ItemIndex);
+            //ILinqListViewItem item = source[e.ItemIndex];
+            ILinqListViewItem item = source.ElementAt(e.ItemIndex);
 
             if (item.ListViewItemCache != null)
             {
@@ -391,15 +391,15 @@ namespace BZRModManager
             item.ListViewItemCache = lvi;
         }
 
-        private List<ILinqListViesItem> source;
-        private List<ILinqListViesItem> internal_source;
+        private List<ILinqListViewItem> source;
+        private List<ILinqListViewItem> internal_source;
 
         //[Bindable(true)]
         [Bindable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         //[TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design")]
         //[Category("Data")]
-        public List<ILinqListViesItem> DataSource
+        public List<ILinqListViewItem> DataSource
         {
             get
             {
@@ -468,7 +468,7 @@ namespace BZRModManager
                 VirtualListSize = source.Count;
 
                 /*int imageIndex = 0;
-                foreach(ILinqListViesItem item in source)
+                foreach(ILinqListViewItem item in source)
                 {
                     ListViewItem lvi = new ListViewItem(item.Name, item.IconKey);
                     lvi.Tag = item;
@@ -498,7 +498,7 @@ namespace BZRModManager
         }
     }
 
-    public interface ILinqListViesItem
+    public interface ILinqListViewItem
     {
         string IconKey { get; }
         string Name { get; }
