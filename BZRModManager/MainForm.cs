@@ -839,7 +839,7 @@ namespace BZRModManager
                                             ex_ = null;
                                             try
                                             {
-                                                SteamCmd.WorkshopDownloadItem(AppIdBZCC, modSteam.Workshop.WorkshopId);
+                                                SteamCmd.WorkshopDownloadItem(AppIdBZ98, modSteam.Workshop.WorkshopId);
                                             }
                                             catch (SteamCmdWorkshopDownloadException ex)
                                             {
