@@ -98,11 +98,12 @@
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
+            this.btnDownloadSelectedFoundMods = new System.Windows.Forms.Button();
+            this.btnFixSteamCmd = new System.Windows.Forms.Button();
             this.lvModsBZ98R = new BZRModManager.LinqListView();
             this.lvModsBZCC = new BZRModManager.LinqListView();
             this.lvFindModsBZ98R = new BZRModManager.LinqListView2();
             this.lvFindModsBZCC = new BZRModManager.LinqListView2();
-            this.btnDownloadSelectedFoundMods = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -581,6 +582,7 @@
             // 
             // tpSettings
             // 
+            this.tpSettings.Controls.Add(this.btnFixSteamCmd);
             this.tpSettings.Controls.Add(this.cbFallbackSteamCmdWindowHandling);
             this.tpSettings.Controls.Add(this.groupBox4);
             this.tpSettings.Controls.Add(this.groupBox3);
@@ -597,7 +599,7 @@
             // cbFallbackSteamCmdWindowHandling
             // 
             this.cbFallbackSteamCmdWindowHandling.AutoSize = true;
-            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 230);
+            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 259);
             this.cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
             this.cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(207, 17);
             this.cbFallbackSteamCmdWindowHandling.TabIndex = 17;
@@ -942,6 +944,27 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
+            // btnDownloadSelectedFoundMods
+            // 
+            this.btnDownloadSelectedFoundMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDownloadSelectedFoundMods.Location = new System.Drawing.Point(495, 3);
+            this.btnDownloadSelectedFoundMods.Name = "btnDownloadSelectedFoundMods";
+            this.btnDownloadSelectedFoundMods.Size = new System.Drawing.Size(133, 23);
+            this.btnDownloadSelectedFoundMods.TabIndex = 10;
+            this.btnDownloadSelectedFoundMods.Text = "Download Selected";
+            this.btnDownloadSelectedFoundMods.UseVisualStyleBackColor = true;
+            this.btnDownloadSelectedFoundMods.Click += new System.EventHandler(this.btnDownloadSelectedFoundMods_Click);
+            // 
+            // btnFixSteamCmd
+            // 
+            this.btnFixSteamCmd.Location = new System.Drawing.Point(6, 230);
+            this.btnFixSteamCmd.Name = "btnFixSteamCmd";
+            this.btnFixSteamCmd.Size = new System.Drawing.Size(179, 23);
+            this.btnFixSteamCmd.TabIndex = 18;
+            this.btnFixSteamCmd.Text = "Delete and Rebuild SteamCmd";
+            this.btnFixSteamCmd.UseVisualStyleBackColor = true;
+            this.btnFixSteamCmd.Click += new System.EventHandler(this.btnFixSteamCmd_Click);
+            // 
             // lvModsBZ98R
             // 
             this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1009,17 +1032,6 @@
             this.lvFindModsBZCC.TypeFilter = null;
             this.lvFindModsBZCC.UseCompatibleStateImageBehavior = false;
             this.lvFindModsBZCC.VirtualMode = true;
-            // 
-            // btnDownloadSelectedFoundMods
-            // 
-            this.btnDownloadSelectedFoundMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadSelectedFoundMods.Location = new System.Drawing.Point(495, 3);
-            this.btnDownloadSelectedFoundMods.Name = "btnDownloadSelectedFoundMods";
-            this.btnDownloadSelectedFoundMods.Size = new System.Drawing.Size(133, 23);
-            this.btnDownloadSelectedFoundMods.TabIndex = 10;
-            this.btnDownloadSelectedFoundMods.Text = "Download Selected";
-            this.btnDownloadSelectedFoundMods.UseVisualStyleBackColor = true;
-            this.btnDownloadSelectedFoundMods.Click += new System.EventHandler(this.btnDownloadSelectedFoundMods_Click);
             // 
             // MainForm
             // 
@@ -1144,6 +1156,7 @@
         private System.Windows.Forms.RadioButton rbFindModsTable;
         private System.Windows.Forms.CheckBox cbFindModsNewOnly;
         private System.Windows.Forms.Button btnDownloadSelectedFoundMods;
+        private System.Windows.Forms.Button btnFixSteamCmd;
     }
 }
 

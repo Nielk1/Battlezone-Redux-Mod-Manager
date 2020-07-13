@@ -137,6 +137,7 @@ namespace BZRModManager
             });
         }
 
+        TaskControl RemovingSteamCmd = null;
         TaskControl ActivatingSteamCmd = null;
         private void Steam_SteamCmdStatusChange(object sender, SteamCmdStatusChangeEventArgs e)
         {
@@ -241,6 +242,7 @@ namespace BZRModManager
                                         ((SteamCmdMod)Mods[AppIdBZ98][ModId]).Workshop = dr;
                                     }
                                     Mods[AppIdBZ98][ModId].HasUpdate = dr.HasUpdate;
+                                    Mods[AppIdBZ98][ModId].FolderOnlyDetection = dr.FolderOnlyDetection;
                                 });
                                 UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
                             }
@@ -372,6 +374,7 @@ namespace BZRModManager
                                         ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
                                     }
                                     Mods[AppIdBZCC][ModId].HasUpdate = dr.HasUpdate;
+                                    Mods[AppIdBZCC][ModId].FolderOnlyDetection = dr.FolderOnlyDetection;
                                 });
                                 UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
                             }
@@ -645,19 +648,6 @@ namespace BZRModManager
         private void Form1_Load(object sender, EventArgs e)
         {
             ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
-            /*new Thread(() =>
-            {
-                try
-                {
-                    SteamCmd.Init();
-                }
-                catch (SteamCmdMissingException)
-                {
-                    SteamCmd.Download();
-                    SteamCmd.Init();
-                }
-            }).Start();*/
-
             new Thread(() =>
             {
                 SteamCmd.Download();
@@ -827,7 +817,7 @@ namespace BZRModManager
                             SteamCmdMods.ForEach(dr =>
                             {
                                 SteamCmdMod modSteam = dr.Value as SteamCmdMod;
-                                if (agressive || (modSteam?.HasUpdate ?? false))
+                                if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
                                 {
                                     if (modSteam != null)
                                     {
@@ -916,7 +906,7 @@ namespace BZRModManager
                             SteamCmdMods.ForEach(dr =>
                             {
                                 SteamCmdMod modSteam = dr.Value as SteamCmdMod;
-                                if (agressive || (modSteam?.HasUpdate ?? false))
+                                if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
                                 {
                                     if (modSteam != null)
                                     {
@@ -1265,7 +1255,7 @@ namespace BZRModManager
                     TaskControl UpdateTaskControl = AddTask("Find BZ98 Mods", 0);
                     List<WorkshopMod> ModsFound = WorkshopContext.GetMods(AppIdBZ98, null);
 
-                    //lock (ModStatus)
+                    lock (ModStatus)
                     lock (Mods[AppIdBZ98])
                     {
                         //lock (FoundMods[AppIdBZ98]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
@@ -1278,15 +1268,15 @@ namespace BZRModManager
                             }
                             EndTask(UpdateTaskControl);
                         }
-                    }
 
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        lvFindModsBZ98R.BeginUpdate();
-                        FoundMods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                        lvFindModsBZ98R.DataSource = FoundMods[AppIdBZ98].Values.ToList<ILinqListView2Item>();
-                        lvFindModsBZ98R.EndUpdate();
-                    });
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            lvFindModsBZ98R.BeginUpdate();
+                            FoundMods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                            lvFindModsBZ98R.DataSource = FoundMods[AppIdBZ98].Values.ToList<ILinqListView2Item>();
+                            lvFindModsBZ98R.EndUpdate();
+                        });
+                    }
                 });
             }
         }
@@ -1304,7 +1294,7 @@ namespace BZRModManager
                     TaskControl UpdateTaskControl = AddTask("Find BZCC Mods", 0);
                     List<WorkshopMod> ModsFound = WorkshopContext.GetMods(AppIdBZCC, new string[] { "config", "addon" }); // we only need these two as Asset type can be collected via dependency scan
 
-                    //lock (ModStatus)
+                    lock (ModStatus)
                     lock (Mods[AppIdBZCC])
                     {
                         //lock (FoundMods[AppIdBZCC]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
@@ -1317,15 +1307,15 @@ namespace BZRModManager
                             }
                             EndTask(UpdateTaskControl);
                         }
-                    }
 
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        lvFindModsBZCC.BeginUpdate();
-                        FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                        lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListView2Item>();
-                        lvFindModsBZCC.EndUpdate();
-                    });
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            lvFindModsBZCC.BeginUpdate();
+                            FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                            lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListView2Item>();
+                            lvFindModsBZCC.EndUpdate();
+                        });
+                    }
                 });
             }
         }
@@ -1383,6 +1373,31 @@ namespace BZRModManager
                 }
             }
         }
+
+        private void btnFixSteamCmd_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("This operation is very slow as SteamCmd will be removed and reloaded and all mods will be updated!\r\nContinue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+            {
+                RemovingSteamCmd = AddTask($"Removing SteamCMD", 0);
+                new Thread(() =>
+                {
+                    SteamCmd.Purge();
+                    EndTask(RemovingSteamCmd);
+                    RemovingSteamCmd = null;
+
+                    ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
+                    SteamCmd.Download();
+                    if (exitingStage > 1) return;
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        this.UpdateBZ98RModLists();
+                        this.UpdateBZCCModLists();
+                    });
+                    EndTask(ActivatingSteamCmd);
+                    ActivatingSteamCmd = null;
+                }).Start();
+            }
+        }
     }
 
     public enum InstallStatus
@@ -1413,6 +1428,7 @@ namespace BZRModManager
         public Image SmallIcon { get; set; }
         public ListViewItem ListViewItemCache { get; set; }
         public bool HasUpdate { get; internal set; }
+        public bool FolderOnlyDetection { get; internal set; }
 
         public override string ToString()
         {
@@ -1810,7 +1826,14 @@ namespace BZRModManager
                         string destinationFolder = Path.Combine(MainForm.settings.BZ98RGogPath, "mods", Workshop.WorkshopId.ToString());
 
                         if (Directory.Exists(destinationFolder)) return;
-                        JunctionPoint.Create(destinationFolder, sourceFolder, false);
+                        try
+                        {
+                            JunctionPoint.Create(destinationFolder, sourceFolder, false);
+                        }
+                        catch
+                        {
+                            return;
+                        }
                     }
                 }
                 if (AppId == MainForm.AppIdBZCC)
@@ -1821,7 +1844,14 @@ namespace BZRModManager
                         string destinationFolder = Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", Workshop.WorkshopId.ToString());
 
                         if (Directory.Exists(destinationFolder)) return;
-                        JunctionPoint.Create(destinationFolder, sourceFolder, false);
+                        try
+                        {
+                            JunctionPoint.Create(destinationFolder, sourceFolder, false);
+                        }
+                        catch
+                        {
+                            return;
+                        }
                     }
                 }
             }
