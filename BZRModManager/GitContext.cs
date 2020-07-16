@@ -28,9 +28,13 @@ namespace BZRModManager
             Process git = Process.Start(info);
 
             System.IO.StreamReader ischkout = git.StandardOutput;
+            string output = string.Empty;
             while (git.HasExited == false)
-            { Thread.Sleep(100); }
-            string output = ischkout.ReadToEnd();
+            { 
+                Thread.Sleep(100);
+                output += ischkout.ReadToEnd();
+            }
+            output += ischkout.ReadToEnd();
             string[] lines = output.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
             //return lines.Select(dr => dr.Split('\t')[1]).Where(dr => dr == "refs/heads/baked" || dr == "refs/heads/baked-dev").Select(dr => dr.Substring(11)).ToArray();
             return lines.Select(dr => dr.Split('\t')[1]).Where(dr => dr.StartsWith("refs/heads/")).Select(dr => dr.Substring(11)).ToArray();
