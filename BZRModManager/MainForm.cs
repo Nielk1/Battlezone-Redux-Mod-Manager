@@ -814,44 +814,50 @@ namespace BZRModManager
                         Semaphore MergeTasks = new Semaphore(0, 1);
                         new Thread(() =>
                         {
-                            SteamCmdMods.ForEach(dr =>
+                            try
                             {
-                                SteamCmdMod modSteam = dr.Value as SteamCmdMod;
-                                if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
+                                SteamCmdMods.ForEach(dr =>
                                 {
-                                    if (modSteam != null)
+                                    SteamCmdMod modSteam = dr.Value as SteamCmdMod;
+                                    if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
                                     {
-                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
-                                        SteamCmdException ex_ = null;
-                                        int OtherErrorCounter = 0;
-                                        do
+                                        if (modSteam != null)
                                         {
-                                            ex_ = null;
-                                            try
+                                            TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
+                                            SteamCmdException ex_ = null;
+                                            int OtherErrorCounter = 0;
+                                            do
                                             {
-                                                SteamCmd.WorkshopDownloadItem(AppIdBZ98, modSteam.Workshop.WorkshopId);
-                                            }
-                                            catch (SteamCmdWorkshopDownloadException ex)
-                                            {
-                                                ex_ = ex;
-                                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
+                                                ex_ = null;
+                                                try
+                                                {
+                                                    SteamCmd.WorkshopDownloadItem(AppIdBZ98, modSteam.Workshop.WorkshopId);
+                                                }
+                                                catch (SteamCmdWorkshopDownloadException ex)
+                                                {
+                                                    ex_ = ex;
+                                                    if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
+                                                        OtherErrorCounter++;
+                                                }
+                                                catch (SteamCmdException ex)
+                                                {
+                                                    ex_ = ex;
                                                     OtherErrorCounter++;
-                                            }
-                                            catch (SteamCmdException ex)
-                                            {
-                                                ex_ = ex;
-                                                OtherErrorCounter++;
-                                            }
-                                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                                }
+                                            } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+                                            UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                        }
                                     }
-                                }
-                                lock (CounterClock)
-                                {
-                                    UpdateTaskControl.Value = ++Counter;
-                                }
-                            });
-                            MergeTasks.Release();
+                                    lock (CounterClock)
+                                    {
+                                        UpdateTaskControl.Value = ++Counter;
+                                    }
+                                });
+                            }
+                            finally
+                            {
+                                MergeTasks.Release();
+                            }
                         }).Start();
                         GitMods.ForEach(dr =>
                         {
@@ -903,44 +909,50 @@ namespace BZRModManager
                         Semaphore MergeTasks = new Semaphore(0, 1);
                         new Thread(() =>
                         {
-                            SteamCmdMods.ForEach(dr =>
+                            try
                             {
-                                SteamCmdMod modSteam = dr.Value as SteamCmdMod;
-                                if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
+                                SteamCmdMods.ForEach(dr =>
                                 {
-                                    if (modSteam != null)
+                                    SteamCmdMod modSteam = dr.Value as SteamCmdMod;
+                                    if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
                                     {
-                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
-                                        SteamCmdException ex_ = null;
-                                        int OtherErrorCounter = 0;
-                                        do
+                                        if (modSteam != null)
                                         {
-                                            ex_ = null;
-                                            try
+                                            TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
+                                            SteamCmdException ex_ = null;
+                                            int OtherErrorCounter = 0;
+                                            do
                                             {
-                                                SteamCmd.WorkshopDownloadItem(AppIdBZCC, modSteam.Workshop.WorkshopId);
-                                            }
-                                            catch (SteamCmdWorkshopDownloadException ex)
-                                            {
-                                                ex_ = ex;
-                                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
+                                                ex_ = null;
+                                                try
+                                                {
+                                                    SteamCmd.WorkshopDownloadItem(AppIdBZCC, modSteam.Workshop.WorkshopId);
+                                                }
+                                                catch (SteamCmdWorkshopDownloadException ex)
+                                                {
+                                                    ex_ = ex;
+                                                    if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
+                                                        OtherErrorCounter++;
+                                                }
+                                                catch (SteamCmdException ex)
+                                                {
+                                                    ex_ = ex;
                                                     OtherErrorCounter++;
-                                            }
-                                            catch (SteamCmdException ex)
-                                            {
-                                                ex_ = ex;
-                                                OtherErrorCounter++;
-                                            }
-                                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                                }
+                                            } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+                                            UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                        }
                                     }
-                                }
-                                lock (CounterClock)
-                                {
-                                    UpdateTaskControl.Value = ++Counter;
-                                }
-                            });
-                            MergeTasks.Release();
+                                    lock (CounterClock)
+                                    {
+                                        UpdateTaskControl.Value = ++Counter;
+                                    }
+                                });
+                            }
+                            finally
+                            {
+                                MergeTasks.Release();
+                            }
                         }).Start();
                         GitMods.AsParallel().WithDegreeOfParallelism(2).ForAll(dr =>
                         {
