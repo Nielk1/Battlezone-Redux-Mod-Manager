@@ -40,8 +40,12 @@ namespace BZRModManager
         public static SettingsContainer settings;
         private bool cbFallbackSteamCmdWindowHandlingSet = false;
 
-        public MainForm()
+        private bool ForceUpdateMode = false;
+
+        public MainForm(bool ForceUpdateMode = false)
         {
+            this.ForceUpdateMode = ForceUpdateMode;
+
             LoadSettings();
             //SteamCmd.ShowProcessWindow = settings.FallbackSteamCmdHandling;
             InitializeComponent();
@@ -85,6 +89,8 @@ namespace BZRModManager
             SteamCmd.SteamCmdOutputFull += SteamCmdFull_Log;
             SteamCmd.SteamCmdArgs += SteamCmd_Log;
             SteamCmd.SteamCmdArgs += SteamCmdFull_Log;
+
+            tabControl1.SelectedTab = tpTasks;
         }
 
         ~MainForm()
@@ -310,31 +316,32 @@ namespace BZRModManager
                         loadSemaphore.WaitOne();
                         loadSemaphore.WaitOne();
 
-                        this.Invoke((MethodInvoker)delegate
-                        {
-                            lvModsBZ98R.BeginUpdate();
-                            Mods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                            lvModsBZ98R.DataSource = Mods[AppIdBZ98].Values.ToList<ILinqListViewItem>();
-                            lvModsBZ98R.EndUpdate();
-
-                            lock (Mods[AppIdBZ98])
+                        lock (Mods[AppIdBZ98])
+                            this.Invoke((MethodInvoker)delegate
                             {
-                                //lock (FoundMods[AppIdBZ98]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
-                                {
-                                    foreach (var kv in Mods[AppIdBZ98])
-                                    {
-                                        if (FoundMods[AppIdBZ98].ContainsKey(kv.Key))
-                                            FoundMods[AppIdBZ98][kv.Key].Known = true;
-                                    }
-                                    lvFindModsBZ98R.BeginUpdate();
-                                    FoundMods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                    lvFindModsBZ98R.DataSource = FoundMods[AppIdBZ98].Values.ToList<ILinqListView2Item>();
-                                    lvFindModsBZ98R.EndUpdate();
-                                }
-                            }
+                                lvModsBZ98R.BeginUpdate();
+                                Mods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                                lvModsBZ98R.DataSource = Mods[AppIdBZ98].Values.ToList<ILinqListViewItem>();
+                                lvModsBZ98R.EndUpdate();
 
-                            EndTask(UpdateBZ98RModListsTaskControl);
-                        });
+                                //lock (Mods[AppIdBZ98])
+                                {
+                                    //lock (FoundMods[AppIdBZ98]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
+                                    {
+                                        foreach (var kv in Mods[AppIdBZ98])
+                                        {
+                                            if (FoundMods[AppIdBZ98].ContainsKey(kv.Key))
+                                                FoundMods[AppIdBZ98][kv.Key].Known = true;
+                                        }
+                                        lvFindModsBZ98R.BeginUpdate();
+                                        FoundMods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                                        lvFindModsBZ98R.DataSource = FoundMods[AppIdBZ98].Values.ToList<ILinqListView2Item>();
+                                        lvFindModsBZ98R.EndUpdate();
+                                    }
+                                }
+
+                                EndTask(UpdateBZ98RModListsTaskControl);
+                            });
                     }
                 });
             }
@@ -464,31 +471,32 @@ namespace BZRModManager
                         loadSemaphore.WaitOne();
                         loadSemaphore.WaitOne();
 
-                        this.Invoke((MethodInvoker)delegate
-                        {
-                            lvModsBZCC.BeginUpdate();
-                            Mods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                            lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViewItem>();
-                            lvModsBZCC.EndUpdate();
-
-                            lock (Mods[AppIdBZCC])
+                        lock (Mods[AppIdBZCC])
+                            this.Invoke((MethodInvoker)delegate
                             {
-                                //lock (FoundMods[AppIdBZCC]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
-                                {
-                                    foreach (var kv in Mods[AppIdBZCC])
-                                    {
-                                        if (FoundMods[AppIdBZCC].ContainsKey(kv.Key))
-                                            FoundMods[AppIdBZCC][kv.Key].Known = true;
-                                    }
-                                    lvFindModsBZCC.BeginUpdate();
-                                    FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                    lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListView2Item>();
-                                    lvFindModsBZCC.EndUpdate();
-                                }
-                            }
+                                lvModsBZCC.BeginUpdate();
+                                Mods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                                lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViewItem>();
+                                lvModsBZCC.EndUpdate();
 
-                            EndTask(UpdateBZCCModListsTaskControl);
-                        });
+                                //lock (Mods[AppIdBZCC])
+                                {
+                                    //lock (FoundMods[AppIdBZCC]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
+                                    {
+                                        foreach (var kv in Mods[AppIdBZCC])
+                                        {
+                                            if (FoundMods[AppIdBZCC].ContainsKey(kv.Key))
+                                                FoundMods[AppIdBZCC][kv.Key].Known = true;
+                                        }
+                                        lvFindModsBZCC.BeginUpdate();
+                                        FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                                        lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListView2Item>();
+                                        lvFindModsBZCC.EndUpdate();
+                                    }
+                                }
+
+                                EndTask(UpdateBZCCModListsTaskControl);
+                            });
                     }
                 });
             }
@@ -659,6 +667,54 @@ namespace BZRModManager
                 });
                 EndTask(ActivatingSteamCmd);
                 ActivatingSteamCmd = null;
+
+                if (ForceUpdateMode)
+                {
+                    while (!(UpdateBZ98RModListsTask == null || UpdateBZ98RModListsTask.IsCanceled || UpdateBZ98RModListsTask.IsCompleted || UpdateBZ98RModListsTask.IsFaulted)
+                        || !(UpdateBZCCModListsTask  == null || UpdateBZCCModListsTask.IsCanceled  || UpdateBZCCModListsTask.IsCompleted  || UpdateBZCCModListsTask.IsFaulted))
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    Thread.Sleep(1000);
+
+                    FindModsBZ98R(true);
+                    FindModsBZCC(true);
+
+                    while (!(FindModsBZ98RTask == null || FindModsBZ98RTask.IsCanceled || FindModsBZ98RTask.IsCompleted || FindModsBZ98RTask.IsFaulted)
+                        || !(FindModsBZCCTask  == null || FindModsBZCCTask.IsCanceled  || FindModsBZCCTask.IsCompleted  || FindModsBZCCTask.IsFaulted))
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    Thread.Sleep(1000);
+
+                    this.UpdateBZ98RMods(true);
+                    this.UpdateBZCCMods(true);
+                    this.GetDependenciesBZCCMods();
+
+                    while (!(UpdateBZ98RModsTask         == null || UpdateBZ98RModsTask.IsCanceled         || UpdateBZ98RModsTask.IsCompleted         || UpdateBZ98RModsTask.IsFaulted)
+                        || !(UpdateBZCCModsTask          == null || UpdateBZCCModsTask.IsCanceled          || UpdateBZCCModsTask.IsCompleted          || UpdateBZCCModsTask.IsFaulted)
+                        || !(GetDependenciesBZCCModsTask == null || GetDependenciesBZCCModsTask.IsCanceled || GetDependenciesBZCCModsTask.IsCompleted || GetDependenciesBZCCModsTask.IsFaulted))
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    Thread.Sleep(1000);
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        if (exitingStage == 0)
+                        {
+                            this.Text = this.Text + " (Shutting Down)";
+                            DisableEverything();
+                            //this.Enabled = false;
+                            exitingStage = 1;
+
+                            if (SteamCmd.Status == ESteamCmdStatus.Closed)
+                            {
+                                return; // exit nicely
+                            }
+                        }
+                    });
+                }
             }).Start();
         }
 
@@ -1255,7 +1311,7 @@ namespace BZRModManager
         }
 
         Task FindModsBZ98RTask = null;
-        private void FindModsBZ98R()
+        private void FindModsBZ98R(bool AutoDownload = false)
         {
             if (FindModsBZ98RTask == null
              || FindModsBZ98RTask.IsCanceled
@@ -1277,6 +1333,8 @@ namespace BZRModManager
                             {
                                 mod.Known = Mods[AppIdBZ98].ContainsKey(mod.UniqueID);
                                 FoundMods[AppIdBZ98][mod.UniqueID] = mod;
+                                if(AutoDownload && !Mods[AppIdBZ98].ContainsKey(mod.UniqueID)) // some sort of strange race condition or something, Known isn't right
+                                    DownloadMod(mod.URL, AppIdBZ98);
                             }
                             EndTask(UpdateTaskControl);
                         }
@@ -1294,7 +1352,7 @@ namespace BZRModManager
         }
 
         Task FindModsBZCCTask = null;
-        private void FindModsBZCC()
+        private void FindModsBZCC(bool AutoDownload = false)
         {
             if (FindModsBZCCTask == null
              || FindModsBZCCTask.IsCanceled
@@ -1316,6 +1374,8 @@ namespace BZRModManager
                             {
                                 mod.Known = Mods[AppIdBZCC].ContainsKey(mod.UniqueID);
                                 FoundMods[AppIdBZCC][mod.UniqueID] = mod;
+                                if(AutoDownload && !Mods[AppIdBZCC].ContainsKey(mod.UniqueID)) // some sort of strange race condition or something, Known isn't right
+                                    DownloadMod(mod.URL, AppIdBZCC);
                             }
                             EndTask(UpdateTaskControl);
                         }
