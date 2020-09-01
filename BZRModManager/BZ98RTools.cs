@@ -42,7 +42,7 @@ namespace BZRModManager
                             // try more agressive parsing
                             string[] RawIniLines = File.ReadAllLines(dr);
                             RawIniLines = RawIniLines.SkipWhile(line => !TargetHeader.IsMatch(line)).TakeWhile(line => !AnyHeader.IsMatch(line) || TargetHeader.IsMatch(line)).ToArray();
-                            RawIniLines = RawIniLines.Where(line => line.Contains("=") && !line.StartsWith(";")).Prepend(RawIniLines[0]).ToArray();
+                            try { RawIniLines = RawIniLines.Where(line => line.Contains("=") && !line.StartsWith(";")).Prepend(RawIniLines[0]).ToArray(); } catch { }
                             IniData data = parser.Parser.Parse(string.Join("\r\n", RawIniLines));
                             var retVal = data?["WORKSHOP"]?["mapType"]?.Trim('"');
                             hadIniParseError = true; // we still had an error as we had to use agressive selection
@@ -114,7 +114,7 @@ namespace BZRModManager
                         // try more agressive parsing
                         string[] RawIniLines = File.ReadAllLines(dr);
                             RawIniLines = RawIniLines.SkipWhile(line => !TargetHeader.IsMatch(line)).TakeWhile(line => !AnyHeader.IsMatch(line) || TargetHeader.IsMatch(line)).ToArray();
-                            RawIniLines = RawIniLines.Where(line => line.Contains("=") && !line.StartsWith(";")).Prepend(RawIniLines[0]).ToArray();
+                            try { RawIniLines = RawIniLines.Where(line => line.Contains("=") && !line.StartsWith(";")).Prepend(RawIniLines[0]).ToArray(); } catch { }
                             IniData data = parser.Parser.Parse(string.Join("\r\n", RawIniLines));
                             var retVal = data?["DESCRIPTION"]?["missionName"]?.Trim('"');
                             hadIniParseError = true; // we still had an error as we had to use agressive selection
@@ -166,7 +166,7 @@ namespace BZRModManager
                         // try more agressive parsing
                         string[] RawIniLines = File.ReadAllLines(dr);
                             RawIniLines = RawIniLines.SkipWhile(line => !TargetHeader.IsMatch(line)).TakeWhile(line => !AnyHeader.IsMatch(line) || TargetHeader.IsMatch(line)).ToArray();
-                            RawIniLines = RawIniLines.Where(line => line.Contains("=") && !line.StartsWith(";")).Prepend(RawIniLines[0]).ToArray();
+                            try { RawIniLines = RawIniLines.Where(line => line.Contains("=") && !line.StartsWith(";")).Prepend(RawIniLines[0]).ToArray(); } catch { }
                             IniData data = parser.Parser.Parse(string.Join("\r\n", RawIniLines));
                             var retVal = data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
                             hadIniParseError = true; // we still had an error as we had to use agressive selection
