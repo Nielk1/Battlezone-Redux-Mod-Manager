@@ -668,9 +668,12 @@ namespace BZRModManager
 
                 if (ForceUpdateMode)
                 {
-                    tabControl1.SelectedTab = tpTasks;
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        tabControl1.SelectedTab = tpTasks;
 
-                    DisableEverything();
+                        DisableEverything();
+                    });
 
                     while (!(UpdateBZ98RModListsTask == null || UpdateBZ98RModListsTask.IsCanceled || UpdateBZ98RModListsTask.IsCompleted || UpdateBZ98RModListsTask.IsFaulted)
                         || !(UpdateBZCCModListsTask  == null || UpdateBZCCModListsTask.IsCanceled  || UpdateBZCCModListsTask.IsCompleted  || UpdateBZCCModListsTask.IsFaulted))
