@@ -89,8 +89,6 @@ namespace BZRModManager
             SteamCmd.SteamCmdOutputFull += SteamCmdFull_Log;
             SteamCmd.SteamCmdArgs += SteamCmd_Log;
             SteamCmd.SteamCmdArgs += SteamCmdFull_Log;
-
-            tabControl1.SelectedTab = tpTasks;
         }
 
         ~MainForm()
@@ -660,16 +658,20 @@ namespace BZRModManager
             {
                 SteamCmd.Download();
                 if (exitingStage > 1) return;
-                this.Invoke((MethodInvoker)delegate
-                {
+                //this.Invoke((MethodInvoker)delegate
+                //{
                     this.UpdateBZ98RModLists();
                     this.UpdateBZCCModLists();
-                });
+                //});
                 EndTask(ActivatingSteamCmd);
                 ActivatingSteamCmd = null;
 
                 if (ForceUpdateMode)
                 {
+                    tabControl1.SelectedTab = tpTasks;
+
+                    DisableEverything();
+
                     while (!(UpdateBZ98RModListsTask == null || UpdateBZ98RModListsTask.IsCanceled || UpdateBZ98RModListsTask.IsCompleted || UpdateBZ98RModListsTask.IsFaulted)
                         || !(UpdateBZCCModListsTask  == null || UpdateBZCCModListsTask.IsCanceled  || UpdateBZCCModListsTask.IsCompleted  || UpdateBZCCModListsTask.IsFaulted))
                     {
@@ -699,21 +701,7 @@ namespace BZRModManager
                     }
                     Thread.Sleep(1000);
 
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        if (exitingStage == 0)
-                        {
-                            this.Text = this.Text + " (Shutting Down)";
-                            DisableEverything();
-                            //this.Enabled = false;
-                            exitingStage = 1;
-
-                            if (SteamCmd.Status == ESteamCmdStatus.Closed)
-                            {
-                                return; // exit nicely
-                            }
-                        }
-                    });
+                    Close();
                 }
             }).Start();
         }
