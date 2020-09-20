@@ -12,41 +12,41 @@ using System.Windows.Threading;
 
 namespace BZRModManager
 {
-    class LinqListView : System.Windows.Forms.ListView
+    class LinqListViewFindMods : System.Windows.Forms.ListView
     {
-        public LinqListView()
+        public LinqListViewFindMods()
         {
             // This call is required by the Windows.Forms Form Designer.
             //InitializeComponent();
 
-            DataSource = new List<ILinqListViewItem>();
+            DataSource = new List<ILinqListViewFindModsItem>();
 
-            base.RetrieveVirtualItem += LinqListView_RetrieveVirtualItem;
+            base.RetrieveVirtualItem += LinqListView2_RetrieveVirtualItem;
 
             //base.SelectedIndexChanged += new EventHandler(
             //                   MyListView_SelectedIndexChanged);
-            base.ColumnClick += new ColumnClickEventHandler(LinqListView_ColumnClick);
-            base.MouseDoubleClick += LinqListView_MouseDoubleClick;
+            base.ColumnClick += new ColumnClickEventHandler(LinqListView2_ColumnClick);
+            base.MouseDoubleClick += LinqListView2_MouseDoubleClick;
             _resizeTimer.Tick += _resizeTimer_Tick;
-            base.Resize += LinqListView_Resize;
-            base.ColumnWidthChanging += LinqListView_ColumnWidthChanging;
-            base.ColumnWidthChanged += LinqListView_ColumnWidthChanged;
+            base.Resize += LinqListView2_Resize;
+            base.ColumnWidthChanging += LinqListView2_ColumnWidthChanging;
+            base.ColumnWidthChanged += LinqListView2_ColumnWidthChanged;
         }
 
-        private void LinqListView_ColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
+        private void LinqListView2_ColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
         {
             ListChangedRecently = false;
             this.Invalidate();
         }
 
-        private void LinqListView_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
+        private void LinqListView2_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e)
         {
             ListChangedRecently = true;
         }
 
         bool ListChangedRecently = false;
         DispatcherTimer _resizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
-        private void LinqListView_Resize(object sender, EventArgs e)
+        private void LinqListView2_Resize(object sender, EventArgs e)
         {
             _resizeTimer.Stop();
             ListChangedRecently = true;
@@ -118,44 +118,19 @@ namespace BZRModManager
             base.WndProc(ref m);
         }
 
-        private void LinqListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void LinqListView2_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
             {
                 ListViewItem item = this.GetItemAt(5, e.Y);
                 if (item == null) return;
-                for (int ix = item.SubItems.Count - 1; ix >= 0; --ix)
-                    if (item.SubItems[ix].Bounds.Contains(e.Location))
-                    {
-                        if (ix == 4)
-                        {
-                            ILinqListViewItem temp = (item.Tag as ILinqListViewItem);
-                            if (temp != null)
-                            {
-                                temp.ToggleSteam();
-                                source.Where(dx => dx.WorkshopIdOutput == temp.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                this.Refresh();
-                            }
-                        }
-                        if (ix == 5)
-                        {
-                            ILinqListViewItem temp = (item.Tag as ILinqListViewItem);
-                            if (temp != null)
-                            {
-                                temp.ToggleGog();
-                                source.Where(dx => dx.WorkshopIdOutput == temp.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                this.Refresh();
-                            }
-                        }
-                        break;
-                    }
             }
         }
 
         List<int> sorts = new List<int>();
         public List<string> TypeFilter { get { return _TypeFilter; } set { _TypeFilter = value; ApplySortAndFilter(); } }
         private List<string> _TypeFilter;
-        private void LinqListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        private void LinqListView2_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (e.Column == 6) return;
             int sortCol = (e.Column + 1);
@@ -217,7 +192,7 @@ namespace BZRModManager
                 }
             }
 
-            IOrderedEnumerable<ILinqListViewItem> query = null;
+            IOrderedEnumerable<ILinqListViewFindModsItem> query = null;
             bool first = true;
             foreach (int sort in sorts)
             {
@@ -232,12 +207,12 @@ namespace BZRModManager
                         if (!first) query = query.ThenByDescending(dr => dr.Name);
                         break;
                     case 2:
-                        if (first) query = internal_source.OrderBy(dr => dr.ModType);
-                        if (!first) query = query.ThenBy(dr => dr.ModType);
+                        if (first) query = internal_source.OrderBy(dr => dr.Author);
+                        if (!first) query = query.ThenBy(dr => dr.Author);
                         break;
                     case -2:
-                        if (first) query = internal_source.OrderByDescending(dr => dr.ModType);
-                        if (!first) query = query.ThenByDescending(dr => dr.ModType);
+                        if (first) query = internal_source.OrderByDescending(dr => dr.Author);
+                        if (!first) query = query.ThenByDescending(dr => dr.Author);
                         break;
                     case 3:
                         if (first) query = internal_source.OrderBy(dr => dr.ModSource);
@@ -247,46 +222,22 @@ namespace BZRModManager
                         if (first) query = internal_source.OrderByDescending(dr => dr.ModSource);
                         if (!first) query = query.ThenByDescending(dr => dr.ModSource);
                         break;
-                    case 4:
-                        if (first) query = internal_source.OrderBy(dr => dr.WorkshopIdOutput);
-                        if (!first) query = query.ThenBy(dr => dr.WorkshopIdOutput);
-                        break;
-                    case -4:
-                        if (first) query = internal_source.OrderByDescending(dr => dr.WorkshopIdOutput);
-                        if (!first) query = query.ThenByDescending(dr => dr.WorkshopIdOutput);
-                        break;
-                    case 5:
-                        if (first) query = internal_source.OrderBy(dr => dr.InstalledSteam);
-                        if (!first) query = query.ThenBy(dr => dr.InstalledSteam);
-                        break;
-                    case -5:
-                        if (first) query = internal_source.OrderByDescending(dr => dr.InstalledSteam);
-                        if (!first) query = query.ThenByDescending(dr => dr.InstalledSteam);
-                        break;
-                    case 6:
-                        if (first) query = internal_source.OrderBy(dr => dr.InstalledGog);
-                        if (!first) query = query.ThenBy(dr => dr.InstalledGog);
-                        break;
-                    case -6:
-                        if (first) query = internal_source.OrderByDescending(dr => dr.InstalledGog);
-                        if (!first) query = query.ThenByDescending(dr => dr.InstalledGog);
-                        break;
                 }
                 first = false;
             }
             source = query?.ToList() ?? internal_source;
             if (TypeFilter != null)
             {
-                source = source.Where(dr => TypeFilter.Any(dx => dr.ModType.Contains(dx))).ToList();
+                source = source.Where(dr => TypeFilter.Any(dx => dr.Tags?.Contains(dx) ?? false)).ToList();
             }
             VirtualListSize = source.Count;
             this.Refresh();
         }
 
-        private void LinqListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        private void LinqListView2_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            //ILinqListViewItem item = source[e.ItemIndex];
-            ILinqListViewItem item = source.ElementAt(e.ItemIndex);
+            //ILinqListView2Item item = source[e.ItemIndex];
+            ILinqListViewFindModsItem item = source.ElementAt(e.ItemIndex);
 
             if (item.ListViewItemCache != null)
             {
@@ -312,94 +263,27 @@ namespace BZRModManager
             ListViewItem lvi = new ListViewItem(item.Name, LargeImageList.Images.IndexOfKey(item.IconKey));
             lvi.UseItemStyleForSubItems = false;
             lvi.Tag = item;
-            lvi.SubItems.Add(item.ModType);
+            lvi.SubItems.Add(item.Author);
             lvi.SubItems.Add(item.ModSource);
-            lvi.SubItems.Add(item.WorkshopIdOutput);
-            ListViewItem.ListViewSubItem stat1 = null;
-            ListViewItem.ListViewSubItem stat2 = null;
-            switch (item.InstalledSteam)
-            {
-                case InstallStatus.Unknown:
-                    stat1 = lvi.SubItems.Add(string.Empty);
-                    break;
-                case InstallStatus.Missing:
-                    stat1 = lvi.SubItems.Add("M");
-                    stat1.BackColor = Color.Orange;
-                    break;
-                case InstallStatus.Uninstalled:
-                    stat1 = lvi.SubItems.Add("N");
-                    stat1.BackColor = Color.Red;
-                    break;
-                case InstallStatus.ForceDisabled:
-                    stat1 = lvi.SubItems.Add("N");
-                    //stat1.BackColor = Color.Pink;
-                    stat1.ForeColor = Color.Gray;
-                    break;
-                case InstallStatus.ForceEnabled:
-                    stat1 = lvi.SubItems.Add("Y");
-                    //stat1.BackColor = Color.LightGreen;
-                    stat1.ForeColor = Color.Gray;
-                    break;
-                case InstallStatus.Linked:
-                    stat1 = lvi.SubItems.Add("Y");
-                    stat1.BackColor = Color.Green;
-                    break;
-                case InstallStatus.Collision:
-                    stat1 = lvi.SubItems.Add("C");
-                    stat1.BackColor = Color.Purple;
-                    break;
-            }
-            switch (item.InstalledGog)
-            {
-                case InstallStatus.Unknown:
-                    stat2 = lvi.SubItems.Add(string.Empty);
-                    break;
-                case InstallStatus.Missing:
-                    stat2 = lvi.SubItems.Add("X");
-                    break;
-                case InstallStatus.Uninstalled:
-                    stat2 = lvi.SubItems.Add("N");
-                    stat2.BackColor = Color.Red;
-                    break;
-                case InstallStatus.ForceDisabled:
-                    stat2 = lvi.SubItems.Add("N");
-                    stat2.BackColor = Color.Pink;
-                    stat2.ForeColor = Color.Gray;
-                    break;
-                case InstallStatus.ForceEnabled:
-                    stat2 = lvi.SubItems.Add("Y");
-                    stat2.BackColor = Color.LightGreen;
-                    stat2.ForeColor = Color.Gray;
-                    break;
-                case InstallStatus.Linked:
-                    stat2 = lvi.SubItems.Add("Y");
-                    stat2.BackColor = Color.Green;
-                    break;
-                case InstallStatus.Collision:
-                    stat2 = lvi.SubItems.Add("C");
-                    stat2.BackColor = Color.Purple;
-                    break;
-            }
-            lvi.SubItems.Add(item.ModTags != null ? string.Join(",", item.ModTags) : string.Empty);
-            //lvi.SubItems.Add(item.Version);
-            //lvi.SubItems.Add(item.Vendor);
-            //lvi.SubItems.Add(item.NokiaCategory);
-            //lvi.SubItems.Add(item.ScreenSize);
-            //lvi.SubItems.Add(item.FileName);
             e.Item = lvi;
 
             item.ListViewItemCache = lvi;
         }
 
-        private List<ILinqListViewItem> source;
-        private List<ILinqListViewItem> internal_source;
+        private List<ILinqListViewFindModsItem> source;
+        private List<ILinqListViewFindModsItem> internal_source;
+
+        public ILinqListViewFindModsItem GetItemAtVirtualIndex(int index)
+        {
+            return source.ElementAt(index);
+        }
 
         //[Bindable(true)]
         [Bindable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         //[TypeConverter("System.Windows.Forms.Design.DataSourceConverter, System.Design")]
         //[Category("Data")]
-        public List<ILinqListViewItem> DataSource
+        public List<ILinqListViewFindModsItem> DataSource
         {
             get
             {
@@ -446,29 +330,20 @@ namespace BZRModManager
             Items.Clear();
             Columns.Clear();
             LargeImageList = new ImageList();
-            LargeImageList.ImageSize = new Size(80, 64);
+            LargeImageList.ImageSize = new Size(200, 200);
+            LargeImageList.ColorDepth = ColorDepth.Depth32Bit;
             SmallImageList = new ImageList();
             SmallImageList.ImageSize = new Size(16, 16);
             if (source != null)
             {
                 Columns.Add("Name", "Name", 350);
-                Columns.Add("ModType", "Type", 85);
+                Columns.Add("Author", "Author", 85);
                 Columns.Add("ModSource", "Source", 85);
-                Columns.Add("WorkshopIdOutput", "WorkshopID", 85);
-                Columns.Add("InstalledSteam", "Steam", 45, HorizontalAlignment.Center, 0);
-                Columns.Add("InstalledGog", "GOG", 45, HorizontalAlignment.Center, 0);
-                Columns.Add("ModTags", "Tags", 200);
-                //Columns.Add("WebName", "Web Name", 200);
-                //Columns.Add("Version", "Version", 50);
-                //Columns.Add("Vendor", "Vendor", 150);
-                //Columns.Add("NokiaCategory", "Nokia Category", 100);
-                //Columns.Add("ScreenSize", "Screen Size", 100);
-                //Columns.Add("FileName", "File Name", 200);
 
                 VirtualListSize = source.Count;
 
                 /*int imageIndex = 0;
-                foreach(ILinqListViewItem item in source)
+                foreach(ILinqListView2Item item in source)
                 {
                     ListViewItem lvi = new ListViewItem(item.Name, item.IconKey);
                     lvi.Tag = item;
@@ -498,31 +373,19 @@ namespace BZRModManager
         }
     }
 
-    public interface ILinqListViewItem
+    public interface ILinqListViewFindModsItem
     {
         string IconKey { get; }
         string Name { get; }
+        string Author { get; }
 
-        string ModType { get; }
-        string[] ModTags { get; }
-        string WorkshopIdOutput { get; }
         string ModSource { get; }
+        string[] Tags { get; }
 
-        InstallStatus InstalledSteam { get; }
-        InstallStatus InstalledGog { get; }
-
-        //string FileName { get; }
-        //string WebName { get; }
+        string URL { get; }
         Image LargeIcon { get; }
         Image SmallIcon { get; }
-        //string Version { get; }
-        //string Vendor { get; }
-        //string NokiaCategory { get; }
-        //string ScreenSize { get; }
         ListViewItem ListViewItemCache { get; set; }
-
-        void ToggleGog();
-        void ToggleSteam();
     }
 
 }

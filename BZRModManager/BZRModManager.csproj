@@ -80,10 +80,16 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="GitContext.cs" />
     <Compile Include="JunctionPoint.cs" />
-    <Compile Include="LinqListView2.cs">
+    <Compile Include="LinqListViewPlayers.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LinqListView.cs">
+    <Compile Include="LinqListViewMultiplayer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LinqListViewFindMods.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LinqListViewMods.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -92,6 +98,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MultiplayerSessionServer.cs" />
     <Compile Include="MultiSelectDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,11 +115,17 @@
       <DependentUpon>TaskControl.cs</DependentUpon>
     </Compile>
     <Compile Include="WorkshopContext.cs" />
-    <EmbeddedResource Include="LinqListView2.resx">
-      <DependentUpon>LinqListView2.cs</DependentUpon>
+    <EmbeddedResource Include="LinqListViewPlayers.resx">
+      <DependentUpon>LinqListViewPlayers.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LinqListView.resx">
-      <DependentUpon>LinqListView.cs</DependentUpon>
+    <EmbeddedResource Include="LinqListViewMultiplayer.resx">
+      <DependentUpon>LinqListViewMultiplayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LinqListViewFindMods.resx">
+      <DependentUpon>LinqListViewFindMods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LinqListViewMods.resx">
+      <DependentUpon>LinqListViewMods.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

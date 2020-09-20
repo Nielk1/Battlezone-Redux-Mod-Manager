@@ -72,7 +72,7 @@ namespace BZRModManager
         }
     }
 
-    public class WorkshopMod : ILinqListView2Item
+    public class WorkshopMod : ILinqListViewFindModsItem
     {
         public string IconKey => UniqueID;
         public string Name => Title;

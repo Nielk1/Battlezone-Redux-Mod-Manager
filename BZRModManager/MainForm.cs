@@ -319,7 +319,7 @@ namespace BZRModManager
                             {
                                 lvModsBZ98R.BeginUpdate();
                                 Mods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                lvModsBZ98R.DataSource = Mods[AppIdBZ98].Values.ToList<ILinqListViewItem>();
+                                lvModsBZ98R.DataSource = Mods[AppIdBZ98].Values.ToList<ILinqListViewItemMods>();
                                 lvModsBZ98R.EndUpdate();
 
                                 //lock (Mods[AppIdBZ98])
@@ -333,7 +333,7 @@ namespace BZRModManager
                                         }
                                         lvFindModsBZ98R.BeginUpdate();
                                         FoundMods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                        lvFindModsBZ98R.DataSource = FoundMods[AppIdBZ98].Values.ToList<ILinqListView2Item>();
+                                        lvFindModsBZ98R.DataSource = FoundMods[AppIdBZ98].Values.ToList<ILinqListViewFindModsItem>();
                                         lvFindModsBZ98R.EndUpdate();
                                     }
                                 }
@@ -474,7 +474,7 @@ namespace BZRModManager
                             {
                                 lvModsBZCC.BeginUpdate();
                                 Mods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViewItem>();
+                                lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViewItemMods>();
                                 lvModsBZCC.EndUpdate();
 
                                 //lock (Mods[AppIdBZCC])
@@ -488,7 +488,7 @@ namespace BZRModManager
                                         }
                                         lvFindModsBZCC.BeginUpdate();
                                         FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                        lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListView2Item>();
+                                        lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListViewFindModsItem>();
                                         lvFindModsBZCC.EndUpdate();
                                     }
                                 }
@@ -1334,7 +1334,7 @@ namespace BZRModManager
                         {
                             lvFindModsBZ98R.BeginUpdate();
                             FoundMods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                            lvFindModsBZ98R.DataSource = FoundMods[AppIdBZ98].Values.ToList<ILinqListView2Item>();
+                            lvFindModsBZ98R.DataSource = FoundMods[AppIdBZ98].Values.ToList<ILinqListViewFindModsItem>();
                             lvFindModsBZ98R.EndUpdate();
                         });
                     }
@@ -1375,7 +1375,7 @@ namespace BZRModManager
                         {
                             lvFindModsBZCC.BeginUpdate();
                             FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                            lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListView2Item>();
+                            lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListViewFindModsItem>();
                             lvFindModsBZCC.EndUpdate();
                         });
                     }
@@ -1411,11 +1411,11 @@ namespace BZRModManager
                  || FindModsBZ98RTask.IsCompleted
                  || FindModsBZ98RTask.IsFaulted)
                 {
-                    List<ILinqListView2Item> Items = new List<ILinqListView2Item>();
+                    List<ILinqListViewFindModsItem> Items = new List<ILinqListViewFindModsItem>();
                     foreach (int idx in lvFindModsBZ98R.SelectedIndices)
                         Items.Add(lvFindModsBZ98R.GetItemAtVirtualIndex(idx));
 
-                    foreach (ILinqListView2Item item in Items)
+                    foreach (ILinqListViewFindModsItem item in Items)
                         DownloadMod(item.URL, AppIdBZ98);
                 }
             }
@@ -1427,11 +1427,11 @@ namespace BZRModManager
                  || FindModsBZCCTask.IsCompleted
                  || FindModsBZCCTask.IsFaulted)
                 {
-                    List<ILinqListView2Item> Items = new List<ILinqListView2Item>();
+                    List<ILinqListViewFindModsItem> Items = new List<ILinqListViewFindModsItem>();
                     foreach (int idx in lvFindModsBZCC.SelectedIndices)
                         Items.Add(lvFindModsBZCC.GetItemAtVirtualIndex(idx));
 
-                    foreach (ILinqListView2Item item in Items)
+                    foreach (ILinqListViewFindModsItem item in Items)
                         DownloadMod(item.URL, AppIdBZCC);
                 }
             }
@@ -1461,6 +1461,145 @@ namespace BZRModManager
                 }).Start();
             }
         }
+
+        private void btnMultiRefresh_Click(object sender, EventArgs e)
+        {
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZ98R)
+            {
+                GetMpGamesBZ98R();
+            }
+
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZCC)
+            {
+                GetMpGamesBZCC();
+            }
+        }
+
+        Task GetMpGamesBZ98RTask = null;
+        private void GetMpGamesBZ98R()
+        {
+            if (GetMpGamesBZ98RTask == null
+             || GetMpGamesBZ98RTask.IsCanceled
+             || GetMpGamesBZ98RTask.IsCompleted
+             || GetMpGamesBZ98RTask.IsFaulted)
+            {
+                GetMpGamesBZ98RTask = Task.Factory.StartNew(() =>
+                {
+                    TaskControl UpdateTaskControl = AddTask("Find BZ98 Multiplayer Games", 0);
+                    MultiplayerGamelistData data = MultiplayerSessionServer.GetMpGamesBZ98R();
+                    EndTask(UpdateTaskControl);
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        lvMultiplayerBZ98R.BeginUpdate();
+                        lvMultiplayerBZ98R.DataSource = data;
+                        lvMultiplayerBZ98R.EndUpdate();
+                    });
+                });
+            }
+        }
+
+        Task GetMpGamesBZCCTask = null;
+        private void GetMpGamesBZCC()
+        {
+            if (GetMpGamesBZCCTask == null
+             || GetMpGamesBZCCTask.IsCanceled
+             || GetMpGamesBZCCTask.IsCompleted
+             || GetMpGamesBZCCTask.IsFaulted)
+            {
+                GetMpGamesBZCCTask = Task.Factory.StartNew(() =>
+                {
+                    TaskControl UpdateTaskControl = AddTask("Find BZCC Multiplayer Games", 0);
+                    MultiplayerGamelistData data = MultiplayerSessionServer.GetMpGamesBZCC();
+                    EndTask(UpdateTaskControl);
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        lvMultiplayerBZCC.BeginUpdate();
+                        lvMultiplayerBZCC.DataSource = data;
+                        lvMultiplayerBZCC.EndUpdate();
+                    });
+                });
+            }
+        }
+
+        private void rbFindGames_CheckedChanged(object sender, EventArgs e)
+        {
+            lvMultiplayerBZ98R.View = rbFindGamesMap.Checked ? View.LargeIcon : View.Details;
+            lvMultiplayerBZCC.View = rbFindGamesMap.Checked ? View.LargeIcon : View.Details;
+            //lvPlayers.View = rbFindGamesMap.Checked ? View.LargeIcon : View.Details;
+        }
+
+        private void lvMultiplayerBZ98R_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+            foreach (int idx in lvMultiplayerBZ98R.SelectedIndices)
+                Items.Add(lvMultiplayerBZ98R.GetItemAtVirtualIndex(idx).SessionItem);
+            lvPlayers.BeginUpdate();
+            lvPlayers.DataSource = Items.FirstOrDefault()?.Players;
+            lvPlayers.EndUpdate();
+
+            if (Items.Count > 0)
+            {
+                btnMultiJoinSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RSteamPath);
+                btnMultiJoinGOG.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RGogPath);
+                btnMultiGetModSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RSteamPath);
+                btnGetModSteamCmd.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RGogPath);
+            }
+            else
+            {
+                btnMultiJoinSteam.Enabled = false;
+                btnMultiJoinGOG.Enabled = false;
+                btnMultiGetModSteam.Enabled = false;
+                btnGetModSteamCmd.Enabled = false;
+            }
+        }
+
+        private void lvMultiplayerBZCC_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+            foreach (int idx in lvMultiplayerBZCC.SelectedIndices)
+                Items.Add(lvMultiplayerBZCC.GetItemAtVirtualIndex(idx).SessionItem);
+            lvPlayers.BeginUpdate();
+            lvPlayers.DataSource = Items.FirstOrDefault()?.Players;
+            lvPlayers.EndUpdate();
+
+            if (Items.Count > 0)
+            {
+                btnMultiJoinSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCSteamPath);
+                btnMultiJoinGOG.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCMyDocsPath);
+                btnMultiGetModSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCSteamPath);
+                btnGetModSteamCmd.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCMyDocsPath);
+            }
+            else
+            {
+                btnMultiJoinSteam.Enabled = false;
+                btnMultiJoinGOG.Enabled = false;
+                btnMultiGetModSteam.Enabled = false;
+                btnGetModSteamCmd.Enabled = false;
+            }
+        }
+
+        private void tcMultiplayer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lvPlayers.BeginUpdate();
+            lvPlayers.DataSource = null;
+            lvPlayers.EndUpdate();
+            btnMultiJoinSteam.Enabled = false;
+            btnMultiJoinGOG.Enabled = false;
+            btnMultiGetModSteam.Enabled = false;
+            btnGetModSteamCmd.Enabled = false;
+        }
+
+        private void lvPlayers_DoubleClick(object sender, EventArgs e)
+        {
+            List<string> Items = new List<string>();
+            foreach (int idx in lvPlayers.SelectedIndices)
+                Items.Add(lvPlayers.GetItemAtVirtualIndex(idx).URL);
+            string URL = Items.FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(URL))
+                Process.Start(URL);
+        }
     }
 
     public enum InstallStatus
@@ -1474,7 +1613,7 @@ namespace BZRModManager
         Missing,
     }
 
-    public abstract class ModItem : ILinqListViewItem
+    public abstract class ModItem : ILinqListViewItemMods
     {
         public abstract string UniqueID { get; }
         public abstract InstallStatus InstalledSteam { get; }

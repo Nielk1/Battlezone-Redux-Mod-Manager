@@ -57,6 +57,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
             this.tpFindMods = new System.Windows.Forms.TabPage();
+            this.btnDownloadSelectedFoundMods = new System.Windows.Forms.Button();
             this.cbFindModsNewOnly = new System.Windows.Forms.CheckBox();
             this.rbFindModsTable = new System.Windows.Forms.RadioButton();
             this.btnFindMods = new System.Windows.Forms.Button();
@@ -64,7 +65,19 @@
             this.tcFindMods = new System.Windows.Forms.TabControl();
             this.tpFindModsBZ98R = new System.Windows.Forms.TabPage();
             this.tpFindModsBZCC = new System.Windows.Forms.TabPage();
+            this.tabMultiplayer = new System.Windows.Forms.TabPage();
+            this.rbFindGamesTable = new System.Windows.Forms.RadioButton();
+            this.btnGetModSteamCmd = new System.Windows.Forms.Button();
+            this.btnMultiGetModSteam = new System.Windows.Forms.Button();
+            this.rbFindGamesMap = new System.Windows.Forms.RadioButton();
+            this.btnMultiJoinGOG = new System.Windows.Forms.Button();
+            this.btnMultiJoinSteam = new System.Windows.Forms.Button();
+            this.btnMultiRefresh = new System.Windows.Forms.Button();
+            this.tcMultiplayer = new System.Windows.Forms.TabControl();
+            this.tpMultiplayerBZ98R = new System.Windows.Forms.TabPage();
+            this.tpMultiplayerBZCC = new System.Windows.Forms.TabPage();
             this.tpSettings = new System.Windows.Forms.TabPage();
+            this.btnFixSteamCmd = new System.Windows.Forms.Button();
             this.cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.btnBZCCMyDocsFind = new System.Windows.Forms.Button();
@@ -98,12 +111,13 @@
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
-            this.btnDownloadSelectedFoundMods = new System.Windows.Forms.Button();
-            this.btnFixSteamCmd = new System.Windows.Forms.Button();
-            this.lvModsBZ98R = new BZRModManager.LinqListView();
-            this.lvModsBZCC = new BZRModManager.LinqListView();
-            this.lvFindModsBZ98R = new BZRModManager.LinqListView2();
-            this.lvFindModsBZCC = new BZRModManager.LinqListView2();
+            this.lvModsBZ98R = new BZRModManager.LinqListViewMods();
+            this.lvModsBZCC = new BZRModManager.LinqListViewMods();
+            this.lvFindModsBZ98R = new BZRModManager.LinqListViewFindMods();
+            this.lvFindModsBZCC = new BZRModManager.LinqListViewFindMods();
+            this.lvPlayers = new BZRModManager.LinqListViewPlayers();
+            this.lvMultiplayerBZ98R = new BZRModManager.LinqListViewMultiplayer();
+            this.lvMultiplayerBZCC = new BZRModManager.LinqListViewMultiplayer();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -113,6 +127,10 @@
             this.tcFindMods.SuspendLayout();
             this.tpFindModsBZ98R.SuspendLayout();
             this.tpFindModsBZCC.SuspendLayout();
+            this.tabMultiplayer.SuspendLayout();
+            this.tcMultiplayer.SuspendLayout();
+            this.tpMultiplayerBZ98R.SuspendLayout();
+            this.tpMultiplayerBZCC.SuspendLayout();
             this.tpSettings.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -133,6 +151,7 @@
             this.tabControl1.Controls.Add(this.tpBZ98R);
             this.tabControl1.Controls.Add(this.tpBZCC);
             this.tabControl1.Controls.Add(this.tpFindMods);
+            this.tabControl1.Controls.Add(this.tabMultiplayer);
             this.tabControl1.Controls.Add(this.tpSettings);
             this.tabControl1.Controls.Add(this.tpTasks);
             this.tabControl1.Controls.Add(this.tpLog);
@@ -494,6 +513,17 @@
             this.tpFindMods.Text = "Find Mods";
             this.tpFindMods.UseVisualStyleBackColor = true;
             // 
+            // btnDownloadSelectedFoundMods
+            // 
+            this.btnDownloadSelectedFoundMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDownloadSelectedFoundMods.Location = new System.Drawing.Point(495, 3);
+            this.btnDownloadSelectedFoundMods.Name = "btnDownloadSelectedFoundMods";
+            this.btnDownloadSelectedFoundMods.Size = new System.Drawing.Size(133, 23);
+            this.btnDownloadSelectedFoundMods.TabIndex = 10;
+            this.btnDownloadSelectedFoundMods.Text = "Download Selected";
+            this.btnDownloadSelectedFoundMods.UseVisualStyleBackColor = true;
+            this.btnDownloadSelectedFoundMods.Click += new System.EventHandler(this.btnDownloadSelectedFoundMods_Click);
+            // 
             // cbFindModsNewOnly
             // 
             this.cbFindModsNewOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -580,6 +610,142 @@
             this.tpFindModsBZCC.Text = "BZCC";
             this.tpFindModsBZCC.UseVisualStyleBackColor = true;
             // 
+            // tabMultiplayer
+            // 
+            this.tabMultiplayer.Controls.Add(this.lvPlayers);
+            this.tabMultiplayer.Controls.Add(this.rbFindGamesTable);
+            this.tabMultiplayer.Controls.Add(this.btnGetModSteamCmd);
+            this.tabMultiplayer.Controls.Add(this.btnMultiGetModSteam);
+            this.tabMultiplayer.Controls.Add(this.rbFindGamesMap);
+            this.tabMultiplayer.Controls.Add(this.btnMultiJoinGOG);
+            this.tabMultiplayer.Controls.Add(this.btnMultiJoinSteam);
+            this.tabMultiplayer.Controls.Add(this.btnMultiRefresh);
+            this.tabMultiplayer.Controls.Add(this.tcMultiplayer);
+            this.tabMultiplayer.Location = new System.Drawing.Point(4, 22);
+            this.tabMultiplayer.Name = "tabMultiplayer";
+            this.tabMultiplayer.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMultiplayer.Size = new System.Drawing.Size(734, 381);
+            this.tabMultiplayer.TabIndex = 8;
+            this.tabMultiplayer.Text = "Multiplayer";
+            this.tabMultiplayer.UseVisualStyleBackColor = true;
+            // 
+            // rbFindGamesTable
+            // 
+            this.rbFindGamesTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.rbFindGamesTable.AutoSize = true;
+            this.rbFindGamesTable.Checked = true;
+            this.rbFindGamesTable.Location = new System.Drawing.Point(144, 6);
+            this.rbFindGamesTable.Name = "rbFindGamesTable";
+            this.rbFindGamesTable.Size = new System.Drawing.Size(52, 17);
+            this.rbFindGamesTable.TabIndex = 11;
+            this.rbFindGamesTable.TabStop = true;
+            this.rbFindGamesTable.Text = "Table";
+            this.rbFindGamesTable.UseVisualStyleBackColor = true;
+            this.rbFindGamesTable.CheckedChanged += new System.EventHandler(this.rbFindGames_CheckedChanged);
+            // 
+            // btnGetModSteamCmd
+            // 
+            this.btnGetModSteamCmd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGetModSteamCmd.Enabled = false;
+            this.btnGetModSteamCmd.Location = new System.Drawing.Point(254, 3);
+            this.btnGetModSteamCmd.Name = "btnGetModSteamCmd";
+            this.btnGetModSteamCmd.Size = new System.Drawing.Size(131, 23);
+            this.btnGetModSteamCmd.TabIndex = 10;
+            this.btnGetModSteamCmd.Text = "Get Mods (SteamCmd)";
+            this.btnGetModSteamCmd.UseVisualStyleBackColor = true;
+            // 
+            // btnMultiGetModSteam
+            // 
+            this.btnMultiGetModSteam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMultiGetModSteam.Enabled = false;
+            this.btnMultiGetModSteam.Location = new System.Drawing.Point(391, 3);
+            this.btnMultiGetModSteam.Name = "btnMultiGetModSteam";
+            this.btnMultiGetModSteam.Size = new System.Drawing.Size(102, 23);
+            this.btnMultiGetModSteam.TabIndex = 9;
+            this.btnMultiGetModSteam.Text = "Get Mod (Steam)";
+            this.btnMultiGetModSteam.UseVisualStyleBackColor = true;
+            // 
+            // rbFindGamesMap
+            // 
+            this.rbFindGamesMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.rbFindGamesMap.AutoSize = true;
+            this.rbFindGamesMap.Location = new System.Drawing.Point(202, 6);
+            this.rbFindGamesMap.Name = "rbFindGamesMap";
+            this.rbFindGamesMap.Size = new System.Drawing.Size(46, 17);
+            this.rbFindGamesMap.TabIndex = 12;
+            this.rbFindGamesMap.Text = "Map";
+            this.rbFindGamesMap.UseVisualStyleBackColor = true;
+            this.rbFindGamesMap.CheckedChanged += new System.EventHandler(this.rbFindGames_CheckedChanged);
+            // 
+            // btnMultiJoinGOG
+            // 
+            this.btnMultiJoinGOG.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMultiJoinGOG.Enabled = false;
+            this.btnMultiJoinGOG.Location = new System.Drawing.Point(499, 3);
+            this.btnMultiJoinGOG.Name = "btnMultiJoinGOG";
+            this.btnMultiJoinGOG.Size = new System.Drawing.Size(76, 23);
+            this.btnMultiJoinGOG.TabIndex = 8;
+            this.btnMultiJoinGOG.Text = "Join (GOG)";
+            this.btnMultiJoinGOG.UseVisualStyleBackColor = true;
+            // 
+            // btnMultiJoinSteam
+            // 
+            this.btnMultiJoinSteam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMultiJoinSteam.Enabled = false;
+            this.btnMultiJoinSteam.Location = new System.Drawing.Point(581, 3);
+            this.btnMultiJoinSteam.Name = "btnMultiJoinSteam";
+            this.btnMultiJoinSteam.Size = new System.Drawing.Size(76, 23);
+            this.btnMultiJoinSteam.TabIndex = 7;
+            this.btnMultiJoinSteam.Text = "Join (Steam)";
+            this.btnMultiJoinSteam.UseVisualStyleBackColor = true;
+            // 
+            // btnMultiRefresh
+            // 
+            this.btnMultiRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMultiRefresh.Location = new System.Drawing.Point(663, 3);
+            this.btnMultiRefresh.Name = "btnMultiRefresh";
+            this.btnMultiRefresh.Size = new System.Drawing.Size(64, 23);
+            this.btnMultiRefresh.TabIndex = 6;
+            this.btnMultiRefresh.Text = "Refresh";
+            this.btnMultiRefresh.UseVisualStyleBackColor = true;
+            this.btnMultiRefresh.Click += new System.EventHandler(this.btnMultiRefresh_Click);
+            // 
+            // tcMultiplayer
+            // 
+            this.tcMultiplayer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tcMultiplayer.Controls.Add(this.tpMultiplayerBZ98R);
+            this.tcMultiplayer.Controls.Add(this.tpMultiplayerBZCC);
+            this.tcMultiplayer.Location = new System.Drawing.Point(6, 7);
+            this.tcMultiplayer.Name = "tcMultiplayer";
+            this.tcMultiplayer.SelectedIndex = 0;
+            this.tcMultiplayer.Size = new System.Drawing.Size(722, 265);
+            this.tcMultiplayer.TabIndex = 5;
+            this.tcMultiplayer.SelectedIndexChanged += new System.EventHandler(this.tcMultiplayer_SelectedIndexChanged);
+            // 
+            // tpMultiplayerBZ98R
+            // 
+            this.tpMultiplayerBZ98R.Controls.Add(this.lvMultiplayerBZ98R);
+            this.tpMultiplayerBZ98R.Location = new System.Drawing.Point(4, 22);
+            this.tpMultiplayerBZ98R.Name = "tpMultiplayerBZ98R";
+            this.tpMultiplayerBZ98R.Padding = new System.Windows.Forms.Padding(3);
+            this.tpMultiplayerBZ98R.Size = new System.Drawing.Size(714, 239);
+            this.tpMultiplayerBZ98R.TabIndex = 0;
+            this.tpMultiplayerBZ98R.Text = "BZ98R";
+            this.tpMultiplayerBZ98R.UseVisualStyleBackColor = true;
+            // 
+            // tpMultiplayerBZCC
+            // 
+            this.tpMultiplayerBZCC.Controls.Add(this.lvMultiplayerBZCC);
+            this.tpMultiplayerBZCC.Location = new System.Drawing.Point(4, 22);
+            this.tpMultiplayerBZCC.Name = "tpMultiplayerBZCC";
+            this.tpMultiplayerBZCC.Padding = new System.Windows.Forms.Padding(3);
+            this.tpMultiplayerBZCC.Size = new System.Drawing.Size(714, 239);
+            this.tpMultiplayerBZCC.TabIndex = 1;
+            this.tpMultiplayerBZCC.Text = "BZCC";
+            this.tpMultiplayerBZCC.UseVisualStyleBackColor = true;
+            // 
             // tpSettings
             // 
             this.tpSettings.Controls.Add(this.btnFixSteamCmd);
@@ -595,6 +761,16 @@
             this.tpSettings.TabIndex = 2;
             this.tpSettings.Text = "Settings";
             this.tpSettings.UseVisualStyleBackColor = true;
+            // 
+            // btnFixSteamCmd
+            // 
+            this.btnFixSteamCmd.Location = new System.Drawing.Point(6, 230);
+            this.btnFixSteamCmd.Name = "btnFixSteamCmd";
+            this.btnFixSteamCmd.Size = new System.Drawing.Size(179, 23);
+            this.btnFixSteamCmd.TabIndex = 18;
+            this.btnFixSteamCmd.Text = "Delete and Rebuild SteamCmd";
+            this.btnFixSteamCmd.UseVisualStyleBackColor = true;
+            this.btnFixSteamCmd.Click += new System.EventHandler(this.btnFixSteamCmd_Click);
             // 
             // cbFallbackSteamCmdWindowHandling
             // 
@@ -944,27 +1120,6 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
-            // btnDownloadSelectedFoundMods
-            // 
-            this.btnDownloadSelectedFoundMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadSelectedFoundMods.Location = new System.Drawing.Point(495, 3);
-            this.btnDownloadSelectedFoundMods.Name = "btnDownloadSelectedFoundMods";
-            this.btnDownloadSelectedFoundMods.Size = new System.Drawing.Size(133, 23);
-            this.btnDownloadSelectedFoundMods.TabIndex = 10;
-            this.btnDownloadSelectedFoundMods.Text = "Download Selected";
-            this.btnDownloadSelectedFoundMods.UseVisualStyleBackColor = true;
-            this.btnDownloadSelectedFoundMods.Click += new System.EventHandler(this.btnDownloadSelectedFoundMods_Click);
-            // 
-            // btnFixSteamCmd
-            // 
-            this.btnFixSteamCmd.Location = new System.Drawing.Point(6, 230);
-            this.btnFixSteamCmd.Name = "btnFixSteamCmd";
-            this.btnFixSteamCmd.Size = new System.Drawing.Size(179, 23);
-            this.btnFixSteamCmd.TabIndex = 18;
-            this.btnFixSteamCmd.Text = "Delete and Rebuild SteamCmd";
-            this.btnFixSteamCmd.UseVisualStyleBackColor = true;
-            this.btnFixSteamCmd.Click += new System.EventHandler(this.btnFixSteamCmd_Click);
-            // 
             // lvModsBZ98R
             // 
             this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1033,6 +1188,56 @@
             this.lvFindModsBZCC.UseCompatibleStateImageBehavior = false;
             this.lvFindModsBZCC.VirtualMode = true;
             // 
+            // lvPlayers
+            // 
+            this.lvPlayers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvPlayers.HideSelection = false;
+            this.lvPlayers.Location = new System.Drawing.Point(6, 278);
+            this.lvPlayers.MultiSelect = false;
+            this.lvPlayers.Name = "lvPlayers";
+            this.lvPlayers.Size = new System.Drawing.Size(721, 97);
+            this.lvPlayers.TabIndex = 13;
+            this.lvPlayers.UseCompatibleStateImageBehavior = false;
+            this.lvPlayers.VirtualMode = true;
+            this.lvPlayers.DoubleClick += new System.EventHandler(this.lvPlayers_DoubleClick);
+            // 
+            // lvMultiplayerBZ98R
+            // 
+            this.lvMultiplayerBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvMultiplayerBZ98R.FullRowSelect = true;
+            this.lvMultiplayerBZ98R.GridLines = true;
+            this.lvMultiplayerBZ98R.HideSelection = false;
+            this.lvMultiplayerBZ98R.Location = new System.Drawing.Point(3, 3);
+            this.lvMultiplayerBZ98R.MultiSelect = false;
+            this.lvMultiplayerBZ98R.Name = "lvMultiplayerBZ98R";
+            this.lvMultiplayerBZ98R.Size = new System.Drawing.Size(708, 233);
+            this.lvMultiplayerBZ98R.TabIndex = 0;
+            this.lvMultiplayerBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvMultiplayerBZ98R.View = System.Windows.Forms.View.Details;
+            this.lvMultiplayerBZ98R.VirtualMode = true;
+            this.lvMultiplayerBZ98R.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZ98R_SelectedIndexChanged);
+            // 
+            // lvMultiplayerBZCC
+            // 
+            this.lvMultiplayerBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvMultiplayerBZCC.FullRowSelect = true;
+            this.lvMultiplayerBZCC.GridLines = true;
+            this.lvMultiplayerBZCC.HideSelection = false;
+            this.lvMultiplayerBZCC.Location = new System.Drawing.Point(3, 3);
+            this.lvMultiplayerBZCC.MultiSelect = false;
+            this.lvMultiplayerBZCC.Name = "lvMultiplayerBZCC";
+            this.lvMultiplayerBZCC.Size = new System.Drawing.Size(708, 232);
+            this.lvMultiplayerBZCC.TabIndex = 1;
+            this.lvMultiplayerBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvMultiplayerBZCC.View = System.Windows.Forms.View.Details;
+            this.lvMultiplayerBZCC.VirtualMode = true;
+            this.lvMultiplayerBZCC.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZCC_SelectedIndexChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1040,6 +1245,7 @@
             this.ClientSize = new System.Drawing.Size(766, 444);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabControl1);
+            this.MinimumSize = new System.Drawing.Size(782, 483);
             this.Name = "MainForm";
             this.Text = "Battlezone Redux Mod Manager";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -1057,6 +1263,11 @@
             this.tcFindMods.ResumeLayout(false);
             this.tpFindModsBZ98R.ResumeLayout(false);
             this.tpFindModsBZCC.ResumeLayout(false);
+            this.tabMultiplayer.ResumeLayout(false);
+            this.tabMultiplayer.PerformLayout();
+            this.tcMultiplayer.ResumeLayout(false);
+            this.tpMultiplayerBZ98R.ResumeLayout(false);
+            this.tpMultiplayerBZCC.ResumeLayout(false);
             this.tpSettings.ResumeLayout(false);
             this.tpSettings.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -1102,10 +1313,10 @@
         private System.Windows.Forms.RichTextBox txtLogSteamCmd;
         private System.Windows.Forms.TabPage tpLogSteamCmdFull;
         private System.Windows.Forms.RichTextBox txtLogSteamCmdFull;
-        private LinqListView lvModsBZ98R;
+        private LinqListViewMods lvModsBZ98R;
         private System.Windows.Forms.Button btnRefreshBZ98R;
         private System.Windows.Forms.Button btnUpdateBZ98R;
-        private LinqListView lvModsBZCC;
+        private LinqListViewMods lvModsBZCC;
         private System.Windows.Forms.Button btnUpdateBZCC;
         private System.Windows.Forms.Button btnRefreshBZCC;
         private System.Windows.Forms.Button btnDependenciesBZ98R;
@@ -1150,13 +1361,27 @@
         private System.Windows.Forms.TabControl tcFindMods;
         private System.Windows.Forms.TabPage tpFindModsBZ98R;
         private System.Windows.Forms.TabPage tpFindModsBZCC;
-        private LinqListView2 lvFindModsBZ98R;
-        private LinqListView2 lvFindModsBZCC;
+        private LinqListViewFindMods lvFindModsBZ98R;
+        private LinqListViewFindMods lvFindModsBZCC;
         private System.Windows.Forms.RadioButton rbFindModsIcon;
         private System.Windows.Forms.RadioButton rbFindModsTable;
         private System.Windows.Forms.CheckBox cbFindModsNewOnly;
         private System.Windows.Forms.Button btnDownloadSelectedFoundMods;
         private System.Windows.Forms.Button btnFixSteamCmd;
+        private System.Windows.Forms.TabPage tabMultiplayer;
+        private System.Windows.Forms.Button btnMultiRefresh;
+        private System.Windows.Forms.TabControl tcMultiplayer;
+        private System.Windows.Forms.TabPage tpMultiplayerBZ98R;
+        private LinqListViewMultiplayer lvMultiplayerBZ98R;
+        private System.Windows.Forms.TabPage tpMultiplayerBZCC;
+        private LinqListViewMultiplayer lvMultiplayerBZCC;
+        private System.Windows.Forms.Button btnMultiJoinSteam;
+        private System.Windows.Forms.Button btnGetModSteamCmd;
+        private System.Windows.Forms.Button btnMultiGetModSteam;
+        private System.Windows.Forms.Button btnMultiJoinGOG;
+        private System.Windows.Forms.RadioButton rbFindGamesTable;
+        private System.Windows.Forms.RadioButton rbFindGamesMap;
+        private LinqListViewPlayers lvPlayers;
     }
 }
 
