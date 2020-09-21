@@ -67,7 +67,21 @@ namespace BZRModManager
             lvi.SubItems.Add(item.GameType);
             lvi.SubItems.Add(item.GameMode);
             lvi.SubItems.Add(item.Map);
-            lvi.SubItems.Add(item.Mod);
+            if(!string.IsNullOrWhiteSpace(item.Mod))
+            {
+                if(internal_source.Mods.ContainsKey(item.Mod))
+                {
+                    lvi.SubItems.Add(internal_source.Mods[item.Mod].Name);
+                }
+                else
+                {
+                    lvi.SubItems.Add(item.Mod);
+                }
+            }
+            else
+            {
+                lvi.SubItems.Add("Stock");
+            }
             lvi.SubItems.Add(item.MotD);
             e.Item = lvi;
 
@@ -117,11 +131,11 @@ namespace BZRModManager
             if (source != null)
             {
                 Columns.Add("Name", "Name", 200);
-                Columns.Add("PlayerCount", "$", 50);
+                Columns.Add("PlayerCount", "#", 50);
                 Columns.Add("GameType", "GameType", 75);
                 Columns.Add("GameMode", "GameMode", 75);
                 Columns.Add("Map", "Map", 220);
-                Columns.Add("Mod", "Mod", 85);
+                Columns.Add("Mod", "Mod", 220);
                 Columns.Add("MotD", "MotD", 85);
 
                 VirtualListSize = source.Count;

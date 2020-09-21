@@ -77,6 +77,10 @@
             this.tpMultiplayerBZ98R = new System.Windows.Forms.TabPage();
             this.tpMultiplayerBZCC = new System.Windows.Forms.TabPage();
             this.tpSettings = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btnBZCCGogFind = new System.Windows.Forms.Button();
+            this.txtBZCCGog = new System.Windows.Forms.TextBox();
+            this.btnBZCCRGogApply = new System.Windows.Forms.Button();
             this.btnFixSteamCmd = new System.Windows.Forms.Button();
             this.cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -132,6 +136,7 @@
             this.tpMultiplayerBZ98R.SuspendLayout();
             this.tpMultiplayerBZCC.SuspendLayout();
             this.tpSettings.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -653,6 +658,7 @@
             this.btnGetModSteamCmd.TabIndex = 10;
             this.btnGetModSteamCmd.Text = "Get Mods (SteamCmd)";
             this.btnGetModSteamCmd.UseVisualStyleBackColor = true;
+            this.btnGetModSteamCmd.Click += new System.EventHandler(this.btnGetModSteamCmd_Click);
             // 
             // btnMultiGetModSteam
             // 
@@ -664,6 +670,7 @@
             this.btnMultiGetModSteam.TabIndex = 9;
             this.btnMultiGetModSteam.Text = "Get Mod (Steam)";
             this.btnMultiGetModSteam.UseVisualStyleBackColor = true;
+            this.btnMultiGetModSteam.Click += new System.EventHandler(this.btnMultiGetModSteam_Click);
             // 
             // rbFindGamesMap
             // 
@@ -687,6 +694,7 @@
             this.btnMultiJoinGOG.TabIndex = 8;
             this.btnMultiJoinGOG.Text = "Join (GOG)";
             this.btnMultiJoinGOG.UseVisualStyleBackColor = true;
+            this.btnMultiJoinGOG.Click += new System.EventHandler(this.btnMultiJoinGOG_Click);
             // 
             // btnMultiJoinSteam
             // 
@@ -698,6 +706,7 @@
             this.btnMultiJoinSteam.TabIndex = 7;
             this.btnMultiJoinSteam.Text = "Join (Steam)";
             this.btnMultiJoinSteam.UseVisualStyleBackColor = true;
+            this.btnMultiJoinSteam.Click += new System.EventHandler(this.btnMultiJoinSteam_Click);
             // 
             // btnMultiRefresh
             // 
@@ -748,6 +757,7 @@
             // 
             // tpSettings
             // 
+            this.tpSettings.Controls.Add(this.groupBox5);
             this.tpSettings.Controls.Add(this.btnFixSteamCmd);
             this.tpSettings.Controls.Add(this.cbFallbackSteamCmdWindowHandling);
             this.tpSettings.Controls.Add(this.groupBox4);
@@ -762,9 +772,53 @@
             this.tpSettings.Text = "Settings";
             this.tpSettings.UseVisualStyleBackColor = true;
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Controls.Add(this.btnBZCCGogFind);
+            this.groupBox5.Controls.Add(this.txtBZCCGog);
+            this.groupBox5.Controls.Add(this.btnBZCCRGogApply);
+            this.groupBox5.Location = new System.Drawing.Point(6, 230);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(723, 50);
+            this.groupBox5.TabIndex = 19;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "GOG install of BZCC (only needed for multiplayer quicklaunch)";
+            // 
+            // btnBZCCGogFind
+            // 
+            this.btnBZCCGogFind.Location = new System.Drawing.Point(6, 19);
+            this.btnBZCCGogFind.Name = "btnBZCCGogFind";
+            this.btnBZCCGogFind.Size = new System.Drawing.Size(74, 23);
+            this.btnBZCCGogFind.TabIndex = 10;
+            this.btnBZCCGogFind.Text = "Quick Find";
+            this.btnBZCCGogFind.UseVisualStyleBackColor = true;
+            this.btnBZCCGogFind.Click += new System.EventHandler(this.btnBZCCGogFind_Click);
+            // 
+            // txtBZCCGog
+            // 
+            this.txtBZCCGog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBZCCGog.Location = new System.Drawing.Point(86, 21);
+            this.txtBZCCGog.Name = "txtBZCCGog";
+            this.txtBZCCGog.Size = new System.Drawing.Size(569, 20);
+            this.txtBZCCGog.TabIndex = 11;
+            // 
+            // btnBZCCRGogApply
+            // 
+            this.btnBZCCRGogApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBZCCRGogApply.Location = new System.Drawing.Point(661, 19);
+            this.btnBZCCRGogApply.Name = "btnBZCCRGogApply";
+            this.btnBZCCRGogApply.Size = new System.Drawing.Size(57, 23);
+            this.btnBZCCRGogApply.TabIndex = 12;
+            this.btnBZCCRGogApply.Text = "Apply";
+            this.btnBZCCRGogApply.UseVisualStyleBackColor = true;
+            this.btnBZCCRGogApply.Click += new System.EventHandler(this.btnBZCCRGogApply_Click);
+            // 
             // btnFixSteamCmd
             // 
-            this.btnFixSteamCmd.Location = new System.Drawing.Point(6, 230);
+            this.btnFixSteamCmd.Location = new System.Drawing.Point(6, 286);
             this.btnFixSteamCmd.Name = "btnFixSteamCmd";
             this.btnFixSteamCmd.Size = new System.Drawing.Size(179, 23);
             this.btnFixSteamCmd.TabIndex = 18;
@@ -775,7 +829,7 @@
             // cbFallbackSteamCmdWindowHandling
             // 
             this.cbFallbackSteamCmdWindowHandling.AutoSize = true;
-            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 259);
+            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 315);
             this.cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
             this.cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(207, 17);
             this.cbFallbackSteamCmdWindowHandling.TabIndex = 17;
@@ -1231,7 +1285,7 @@
             this.lvMultiplayerBZCC.Location = new System.Drawing.Point(3, 3);
             this.lvMultiplayerBZCC.MultiSelect = false;
             this.lvMultiplayerBZCC.Name = "lvMultiplayerBZCC";
-            this.lvMultiplayerBZCC.Size = new System.Drawing.Size(708, 232);
+            this.lvMultiplayerBZCC.Size = new System.Drawing.Size(708, 233);
             this.lvMultiplayerBZCC.TabIndex = 1;
             this.lvMultiplayerBZCC.UseCompatibleStateImageBehavior = false;
             this.lvMultiplayerBZCC.View = System.Windows.Forms.View.Details;
@@ -1270,6 +1324,8 @@
             this.tpMultiplayerBZCC.ResumeLayout(false);
             this.tpSettings.ResumeLayout(false);
             this.tpSettings.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -1382,6 +1438,10 @@
         private System.Windows.Forms.RadioButton rbFindGamesTable;
         private System.Windows.Forms.RadioButton rbFindGamesMap;
         private LinqListViewPlayers lvPlayers;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button btnBZCCGogFind;
+        private System.Windows.Forms.TextBox txtBZCCGog;
+        private System.Windows.Forms.Button btnBZCCRGogApply;
     }
 }
 

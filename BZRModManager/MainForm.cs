@@ -1113,6 +1113,7 @@ namespace BZRModManager
             public string BZ98RSteamPath { get; set; }
             public string BZCCSteamPath { get; set; }
             public string BZ98RGogPath { get; set; }
+            public string BZCCGogPath { get; set; }
             public string BZCCMyDocsPath { get; set; }
             public bool FallbackSteamCmdHandling { get; set; }
         }
@@ -1130,12 +1131,13 @@ namespace BZRModManager
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl1.SelectedIndex == 2)
+            if (tabControl1.SelectedIndex == 4)
             {
                 txtBZ98RSteam.Text = settings.BZ98RSteamPath;
                 txtBZCCSteam.Text = settings.BZCCSteamPath;
                 txtBZ98RGog.Text = settings.BZ98RGogPath;
                 txtBZCCMyDocs.Text = settings.BZCCMyDocsPath;
+                txtBZCCGog.Text = settings.BZCCGogPath;
             }
         }
 
@@ -1154,6 +1156,12 @@ namespace BZRModManager
         private void txtBZ98RGogApply_Click(object sender, EventArgs e)
         {
             settings.BZ98RGogPath = txtBZ98RGog.Text;
+            SaveSettings();
+        }
+
+        private void btnBZCCRGogApply_Click(object sender, EventArgs e)
+        {
+            settings.BZCCGogPath = txtBZCCGog.Text;
             SaveSettings();
         }
 
@@ -1246,6 +1254,11 @@ namespace BZRModManager
         {
             string path = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\GOG.com\Games\1454067812", "path", null) as string;
             txtBZ98RGog.Text = path;
+        }
+        private void btnBZCCGogFind_Click(object sender, EventArgs e)
+        {
+            string path = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\GOG.com\Games\1120387413", "path", null) as string;
+            txtBZCCGog.Text = path;
         }
 
         private void btnBZCCMyDocsFind_Click(object sender, EventArgs e)
@@ -1543,6 +1556,7 @@ namespace BZRModManager
             {
                 btnMultiJoinSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RSteamPath);
                 btnMultiJoinGOG.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RGogPath);
+
                 btnMultiGetModSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RSteamPath);
                 btnGetModSteamCmd.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RGogPath);
             }
@@ -1567,7 +1581,8 @@ namespace BZRModManager
             if (Items.Count > 0)
             {
                 btnMultiJoinSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCSteamPath);
-                btnMultiJoinGOG.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCMyDocsPath);
+                btnMultiJoinGOG.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCGogPath);
+
                 btnMultiGetModSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCSteamPath);
                 btnGetModSteamCmd.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCMyDocsPath);
             }
@@ -1583,6 +1598,8 @@ namespace BZRModManager
         private void tcMultiplayer_SelectedIndexChanged(object sender, EventArgs e)
         {
             lvPlayers.BeginUpdate();
+            lvMultiplayerBZ98R.SelectedIndices.Clear();
+            lvMultiplayerBZCC.SelectedIndices.Clear();
             lvPlayers.DataSource = null;
             lvPlayers.EndUpdate();
             btnMultiJoinSteam.Enabled = false;
@@ -1599,6 +1616,261 @@ namespace BZRModManager
             string URL = Items.FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(URL))
                 Process.Start(URL);
+        }
+
+        private void btnGetModSteamCmd_Click(object sender, EventArgs e)
+        {
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZ98R)
+            {
+                List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+                foreach (int idx in lvMultiplayerBZ98R.SelectedIndices)
+                    Items.Add(lvMultiplayerBZ98R.GetItemAtVirtualIndex(idx).SessionItem);
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+                if (session?.Level?.Mod != null)
+                    if (UInt64.TryParse(session.Level.Mod, out _))
+                        DownloadMod(session.Level.Mod, AppIdBZ98);
+            }
+
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZCC)
+            {
+                List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+                foreach (int idx in lvMultiplayerBZ98R.SelectedIndices)
+                    Items.Add(lvMultiplayerBZ98R.GetItemAtVirtualIndex(idx).SessionItem);
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+                if (session?.Game?.Mod != null)
+                    if (UInt64.TryParse(session.Game.Mod, out _))
+                        DownloadMod(session.Game.Mod, AppIdBZCC);
+                if (session?.Game?.Mods != null)
+                    foreach (string mod in session.Game.Mods)
+                        if (UInt64.TryParse(mod, out _))
+                            DownloadMod(mod, AppIdBZCC);
+            }
+        }
+
+        private void btnMultiGetModSteam_Click(object sender, EventArgs e)
+        {
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZ98R)
+            {
+                List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+                foreach (int idx in lvMultiplayerBZ98R.SelectedIndices)
+                    Items.Add(lvMultiplayerBZ98R.GetItemAtVirtualIndex(idx).SessionItem);
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+                if (session?.Level?.Mod != null)
+                    if (UInt64.TryParse(session.Level.Mod, out _))
+                        lock (ModStatus)
+                            lock (Mods[AppIdBZ98])
+                                if (!Mods[AppIdBZ98].ContainsKey(session.Level.Mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
+                                    Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}");
+            }
+
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZCC)
+            {
+                List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+                foreach (int idx in lvMultiplayerBZ98R.SelectedIndices)
+                    Items.Add(lvMultiplayerBZ98R.GetItemAtVirtualIndex(idx).SessionItem);
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+                List<string> ModsIDs = new List<string>();
+                if (session?.Game?.Mod != null)
+                    if (UInt64.TryParse(session.Game.Mod, out _))
+                        ModsIDs.Add(session.Game.Mod);
+                if (session?.Game?.Mods != null)
+                    foreach (string mod in session.Game.Mods)
+                        if (UInt64.TryParse(mod, out _))
+                            ModsIDs.Add(mod);
+                if(ModsIDs.Count > 0)
+                    lock (ModStatus)
+                        lock (Mods[AppIdBZCC])
+                            foreach(string mod in ModsIDs)
+                                if (!Mods[AppIdBZCC].ContainsKey(mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
+                                {
+                                    Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}");
+                                    break;
+                                }
+            }
+        }
+
+        private void btnMultiJoinSteam_Click(object sender, EventArgs e)
+        {
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZ98R)
+            {
+                List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+                foreach (int idx in lvMultiplayerBZ98R.SelectedIndices)
+                    Items.Add(lvMultiplayerBZ98R.GetItemAtVirtualIndex(idx).SessionItem);
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+                if (session == null)
+                    return;
+
+                string EXE = Path.Combine(settings.BZ98RSteamPath, "common", "Battlezone 98 Redux", "battlezone98redux.exe");
+                if(File.Exists(EXE))
+                {
+                    string Password = string.Empty;
+                    if (session.Status.HasPassword ?? false)
+                    {
+                        PasswordDialog dlg = new PasswordDialog("Password");
+                        if (dlg.ShowDialog() == DialogResult.OK)
+                        {
+                            Password = dlg.Password;
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = EXE,
+                                WorkingDirectory = Path.GetDirectoryName(EXE),
+                                Arguments = $"-connect-galaxy-lobby={session.Address["LobbyID"]}\",\"{Password}"
+                            });
+                            this.WindowState = FormWindowState.Minimized;
+                        }
+                    }
+                    else
+                    {
+                        Process.Start(new ProcessStartInfo()
+                        {
+                            FileName = EXE,
+                            WorkingDirectory = Path.GetDirectoryName(EXE),
+                            Arguments = $"-connect-galaxy-lobby={session.Address["LobbyID"]}"
+                        });
+                        this.WindowState = FormWindowState.Minimized;
+                    }
+                }
+            }
+
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZCC)
+            {
+                List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+                foreach (int idx in lvMultiplayerBZCC.SelectedIndices)
+                    Items.Add(lvMultiplayerBZCC.GetItemAtVirtualIndex(idx).SessionItem);
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+                if (session == null)
+                    return;
+
+                string EXE = Path.Combine(settings.BZCCSteamPath, "common", "BZ2R", "battlezone2.exe");
+                if (File.Exists(EXE))
+                {
+                    List<string> Mods = new List<string>();
+                    Mods.Add(session.Game.Mod ?? "0");
+                    if (session.Game.Mods != null)
+                        Mods.AddRange(session.Game.Mods);
+                    string ModsString = string.Join(";", Mods);
+                    string Password = string.Empty;
+                    if (session.Status.HasPassword ?? false)
+                    {
+                        PasswordDialog dlg = new PasswordDialog("Password");
+                        if (dlg.ShowDialog() == DialogResult.OK)
+                        {
+                            Password = dlg.Password;
+                            string RichString = string.Join(null, $"N,{session.Name.Length},{session.Name},{ModsString.Length},{ModsString},{session.Address["NAT"]},{Password.Length},{Password}".Select(dr => $"{((int)dr):x2}"));
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = EXE,
+                                WorkingDirectory = Path.GetDirectoryName(EXE),
+                                Arguments = $"-connect-mp {RichString}"
+                            });
+                            this.WindowState = FormWindowState.Minimized;
+                        }
+                    }
+                    else
+                    {
+                        string RichString = string.Join(null, $"N,{session.Name.Length},{session.Name},{ModsString.Length},{ModsString},{session.Address["NAT"]},{Password.Length},{Password}".Select(dr => $"{((int)dr):x2}"));
+                        Process.Start(new ProcessStartInfo()
+                        {
+                            FileName = EXE,
+                            WorkingDirectory = Path.GetDirectoryName(EXE),
+                            Arguments = $"-connect-mp {RichString}"
+                        });
+                        this.WindowState = FormWindowState.Minimized;
+                    }
+                }
+            }
+        }
+
+        private void btnMultiJoinGOG_Click(object sender, EventArgs e)
+        {
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZ98R)
+            {
+                List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+                foreach (int idx in lvMultiplayerBZ98R.SelectedIndices)
+                    Items.Add(lvMultiplayerBZ98R.GetItemAtVirtualIndex(idx).SessionItem);
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+                if (session == null)
+                    return;
+
+                string EXE = Path.Combine(settings.BZ98RGogPath, "battlezone98redux.exe");
+                if (File.Exists(EXE))
+                {
+                    string Password = string.Empty;
+                    if (session.Status.HasPassword ?? false)
+                    {
+                        PasswordDialog dlg = new PasswordDialog("Password");
+                        if (dlg.ShowDialog() == DialogResult.OK)
+                        {
+                            Password = dlg.Password;
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = EXE,
+                                WorkingDirectory = Path.GetDirectoryName(EXE),
+                                Arguments = $"-connect-galaxy-lobby={session.Address["LobbyID"]}\\,{Password}"
+                            });
+                            this.WindowState = FormWindowState.Minimized;
+                        }
+                    }
+                    else
+                    {
+                        Process.Start(new ProcessStartInfo()
+                        {
+                            FileName = EXE,
+                            WorkingDirectory = Path.GetDirectoryName(EXE),
+                            Arguments = $"-connect-galaxy-lobby={session.Address["LobbyID"]}"
+                        });
+                        this.WindowState = FormWindowState.Minimized;
+                    }
+                }
+            }
+
+            if (tcMultiplayer.SelectedTab == tpMultiplayerBZCC)
+            {
+                List<MultiplayerGamelistData_Session> Items = new List<MultiplayerGamelistData_Session>();
+                foreach (int idx in lvMultiplayerBZCC.SelectedIndices)
+                    Items.Add(lvMultiplayerBZCC.GetItemAtVirtualIndex(idx).SessionItem);
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+                if (session == null)
+                    return;
+
+                string EXE = Path.Combine(settings.BZCCGogPath, "battlezone2.exe");
+                if (File.Exists(EXE))
+                {
+                    List<string> Mods = new List<string>();
+                    Mods.Add(session.Game.Mod ?? "0");
+                    if (session.Game.Mods != null)
+                        Mods.AddRange(session.Game.Mods);
+                    string ModsString = string.Join(";", Mods);
+                    string Password = string.Empty;
+                    if (session.Status.HasPassword ?? false)
+                    {
+                        PasswordDialog dlg = new PasswordDialog("Password");
+                        if (dlg.ShowDialog() == DialogResult.OK)
+                        {
+                            Password = dlg.Password;
+                            string RichString = string.Join(null, $"N,{session.Name.Length},{session.Name},{ModsString.Length},{ModsString},{session.Address["NAT"]},{Password.Length},{Password}".Select(dr => $"{((int)dr):x2}"));
+                            Process.Start(new ProcessStartInfo()
+                            {
+                                FileName = EXE,
+                                WorkingDirectory = Path.GetDirectoryName(EXE),
+                                Arguments = $"-connect-mp {RichString}"
+                            });
+                            this.WindowState = FormWindowState.Minimized;
+                        }
+                    }
+                    else
+                    {
+                        string RichString = string.Join(null, $"N,{session.Name.Length},{session.Name},{ModsString.Length},{ModsString},{session.Address["NAT"]},{Password.Length},{Password}".Select(dr => $"{((int)dr):x2}"));
+                        Process.Start(new ProcessStartInfo()
+                        {
+                            FileName = EXE,
+                            WorkingDirectory = Path.GetDirectoryName(EXE),
+                            Arguments = $"-connect-mp {RichString}"
+                        });
+                        this.WindowState = FormWindowState.Minimized;
+                    }
+                }
+            }
         }
     }
 
