@@ -63,6 +63,7 @@ namespace BZRModManager
             ListViewItem lvi = new ListViewItem(item.Name, LargeImageList.Images.IndexOfKey(item.IconKey));
             lvi.UseItemStyleForSubItems = false;
             lvi.Tag = item;
+            lvi.SubItems.Add(item.Status);
             lvi.SubItems.Add(item.PlayerCount);
             lvi.SubItems.Add(item.GameType);
             lvi.SubItems.Add(item.GameMode);
@@ -131,6 +132,7 @@ namespace BZRModManager
             if (source != null)
             {
                 Columns.Add("Name", "Name", 200);
+                Columns.Add("Status", "Status", 60);
                 Columns.Add("PlayerCount", "#", 50);
                 Columns.Add("GameType", "GameType", 75);
                 Columns.Add("GameMode", "GameMode", 75);
@@ -181,6 +183,7 @@ namespace BZRModManager
         public string MotD { get { return SessionItem.Message; } }
         public string Mod { get { return SessionItem.Game.Mod ?? SessionItem.Level.Mod; } }
         public string PlayerCount { get { return $"{SessionItem.PlayerCount.Select(dr => dr.Value).Sum()}/{(SessionItem.PlayerTypes?.Where(dr => dr.Max.HasValue)?.Select(dr => dr.Max)?.FirstOrDefault()?.ToString() ?? " ? ")}"; } }
+        public string Status { get { return (SessionItem.Status.IsLocked ?? false) ? "Locked" : (SessionItem.Status.HasPassword ?? false) ? "Password" : "Open"; } }
 
         public Image LargeIcon { get; set; }
         public Image SmallIcon { get; set; }
