@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BZRModManager.ModItem;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -497,32 +498,4 @@ namespace BZRModManager
 
         }
     }
-
-    public interface ILinqListViewItemMods
-    {
-        string IconKey { get; }
-        string Name { get; }
-
-        string ModType { get; }
-        string[] ModTags { get; }
-        string WorkshopIdOutput { get; }
-        string ModSource { get; }
-
-        InstallStatus InstalledSteam { get; }
-        InstallStatus InstalledGog { get; }
-
-        //string FileName { get; }
-        //string WebName { get; }
-        Image LargeIcon { get; }
-        Image SmallIcon { get; }
-        //string Version { get; }
-        //string Vendor { get; }
-        //string NokiaCategory { get; }
-        //string ScreenSize { get; }
-        ListViewItem ListViewItemCache { get; set; }
-
-        void ToggleGog();
-        void ToggleSteam();
-    }
-
 }

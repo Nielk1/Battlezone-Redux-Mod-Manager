@@ -98,6 +98,11 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ModItem\GitMod.cs" />
+    <Compile Include="ModItem\InstallStatus.cs" />
+    <Compile Include="ModItem\ModItemBase.cs" />
+    <Compile Include="ModItem\SteamCmdMod.cs" />
+    <Compile Include="ModItem\SteamMod.cs" />
     <Compile Include="MultiplayerSessionServer.cs" />
     <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>
