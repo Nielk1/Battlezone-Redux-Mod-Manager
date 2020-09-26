@@ -59,6 +59,9 @@ namespace BZRModManager
             pnlTasks.AutoScroll = true;
 
             this.Text += " - Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+#if DEBUG
+            this.Text += " - DEV";
+#endif
 
             Mods[AppIdBZ98] = new Dictionary<string, ModItem>();
             Mods[AppIdBZCC] = new Dictionary<string, ModItem>();
