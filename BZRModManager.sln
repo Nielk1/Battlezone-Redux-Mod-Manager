@@ -10,6 +10,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SteamVent", "SteamVent", "{11444873-1FC2-4290-B082-1A7F6CB85B8C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamVent.SteamCmd", "Deps\SteamVent\SteamVent.SteamCmd\SteamVent.SteamCmd.csproj", "{852B5E00-2423-4D74-8AFF-B38248BA6B36}"
+	ProjectSection(ProjectDependencies) = postProject
+		{58B7F843-3349-428D-B9A7-EE4BB36B30F4} = {58B7F843-3349-428D-B9A7-EE4BB36B30F4}
+		{1B1CF7C2-DA92-4FFD-BC92-8332947A87BE} = {1B1CF7C2-DA92-4FFD-BC92-8332947A87BE}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "steamcmdprox", "Deps\SteamVent\steamcmdprox\steamcmdprox.vcxproj", "{1B1CF7C2-DA92-4FFD-BC92-8332947A87BE}"
 EndProject
