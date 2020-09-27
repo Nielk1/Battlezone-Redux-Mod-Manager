@@ -211,7 +211,7 @@
   <ItemGroup>
     <Content Include="Resources\award_icon.png" />
     <Content Include="Resources\github_icon.png" />
-    <Content Include="Resources\modmanager.ico" />
+    <None Include="Resources\modmanager.ico" />
     <None Include="Resources\discord_icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

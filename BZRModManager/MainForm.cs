@@ -365,6 +365,7 @@ namespace BZRModManager
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            this.Icon = Properties.Resources.modmanager;
             ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
             new Thread(() =>
             {
