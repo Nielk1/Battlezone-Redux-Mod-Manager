@@ -99,6 +99,7 @@ namespace BZRModManager
             return data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
         }
 
+        /*
         public static bool CheckGameNeedsAsmPatch(string path)
         {
             string exePath = path;
@@ -138,5 +139,6 @@ namespace BZRModManager
                 stream.WriteByte(0x14); // change it
             }
         }
+        */
     }
 }

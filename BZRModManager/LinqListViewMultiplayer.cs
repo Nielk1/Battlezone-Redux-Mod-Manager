@@ -182,8 +182,10 @@ namespace BZRModManager
         public string Map { get { return SessionItem.Level.Name ?? SessionItem.Level.MapFile; } }
         public string MotD { get { return SessionItem.Message; } }
         public string Mod { get { return SessionItem.Game.Mod ?? SessionItem.Level.Mod; } }
-        public string PlayerCount { get { return $"{SessionItem.PlayerCount.Select(dr => dr.Value).Sum()}/{(SessionItem.PlayerTypes?.Where(dr => dr.Max.HasValue)?.Select(dr => dr.Max)?.FirstOrDefault()?.ToString() ?? " ? ")}"; } }
-        public string Status { get { return (SessionItem.Status.IsLocked ?? false) ? "Locked" : (SessionItem.Status.HasPassword ?? false) ? "Password" : "Open"; } }
+        private int? CurrentPlayers => SessionItem.PlayerCount.Select(dr => dr.Value).Sum();
+        private int? MaxPlayers => SessionItem.PlayerTypes?.Where(dr => dr.Max.HasValue)?.Select(dr => dr.Max)?.FirstOrDefault();
+        public string PlayerCount { get { return $"{CurrentPlayers?.ToString() ?? "?"}/{(MaxPlayers?.ToString() ?? "?")}"; } }
+        public string Status { get { return (SessionItem.Status.IsLocked ?? false) ? "Locked" : (SessionItem.Status.HasPassword ?? false) ? "Password" : (CurrentPlayers.HasValue && MaxPlayers.HasValue && CurrentPlayers.Value == MaxPlayers.Value ? "Full" : "Open"); } }
 
         public Image LargeIcon { get; set; }
         public Image SmallIcon { get; set; }

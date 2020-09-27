@@ -1032,7 +1032,8 @@ namespace BZRModManager
                 string EXE = Path.Combine(settings.BZ98RSteamPath, "common", "Battlezone 98 Redux", "battlezone98redux.exe");
                 if(File.Exists(EXE))
                 {
-                    string Password = string.Empty;
+                    // passwords don't work on BZR due to the comma required being eaten
+                    /*string Password = string.Empty;
                     if (session.Status.HasPassword ?? false)
                     {
                         PasswordDialog dlg = new PasswordDialog("Password");
@@ -1048,7 +1049,7 @@ namespace BZRModManager
                             this.WindowState = FormWindowState.Minimized;
                         }
                     }
-                    else
+                    else*/
                     {
                         Process.Start(new ProcessStartInfo()
                         {
@@ -1124,7 +1125,8 @@ namespace BZRModManager
                 string EXE = Path.Combine(settings.BZ98RGogPath, "battlezone98redux.exe");
                 if (File.Exists(EXE))
                 {
-                    string Password = string.Empty;
+                    // passwords don't work on BZR due to the comma required being eaten
+                    /*string Password = string.Empty;
                     if (session.Status.HasPassword ?? false)
                     {
                         PasswordDialog dlg = new PasswordDialog("Password");
@@ -1140,7 +1142,7 @@ namespace BZRModManager
                             this.WindowState = FormWindowState.Minimized;
                         }
                     }
-                    else
+                    else*/
                     {
                         Process.Start(new ProcessStartInfo()
                         {
