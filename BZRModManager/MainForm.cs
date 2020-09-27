@@ -1319,7 +1319,10 @@ namespace BZRModManager
 
         private void btnSteamAward_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("After Release", "Note", MessageBoxButtons.OK);
+#if !DEBUG
+            DON'T FORGET THIS
+#endif
         }
 
         private void btnDiscord_Click(object sender, EventArgs e)
