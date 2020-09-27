@@ -883,11 +883,59 @@ namespace BZRModManager
 
             if (Items.Count > 0)
             {
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+
                 btnMultiJoinSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RSteamPath);
                 btnMultiJoinGOG.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RGogPath);
 
-                btnMultiGetModSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RSteamPath);
-                btnGetModSteamCmd.Enabled = !string.IsNullOrWhiteSpace(settings.BZ98RGogPath);
+                if(!string.IsNullOrWhiteSpace(settings.BZ98RSteamPath))
+                {
+                    if (session?.Level?.Mod != null && UInt64.TryParse(session.Level.Mod, out _))
+                    {
+                        bool HaveMod = false;
+                        try
+                        {
+                            //lock (ModStatus)
+                            //lock (Mods[AppIdBZ98])
+                            if (Mods[AppIdBZ98].ContainsKey(session.Level.Mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
+                                HaveMod = true;
+                        }
+                        catch { }
+                        btnMultiGetModSteam.Enabled = !HaveMod;
+                    }
+                    else
+                    {
+                        btnMultiGetModSteam.Enabled = false;
+                    }
+                }
+                else
+                {
+                    btnMultiGetModSteam.Enabled = false;
+                }
+                if (!string.IsNullOrWhiteSpace(settings.BZ98RGogPath))
+                {
+                    if (session?.Level?.Mod != null && UInt64.TryParse(session.Level.Mod, out _))
+                    {
+                        bool HaveMod = false;
+                        try
+                        {
+                            //lock (ModStatus)
+                            //lock (Mods[AppIdBZ98])
+                            if (Mods[AppIdBZ98].ContainsKey(session.Level.Mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-SteamCmd"))
+                                HaveMod = true;
+                        }
+                        catch { }
+                        btnGetModSteamCmd.Enabled = !HaveMod;
+                    }
+                    else
+                    {
+                        btnGetModSteamCmd.Enabled = false;
+                    }
+                }
+                else
+                {
+                    btnGetModSteamCmd.Enabled = false;
+                }
             }
             else
             {
@@ -909,11 +957,65 @@ namespace BZRModManager
 
             if (Items.Count > 0)
             {
+                MultiplayerGamelistData_Session session = Items.FirstOrDefault();
+
                 btnMultiJoinSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCSteamPath);
                 btnMultiJoinGOG.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCGogPath);
 
-                btnMultiGetModSteam.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCSteamPath);
-                btnGetModSteamCmd.Enabled = !string.IsNullOrWhiteSpace(settings.BZCCMyDocsPath);
+                List<string> ModsIDs = new List<string>();
+                if (session?.Game?.Mod != null)
+                    if (UInt64.TryParse(session.Game.Mod, out _))
+                        ModsIDs.Add(session.Game.Mod);
+                if (session?.Game?.Mods != null)
+                    foreach (string mod in session.Game.Mods)
+                        if (UInt64.TryParse(mod, out _))
+                            ModsIDs.Add(mod);
+
+
+
+                if (!string.IsNullOrWhiteSpace(settings.BZCCSteamPath) && ModsIDs.Count > 0)
+                {
+                    bool MissingAMod = false;
+                    try
+                    {
+                        //lock (ModStatus)
+                        //lock (Mods[AppIdBZCC])
+                        foreach (string mod in ModsIDs)
+                            if (!Mods[AppIdBZCC].ContainsKey(mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
+                            {
+                                MissingAMod = true;
+                                break;
+                            }
+                    }
+                    catch { }
+                    btnMultiGetModSteam.Enabled = MissingAMod;
+                }
+                else
+                {
+                    btnMultiGetModSteam.Enabled = false;
+                }
+
+                if (!string.IsNullOrWhiteSpace(settings.BZCCMyDocsPath) && ModsIDs.Count > 0)
+                {
+                    bool MissingAMod = false;
+                    try
+                    {
+                        //lock (ModStatus)
+                        //lock (Mods[AppIdBZCC])
+                        foreach (string mod in ModsIDs)
+                            if (!Mods[AppIdBZCC].ContainsKey(mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-SteamCmd"))
+                            {
+                                MissingAMod = true;
+                                break;
+                            }
+                    }
+                    catch { }
+                    btnGetModSteamCmd.Enabled = MissingAMod;
+                }
+                else
+                {
+                    btnGetModSteamCmd.Enabled = false;
+                }
             }
             else
             {
