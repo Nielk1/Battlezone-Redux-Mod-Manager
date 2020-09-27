@@ -178,9 +178,6 @@
     <None Include="fixes\bzrmm_bzccjoinfix\bzshell_multi.cfg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="fixes\bzrmm_bzccjoinfix\bzshell_multi_clientoption.cfg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -408,6 +408,11 @@ namespace BZRModManager
 
                     this.Invoke((MethodInvoker)delegate
                     {
+                        if (data.EndpointExpired ?? false)
+                        {
+                            MessageBox.Show("Please update your mod manager to ensure the MP game list functions properly.\r\nThe API has been updated and may no longer be compatable.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+
                         lvMultiplayerBZCC.BeginUpdate();
                         lvMultiplayerBZCC.DataSource = data;
                         lvMultiplayerBZCC.EndUpdate();
