@@ -25,5 +25,26 @@ namespace BZRModManager
             InitializeComponent();
             this.Text = Title;
         }
+
+        private void PasswordDialog_Shown(object sender, EventArgs e)
+        {
+            textBox1.Focus();
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (Password.Length > 0)
+                {
+                    this.DialogResult = DialogResult.OK;
+                }
+                else
+                {
+                    this.DialogResult = DialogResult.Cancel;
+                }
+                this.Close();
+            }
+        }
     }
 }

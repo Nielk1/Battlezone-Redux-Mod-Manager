@@ -40,6 +40,8 @@ namespace BZRModManager
 
         private bool ForceUpdateMode = false;
 
+        private Process RestoreWhenProcessCloses = null;
+
         public MainForm(bool ForceUpdateMode = false)
         {
             this.ForceUpdateMode = ForceUpdateMode;
@@ -1153,7 +1155,7 @@ namespace BZRModManager
                     }
                     else*/
                     {
-                        Process.Start(new ProcessStartInfo()
+                        RestoreWhenProcessCloses = Process.Start(new ProcessStartInfo()
                         {
                             FileName = EXE,
                             WorkingDirectory = Path.GetDirectoryName(EXE),
@@ -1187,9 +1189,11 @@ namespace BZRModManager
                         PasswordDialog dlg = new PasswordDialog("Password");
                         if (dlg.ShowDialog() == DialogResult.OK)
                         {
+                            TryBzccMpJoinFix(EXE, true);
+
                             Password = dlg.Password;
                             string RichString = string.Join(null, $"N,{session.Name.Length},{session.Name},{ModsString.Length},{ModsString},{session.Address["NAT"]},{Password.Length},{Password}".Select(dr => $"{((int)dr):x2}"));
-                            Process.Start(new ProcessStartInfo()
+                            RestoreWhenProcessCloses = Process.Start(new ProcessStartInfo()
                             {
                                 FileName = EXE,
                                 WorkingDirectory = Path.GetDirectoryName(EXE),
@@ -1200,8 +1204,10 @@ namespace BZRModManager
                     }
                     else
                     {
+                        TryBzccMpJoinFix(EXE, true);
+
                         string RichString = string.Join(null, $"N,{session.Name.Length},{session.Name},{ModsString.Length},{ModsString},{session.Address["NAT"]},{Password.Length},{Password}".Select(dr => $"{((int)dr):x2}"));
-                        Process.Start(new ProcessStartInfo()
+                        RestoreWhenProcessCloses = Process.Start(new ProcessStartInfo()
                         {
                             FileName = EXE,
                             WorkingDirectory = Path.GetDirectoryName(EXE),
@@ -1246,7 +1252,7 @@ namespace BZRModManager
                     }
                     else*/
                     {
-                        Process.Start(new ProcessStartInfo()
+                        RestoreWhenProcessCloses = Process.Start(new ProcessStartInfo()
                         {
                             FileName = EXE,
                             WorkingDirectory = Path.GetDirectoryName(EXE),
@@ -1280,9 +1286,11 @@ namespace BZRModManager
                         PasswordDialog dlg = new PasswordDialog("Password");
                         if (dlg.ShowDialog() == DialogResult.OK)
                         {
+                            TryBzccMpJoinFix(EXE, false);
+
                             Password = dlg.Password;
                             string RichString = string.Join(null, $"N,{session.Name.Length},{session.Name},{ModsString.Length},{ModsString},{session.Address["NAT"]},{Password.Length},{Password}".Select(dr => $"{((int)dr):x2}"));
-                            Process.Start(new ProcessStartInfo()
+                            RestoreWhenProcessCloses = Process.Start(new ProcessStartInfo()
                             {
                                 FileName = EXE,
                                 WorkingDirectory = Path.GetDirectoryName(EXE),
@@ -1293,8 +1301,10 @@ namespace BZRModManager
                     }
                     else
                     {
+                        TryBzccMpJoinFix(EXE, false);
+
                         string RichString = string.Join(null, $"N,{session.Name.Length},{session.Name},{ModsString.Length},{ModsString},{session.Address["NAT"]},{Password.Length},{Password}".Select(dr => $"{((int)dr):x2}"));
-                        Process.Start(new ProcessStartInfo()
+                        RestoreWhenProcessCloses = Process.Start(new ProcessStartInfo()
                         {
                             FileName = EXE,
                             WorkingDirectory = Path.GetDirectoryName(EXE),
@@ -1305,5 +1315,14 @@ namespace BZRModManager
                 }
             }
         }
+
+        /*private void tmrRestore_Tick(object sender, EventArgs e)
+        {
+            if(RestoreWhenProcessCloses != null && RestoreWhenProcessCloses.HasExited)
+            {
+                RestoreWhenProcessCloses = null;
+                this.WindowState = FormWindowState.Normal;
+            }
+        }*/
     }
 }

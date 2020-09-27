@@ -1,4 +1,7 @@
 ﻿using BZRModManager.ModItem;
+using IniParser;
+using IniParser.Model;
+using Monitor.Core.Utilities;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
@@ -55,6 +58,7 @@ namespace BZRModManager
                                 loadSemaphore.Release();
                             }
                         });
+
                         Task.Factory.StartNew(() =>
                         {
                             try
@@ -80,6 +84,7 @@ namespace BZRModManager
                                 loadSemaphore.Release();
                             }
                         });
+
                         if (settings.BZCCSteamPath != null)
                         {
                             Task.Factory.StartNew(() =>
@@ -408,6 +413,63 @@ namespace BZRModManager
                         lvMultiplayerBZCC.EndUpdate();
                     });
                 });
+            }
+        }
+
+        private void TryBzccMpJoinFix(string path, bool steam)
+        {
+            string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, MainForm.AppIdBZCC);
+            string destinationFolder = steam ? Path.Combine(workshopFolder, "bzrmm_bzccjoinfix") : Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", "bzrmm_bzccjoinfix");
+            string sourceFolder = Path.GetFullPath(Path.Combine("fixes", "bzrmm_bzccjoinfix"));
+
+            bool NeedFix = BZCCTools.NeedsJoinShellFix(path);
+            
+            if (NeedFix)
+            {
+                if (Directory.Exists(destinationFolder))
+                {
+                    if (JunctionPoint.Exists(destinationFolder))
+                    {
+                        if (JunctionPoint.GetTarget(destinationFolder) != sourceFolder)
+                        {
+                            JunctionPoint.Delete(destinationFolder);
+                        }
+                    }
+                    else
+                    {
+                        Directory.Delete(destinationFolder);
+                    }
+                }
+                if (!Directory.Exists(destinationFolder))
+                {
+                    JunctionPoint.Create(destinationFolder, sourceFolder, true);
+                }
+
+                string LaunchIni = Path.Combine(MainForm.settings.BZCCMyDocsPath, "launch.ini");
+                if (File.Exists(LaunchIni))
+                {
+                    try
+                    {
+                        FileIniDataParser parser = new FileIniDataParser();
+                        IniData data = parser.ReadFile(LaunchIni);
+                        string[] activeAddons = (data["config"]?["activeAddons"] ?? string.Empty).Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (activeAddons.Length == 0 || activeAddons.Last() != "bzrmm_bzccjoinfix")
+                        {
+                            data["config"]["activeAddons"] = string.Join(",", activeAddons.Append("bzrmm_bzccjoinfix"));
+                            File.WriteAllText(LaunchIni, data.ToString());
+                        }
+                    }
+                    catch { }
+                }
+                else
+                {
+                    File.WriteAllText(LaunchIni, "[config]\r\nactiveAddons = bzrmm_bzccjoinfix");
+                }
+            }
+            else
+            {
+                if (Directory.Exists(destinationFolder))
+                    Directory.Delete(destinationFolder, true);
             }
         }
     }

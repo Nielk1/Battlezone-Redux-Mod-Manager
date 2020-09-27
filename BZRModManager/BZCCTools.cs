@@ -99,6 +99,20 @@ namespace BZRModManager
             return data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
         }
 
+        /// <summary>
+        /// Check if the game is the highest released version at the time of this release, which means it has a bug that needs fixing
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static bool NeedsJoinShellFix(string path)
+        {
+            string exePath = path;
+            if (!File.Exists(exePath)) return false;
+            FileVersionInfo exeVersionInfo = FileVersionInfo.GetVersionInfo(exePath);
+            if (exeVersionInfo.FileVersion != "2.0.185") return false;
+            return true;
+        }
+
         /*
         public static bool CheckGameNeedsAsmPatch(string path)
         {
