@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\modmanager.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsQuery, Version=1.3.3.249, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
@@ -201,6 +204,15 @@
       <Project>{b78bb558-69d0-4d28-991a-261903988d1a}</Project>
       <Name>SteamVent</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nielk1_eyes_128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\award_icon.png" />
+    <Content Include="Resources\github_icon.png" />
+    <Content Include="Resources\modmanager.ico" />
+    <None Include="Resources\discord_icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

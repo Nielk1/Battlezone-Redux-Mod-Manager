@@ -1316,6 +1316,21 @@ namespace BZRModManager
             }
         }
 
+        private void btnSteamAward_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnDiscord_Click(object sender, EventArgs e)
+        {
+            Process.Start(@"http://discord.battlezone.report/");
+        }
+
+        private void btnGithub_Click(object sender, EventArgs e)
+        {
+            Process.Start(@"https://github.com/Nielk1/Battlezone-Redux-Mod-Manager");
+        }
+
         /*private void tmrRestore_Tick(object sender, EventArgs e)
         {
             if(RestoreWhenProcessCloses != null && RestoreWhenProcessCloses.HasExited)
