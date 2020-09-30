@@ -96,7 +96,7 @@ namespace BZRModManager
             if (!File.Exists(pathini)) return null;
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile(pathini);
-            return data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
+            return data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.Where(dr => dr != null && dr.Length > 0)?.ToArray() ?? new string[] { };
         }
 
         /// <summary>
