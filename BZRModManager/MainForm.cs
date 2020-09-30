@@ -15,6 +15,7 @@ using System.Web;
 using System.Windows.Forms;
 using BZRModManager.ModItem;
 using IniParser;
+using System.Net;
 
 namespace BZRModManager
 {
@@ -1411,6 +1412,39 @@ namespace BZRModManager
 
                     LogAuditItem("Mod Audit", true);
 
+                    {
+                        WebClient client = new WebClient();
+                        TaskControl subtask = UpdateTaskControl.AddTask("Downloading Audit Data", 2);
+                        try
+                        {
+                            client.DownloadFile(@"https://gamelistassets.iondriver.com/bz98r/audit.json", $"bz98r_audit.json");
+                        }
+                        catch { }
+                        subtask.Value = 1;
+                        try
+                        {
+                            client.DownloadFile(@"https://gamelistassets.iondriver.com/bzcc/audit.json", $"bzcc_audit.json");
+                        }
+                        catch { }
+                        subtask.Value = 2;
+                        UpdateTaskControl.EndTask(subtask);
+                    }
+
+                    Dictionary<string, AuditData> BZ98R_Audit = new Dictionary<string, AuditData>();
+                    if (File.Exists($"bz98r_audit.json"))
+                        try
+                        {
+                            BZ98R_Audit = JsonConvert.DeserializeObject<Dictionary<string, AuditData>>(File.ReadAllText($"bz98r_audit.json"));
+                        }
+                        catch { }
+                    Dictionary<string, AuditData> BZCC_Audit = new Dictionary<string, AuditData>();
+                    if(File.Exists($"bzcc_audit.json"))
+                        try
+                        {
+                            BZCC_Audit = JsonConvert.DeserializeObject<Dictionary<string, AuditData>>(File.ReadAllText($"bzcc_audit.json"));
+                        }
+                        catch { }
+
                     lock (ModStatus)
                     {
                         {
@@ -1425,6 +1459,22 @@ namespace BZRModManager
                                                 (ulong.TryParse(mod.Value.WorkshopIdOutput, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={mod.Value.WorkshopIdOutput}\r\n" : string.Empty) +
                                                  $"Name: {mod.Value.Name}\r\n" +
                                                  $"Path: {mod.Value.FilePath}");
+                                if (BZ98R_Audit.ContainsKey(mod.Value.WorkshopIdOutput))
+                                {
+                                    if (BZ98R_Audit[mod.Value.WorkshopIdOutput].Status == "Broken")
+                                        LogAuditItem($"BZ98 mod known broken\r\n" +
+                                                     $"ID: {mod.Value.UniqueID}\r\n" +
+                                                    (ulong.TryParse(mod.Value.WorkshopIdOutput, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={mod.Value.WorkshopIdOutput}\r\n" : string.Empty) +
+                                                     $"Name: {mod.Value.Name}\r\n" +
+                                                     $"Path: {mod.Value.FilePath}");
+                                    if (BZ98R_Audit[mod.Value.WorkshopIdOutput].Status == "Superseded")
+                                        LogAuditItem($"BZ98 mod known superseded\r\n" +
+                                                     $"ID: {mod.Value.UniqueID}\r\n" +
+                                                    (ulong.TryParse(mod.Value.WorkshopIdOutput, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={mod.Value.WorkshopIdOutput}\r\n" : string.Empty) +
+                                                     $"Name: {mod.Value.Name}\r\n" +
+                                                     $"Path: {mod.Value.FilePath}\r\n" +
+                                                     $"Replacement Mod: {(ulong.TryParse(BZ98R_Audit[mod.Value.WorkshopIdOutput].NewID, out _) ? $"https://steamcommunity.com/workshop/filedetails/?id={BZ98R_Audit[mod.Value.WorkshopIdOutput].NewID}" : BZ98R_Audit[mod.Value.WorkshopIdOutput].NewID)}");
+                                }
                                 progress++;
                                 subtask.Value = progress;
                             }
@@ -1443,6 +1493,22 @@ namespace BZRModManager
                                                 (ulong.TryParse(mod.Value.WorkshopIdOutput, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={mod.Value.WorkshopIdOutput}\r\n" : string.Empty) +
                                                  $"Name: {mod.Value.Name}\r\n" +
                                                  $"Path: {mod.Value.FilePath}");
+                                if (BZCC_Audit.ContainsKey(mod.Value.WorkshopIdOutput))
+                                {
+                                    if (BZCC_Audit[mod.Value.WorkshopIdOutput].Status == "Broken")
+                                        LogAuditItem($"BZCC mod known broken\r\n" +
+                                                     $"ID: {mod.Value.UniqueID}\r\n" +
+                                                    (ulong.TryParse(mod.Value.WorkshopIdOutput, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={mod.Value.WorkshopIdOutput}\r\n" : string.Empty) +
+                                                     $"Name: {mod.Value.Name}\r\n" +
+                                                     $"Path: {mod.Value.FilePath}");
+                                    if (BZCC_Audit[mod.Value.WorkshopIdOutput].Status == "Superseded")
+                                        LogAuditItem($"BZCC mod known superseded\r\n" +
+                                                     $"ID: {mod.Value.UniqueID}\r\n" +
+                                                    (ulong.TryParse(mod.Value.WorkshopIdOutput, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={mod.Value.WorkshopIdOutput}\r\n" : string.Empty) +
+                                                     $"Name: {mod.Value.Name}\r\n" +
+                                                     $"Path: {mod.Value.FilePath}\r\n" +
+                                                     $"Replacement Mod: {(ulong.TryParse(BZCC_Audit[mod.Value.WorkshopIdOutput].NewID, out _) ? $"https://steamcommunity.com/workshop/filedetails/?id={BZCC_Audit[mod.Value.WorkshopIdOutput].NewID}" : BZCC_Audit[mod.Value.WorkshopIdOutput].NewID)}");
+                                }
                                 progress++;
                                 subtask.Value = progress;
                             }
@@ -1584,5 +1650,11 @@ namespace BZRModManager
                 this.WindowState = FormWindowState.Normal;
             }
         }*/
+    }
+
+    public class AuditData
+    {
+        public string Status { get; set; }
+        public string NewID { get; set; }
     }
 }
