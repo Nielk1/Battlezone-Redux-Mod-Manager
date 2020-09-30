@@ -137,6 +137,24 @@ namespace BZRModManager.ModItem
         public override string WorkshopIdOutput { get { return WorkshopId.ToString(); } }
         public override string ModSource { get { return "Steam"; } }
 
+        public override string FilePath
+        {
+            get
+            {
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppId);
+                    return Path.Combine(workshopFolder, WorkshopId.ToString());
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppId);
+                    return Path.Combine(workshopFolder, WorkshopId.ToString());
+                }
+                return null;
+            }
+        }
+
         public SteamMod(int AppId, UInt64 WorkshopId)
         {
             this.AppId = AppId;

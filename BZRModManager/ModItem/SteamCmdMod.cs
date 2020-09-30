@@ -102,6 +102,16 @@ namespace BZRModManager.ModItem
         public override string WorkshopIdOutput { get { return Workshop.WorkshopId.ToString(); } }
         public override string ModSource { get { return "SteamCmd"; } }
 
+        public override string FilePath
+        {
+            get
+            {
+                if (AppId == MainForm.AppIdBZ98 || AppId == MainForm.AppIdBZCC)
+                    return Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                return null;
+            }
+        }
+
         public SteamCmdMod(int AppId, WorkshopItemStatus Workshop)
         {
             this.AppId = AppId;

@@ -108,6 +108,7 @@
             this.tpLogSteamCmdFull = new System.Windows.Forms.TabPage();
             this.txtLogSteamCmdFull = new System.Windows.Forms.RichTextBox();
             this.tpAbout = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
             this.btnGithub = new System.Windows.Forms.Button();
             this.btnDiscord = new System.Windows.Forms.Button();
             this.btnSteamAward = new System.Windows.Forms.Button();
@@ -120,6 +121,9 @@
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
+            this.tpAudit = new System.Windows.Forms.TabPage();
+            this.btnRunAudit = new System.Windows.Forms.Button();
+            this.txtAuditLog = new System.Windows.Forms.RichTextBox();
             this.lvModsBZ98R = new BZRModManager.LinqListViewMods();
             this.lvModsBZCC = new BZRModManager.LinqListViewMods();
             this.lvFindModsBZ98R = new BZRModManager.LinqListViewFindMods();
@@ -127,7 +131,6 @@
             this.lvPlayers = new BZRModManager.LinqListViewPlayers();
             this.lvMultiplayerBZ98R = new BZRModManager.LinqListViewMultiplayer();
             this.lvMultiplayerBZCC = new BZRModManager.LinqListViewMultiplayer();
-            this.label3 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -154,6 +157,7 @@
             this.tpAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            this.tpAudit.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -165,6 +169,7 @@
             this.tabControl1.Controls.Add(this.tpBZCC);
             this.tabControl1.Controls.Add(this.tpFindMods);
             this.tabControl1.Controls.Add(this.tabMultiplayer);
+            this.tabControl1.Controls.Add(this.tpAudit);
             this.tabControl1.Controls.Add(this.tpSettings);
             this.tabControl1.Controls.Add(this.tpTasks);
             this.tabControl1.Controls.Add(this.tpLog);
@@ -1134,6 +1139,18 @@
             this.tpAbout.TabIndex = 9;
             this.tpAbout.Text = "About / Support";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(6, 137);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(127, 34);
+            this.label3.TabIndex = 41;
+            this.label3.Text = "Created By\r\nJohn \"Nielk1\" Klein";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // btnGithub
             // 
             this.btnGithub.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -1263,6 +1280,43 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
+            // tpAudit
+            // 
+            this.tpAudit.Controls.Add(this.txtAuditLog);
+            this.tpAudit.Controls.Add(this.btnRunAudit);
+            this.tpAudit.Location = new System.Drawing.Point(4, 22);
+            this.tpAudit.Name = "tpAudit";
+            this.tpAudit.Size = new System.Drawing.Size(734, 381);
+            this.tpAudit.TabIndex = 10;
+            this.tpAudit.Text = "Audit";
+            this.tpAudit.UseVisualStyleBackColor = true;
+            // 
+            // btnRunAudit
+            // 
+            this.btnRunAudit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRunAudit.Location = new System.Drawing.Point(3, 3);
+            this.btnRunAudit.Name = "btnRunAudit";
+            this.btnRunAudit.Size = new System.Drawing.Size(728, 23);
+            this.btnRunAudit.TabIndex = 0;
+            this.btnRunAudit.Text = "Run Audit";
+            this.btnRunAudit.UseVisualStyleBackColor = true;
+            this.btnRunAudit.Click += new System.EventHandler(this.btnRunAudit_Click);
+            // 
+            // txtAuditLog
+            // 
+            this.txtAuditLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtAuditLog.Font = new System.Drawing.Font("Consolas", 8.25F);
+            this.txtAuditLog.Location = new System.Drawing.Point(3, 32);
+            this.txtAuditLog.Name = "txtAuditLog";
+            this.txtAuditLog.ReadOnly = true;
+            this.txtAuditLog.Size = new System.Drawing.Size(728, 346);
+            this.txtAuditLog.TabIndex = 2;
+            this.txtAuditLog.Text = "";
+            this.txtAuditLog.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtAuditLog_LinkClicked);
+            // 
             // lvModsBZ98R
             // 
             this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1381,18 +1435,6 @@
             this.lvMultiplayerBZCC.VirtualMode = true;
             this.lvMultiplayerBZCC.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZCC_SelectedIndexChanged);
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(6, 137);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(127, 34);
-            this.label3.TabIndex = 41;
-            this.label3.Text = "Created By\r\nJohn \"Nielk1\" Klein";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1446,6 +1488,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.tpAudit.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1552,6 +1595,9 @@
         private System.Windows.Forms.Button btnSteamAward;
         private System.Windows.Forms.PictureBox logoPictureBox;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TabPage tpAudit;
+        private System.Windows.Forms.Button btnRunAudit;
+        private System.Windows.Forms.RichTextBox txtAuditLog;
     }
 }
 

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using BZRModManager.ModItem;
+using IniParser;
 
 namespace BZRModManager
 {
@@ -80,6 +81,10 @@ namespace BZRModManager
             SteamCmd.SteamCmdArgs += Steam_SteamCmdArgs;
 
             if (!Directory.Exists("log")) Directory.CreateDirectory("log");
+
+            foreach (string oldLog in Directory.EnumerateFiles("log", "*.log", SearchOption.TopDirectoryOnly).ToList())
+                File.Delete(oldLog);
+
             string logdate = DateTime.Now.ToString("yyyyMMddHHmmss");
             Trace.Listeners.Add(new TextWriterTraceListener($"log\\{logdate}-bzrmodmanager.log"));
             Trace.AutoFlush = true;
@@ -561,7 +566,8 @@ namespace BZRModManager
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl1.SelectedIndex == 4)
+            //if (tabControl1.SelectedIndex == 4)
+            if (tabControl1.SelectedTab == tpSettings)
             {
                 txtBZ98RSteam.Text = settings.BZ98RSteamPath;
                 txtBZCCSteam.Text = settings.BZCCSteamPath;
@@ -685,6 +691,8 @@ namespace BZRModManager
             btnBZCCGogFind.Enabled = false;
             txtBZCCGog.Enabled = false;
             btnBZCCRGogApply.Enabled = false;
+
+            btnRunAudit.Enabled = false;
         }
 
         private void cbBZ98RType_CheckedChanged(object sender, EventArgs e)
@@ -1334,6 +1342,239 @@ namespace BZRModManager
         {
             Process.Start(@"https://github.com/Nielk1/Battlezone-Redux-Mod-Manager");
         }
+
+        private void btnRunAudit_Click(object sender, EventArgs e)
+        {
+            AuditMods();
+        }
+
+
+        FileStream audit_log = null;
+        TextWriter audit_log_writer = null;
+        private void LogAuditItem(string text, bool start = false)
+        {
+            if (start || audit_log_writer == null)
+            {
+                audit_log_writer?.Close();
+                audit_log?.Close();
+
+                string logdate = DateTime.Now.ToString("yyyyMMddHHmmss");
+                audit_log = File.OpenWrite($"log\\{logdate}-audit.log");
+                audit_log_writer = new StreamWriter(audit_log);
+            }
+
+            if (text != null)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    lock (txtLogSteamCmd)
+                    {
+                        if (text != null)
+                        {
+                            if (start)
+                            {
+                                txtAuditLog.AppendText("==========================\r\n");
+                                audit_log_writer.Write("==========================\r\n");
+                            }
+                            txtAuditLog.AppendText(text);
+                            audit_log_writer.Write(text);
+                            txtAuditLog.AppendText("\r\n");
+                            audit_log_writer.Write("\r\n");
+                            txtAuditLog.AppendText(start ? "==========================\r\n" : "--------------------------\r\n");
+                            audit_log_writer.Write(start ? "==========================\r\n" : "--------------------------\r\n");
+
+                            audit_log_writer.Flush();
+                        }
+                    }
+                });
+            }
+        }
+
+
+        Task ModAuditTask = null;
+        private void AuditMods()
+        {
+            if (ModAuditTask == null
+             || ModAuditTask.IsCanceled
+             || ModAuditTask.IsCompleted
+             || ModAuditTask.IsFaulted)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    btnRunAudit.Enabled = false;
+                    txtAuditLog.Clear();
+                });
+
+                ModAuditTask = Task.Factory.StartNew(() =>
+                {
+                    TaskControl UpdateTaskControl = AddTask("Auditing", 0);
+
+                    LogAuditItem("Mod Audit", true);
+
+                    lock (ModStatus)
+                    {
+                        {
+                            var ModList = Mods[AppIdBZ98].ToList();
+                            TaskControl subtask = UpdateTaskControl.AddTask("Checking BZ98 Mods", ModList.Count);
+                            int progress = 0;
+                            foreach (var mod in ModList)
+                            {
+                                if (mod.Value.ModType.Contains("!"))
+                                    LogAuditItem($"BZ98 mod ini Error, notify mod author\r\n" +
+                                                 $"ID: {mod.Value.UniqueID}\r\n" +
+                                                (ulong.TryParse(mod.Value.WorkshopIdOutput, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={mod.Value.WorkshopIdOutput}\r\n" : string.Empty) +
+                                                 $"Name: {mod.Value.Name}\r\n" +
+                                                 $"Path: {mod.Value.FilePath}");
+                                progress++;
+                                subtask.Value = progress;
+                            }
+                            UpdateTaskControl.EndTask(subtask);
+                        }
+
+                        {
+                            var ModList = Mods[AppIdBZCC].ToList();
+                            TaskControl subtask = UpdateTaskControl.AddTask("Checking BZCC Mods", ModList.Count);
+                            int progress = 0;
+                            foreach (var mod in ModList)
+                            {
+                                if (mod.Value.ModType.Contains("UNKNOWN"))
+                                    LogAuditItem($"BZCC mod ini Error, notify mod author\r\n" +
+                                                 $"ID: {mod.Value.UniqueID}\r\n" +
+                                                (ulong.TryParse(mod.Value.WorkshopIdOutput, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={mod.Value.WorkshopIdOutput}\r\n" : string.Empty) +
+                                                 $"Name: {mod.Value.Name}\r\n" +
+                                                 $"Path: {mod.Value.FilePath}");
+                                progress++;
+                                subtask.Value = progress;
+                            }
+                            UpdateTaskControl.EndTask(subtask);
+                        }
+                    }
+
+                    List<(string Platform, string Game, int AppID, string Path)> WorkshopDestinations = new List<(string Platform, string Game, int AppID, string Path)>();
+
+                    if ((settings?.BZ98RSteamPath?.Length ?? 0) > 0)
+                        WorkshopDestinations.Add(("Steam", "BZ98R", AppIdBZ98, SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppIdBZ98)));
+
+                    if ((settings?.BZCCSteamPath?.Length ?? 0) > 0)
+                        WorkshopDestinations.Add(("Steam", "BZCC", AppIdBZCC, SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppIdBZCC)));
+
+                    if ((settings?.BZ98RGogPath?.Length ?? 0) > 0)
+                        WorkshopDestinations.Add(("Gog", "BZ98R", AppIdBZ98, Path.Combine(MainForm.settings.BZ98RGogPath, "mods")));
+
+                    if ((settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
+                        WorkshopDestinations.Add(("Gog", "BZCC", AppIdBZCC, Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop")));
+
+                    FileIniDataParser parser = new FileIniDataParser();
+                    foreach (var workshopDestination in WorkshopDestinations)
+                    {
+                        if (Directory.Exists(workshopDestination.Path))
+                        {
+                            TaskControl subtask = UpdateTaskControl.AddTask($"Checking Installed {workshopDestination.Platform} {workshopDestination.Game} Mods", 0);
+
+                            if (workshopDestination.AppID == AppIdBZCC)
+                            {
+                                HashSet<string> ModDirs = new HashSet<string>();
+                                foreach (string dir in Directory.GetDirectories(workshopDestination.Path))
+                                {
+                                    string folderName = Path.GetFileName(dir);
+                                    string iniFile = Path.Combine(dir, folderName + ".ini");
+                                    if (File.Exists(iniFile))
+                                    {
+                                        try
+                                        {
+                                            parser.ReadFile(iniFile);
+                                            ModDirs.Add(folderName);
+                                        }
+                                        catch
+                                        {
+                                            LogAuditItem($"Installed BZCC mod ini parse error, notify mod author\r\n" +
+                                                         $"ID: {folderName}\r\n" +
+                                                        (ulong.TryParse(folderName, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={folderName}\r\n" : string.Empty) +
+                                                         $"Path: {dir}");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (File.Exists(Path.Combine(dir, "Mod.ini")))
+                                        {
+                                            ModDirs.Add(folderName);
+                                        }
+
+                                        LogAuditItem($"Installed BZCC mod ini not found, notify mod author\r\n" +
+                                                     $"ID: {folderName}\r\n" +
+                                                     (ulong.TryParse(folderName, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={folderName}\r\n" : string.Empty) +
+                                                     $"Path: {dir}");
+                                    }
+                                }
+
+                                foreach (string dir in Directory.GetDirectories(workshopDestination.Path))
+                                {
+                                    string folderName = Path.GetFileName(dir);
+                                    string[] dependencies = BZCCTools.GetAssetDependencies(dir);
+                                    List<string> MissingDependencies = (dependencies?.Where(dr => !ModDirs.Contains(dr)) ?? new string[] { }).ToList();
+
+                                    if (MissingDependencies.Count > 0)
+                                    {
+                                        int ctr = 0;
+                                        LogAuditItem($"Installed BZCC mod missing installed dependencies\r\n" +
+                                                     $"ID: {folderName}\r\n" +
+                                                     (ulong.TryParse(folderName, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={folderName}\r\n" : string.Empty) +
+                                                     $"Path: {dir}\r\n" +
+                                                     $"Missing: {string.Join(",", MissingDependencies)}\r\n" +  
+                                                     $"Links: {string.Join("\r\n", MissingDependencies.Where(dr => ulong.TryParse(dr, out _)).Select(dr => (ctr++ > 0 ? "       " : string.Empty) + $"https://steamcommunity.com/workshop/filedetails/?id={dr}"))}");
+                                    }
+                                }
+                            }
+                            else if (workshopDestination.AppID == AppIdBZ98)
+                            {
+                                foreach (string dir in Directory.GetDirectories(workshopDestination.Path))
+                                {
+                                    string folderName = Path.GetFileName(dir);
+                                    List<string> IniErrors = new List<string>();
+                                    var FoundSubInis = Directory.EnumerateFiles(dir, "*.ini", SearchOption.TopDirectoryOnly);
+                                    foreach (string iniFile in FoundSubInis)
+                                    {
+                                        try
+                                        {
+                                            parser.ReadFile(iniFile);
+                                        }
+                                        catch
+                                        {
+                                            string fileName = Path.GetFileName(iniFile);
+                                            IniErrors.Add(fileName);
+                                        }
+                                    }
+                                    if (IniErrors.Count > 0)
+                                    {
+                                        LogAuditItem($"Installed BZ98R mod ini parse error, notify mod author\r\n" +
+                                                     $"ID: {folderName}\r\n" +
+                                                     (ulong.TryParse(folderName, out _) ? $"Link: https://steamcommunity.com/workshop/filedetails/?id={folderName}\r\n" : string.Empty) +
+                                                     $"Path: {dir}\r\n" +
+                                                     $"Inis: {string.Join(",", IniErrors)}");
+                                    }
+                                }
+                            }
+
+                            UpdateTaskControl.EndTask(subtask);
+                        }
+                    }
+
+                    EndTask(UpdateTaskControl);
+
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        btnRunAudit.Enabled = true;
+                    });
+                });
+            }
+        }
+
+        private void txtAuditLog_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(e.LinkText))
+                Process.Start(e.LinkText);
+        }
+
 
         /*private void tmrRestore_Tick(object sender, EventArgs e)
         {

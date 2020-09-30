@@ -35,6 +35,8 @@ namespace BZRModManager.ModItem
         public abstract string WorkshopIdOutput { get; }
         public abstract string ModSource { get; }
 
+        public abstract string FilePath { get; }
+
         public string IconKey { get { return UniqueID; } }
         public string Name { get { return ToString(); } }
         public Image LargeIcon { get; set; }

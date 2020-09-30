@@ -132,6 +132,16 @@ namespace BZRModManager.ModItem
         public override string WorkshopIdOutput { get { return Workshop.ModWorkshopId.ToString(); } }
         public override string ModSource { get { return "Git"; } }
 
+        public override string FilePath
+        {
+            get
+            {
+                if (AppId == MainForm.AppIdBZ98 || AppId == MainForm.AppIdBZCC)
+                    return Path.GetFullPath(Workshop.ModPath);
+                return null;
+            }
+        }
+
         public static string GetUniqueId(string modWorkshopId)
         {
             return modWorkshopId + "-Git";
