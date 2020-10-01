@@ -306,5 +306,11 @@ namespace BZRModManager.ModItem
             }
             return "UNKNOWN MOD";
         }
+
+        public override bool Delete()
+        {
+            Directory.Delete(Path.GetDirectoryName(FilePath), true);
+            return true;
+        }
     }
 }

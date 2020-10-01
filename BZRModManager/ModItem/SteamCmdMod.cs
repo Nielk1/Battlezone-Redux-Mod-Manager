@@ -228,5 +228,11 @@ namespace BZRModManager.ModItem
         {
             return Directory.Exists(Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}"));
         }*/
+
+        public override bool Delete()
+        {
+            Directory.Delete(FilePath, true);
+            return true;
+        }
     }
 }

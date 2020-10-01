@@ -25,6 +25,8 @@ namespace BZRModManager
                 {
                     lock (ModStatus)
                     {
+                        HashSet<string> FoundModIDs = new HashSet<string>();
+
                         Semaphore loadSemaphore = new Semaphore(0, 2);
                         Task.Factory.StartNew(() =>
                         {
@@ -48,6 +50,7 @@ namespace BZRModManager
                                     }
                                     Mods[AppIdBZ98][ModId].HasUpdate = dr.HasUpdate;
                                     Mods[AppIdBZ98][ModId].FolderOnlyDetection = dr.FolderOnlyDetection;
+                                    FoundModIDs.Add(ModId);
                                 });
                                 UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
                             }
@@ -74,6 +77,7 @@ namespace BZRModManager
                                     {
                                         ((GitMod)Mods[AppIdBZ98][ModId]).Workshop = dr;
                                     }
+                                    FoundModIDs.Add(ModId);
                                 });
                                 UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
                             }
@@ -97,6 +101,7 @@ namespace BZRModManager
                                         {
                                             Mods[AppIdBZ98][ModId] = new SteamMod(AppIdBZ98, dr);
                                         }
+                                        FoundModIDs.Add(ModId);
                                     });
                                     UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
                                 }
@@ -116,6 +121,13 @@ namespace BZRModManager
                         loadSemaphore.WaitOne();
 
                         lock (Mods[AppIdBZ98])
+                        {
+                            foreach (string KnownMod in Mods[AppIdBZ98].Keys.ToList())
+                            {
+                                if (!FoundModIDs.Contains(KnownMod))
+                                    Mods[AppIdBZ98].Remove(KnownMod);
+                            }
+
                             this.Invoke((MethodInvoker)delegate
                             {
                                 lvModsBZ98R.BeginUpdate();
@@ -141,6 +153,7 @@ namespace BZRModManager
 
                                 EndTask(UpdateBZ98RModListsTaskControl);
                             });
+                        }
                     }
                 });
             }

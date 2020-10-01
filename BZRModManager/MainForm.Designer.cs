@@ -40,6 +40,7 @@
             this.btnHardUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnUpdateBZ98R = new System.Windows.Forms.Button();
             this.btnRefreshBZ98R = new System.Windows.Forms.Button();
+            this.lvModsBZ98R = new BZRModManager.LinqListViewMods();
             this.btnDownloadBZ98R = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDownloadBZ98R = new System.Windows.Forms.TextBox();
@@ -53,6 +54,7 @@
             this.btnDependenciesBZ98R = new System.Windows.Forms.Button();
             this.btnUpdateBZCC = new System.Windows.Forms.Button();
             this.btnRefreshBZCC = new System.Windows.Forms.Button();
+            this.lvModsBZCC = new BZRModManager.LinqListViewMods();
             this.btnDownloadBZCC = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
@@ -64,8 +66,11 @@
             this.rbFindModsIcon = new System.Windows.Forms.RadioButton();
             this.tcFindMods = new System.Windows.Forms.TabControl();
             this.tpFindModsBZ98R = new System.Windows.Forms.TabPage();
+            this.lvFindModsBZ98R = new BZRModManager.LinqListViewFindMods();
             this.tpFindModsBZCC = new System.Windows.Forms.TabPage();
+            this.lvFindModsBZCC = new BZRModManager.LinqListViewFindMods();
             this.tabMultiplayer = new System.Windows.Forms.TabPage();
+            this.lvPlayers = new BZRModManager.LinqListViewPlayers();
             this.rbFindGamesTable = new System.Windows.Forms.RadioButton();
             this.btnGetModSteamCmd = new System.Windows.Forms.Button();
             this.btnMultiGetModSteam = new System.Windows.Forms.Button();
@@ -75,7 +80,12 @@
             this.btnMultiRefresh = new System.Windows.Forms.Button();
             this.tcMultiplayer = new System.Windows.Forms.TabControl();
             this.tpMultiplayerBZ98R = new System.Windows.Forms.TabPage();
+            this.lvMultiplayerBZ98R = new BZRModManager.LinqListViewMultiplayer();
             this.tpMultiplayerBZCC = new System.Windows.Forms.TabPage();
+            this.lvMultiplayerBZCC = new BZRModManager.LinqListViewMultiplayer();
+            this.tpAudit = new System.Windows.Forms.TabPage();
+            this.txtAuditLog = new System.Windows.Forms.RichTextBox();
+            this.btnRunAudit = new System.Windows.Forms.Button();
             this.tpSettings = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.btnBZCCGogFind = new System.Windows.Forms.Button();
@@ -121,16 +131,6 @@
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
-            this.tpAudit = new System.Windows.Forms.TabPage();
-            this.btnRunAudit = new System.Windows.Forms.Button();
-            this.txtAuditLog = new System.Windows.Forms.RichTextBox();
-            this.lvModsBZ98R = new BZRModManager.LinqListViewMods();
-            this.lvModsBZCC = new BZRModManager.LinqListViewMods();
-            this.lvFindModsBZ98R = new BZRModManager.LinqListViewFindMods();
-            this.lvFindModsBZCC = new BZRModManager.LinqListViewFindMods();
-            this.lvPlayers = new BZRModManager.LinqListViewPlayers();
-            this.lvMultiplayerBZ98R = new BZRModManager.LinqListViewMultiplayer();
-            this.lvMultiplayerBZCC = new BZRModManager.LinqListViewMultiplayer();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -144,6 +144,7 @@
             this.tcMultiplayer.SuspendLayout();
             this.tpMultiplayerBZ98R.SuspendLayout();
             this.tpMultiplayerBZCC.SuspendLayout();
+            this.tpAudit.SuspendLayout();
             this.tpSettings.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -157,7 +158,6 @@
             this.tpAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
-            this.tpAudit.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -321,6 +321,23 @@
             this.btnRefreshBZ98R.Text = "Refresh List";
             this.btnRefreshBZ98R.UseVisualStyleBackColor = true;
             this.btnRefreshBZ98R.Click += new System.EventHandler(this.btnRefreshBZ98R_Click);
+            // 
+            // lvModsBZ98R
+            // 
+            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvModsBZ98R.FullRowSelect = true;
+            this.lvModsBZ98R.GridLines = true;
+            this.lvModsBZ98R.HideSelection = false;
+            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 64);
+            this.lvModsBZ98R.Name = "lvModsBZ98R";
+            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 311);
+            this.lvModsBZ98R.TabIndex = 13;
+            this.lvModsBZ98R.TypeFilter = null;
+            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
+            this.lvModsBZ98R.VirtualMode = true;
             // 
             // btnDownloadBZ98R
             // 
@@ -487,6 +504,23 @@
             this.btnRefreshBZCC.UseVisualStyleBackColor = true;
             this.btnRefreshBZCC.Click += new System.EventHandler(this.btnRefreshBZCC_Click);
             // 
+            // lvModsBZCC
+            // 
+            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvModsBZCC.FullRowSelect = true;
+            this.lvModsBZCC.GridLines = true;
+            this.lvModsBZCC.HideSelection = false;
+            this.lvModsBZCC.Location = new System.Drawing.Point(6, 64);
+            this.lvModsBZCC.Name = "lvModsBZCC";
+            this.lvModsBZCC.Size = new System.Drawing.Size(722, 311);
+            this.lvModsBZCC.TabIndex = 13;
+            this.lvModsBZCC.TypeFilter = null;
+            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
+            this.lvModsBZCC.VirtualMode = true;
+            // 
             // btnDownloadBZCC
             // 
             this.btnDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -618,6 +652,22 @@
             this.tpFindModsBZ98R.Text = "BZ98R";
             this.tpFindModsBZ98R.UseVisualStyleBackColor = true;
             // 
+            // lvFindModsBZ98R
+            // 
+            this.lvFindModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvFindModsBZ98R.FullRowSelect = true;
+            this.lvFindModsBZ98R.GridLines = true;
+            this.lvFindModsBZ98R.HideSelection = false;
+            this.lvFindModsBZ98R.Location = new System.Drawing.Point(3, 3);
+            this.lvFindModsBZ98R.Name = "lvFindModsBZ98R";
+            this.lvFindModsBZ98R.Size = new System.Drawing.Size(708, 336);
+            this.lvFindModsBZ98R.TabIndex = 0;
+            this.lvFindModsBZ98R.TypeFilter = null;
+            this.lvFindModsBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvFindModsBZ98R.VirtualMode = true;
+            // 
             // tpFindModsBZCC
             // 
             this.tpFindModsBZCC.Controls.Add(this.lvFindModsBZCC);
@@ -628,6 +678,22 @@
             this.tpFindModsBZCC.TabIndex = 1;
             this.tpFindModsBZCC.Text = "BZCC";
             this.tpFindModsBZCC.UseVisualStyleBackColor = true;
+            // 
+            // lvFindModsBZCC
+            // 
+            this.lvFindModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvFindModsBZCC.FullRowSelect = true;
+            this.lvFindModsBZCC.GridLines = true;
+            this.lvFindModsBZCC.HideSelection = false;
+            this.lvFindModsBZCC.Location = new System.Drawing.Point(3, 3);
+            this.lvFindModsBZCC.Name = "lvFindModsBZCC";
+            this.lvFindModsBZCC.Size = new System.Drawing.Size(708, 336);
+            this.lvFindModsBZCC.TabIndex = 1;
+            this.lvFindModsBZCC.TypeFilter = null;
+            this.lvFindModsBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvFindModsBZCC.VirtualMode = true;
             // 
             // tabMultiplayer
             // 
@@ -647,6 +713,20 @@
             this.tabMultiplayer.TabIndex = 8;
             this.tabMultiplayer.Text = "Multiplayer";
             this.tabMultiplayer.UseVisualStyleBackColor = true;
+            // 
+            // lvPlayers
+            // 
+            this.lvPlayers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvPlayers.HideSelection = false;
+            this.lvPlayers.Location = new System.Drawing.Point(6, 278);
+            this.lvPlayers.MultiSelect = false;
+            this.lvPlayers.Name = "lvPlayers";
+            this.lvPlayers.Size = new System.Drawing.Size(721, 97);
+            this.lvPlayers.TabIndex = 13;
+            this.lvPlayers.UseCompatibleStateImageBehavior = false;
+            this.lvPlayers.VirtualMode = true;
+            this.lvPlayers.DoubleClick += new System.EventHandler(this.lvPlayers_DoubleClick);
             // 
             // rbFindGamesTable
             // 
@@ -758,6 +838,24 @@
             this.tpMultiplayerBZ98R.Text = "BZ98R";
             this.tpMultiplayerBZ98R.UseVisualStyleBackColor = true;
             // 
+            // lvMultiplayerBZ98R
+            // 
+            this.lvMultiplayerBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvMultiplayerBZ98R.FullRowSelect = true;
+            this.lvMultiplayerBZ98R.GridLines = true;
+            this.lvMultiplayerBZ98R.HideSelection = false;
+            this.lvMultiplayerBZ98R.Location = new System.Drawing.Point(3, 3);
+            this.lvMultiplayerBZ98R.MultiSelect = false;
+            this.lvMultiplayerBZ98R.Name = "lvMultiplayerBZ98R";
+            this.lvMultiplayerBZ98R.Size = new System.Drawing.Size(708, 233);
+            this.lvMultiplayerBZ98R.TabIndex = 0;
+            this.lvMultiplayerBZ98R.UseCompatibleStateImageBehavior = false;
+            this.lvMultiplayerBZ98R.View = System.Windows.Forms.View.Details;
+            this.lvMultiplayerBZ98R.VirtualMode = true;
+            this.lvMultiplayerBZ98R.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZ98R_SelectedIndexChanged);
+            // 
             // tpMultiplayerBZCC
             // 
             this.tpMultiplayerBZCC.Controls.Add(this.lvMultiplayerBZCC);
@@ -768,6 +866,61 @@
             this.tpMultiplayerBZCC.TabIndex = 1;
             this.tpMultiplayerBZCC.Text = "BZCC";
             this.tpMultiplayerBZCC.UseVisualStyleBackColor = true;
+            // 
+            // lvMultiplayerBZCC
+            // 
+            this.lvMultiplayerBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvMultiplayerBZCC.FullRowSelect = true;
+            this.lvMultiplayerBZCC.GridLines = true;
+            this.lvMultiplayerBZCC.HideSelection = false;
+            this.lvMultiplayerBZCC.Location = new System.Drawing.Point(3, 3);
+            this.lvMultiplayerBZCC.MultiSelect = false;
+            this.lvMultiplayerBZCC.Name = "lvMultiplayerBZCC";
+            this.lvMultiplayerBZCC.Size = new System.Drawing.Size(708, 233);
+            this.lvMultiplayerBZCC.TabIndex = 1;
+            this.lvMultiplayerBZCC.UseCompatibleStateImageBehavior = false;
+            this.lvMultiplayerBZCC.View = System.Windows.Forms.View.Details;
+            this.lvMultiplayerBZCC.VirtualMode = true;
+            this.lvMultiplayerBZCC.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZCC_SelectedIndexChanged);
+            // 
+            // tpAudit
+            // 
+            this.tpAudit.Controls.Add(this.txtAuditLog);
+            this.tpAudit.Controls.Add(this.btnRunAudit);
+            this.tpAudit.Location = new System.Drawing.Point(4, 22);
+            this.tpAudit.Name = "tpAudit";
+            this.tpAudit.Size = new System.Drawing.Size(734, 381);
+            this.tpAudit.TabIndex = 10;
+            this.tpAudit.Text = "Audit";
+            this.tpAudit.UseVisualStyleBackColor = true;
+            // 
+            // txtAuditLog
+            // 
+            this.txtAuditLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtAuditLog.Font = new System.Drawing.Font("Consolas", 8.25F);
+            this.txtAuditLog.Location = new System.Drawing.Point(3, 32);
+            this.txtAuditLog.Name = "txtAuditLog";
+            this.txtAuditLog.ReadOnly = true;
+            this.txtAuditLog.Size = new System.Drawing.Size(728, 346);
+            this.txtAuditLog.TabIndex = 2;
+            this.txtAuditLog.Text = "";
+            this.txtAuditLog.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtAuditLog_LinkClicked);
+            // 
+            // btnRunAudit
+            // 
+            this.btnRunAudit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRunAudit.Location = new System.Drawing.Point(3, 3);
+            this.btnRunAudit.Name = "btnRunAudit";
+            this.btnRunAudit.Size = new System.Drawing.Size(728, 23);
+            this.btnRunAudit.TabIndex = 0;
+            this.btnRunAudit.Text = "Run Audit";
+            this.btnRunAudit.UseVisualStyleBackColor = true;
+            this.btnRunAudit.Click += new System.EventHandler(this.btnRunAudit_Click);
             // 
             // tpSettings
             // 
@@ -1280,161 +1433,6 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
-            // tpAudit
-            // 
-            this.tpAudit.Controls.Add(this.txtAuditLog);
-            this.tpAudit.Controls.Add(this.btnRunAudit);
-            this.tpAudit.Location = new System.Drawing.Point(4, 22);
-            this.tpAudit.Name = "tpAudit";
-            this.tpAudit.Size = new System.Drawing.Size(734, 381);
-            this.tpAudit.TabIndex = 10;
-            this.tpAudit.Text = "Audit";
-            this.tpAudit.UseVisualStyleBackColor = true;
-            // 
-            // btnRunAudit
-            // 
-            this.btnRunAudit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRunAudit.Location = new System.Drawing.Point(3, 3);
-            this.btnRunAudit.Name = "btnRunAudit";
-            this.btnRunAudit.Size = new System.Drawing.Size(728, 23);
-            this.btnRunAudit.TabIndex = 0;
-            this.btnRunAudit.Text = "Run Audit";
-            this.btnRunAudit.UseVisualStyleBackColor = true;
-            this.btnRunAudit.Click += new System.EventHandler(this.btnRunAudit_Click);
-            // 
-            // txtAuditLog
-            // 
-            this.txtAuditLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAuditLog.Font = new System.Drawing.Font("Consolas", 8.25F);
-            this.txtAuditLog.Location = new System.Drawing.Point(3, 32);
-            this.txtAuditLog.Name = "txtAuditLog";
-            this.txtAuditLog.ReadOnly = true;
-            this.txtAuditLog.Size = new System.Drawing.Size(728, 346);
-            this.txtAuditLog.TabIndex = 2;
-            this.txtAuditLog.Text = "";
-            this.txtAuditLog.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtAuditLog_LinkClicked);
-            // 
-            // lvModsBZ98R
-            // 
-            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZ98R.FullRowSelect = true;
-            this.lvModsBZ98R.GridLines = true;
-            this.lvModsBZ98R.HideSelection = false;
-            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 64);
-            this.lvModsBZ98R.MultiSelect = false;
-            this.lvModsBZ98R.Name = "lvModsBZ98R";
-            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 311);
-            this.lvModsBZ98R.TabIndex = 13;
-            this.lvModsBZ98R.TypeFilter = null;
-            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
-            this.lvModsBZ98R.VirtualMode = true;
-            // 
-            // lvModsBZCC
-            // 
-            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZCC.FullRowSelect = true;
-            this.lvModsBZCC.GridLines = true;
-            this.lvModsBZCC.HideSelection = false;
-            this.lvModsBZCC.Location = new System.Drawing.Point(6, 64);
-            this.lvModsBZCC.MultiSelect = false;
-            this.lvModsBZCC.Name = "lvModsBZCC";
-            this.lvModsBZCC.Size = new System.Drawing.Size(722, 311);
-            this.lvModsBZCC.TabIndex = 13;
-            this.lvModsBZCC.TypeFilter = null;
-            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
-            this.lvModsBZCC.VirtualMode = true;
-            // 
-            // lvFindModsBZ98R
-            // 
-            this.lvFindModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvFindModsBZ98R.FullRowSelect = true;
-            this.lvFindModsBZ98R.GridLines = true;
-            this.lvFindModsBZ98R.HideSelection = false;
-            this.lvFindModsBZ98R.Location = new System.Drawing.Point(3, 3);
-            this.lvFindModsBZ98R.Name = "lvFindModsBZ98R";
-            this.lvFindModsBZ98R.Size = new System.Drawing.Size(708, 336);
-            this.lvFindModsBZ98R.TabIndex = 0;
-            this.lvFindModsBZ98R.TypeFilter = null;
-            this.lvFindModsBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvFindModsBZ98R.VirtualMode = true;
-            // 
-            // lvFindModsBZCC
-            // 
-            this.lvFindModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvFindModsBZCC.FullRowSelect = true;
-            this.lvFindModsBZCC.GridLines = true;
-            this.lvFindModsBZCC.HideSelection = false;
-            this.lvFindModsBZCC.Location = new System.Drawing.Point(3, 3);
-            this.lvFindModsBZCC.Name = "lvFindModsBZCC";
-            this.lvFindModsBZCC.Size = new System.Drawing.Size(708, 336);
-            this.lvFindModsBZCC.TabIndex = 1;
-            this.lvFindModsBZCC.TypeFilter = null;
-            this.lvFindModsBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvFindModsBZCC.VirtualMode = true;
-            // 
-            // lvPlayers
-            // 
-            this.lvPlayers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvPlayers.HideSelection = false;
-            this.lvPlayers.Location = new System.Drawing.Point(6, 278);
-            this.lvPlayers.MultiSelect = false;
-            this.lvPlayers.Name = "lvPlayers";
-            this.lvPlayers.Size = new System.Drawing.Size(721, 97);
-            this.lvPlayers.TabIndex = 13;
-            this.lvPlayers.UseCompatibleStateImageBehavior = false;
-            this.lvPlayers.VirtualMode = true;
-            this.lvPlayers.DoubleClick += new System.EventHandler(this.lvPlayers_DoubleClick);
-            // 
-            // lvMultiplayerBZ98R
-            // 
-            this.lvMultiplayerBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvMultiplayerBZ98R.FullRowSelect = true;
-            this.lvMultiplayerBZ98R.GridLines = true;
-            this.lvMultiplayerBZ98R.HideSelection = false;
-            this.lvMultiplayerBZ98R.Location = new System.Drawing.Point(3, 3);
-            this.lvMultiplayerBZ98R.MultiSelect = false;
-            this.lvMultiplayerBZ98R.Name = "lvMultiplayerBZ98R";
-            this.lvMultiplayerBZ98R.Size = new System.Drawing.Size(708, 233);
-            this.lvMultiplayerBZ98R.TabIndex = 0;
-            this.lvMultiplayerBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvMultiplayerBZ98R.View = System.Windows.Forms.View.Details;
-            this.lvMultiplayerBZ98R.VirtualMode = true;
-            this.lvMultiplayerBZ98R.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZ98R_SelectedIndexChanged);
-            // 
-            // lvMultiplayerBZCC
-            // 
-            this.lvMultiplayerBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvMultiplayerBZCC.FullRowSelect = true;
-            this.lvMultiplayerBZCC.GridLines = true;
-            this.lvMultiplayerBZCC.HideSelection = false;
-            this.lvMultiplayerBZCC.Location = new System.Drawing.Point(3, 3);
-            this.lvMultiplayerBZCC.MultiSelect = false;
-            this.lvMultiplayerBZCC.Name = "lvMultiplayerBZCC";
-            this.lvMultiplayerBZCC.Size = new System.Drawing.Size(708, 233);
-            this.lvMultiplayerBZCC.TabIndex = 1;
-            this.lvMultiplayerBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvMultiplayerBZCC.View = System.Windows.Forms.View.Details;
-            this.lvMultiplayerBZCC.VirtualMode = true;
-            this.lvMultiplayerBZCC.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZCC_SelectedIndexChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1465,6 +1463,7 @@
             this.tcMultiplayer.ResumeLayout(false);
             this.tpMultiplayerBZ98R.ResumeLayout(false);
             this.tpMultiplayerBZCC.ResumeLayout(false);
+            this.tpAudit.ResumeLayout(false);
             this.tpSettings.ResumeLayout(false);
             this.tpSettings.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -1488,7 +1487,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.tpAudit.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

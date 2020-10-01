@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -18,7 +20,7 @@ namespace BZRModManager
         public LinqListViewMods()
         {
             // This call is required by the Windows.Forms Form Designer.
-            //InitializeComponent();
+            InitializeComponent();
 
             DataSource = new List<ILinqListViewItemMods>();
 
@@ -28,6 +30,7 @@ namespace BZRModManager
             //                   MyListView_SelectedIndexChanged);
             base.ColumnClick += new ColumnClickEventHandler(LinqListView_ColumnClick);
             base.MouseDoubleClick += LinqListView_MouseDoubleClick;
+            base.MouseClick += LinqListViewMods_MouseClick;
             _resizeTimer.Tick += _resizeTimer_Tick;
             base.Resize += LinqListView_Resize;
             base.ColumnWidthChanging += LinqListView_ColumnWidthChanging;
@@ -46,6 +49,16 @@ namespace BZRModManager
         }
 
         bool ListChangedRecently = false;
+        private ContextMenuStrip contextMenuStrip1;
+        private IContainer components;
+        private ToolStripMenuItem tsmInstallGog;
+        private ToolStripMenuItem tsmInstallSteam;
+        private ToolStripMenuItem tsmUninstallGog;
+        private ToolStripMenuItem tsmUninstallSteam;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem tsmOpenFolder;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripMenuItem tsmDelete;
         DispatcherTimer _resizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
         private void LinqListView_Resize(object sender, EventArgs e)
         {
@@ -150,6 +163,116 @@ namespace BZRModManager
                         }
                         break;
                     }
+            }
+        }
+
+        private void LinqListViewMods_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Right)
+            {
+                var SelectedItems = this.SelectedIndices;
+                if (SelectedItems.Count > 0)
+                {
+                    contextMenuStrip1.Show(this, e.Location);
+                }
+            }
+        }
+
+        private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            contextMenuStrip1.Close();
+            if (e.ClickedItem == tsmInstallGog)
+            {
+                foreach (int idx in this.SelectedIndices)
+                {
+                    var item = source.ElementAt(idx);
+                    if (item.InstalledGog != InstallStatus.Linked)
+                    {
+                        item.ToggleGog(); // this won't do anything unless we can, so it's safe to just crudely do this
+                        source.Where(dx => dx.WorkshopIdOutput == item.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
+                    }
+                }
+                this.Refresh();
+            }
+            if (e.ClickedItem == tsmInstallSteam)
+            {
+                foreach (int idx in this.SelectedIndices)
+                {
+                    var item = source.ElementAt(idx);
+                    if (item.InstalledSteam != InstallStatus.Linked)
+                    {
+                        item.ToggleSteam(); // this won't do anything unless we can, so it's safe to just crudely do this
+                        source.Where(dx => dx.WorkshopIdOutput == item.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
+                    }
+                }
+                this.Refresh();
+            }
+            if (e.ClickedItem == tsmUninstallGog)
+            {
+                foreach (int idx in this.SelectedIndices)
+                {
+                    var item = source.ElementAt(idx);
+                    if (item.InstalledGog == InstallStatus.Linked)
+                    {
+                        item.ToggleGog(); // this won't do anything unless we can, so it's safe to just crudely do this
+                        source.Where(dx => dx.WorkshopIdOutput == item.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
+                    }
+                }
+                this.Refresh();
+            }
+            if (e.ClickedItem == tsmUninstallSteam)
+            {
+                foreach (int idx in this.SelectedIndices)
+                {
+                    var item = source.ElementAt(idx);
+                    if (item.InstalledSteam == InstallStatus.Linked)
+                    {
+                        item.ToggleSteam(); // this won't do anything unless we can, so it's safe to just crudely do this
+                        source.Where(dx => dx.WorkshopIdOutput == item.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
+                    }
+                }
+                this.Refresh();
+            }
+            if (e.ClickedItem == tsmOpenFolder)
+            {
+                SelectedIndexCollection SelectedItems = this.SelectedIndices;
+                if (SelectedItems.Count > 0)
+                {
+                    if (SelectedItems.Count < 5 || MessageBox.Show($"Open {SelectedItems.Count} Folders?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                    {
+                        foreach (int idx in SelectedItems)
+                        {
+                            var item = source.ElementAt(idx);
+                            if (!string.IsNullOrWhiteSpace(item.FilePath) && Directory.Exists(item.FilePath))
+                                Process.Start("explorer.exe", item.FilePath);
+                        }
+                    }
+                }
+            }
+            if (e.ClickedItem == tsmDelete)
+            {
+                SelectedIndexCollection SelectedItems = this.SelectedIndices;
+                if (SelectedItems.Count > 0)
+                {
+                    if (MessageBox.Show($"Delete these {SelectedItems.Count} mod files?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                    {
+                        bool DidDelete = false;
+                        foreach (int idx in SelectedItems)
+                        {
+                            var item = source.ElementAt(idx);
+                            if (item.InstalledGog == InstallStatus.Linked)
+                                item.ToggleGog();
+                            if (item.InstalledSteam == InstallStatus.Linked)
+                                item.ToggleSteam();
+                            source.Where(dx => dx.WorkshopIdOutput == item.WorkshopIdOutput).ToList().ForEach(dr => dr.ListViewItemCache = null);
+                            DidDelete |= item.Delete();
+                        }
+
+                        if (DidDelete)
+                            MessageBox.Show($"Mods deleted, please refresh the mod list.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                this.Refresh();
             }
         }
 
@@ -493,7 +616,80 @@ namespace BZRModManager
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmInstallGog = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmInstallSteam = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmUninstallGog = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmUninstallSteam = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmOpenFolder = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmInstallGog,
+            this.tsmInstallSteam,
+            this.tsmUninstallGog,
+            this.tsmUninstallSteam,
+            this.toolStripSeparator1,
+            this.tsmOpenFolder,
+            this.toolStripSeparator2,
+            this.tsmDelete});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(157, 142);
+            this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
+            // 
+            // tsmInstallGog
+            // 
+            this.tsmInstallGog.Name = "tsmInstallGog";
+            this.tsmInstallGog.Size = new System.Drawing.Size(156, 22);
+            this.tsmInstallGog.Text = "Install GOG";
+            // 
+            // tsmInstallSteam
+            // 
+            this.tsmInstallSteam.Name = "tsmInstallSteam";
+            this.tsmInstallSteam.Size = new System.Drawing.Size(156, 22);
+            this.tsmInstallSteam.Text = "Install Steam";
+            // 
+            // tsmUninstallGog
+            // 
+            this.tsmUninstallGog.Name = "tsmUninstallGog";
+            this.tsmUninstallGog.Size = new System.Drawing.Size(156, 22);
+            this.tsmUninstallGog.Text = "Uninstall GOG";
+            // 
+            // tsmUninstallSteam
+            // 
+            this.tsmUninstallSteam.Name = "tsmUninstallSteam";
+            this.tsmUninstallSteam.Size = new System.Drawing.Size(156, 22);
+            this.tsmUninstallSteam.Text = "Uninstall Steam";
+            // 
+            // tsmDelete
+            // 
+            this.tsmDelete.Name = "tsmDelete";
+            this.tsmDelete.Size = new System.Drawing.Size(156, 22);
+            this.tsmDelete.Text = "Delete";
+            // 
+            // tsmOpenFolder
+            // 
+            this.tsmOpenFolder.Name = "tsmOpenFolder";
+            this.tsmOpenFolder.Size = new System.Drawing.Size(156, 22);
+            this.tsmOpenFolder.Text = "Open Folder";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(153, 6);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(153, 6);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

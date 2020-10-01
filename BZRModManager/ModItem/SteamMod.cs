@@ -270,5 +270,10 @@ namespace BZRModManager.ModItem
                 Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={WorkshopId}");
             }
         }
+
+        public override bool Delete()
+        {
+            return false;
+        }
     }
 }

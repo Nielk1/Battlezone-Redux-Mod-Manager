@@ -16,12 +16,15 @@ namespace BZRModManager.ModItem
         InstallStatus InstalledSteam { get; }
         InstallStatus InstalledGog { get; }
 
+        string FilePath { get; }
+
         Image LargeIcon { get; }
         Image SmallIcon { get; }
         ListViewItem ListViewItemCache { get; set; }
 
         void ToggleGog();
         void ToggleSteam();
+        bool Delete();
     }
 
     public abstract class ModItemBase : ILinqListViewItemMods
@@ -53,5 +56,7 @@ namespace BZRModManager.ModItem
 
         public abstract void ToggleGog();
         public abstract void ToggleSteam();
+
+        public abstract bool Delete();
     }
 }
