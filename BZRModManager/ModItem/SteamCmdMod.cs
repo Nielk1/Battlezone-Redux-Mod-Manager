@@ -231,8 +231,12 @@ namespace BZRModManager.ModItem
 
         public override bool Delete()
         {
-            Directory.Delete(FilePath, true);
-            return true;
+            if (Directory.Exists(FilePath))
+            {
+                Directory.Delete(FilePath, true);
+                return true;
+            }
+            return false;
         }
     }
 }
