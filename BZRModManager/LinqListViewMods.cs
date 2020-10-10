@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -372,12 +373,12 @@ namespace BZRModManager
                         if (!first) query = query.ThenByDescending(dr => dr.ModSource);
                         break;
                     case 4:
-                        if (first) query = internal_source.OrderBy(dr => dr.WorkshopIdOutput);
-                        if (!first) query = query.ThenBy(dr => dr.WorkshopIdOutput);
+                        if (first) query = internal_source.OrderBy(dr => GetSortStringOfWorkshopID(dr.WorkshopIdOutput)).ThenBy(dr => dr.WorkshopIdOutput);
+                        if (!first) query = query.ThenBy(dr => GetSortStringOfWorkshopID(dr.WorkshopIdOutput)).ThenBy(dr => dr.WorkshopIdOutput);
                         break;
                     case -4:
-                        if (first) query = internal_source.OrderByDescending(dr => dr.WorkshopIdOutput);
-                        if (!first) query = query.ThenByDescending(dr => dr.WorkshopIdOutput);
+                        if (first) query = internal_source.OrderByDescending(dr => GetSortStringOfWorkshopID(dr.WorkshopIdOutput)).ThenByDescending(dr => dr.WorkshopIdOutput);
+                        if (!first) query = query.ThenByDescending(dr => GetSortStringOfWorkshopID(dr.WorkshopIdOutput)).ThenByDescending(dr => dr.WorkshopIdOutput);
                         break;
                     case 5:
                         if (first) query = internal_source.OrderBy(dr => dr.InstalledSteam);
@@ -405,6 +406,20 @@ namespace BZRModManager
             }
             VirtualListSize = source.Count;
             this.Refresh();
+        }
+
+        Regex numberReg = new Regex("[0-9]+", RegexOptions.Singleline);
+        private string GetSortStringOfWorkshopID(string WorkshopIdOutput)
+        {
+            try
+            {
+                string num = numberReg.Match(WorkshopIdOutput).Value;
+                return UInt64.TryParse(num, out _) ? num.PadLeft(UInt64.MaxValue.ToString().Length, '0') : num;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         private void LinqListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
