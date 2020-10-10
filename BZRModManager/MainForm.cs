@@ -1146,6 +1146,38 @@ namespace BZRModManager
                 string EXE = Path.Combine(settings.BZ98RSteamPath, "common", "Battlezone 98 Redux", "battlezone98redux.exe");
                 if(File.Exists(EXE))
                 {
+                    if (!string.IsNullOrWhiteSpace(session.Level.Mod) && session.Level.Mod != "0" && !Directory.Exists(Path.Combine(SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, AppIdBZ98), session.Level.Mod)))
+                    {
+                        bool failedToGetMod = false;
+                        DialogResult result = MessageBox.Show("Mod is missing, attempt to install from known mod?", "Missing Mod", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+                        switch (result)
+                        {
+                            case DialogResult.Yes:
+                                {
+                                    lock (ModStatus)
+                                        lock (Mods[AppIdBZ98])
+                                            if (Mods[AppIdBZ98].ContainsKey($"{session.Level.Mod}-Git")) // steam can only try to install from Git
+                                            {
+                                                if (Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].InstalledSteam != InstallStatus.Linked)
+                                                    Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].ToggleSteam();
+                                            }
+                                            else
+                                            {
+                                                failedToGetMod = true;
+                                            }
+                                }
+                                break;
+                            case DialogResult.No:
+                                break;
+                            case DialogResult.Cancel:
+                                return;
+                        }
+
+                        if (failedToGetMod)
+                            if (MessageBox.Show("Failed to get mod. Continue?", "Failed", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2) == DialogResult.No)
+                                return;
+                    }
+
                     // passwords don't work on BZR due to the comma required being eaten
                     /*string Password = string.Empty;
                     if (session.Status.HasPassword ?? false)
@@ -1188,11 +1220,57 @@ namespace BZRModManager
                 string EXE = Path.Combine(settings.BZCCSteamPath, "common", "BZ2R", "battlezone2.exe");
                 if (File.Exists(EXE))
                 {
-                    List<string> Mods = new List<string>();
-                    Mods.Add(session.Game.Mod ?? "0");
+                    List<string> ModsOfGame = new List<string>();
+                    ModsOfGame.Add(session.Game.Mod ?? "0");
                     if (session.Game.Mods != null)
-                        Mods.AddRange(session.Game.Mods);
-                    string ModsString = string.Join(";", Mods);
+                        ModsOfGame.AddRange(session.Game.Mods);
+
+                    HashSet<string> MissingMods = new HashSet<string>();
+                    foreach(string mod in ModsOfGame)
+                    {
+                        if (mod == "0")
+                            continue;
+                        if(Directory.Exists(Path.Combine(SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, AppIdBZCC), mod)))
+                            continue;
+                        MissingMods.Add(mod);
+                    }
+
+                    if (MissingMods.Count > 0)
+                    {
+                        bool failedToGetMod = false;
+                        DialogResult result = MessageBox.Show("Mods are missing, attempt to install from known mods?", "Missing Mods", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+                        switch (result)
+                        {
+                            case DialogResult.Yes:
+                                {
+                                    foreach (string mod in MissingMods)
+                                    {
+                                        lock (ModStatus)
+                                            lock (Mods[AppIdBZCC])
+                                                if (Mods[AppIdBZCC].ContainsKey($"{mod}-Git")) // steam can only try to install from Git
+                                                {
+                                                    if (Mods[AppIdBZCC][$"{mod}-Git"].InstalledSteam != InstallStatus.Linked)
+                                                        Mods[AppIdBZCC][$"{mod}-Git"].ToggleSteam();
+                                                }
+                                                else
+                                                {
+                                                    failedToGetMod = true;
+                                                }
+                                    }
+                                }
+                                break;
+                            case DialogResult.No:
+                                break;
+                            case DialogResult.Cancel:
+                                return;
+                        }
+
+                        if (failedToGetMod)
+                            if (MessageBox.Show("Failed to get some mods. Continue?", "Failed", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2) == DialogResult.No)
+                                return;
+                    }
+
+                    string ModsString = string.Join(";", ModsOfGame);
                     string Password = string.Empty;
                     if (session.Status.HasPassword ?? false)
                     {
@@ -1243,6 +1321,49 @@ namespace BZRModManager
                 string EXE = Path.Combine(settings.BZ98RGogPath, "battlezone98redux.exe");
                 if (File.Exists(EXE))
                 {
+                    if (!string.IsNullOrWhiteSpace(session.Level.Mod) && session.Level.Mod != "0" && !Directory.Exists(Path.Combine(MainForm.settings.BZ98RGogPath, "mods", session.Level.Mod)))
+                    {
+                        bool failedToGetMod = false;
+                        DialogResult result = MessageBox.Show("Mod is missing, attempt to install from known mod?", "Missing Mod", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+                        switch (result)
+                        {
+                            case DialogResult.Yes:
+                                {
+                                    string padModId = UInt64.TryParse(session.Level.Mod, out _) ? session.Level.Mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') : null;
+                                    lock (ModStatus)
+                                        lock (Mods[AppIdBZ98])
+                                            if (padModId != null && Mods[AppIdBZ98].ContainsKey($"{padModId}-SteamCmd"))
+                                            {
+                                                if (Mods[AppIdBZ98][$"{padModId}-SteamCmd"].InstalledGog != InstallStatus.Linked)
+                                                    Mods[AppIdBZ98][$"{padModId}-SteamCmd"].ToggleGog();
+                                            }
+                                            else if (padModId != null && Mods[AppIdBZ98].ContainsKey($"{padModId}-Steam"))
+                                            {
+                                                if (Mods[AppIdBZ98][$"{padModId}-Steam"].InstalledGog != InstallStatus.Linked)
+                                                    Mods[AppIdBZ98][$"{padModId}-Steam"].ToggleGog();
+                                            }
+                                            else if (Mods[AppIdBZ98].ContainsKey($"{session.Level.Mod}-Git"))
+                                            {
+                                                if (Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].InstalledGog != InstallStatus.Linked)
+                                                    Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].ToggleGog();
+                                            }
+                                            else
+                                            {
+                                                failedToGetMod = true;
+                                            }
+                                }
+                                break;
+                            case DialogResult.No:
+                                break;
+                            case DialogResult.Cancel:
+                                return;
+                        }
+
+                        if (failedToGetMod)
+                            if (MessageBox.Show("Failed to get mod. Continue?", "Failed", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2) == DialogResult.No)
+                                return;
+                    }
+
                     // passwords don't work on BZR due to the comma required being eaten
                     /*string Password = string.Empty;
                     if (session.Status.HasPassword ?? false)
@@ -1285,11 +1406,68 @@ namespace BZRModManager
                 string EXE = Path.Combine(settings.BZCCGogPath, "battlezone2.exe");
                 if (File.Exists(EXE))
                 {
-                    List<string> Mods = new List<string>();
-                    Mods.Add(session.Game.Mod ?? "0");
+                    List<string> ModsOfGame = new List<string>();
+                    ModsOfGame.Add(session.Game.Mod ?? "0");
                     if (session.Game.Mods != null)
-                        Mods.AddRange(session.Game.Mods);
-                    string ModsString = string.Join(";", Mods);
+                        ModsOfGame.AddRange(session.Game.Mods);
+
+                    HashSet<string> MissingMods = new HashSet<string>();
+                    foreach (string mod in ModsOfGame)
+                    {
+                        if (mod == "0")
+                            continue;
+                        if (Directory.Exists(Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", mod)))
+                            continue;
+                        MissingMods.Add(mod);
+                    }
+
+                    if (MissingMods.Count > 0)
+                    {
+                        bool failedToGetMod = false;
+                        DialogResult result = MessageBox.Show("Mods are missing, attempt to install from known mods?", "Missing Mods", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+                        switch(result)
+                        {
+                            case DialogResult.Yes:
+                                {
+                                    foreach (string mod in MissingMods)
+                                    {
+                                        string padModId = UInt64.TryParse(mod, out _) ? mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') : null;
+                                        lock (ModStatus)
+                                            lock (Mods[AppIdBZCC])
+                                                if (padModId != null && Mods[AppIdBZCC].ContainsKey($"{padModId}-SteamCmd"))
+                                                {
+                                                    if (Mods[AppIdBZCC][$"{padModId}-SteamCmd"].InstalledGog != InstallStatus.Linked)
+                                                        Mods[AppIdBZCC][$"{padModId}-SteamCmd"].ToggleGog();
+                                                }
+                                                else if (padModId != null && Mods[AppIdBZCC].ContainsKey($"{padModId}-Steam"))
+                                                {
+                                                    if (Mods[AppIdBZCC][$"{padModId}-Steam"].InstalledGog != InstallStatus.Linked)
+                                                        Mods[AppIdBZCC][$"{padModId}-Steam"].ToggleGog();
+                                                }
+                                                else if (Mods[AppIdBZCC].ContainsKey($"{mod}-Git"))
+                                                {
+                                                    if (Mods[AppIdBZCC][$"{mod}-Git"].InstalledGog != InstallStatus.Linked)
+                                                        Mods[AppIdBZCC][$"{mod}-Git"].ToggleGog();
+                                                }
+                                                else
+                                                {
+                                                    failedToGetMod = true;
+                                                }
+                                    }
+                                }
+                                break;
+                            case DialogResult.No:
+                                break;
+                            case DialogResult.Cancel:
+                                return;
+                        }
+
+                        if (failedToGetMod)
+                            if (MessageBox.Show("Failed to get some mods. Continue?", "Failed", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2) == DialogResult.No)
+                                return;
+                    }
+
+                    string ModsString = string.Join(";", ModsOfGame);
                     string Password = string.Empty;
                     if (session.Status.HasPassword ?? false)
                     {
