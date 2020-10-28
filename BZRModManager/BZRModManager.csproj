@@ -172,10 +172,10 @@
     <EmbeddedResource Include="TaskControl.resx">
       <DependentUpon>TaskControl.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="fixes\bzrmm_bzccjoinfix\bzrmm_bzccjoinfix.ini">
+    <None Include="fixes\bzrmm_bzccjoinfix\addonAssets\bzshell_multi.cfg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="fixes\bzrmm_bzccjoinfix\bzshell_multi.cfg">
+    <None Include="fixes\bzrmm_bzccjoinfix\bzrmm_bzccjoinfix.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
