@@ -436,8 +436,7 @@ namespace BZRModManager
 
         private void TryBzccMpJoinFix(string path, bool steam)
         {
-            string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, MainForm.AppIdBZCC);
-            string destinationFolder = steam ? Path.Combine(workshopFolder, "bzrmm_bzccjoinfix") : Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", "bzrmm_bzccjoinfix");
+            string destinationFolder = steam ? Path.Combine(SteamContext.WorkshopFolder(MainForm.settings.BZ98RSteamPath, MainForm.AppIdBZCC), "bzrmm_bzccjoinfix") : Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", "bzrmm_bzccjoinfix");
             string sourceFolder = Path.GetFullPath(Path.Combine("fixes", "bzrmm_bzccjoinfix"));
 
             bool NeedFix = BZCCTools.NeedsJoinShellFix(path);
