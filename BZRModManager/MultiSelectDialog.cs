@@ -10,6 +10,16 @@ using System.Windows.Forms;
 
 namespace BZRModManager
 {
+    public class MultiSelectDialogItem
+    {
+        public string Name { get; set; }
+        public object Tag { get; set; }
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+
     public partial class MultiSelectDialog : Form
     {
         public string[] Selected
@@ -17,19 +27,23 @@ namespace BZRModManager
             get
             {
                 List<string> Items = new List<string>();
-                foreach (var item in checkedListBox1.CheckedItems)
-                    Items.Add((string)item);
+                foreach (MultiSelectDialogItem item in checkedListBox1.CheckedItems)
+                    Items.Add((string)item.Tag);
                 return Items.ToArray();
             }
         }
 
-        public MultiSelectDialog(string Title, IEnumerable<Tuple<string, bool>> ListItems)
+        public MultiSelectDialog(string Title, IEnumerable<Tuple<string, object, bool>> ListItems)
         {
             InitializeComponent();
             this.Text = Title;
             foreach (var ListItem in ListItems)
             {
-                checkedListBox1.Items.Add(ListItem.Item1, ListItem.Item2);
+                checkedListBox1.Items.Add(new MultiSelectDialogItem()
+                {
+                    Name = ListItem.Item1,
+                    Tag = ListItem.Item2,
+                }, ListItem.Item3);
             }
         }
     }

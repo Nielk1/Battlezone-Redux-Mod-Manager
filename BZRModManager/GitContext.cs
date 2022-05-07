@@ -56,25 +56,43 @@ namespace BZRModManager
 
         private static void Checkout(string url, string branch, string outputDir)
         {
-            ProcessStartInfo info = new ProcessStartInfo()
+            //if (!Directory.Exists(outputDir))
             {
-                FileName = "git.exe",
-                Arguments = $"clone --single-branch -b {branch} \"{url.Replace("\"", "\"\"")}\" \"{outputDir.Replace("\"", "\"\"")}\"",
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                //RedirectStandardOutput = true,
-                //RedirectStandardInput = true,
-                //RedirectStandardError = true,
-            };
-            info.EnvironmentVariables.Add("GIT_TERMINAL_PROMPT", "0");
-            Process git = Process.Start(info);
+                ProcessStartInfo info = new ProcessStartInfo()
+                {
+                    FileName = "git.exe",
+                    Arguments = $"init",
+                    WorkingDirectory = outputDir,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                };
+                info.EnvironmentVariables.Add("GIT_TERMINAL_PROMPT", "0");
+                Process git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
 
-            //System.IO.StreamReader ischkout = git.StandardOutput;
-            //string output = string.Empty;
-            while (git.HasExited == false)
-            {
-                //output += ischkout.ReadToEnd();
-                Thread.Sleep(100);
+                info.Arguments = $"clone checkout -b {branch}";
+                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
+
+                info.Arguments = $"remote add -t {branch} --no-tags origin \"{url.Replace("\"", "\"\"")}\"";
+                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
+
+                info.Arguments = $"fetch origin";
+                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
+
+                info.Arguments = $"config core.sparseCheckout true";
+                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
+
+                string sparseCheckoutPath = Path.Combine(outputDir, ".git\\info\\sparse-checkout");
+                File.WriteAllText(sparseCheckoutPath, "config.json\r\nbaked\r\n");
+
+                info.Arguments = $"pull origin {branch}";
+                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100); 
+
+                if(File.Exists(Path.Combine(outputDir, "config.json")))
+                {
+                    // this is a full path git, so we eliminate the sparse checkout
+                    File.Delete(sparseCheckoutPath);
+                    Pull(outputDir); // re-pull data
+                }
             }
         }
 
@@ -84,11 +102,16 @@ namespace BZRModManager
             if (!Directory.Exists(gitFolder)) return new List<GitModStatus>();
             return Directory.EnumerateDirectories(gitFolder) // get individual mod folders
                 .SelectMany(dr => Directory.GetDirectories(dr)) // get branches
-                .Where(dr => File.Exists(Path.Combine(dr, "config.json")))
+                .Where(dr => File.Exists(Path.Combine(dr, "config.json")) || File.Exists(Path.Combine(dr, "baked", "config.json")))
                 .SelectMany(dr =>
                 {
                     string basePath = dr;
                     string jsonFile = Path.Combine(basePath, "config.json");
+                    if (!File.Exists(jsonFile))
+                    {
+                        basePath = Path.Combine(basePath, "baked");
+                        jsonFile = Path.Combine(basePath, "config.json");
+                    }
                     GitModConfig data = JsonConvert.DeserializeObject<GitModConfig>(File.ReadAllText(jsonFile));
 
                     return data.mods.Select(mod =>
@@ -100,7 +123,7 @@ namespace BZRModManager
                         if (!File.Exists(ModIni)) return null;
                         return new GitModStatus()
                         {
-                            GitPath = Path.GetDirectoryName(basePath),
+                            GitPath = Path.GetDirectoryName(dr),
                             ModName = ModName,
                             ModWorkshopId = ModWorkshopId,
                             ModPath = ModPath,
@@ -130,6 +153,30 @@ namespace BZRModManager
             {
                 //output += ischkout.ReadToEnd();
                 Thread.Sleep(100);
+            }
+
+            // try to fix sparse-checkout config file
+            string sparseCheckoutPath = Path.Combine(gitPath, ".git\\info\\sparse-checkout");
+            if (File.Exists(sparseCheckoutPath))
+            {
+                if(File.Exists(Path.Combine(gitPath, "config.json")))
+                {
+                    // we are sparse, but now we have a root config!
+                    File.Delete(sparseCheckoutPath);
+                    info.Arguments = $"pull";
+                    git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
+                }
+            }
+            else
+            {
+                if (!File.Exists(Path.Combine(gitPath, "config.json")))
+                {
+                    // we are not sparse but there's no config.json
+                    File.WriteAllText(sparseCheckoutPath, "config.json\r\nbaked\r\n");
+
+                    info.Arguments = $"pull";
+                    git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
+                }
             }
         }
     }

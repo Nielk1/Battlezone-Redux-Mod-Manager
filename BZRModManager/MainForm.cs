@@ -503,7 +503,7 @@ namespace BZRModManager
                         {
                             success = true;
 
-                            using (MultiSelectDialog dlg = new MultiSelectDialog("Branch Select", branches.Select(dr => new Tuple<string, bool>(dr, dr == "baked" || dr.StartsWith("baked-")))))
+                            using (MultiSelectDialog dlg = new MultiSelectDialog("Branch Select", branches.Select(dr => new Tuple<string, object, bool>(dr == "baked" || dr.StartsWith("baked-") ? $"{dr} (Direct)" : dr, dr, dr == "baked" || dr.StartsWith("baked-")))))
                             {
                                 if (dlg.ShowDialog() == DialogResult.OK)
                                 {
