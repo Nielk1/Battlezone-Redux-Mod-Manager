@@ -102,7 +102,8 @@ namespace BZRModManager
         public Dictionary<string, MultiplayerGamelistData_Mod> Mods { get; set; }
         public List<MultiplayerGamelistData_Session> Sessions { get; set; }
 
-        public bool? EndpointExpired { get; set; }
+        //public bool? EndpointExpired { get; set; }
+        public int? EndpointVersion { get; set; } // this will be the new trigger for updates
     }
 
     public class MultiplayerGamelistData_Metadata
