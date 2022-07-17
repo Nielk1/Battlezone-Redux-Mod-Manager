@@ -69,30 +69,38 @@ namespace BZRModManager
                 info.EnvironmentVariables.Add("GIT_TERMINAL_PROMPT", "0");
                 Process git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
 
+                // create a local repo with the needed branch
                 info.Arguments = $"clone checkout -b {branch}";
                 git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
 
-                info.Arguments = $"remote add -t {branch} --no-tags origin \"{url.Replace("\"", "\"\"")}\"";
-                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
-
-                info.Arguments = $"fetch origin";
-                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
-
+                // enable sparse checkout
                 info.Arguments = $"config core.sparseCheckout true";
                 git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
 
+                // add remote but only track target branch, omit any tags, use origin
+                info.Arguments = $"remote add -t {branch} --no-tags origin \"{url.Replace("\"", "\"\"")}\"";
+                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
+
+                // target baked subfolder and/or config.json files, if we find a root level config.json we will have to un-sparse
                 string sparseCheckoutPath = Path.Combine(outputDir, ".git\\info\\sparse-checkout");
                 File.WriteAllText(sparseCheckoutPath, "config.json\r\nbaked\r\n");
 
-                info.Arguments = $"pull origin {branch}";
-                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100); 
+                // fetch a shallow clone
+                //info.Arguments = $"fetch --depth 1 origin";
+                info.Arguments = $"fetch origin";
+                git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
 
-                if(File.Exists(Path.Combine(outputDir, "config.json")))
-                {
-                    // this is a full path git, so we eliminate the sparse checkout
-                    File.Delete(sparseCheckoutPath);
-                    Pull(outputDir); // re-pull data
-                }
+                // pull files for working copy
+                //info.Arguments = $"pull origin {branch}";
+                //git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100); 
+
+                //if(File.Exists(Path.Combine(outputDir, "config.json")))
+                //{
+                //    // this is a full path git, so we eliminate the sparse checkout
+                //    File.Delete(sparseCheckoutPath);
+                //    Pull(outputDir); // re-pull data
+                //}
+                Pull(outputDir);
             }
         }
 
@@ -123,7 +131,7 @@ namespace BZRModManager
                         if (!File.Exists(ModIni)) return null;
                         return new GitModStatus()
                         {
-                            GitPath = Path.GetDirectoryName(dr),
+                            GitPath = dr,
                             ModName = ModName,
                             ModWorkshopId = ModWorkshopId,
                             ModPath = ModPath,
@@ -137,7 +145,8 @@ namespace BZRModManager
             ProcessStartInfo info = new ProcessStartInfo()
             {
                 FileName = "git.exe",
-                Arguments = $"-C \"{Path.GetFullPath(gitPath).Replace("\"", "\"\"")}\" pull",
+                Arguments = $"pull",
+                WorkingDirectory = gitPath,
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 //RedirectStandardOutput = true,
@@ -157,12 +166,15 @@ namespace BZRModManager
 
             // try to fix sparse-checkout config file
             string sparseCheckoutPath = Path.Combine(gitPath, ".git\\info\\sparse-checkout");
-            if (File.Exists(sparseCheckoutPath))
+            if (File.Exists(sparseCheckoutPath) && !File.ReadLines(sparseCheckoutPath).Contains("/*"))
             {
                 if(File.Exists(Path.Combine(gitPath, "config.json")))
                 {
-                    // we are sparse, but now we have a root config!
-                    File.Delete(sparseCheckoutPath);
+                    File.WriteAllText(sparseCheckoutPath, "config.json\r\nbaked\r\n/*\r\n");
+
+                    info.Arguments = $"read-tree --reset -u HEAD";
+                    git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
+
                     info.Arguments = $"pull";
                     git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
                 }
@@ -173,6 +185,9 @@ namespace BZRModManager
                 {
                     // we are not sparse but there's no config.json
                     File.WriteAllText(sparseCheckoutPath, "config.json\r\nbaked\r\n");
+
+                    info.Arguments = $"read-tree --reset -u HEAD";
+                    git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
 
                     info.Arguments = $"pull";
                     git = Process.Start(info); while (git.HasExited == false) Thread.Sleep(100);
