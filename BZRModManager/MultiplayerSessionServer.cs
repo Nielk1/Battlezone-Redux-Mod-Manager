@@ -159,10 +159,16 @@ namespace BZRModManager
         public string Image { get; set; }
         public string Name { get; set; }
         public string CRC32 { get; set; }
-        public string GameType { get; set; }
-        public string GameMode { get; set; }
+        public MultiplayerGamelistData_Session_GameMode GameType { get; set; }
+        public MultiplayerGamelistData_Session_GameMode GameMode { get; set; }
         public string Mod { get; set; }
         public MultiplayerGamelistData_Session_Level_Attributes Attributes { get; set; }
+    }
+
+    public class MultiplayerGamelistData_Session_GameMode
+    {
+        public string ID { get; set; }
+        public string Name { get; set; }
     }
 
     public class MultiplayerGamelistData_Session_Level_Attributes

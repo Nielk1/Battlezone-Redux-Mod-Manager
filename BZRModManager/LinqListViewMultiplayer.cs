@@ -177,8 +177,8 @@ namespace BZRModManager
     {
         public string IconKey { get { return SessionItem.Level.ID; } }
         public string Name { get { return SessionItem.Name; } }
-        public string GameType { get { return SessionItem.Level.GameType; } }
-        public string GameMode { get { return SessionItem.Level.GameMode; } }
+        public string GameType { get { return SessionItem.Level.GameType.Name; } }
+        public string GameMode { get { return SessionItem.Level.GameMode.Name; } }
         public string Map { get { return SessionItem.Level.Name ?? SessionItem.Level.MapFile; } }
         public string MotD { get { return SessionItem.Message; } }
         public string Mod { get { return SessionItem.Game.Mod ?? SessionItem.Level.Mod; } }
