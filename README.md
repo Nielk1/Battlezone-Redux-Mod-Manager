@@ -35,9 +35,9 @@ Note that grayed our `Y` and `N` markers on mods means no action can be taken. T
 Generally, a normal user with all mods installed should see only green or grayed out statuses. Some users may see purple C statuses if maintaining a mod set in both Steam and GOG but this is uncommon.
 
 ## Git Mods
-For git mods to function your system must have git installed or `git.exe` must be placed in the application directory.
+For git mods to function your system must have git installed and its application path set in the mod manager's settings.
 
-For a git mod to be detected it must have a `config.json` meta-file.  Any branches can be selected though `baked` or a branch starting with `baked-` will auto-select in the branch selection list. `baked-something` branches should have unique IDs so they can be installed simultaneously with release mods.  An example of a properly configured git-mod: https://github.com/Nielk1/BZCC-Advanced-Lua-API/tree/baked
+For a git mod to be detected it must have a specific folder structure. The `baked` folder will be checked out in a sparse manner to reduce storage space usage, allowing for dev assets to be placed in another path such as `assets` which will not be downloaded. The meta-file `baked/config.json` must be present to list the mods contained within the repository. Mods should have unique IDs if their content differs so they can be installed simultaneously with release mods, for example a mod with ID `1364723281` on the Steam Workshop should indicate its ID as `1364723281-dev` or another non-numeric string. If the mod exactly matches that on the workshop then the purely numeric `1364723281` is acceptable because the workshop sourced entry may be substituted when installing/running the mod. An example of a properly configured git-mod: https://github.com/Nielk1/BZCC-Advanced-Lua-API/
 
 ## Antivirus Note
 Antivirus programs may complain about `steamcmdprox.exe` and `steamcmdinj.dll`. The SteamCmdProxy application is used to read realtime output from SteamCmd wich normally prevents this. The SteamCmdInjection DLL is injected into SteamCmd by SteamCmdProxy to force it to always run in English. This is required for automation to work properly on non-english computers.
