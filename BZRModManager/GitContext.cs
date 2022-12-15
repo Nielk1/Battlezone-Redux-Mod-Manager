@@ -12,11 +12,12 @@ namespace BZRModManager
 {
     class GitContext
     {
-        public static string[] GetModBranches(string url)
+        public static string[] GetModBranches(string gitExePath, string url)
         {
             ProcessStartInfo info = new ProcessStartInfo()
             {
-                FileName = "git.exe",
+                //FileName = "git.exe",
+                FileName = gitExePath,
                 Arguments = $"ls-remote \"{url.Replace("\"", "\"\"")}\"",
                 UseShellExecute = false,
                 CreateNoWindow = true,
@@ -40,7 +41,7 @@ namespace BZRModManager
             return lines.Select(dr => dr.Split('\t')[1]).Where(dr => dr.StartsWith("refs/heads/")).Select(dr => dr.Substring(11)).ToArray();
         }
 
-        public static void WorkshopDownloadItem(UInt32 appId, string url, string[] branches)
+        public static void WorkshopDownloadItem(string gitExePath, UInt32 appId, string url, string[] branches)
         {
             string name = url.Split('/').Last();
             if (name.EndsWith(".git")) name = name.Substring(0, name.LastIndexOf(".git"));
@@ -49,18 +50,19 @@ namespace BZRModManager
                 string outputDir = Path.Combine("git", appId.ToString(), name, branch);
                 if (!Directory.Exists(outputDir)) {
                     Directory.CreateDirectory(outputDir);
-                    Checkout(url, branch, Path.GetFullPath(outputDir));
+                    Checkout(gitExePath, url, branch, Path.GetFullPath(outputDir));
                 }
             }
         }
 
-        private static void Checkout(string url, string branch, string outputDir)
+        private static void Checkout(string gitExePath, string url, string branch, string outputDir)
         {
             //if (!Directory.Exists(outputDir))
             {
                 ProcessStartInfo info = new ProcessStartInfo()
                 {
-                    FileName = "git.exe",
+                    //FileName = "git.exe",
+                    FileName = gitExePath,
                     Arguments = $"init",
                     WorkingDirectory = outputDir,
                     UseShellExecute = false,
@@ -100,7 +102,7 @@ namespace BZRModManager
                 //    File.Delete(sparseCheckoutPath);
                 //    Pull(outputDir); // re-pull data
                 //}
-                Pull(outputDir);
+                Pull(gitExePath, outputDir);
             }
         }
 
@@ -140,11 +142,12 @@ namespace BZRModManager
                 }).ToList();
         }
 
-        public static void Pull(string gitPath)
+        public static void Pull(string gitExePath, string gitPath)
         {
             ProcessStartInfo info = new ProcessStartInfo()
             {
-                FileName = "git.exe",
+                //FileName = "git.exe",
+                FileName = gitExePath,
                 Arguments = $"pull",
                 WorkingDirectory = gitPath,
                 UseShellExecute = false,

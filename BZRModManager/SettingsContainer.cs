@@ -7,6 +7,7 @@
         public string BZ98RGogPath { get; set; }
         public string BZCCGogPath { get; set; }
         public string BZCCMyDocsPath { get; set; }
+        public string GitPath { get; set; }
         public bool FallbackSteamCmdHandling { get; set; }
     }
 }

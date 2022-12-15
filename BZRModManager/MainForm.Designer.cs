@@ -131,6 +131,10 @@
             this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.txtGit = new System.Windows.Forms.TextBox();
+            this.btnGitApply = new System.Windows.Forms.Button();
+            this.btnGitFind = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpBZ98R.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -158,6 +162,7 @@
             this.tpAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -180,7 +185,7 @@
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(742, 407);
+            this.tabControl1.Size = new System.Drawing.Size(742, 419);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -924,6 +929,7 @@
             // 
             // tpSettings
             // 
+            this.tpSettings.Controls.Add(this.groupBox6);
             this.tpSettings.Controls.Add(this.groupBox5);
             this.tpSettings.Controls.Add(this.btnFixSteamCmd);
             this.tpSettings.Controls.Add(this.cbFallbackSteamCmdWindowHandling);
@@ -934,7 +940,7 @@
             this.tpSettings.Location = new System.Drawing.Point(4, 22);
             this.tpSettings.Name = "tpSettings";
             this.tpSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tpSettings.Size = new System.Drawing.Size(734, 381);
+            this.tpSettings.Size = new System.Drawing.Size(734, 393);
             this.tpSettings.TabIndex = 2;
             this.tpSettings.Text = "Settings";
             this.tpSettings.UseVisualStyleBackColor = true;
@@ -985,7 +991,7 @@
             // 
             // btnFixSteamCmd
             // 
-            this.btnFixSteamCmd.Location = new System.Drawing.Point(6, 286);
+            this.btnFixSteamCmd.Location = new System.Drawing.Point(6, 342);
             this.btnFixSteamCmd.Name = "btnFixSteamCmd";
             this.btnFixSteamCmd.Size = new System.Drawing.Size(179, 23);
             this.btnFixSteamCmd.TabIndex = 18;
@@ -996,7 +1002,7 @@
             // cbFallbackSteamCmdWindowHandling
             // 
             this.cbFallbackSteamCmdWindowHandling.AutoSize = true;
-            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 315);
+            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 371);
             this.cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
             this.cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(207, 17);
             this.cbFallbackSteamCmdWindowHandling.TabIndex = 17;
@@ -1377,7 +1383,7 @@
             this.toolStripStatusLabel3,
             this.tsslActiveTasks,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 422);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 434);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(766, 22);
             this.statusStrip1.TabIndex = 1;
@@ -1433,11 +1439,55 @@
             // 
             this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox6.Controls.Add(this.btnGitFind);
+            this.groupBox6.Controls.Add(this.txtGit);
+            this.groupBox6.Controls.Add(this.btnGitApply);
+            this.groupBox6.Location = new System.Drawing.Point(6, 286);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(723, 50);
+            this.groupBox6.TabIndex = 20;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "git.exe location";
+            // 
+            // txtGit
+            // 
+            this.txtGit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtGit.Location = new System.Drawing.Point(86, 21);
+            this.txtGit.Name = "txtGit";
+            this.txtGit.Size = new System.Drawing.Size(569, 20);
+            this.txtGit.TabIndex = 11;
+            // 
+            // btnGitApply
+            // 
+            this.btnGitApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGitApply.Location = new System.Drawing.Point(661, 19);
+            this.btnGitApply.Name = "btnGitApply";
+            this.btnGitApply.Size = new System.Drawing.Size(57, 23);
+            this.btnGitApply.TabIndex = 12;
+            this.btnGitApply.Text = "Apply";
+            this.btnGitApply.UseVisualStyleBackColor = true;
+            this.btnGitApply.Click += new System.EventHandler(this.btnGitApply_Click);
+            // 
+            // btnGitFind
+            // 
+            this.btnGitFind.Location = new System.Drawing.Point(6, 19);
+            this.btnGitFind.Name = "btnGitFind";
+            this.btnGitFind.Size = new System.Drawing.Size(74, 23);
+            this.btnGitFind.TabIndex = 10;
+            this.btnGitFind.Text = "Quick Find";
+            this.btnGitFind.UseVisualStyleBackColor = true;
+            this.btnGitFind.Click += new System.EventHandler(this.btnGitFind_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(766, 444);
+            this.ClientSize = new System.Drawing.Size(766, 456);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabControl1);
             this.MinimumSize = new System.Drawing.Size(782, 483);
@@ -1487,6 +1537,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1596,6 +1648,10 @@
         private System.Windows.Forms.TabPage tpAudit;
         private System.Windows.Forms.Button btnRunAudit;
         private System.Windows.Forms.RichTextBox txtAuditLog;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Button btnGitFind;
+        private System.Windows.Forms.TextBox txtGit;
+        private System.Windows.Forms.Button btnGitApply;
     }
 }
 

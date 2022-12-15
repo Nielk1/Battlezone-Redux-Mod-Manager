@@ -498,7 +498,7 @@ namespace BZRModManager
                 {
                     try
                     {
-                        string[] branches = GitContext.GetModBranches(text);
+                        string[] branches = GitContext.GetModBranches(settings.GitPath, text);
                         if (branches.Length > 0)
                         {
                             success = true;
@@ -510,7 +510,7 @@ namespace BZRModManager
                                     TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - Git - \"{text}\"", 0);
                                     Task.Factory.StartNew(() =>
                                     {
-                                        GitContext.WorkshopDownloadItem(AppId, text, dlg.Selected);
+                                        GitContext.WorkshopDownloadItem(settings.GitPath, AppId, text, dlg.Selected);
                                         this.Invoke((MethodInvoker)delegate
                                         {
                                             switch (AppId)
@@ -533,7 +533,7 @@ namespace BZRModManager
                     {
                         if (ex.Message == @"The system cannot find the file specified")
                         {
-                            MessageBox.Show("Workshop ID was not detected, GIT download attempted.\r\ngit.exe not found in PATH.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Workshop ID was not detected, GIT download attempted.\r\ngit.exe not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
@@ -575,6 +575,7 @@ namespace BZRModManager
                 txtBZ98RGog.Text = settings.BZ98RGogPath;
                 txtBZCCMyDocs.Text = settings.BZCCMyDocsPath;
                 txtBZCCGog.Text = settings.BZCCGogPath;
+                txtGit.Text = settings.GitPath;
             }
         }
 
@@ -605,6 +606,12 @@ namespace BZRModManager
         private void btnBZCCMyDocsApply_Click(object sender, EventArgs e)
         {
             settings.BZCCMyDocsPath = txtBZCCMyDocs.Text;
+            SaveSettings();
+        }
+
+        private void btnGitApply_Click(object sender, EventArgs e)
+        {
+            settings.GitPath = txtGit.Text;
             SaveSettings();
         }
 
@@ -692,6 +699,9 @@ namespace BZRModManager
             btnBZCCGogFind.Enabled = false;
             txtBZCCGog.Enabled = false;
             btnBZCCRGogApply.Enabled = false;
+            btnGitFind.Enabled = false;
+            txtGit.Enabled = false;
+            btnGitApply.Enabled = false;
 
             btnRunAudit.Enabled = false;
         }
@@ -753,6 +763,33 @@ namespace BZRModManager
                 }
             }
             catch { }
+        }
+
+        private void btnGitFind_Click(object sender, EventArgs e)
+        {
+            string FullPathToGit = Where("git.exe");
+            if (!string.IsNullOrWhiteSpace(FullPathToGit) && File.Exists(FullPathToGit))
+            {
+                txtGit.Text = FullPathToGit;
+                return;
+            }
+            FullPathToGit = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Atlassian", "SourceTree", "git_local", "bin", "git.exe");
+            if (!string.IsNullOrWhiteSpace(FullPathToGit) && File.Exists(FullPathToGit))
+            {
+                txtGit.Text = FullPathToGit;
+                return;
+            }
+        }
+
+        private static string Where(string file)
+        {
+            var paths = Environment.GetEnvironmentVariable("PATH").Split(';');
+            var extensions = Environment.GetEnvironmentVariable("PATHEXT").Split(';');
+            return (from p in new[] { Environment.CurrentDirectory }.Concat(paths)
+                    from e in new[] { string.Empty }.Concat(extensions)
+                    let path = Path.Combine(p.Trim(), file + e.ToLower())
+                    where File.Exists(path)
+                    select path).FirstOrDefault();
         }
 
         private void btnBZCCSteamFind_Click(object sender, EventArgs e)

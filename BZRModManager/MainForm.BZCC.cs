@@ -263,7 +263,7 @@ namespace BZRModManager
                             if (mod != null)
                             {
                                 TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - Git - {mod.Workshop.ModWorkshopId} - {mod.Name}", 0);
-                                GitContext.Pull(mod.Workshop.GitPath);
+                                GitContext.Pull(settings.GitPath, mod.Workshop.GitPath);
                                 UpdateTaskControl.EndTask(DownloadModTaskControl);
                             }
                             lock (CounterClock)
