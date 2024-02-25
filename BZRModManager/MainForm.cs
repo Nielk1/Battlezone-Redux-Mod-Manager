@@ -16,6 +16,8 @@ using System.Windows.Forms;
 using BZRModManager.ModItem;
 using IniParser;
 using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 namespace BZRModManager
 {
@@ -98,12 +100,123 @@ namespace BZRModManager
             SteamCmd.SteamCmdOutputFull += SteamCmdFull_Log;
             SteamCmd.SteamCmdArgs += SteamCmd_Log;
             SteamCmd.SteamCmdArgs += SteamCmdFull_Log;
+
+            this.Disposed += async (sender, e) =>
+            {
+                StopBZ98RSocket();
+                steamcmd_log_writer.Close();
+                steamcmdfull_log_writer.Close();
+            };
+
+            StartBZ98RSocket();
         }
 
         ~MainForm()
         {
-            steamcmd_log_writer.Close();
-            steamcmdfull_log_writer.Close();
+            //steamcmd_log_writer.Close();
+            //steamcmdfull_log_writer.Close();
+        }
+
+
+        private UdpClient udp = null;
+        private void StartBZ98RSocket()
+        {
+            udp = new UdpClient(0, AddressFamily.InterNetwork);
+            int port = ((IPEndPoint)udp.Client.LocalEndPoint).Port;
+
+            RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Nielk1\\BZ98RBridge", RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryOptions.Volatile);
+            key.SetValue("ManagerPort", port, RegistryValueKind.DWord);
+
+            new Thread(() =>
+            {
+                IPEndPoint remoteEP = new IPEndPoint(0, 0);
+                try
+                {
+                    // todo needs poison to kill it, but Receive also blocks so that might not be the full solution
+                    for (; ; )
+                    {
+                        byte[] data = udp.Receive(ref remoteEP);
+                        string text = Encoding.Unicode.GetString(data).Trim();
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            Log($"BZ98R SOCKET\t{text}");
+                        });
+                        string[] parts = text.Split('\t');
+                        if (parts[0] == "WORKSHOP")
+                        {
+                            if(parts[2] == "1")
+                            {
+                                string modID = parts[1];
+                                RemoteBz98rModInstallRequest(new IPEndPoint(remoteEP.Address, remoteEP.Port), modID);
+                            }
+                        }
+                    }
+                }
+                catch (System.Net.Sockets.SocketException ex) when (ex.SocketErrorCode == SocketError.Interrupted) { }
+            }).Start(); // poison and join this on shutdown
+        }
+
+        Dictionary<string, DateTime> LastModUpdate = new Dictionary<string, DateTime>();
+        private void RemoteBz98rModInstallRequest(IPEndPoint remoteEP, string modID)
+        {
+            UInt64 ModIdParsed = 0;
+            if (UInt64.TryParse(modID, out ModIdParsed))
+            {
+                lock (LastModUpdate)
+                {
+                    // might be worth making it check mod is installed too not just up to date from this
+                    if (!LastModUpdate.ContainsKey(modID) || ((DateTime.Now - LastModUpdate[modID]) > TimeSpan.FromHours(4)))
+                    {
+                        LastModUpdate[modID] = DateTime.Now; // this is our debouncer so we need to set it right away, hopefully nothing goes wrong with the mod download and install
+                        string padModId = ModIdParsed.ToString().PadLeft(UInt64.MaxValue.ToString().Length, '0');
+
+                        InstallStatus CurrentModStatus = InstallStatus.Missing;
+                        bool HasUpdate = false;
+                        lock (ModStatus)
+                            lock (Mods[AppIdBZ98])
+                                if (Mods[AppIdBZ98].ContainsKey($"{padModId}-SteamCmd"))
+                                {
+                                    CurrentModStatus = Mods[AppIdBZ98][$"{padModId}-SteamCmd"].InstalledGog;
+                                    HasUpdate = Mods[AppIdBZ98][$"{padModId}-SteamCmd"].HasUpdate;
+                                }
+
+                        // for now only download the missing
+                        if (CurrentModStatus == InstallStatus.Missing || CurrentModStatus == InstallStatus.Uninstalled || HasUpdate)
+                        {
+                            if (CurrentModStatus == InstallStatus.Missing && DownloadMod(modID, AppIdBZ98, true))
+                            {
+                                if (CurrentModStatus == InstallStatus.Missing)
+                                    lock (ModStatus)
+                                        lock (Mods[AppIdBZ98])
+                                            Mods[AppIdBZ98][$"{padModId}-SteamCmd"].ToggleGog();
+                            }
+                            else
+                            {
+                                if (CurrentModStatus == InstallStatus.Uninstalled)
+                                    lock (ModStatus)
+                                        lock (Mods[AppIdBZ98])
+                                            Mods[AppIdBZ98][$"{padModId}-SteamCmd"].ToggleGog();
+                            }
+
+                            if (((IPEndPoint)udp.Client.LocalEndPoint).Port != 0)
+                            {
+                                byte[] Message = Encoding.Unicode.GetBytes($"WORKSHOP\tUPDATED");
+                                udp.Send(Message, Message.Length, remoteEP);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void StopBZ98RSocket()
+        {
+            if (udp != null)
+            {
+                udp.Close();
+                RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Nielk1\\BZ98RBridge", RegistryKeyPermissionCheck.ReadWriteSubTree);
+                key?.SetValue("ManagerPort", 0, RegistryValueKind.DWord);
+            }
         }
 
         private void SteamCmdFull_Log(object sender, string msg)
@@ -430,7 +543,7 @@ namespace BZRModManager
 
         private void btnDownloadBZ98R_Click(object sender, EventArgs e) { if (DownloadMod(txtDownloadBZ98R.Text, AppIdBZ98)) txtDownloadBZ98R.Clear(); }
         private void btnDownloadBZCC_Click(object sender, EventArgs e) { if (DownloadMod(txtDownloadBZCC.Text, AppIdBZCC)) txtDownloadBZCC.Clear(); }
-        private bool DownloadMod(string text, UInt32 AppId)
+        private bool DownloadMod(string text, UInt32 AppId, bool block = false)
         {
             bool success = false;
 
@@ -449,7 +562,7 @@ namespace BZRModManager
                 {
                     success = true;
                     TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - SteamCmd - {workshopID}", 0);
-                    Task.Factory.StartNew(() =>
+                    Task DownloadTask = Task.Factory.StartNew(() =>
                     {
                         SteamCmdException ex_ = null;
                         int OtherErrorCounter = 0;
@@ -479,7 +592,7 @@ namespace BZRModManager
                             switch (AppId)
                             {
                                 case AppIdBZ98:
-                                    UpdateBZ98RModLists();
+                                    UpdateBZ98RModLists(block);
                                     break;
                                 case AppIdBZCC:
                                     UpdateBZCCModLists();
@@ -488,6 +601,9 @@ namespace BZRModManager
                         });
                         EndTask(DownloadModTaskControl);
                     });
+
+                    if (block)
+                        DownloadTask.Wait();
                 }
             }
             catch { }

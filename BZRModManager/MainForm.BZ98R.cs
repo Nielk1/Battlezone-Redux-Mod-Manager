@@ -12,7 +12,7 @@ namespace BZRModManager
     {
         Task UpdateBZ98RModListsTask = null;
         //TaskControl UpdateBZ98RModListsTaskControl = null;
-        private void UpdateBZ98RModLists()
+        private void UpdateBZ98RModLists(bool block = false)
         {
             if (UpdateBZ98RModListsTask == null
               || UpdateBZ98RModListsTask.IsCanceled
@@ -156,6 +156,8 @@ namespace BZRModManager
                         }
                     }
                 });
+                if (block)
+                    Thread.Sleep(1000);
             }
         }
 
