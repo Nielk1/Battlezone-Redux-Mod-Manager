@@ -10,14 +10,38 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private ObservableObject _contentViewModel;
 
-    //public MainViewModel()
-    //{
-    //    ContentViewModel = new SteamCmdViewModel();
-    //}
-
     [RelayCommand]
-    private void ChangeContent()
+    public void ChangeContent(string parameter)
     {
-        ContentViewModel = new SteamCmdViewModel();
+        switch (parameter)
+        {
+            case "manage_mods":
+                ContentViewModel = null;
+                break;
+            case "get_mods":
+                ContentViewModel = null;
+                break;
+            case "multiplayer":
+                ContentViewModel = null;
+                break;
+            case "chat":
+                ContentViewModel = null;
+                break;
+            case "settings":
+                ContentViewModel = null;
+                break;
+            case "tasks":
+                ContentViewModel = null;
+                break;
+            case "steam_cmd":
+                ContentViewModel = new SteamCmdViewModel();
+                break;
+            case "about":
+                ContentViewModel = null;
+                break;
+            default:
+                ContentViewModel = null;
+                break;
+        }
     }
 }

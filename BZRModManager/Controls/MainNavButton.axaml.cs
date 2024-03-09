@@ -41,5 +41,14 @@ namespace BZRModManager.Controls
             get => GetValue(CommandProperty);
             set => SetValue(CommandProperty, value);
         }
+
+        public static readonly StyledProperty<object?> CommandParameterProperty =
+            AvaloniaProperty.Register<MainNavButton, object?>(nameof(CommandParameter), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+
+        public object? CommandParameter
+        {
+            get => GetValue(CommandParameterProperty);
+            set => SetValue(CommandParameterProperty, value);
+        }
     }
 }

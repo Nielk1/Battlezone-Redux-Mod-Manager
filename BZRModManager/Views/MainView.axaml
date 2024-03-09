@@ -64,6 +64,7 @@
         <ScrollViewer AllowAutoHide="True">
           <StackPanel Margin="0 0 10 0">
             <TextBlock Text="LAUNCH"/>
+            <!--Dynamically added launch options-->
             <controls:MainNavButton Text="Battlezone 98 Redux"
                                     IconData="{StaticResource icon_steam}"
                                     ImageSource="/Assets/bz98r.ico"/>
@@ -82,30 +83,47 @@
             <controls:MainNavButton Text="BZCC (Force Stock)"
                                     IconData="{StaticResource icon_gog}"
                                     ImageSource="/Assets/bzcc.ico"/>
+            <!--/Dynamically added launch options-->
+            
             <TextBlock Margin="0 10 0 0"
                        Text="MODS" />
 
             <controls:MainNavButton Text="Manage Mods"
-                                    IconData="{StaticResource icon_managemods}"/>
+                                    IconData="{StaticResource icon_managemods}"
+                                    Command="{Binding ChangeContentCommand}"
+                                    CommandParameter="manage_mods"/>
             <controls:MainNavButton Text="Get Mods"
-                                    IconData="{StaticResource icon_getmods}"/>
+                                    IconData="{StaticResource icon_getmods}"
+                                    Command="{Binding ChangeContentCommand}"
+                                    CommandParameter="get_mods"/>
             <controls:MainNavButton Text="Multiplayer"
-                                    IconData="{StaticResource icon_multiplayer}"/>
+                                    IconData="{StaticResource icon_multiplayer}"
+                                    Command="{Binding ChangeContentCommand}"
+                                    CommandParameter="multiplayer"/>
             <controls:MainNavButton Text="Chat"
-                                    IconData="{StaticResource icon_chat}"/>
+                                    IconData="{StaticResource icon_chat}"
+                                    Command="{Binding ChangeContentCommand}"
+                                    CommandParameter="chat"/>
 
             <TextBlock Margin="0 10 0 0"
                        Text="OTHER"/>
 
             <controls:MainNavButton Text="Settings"
-                                    IconData="{StaticResource icon_settings}"/>
+                                    IconData="{StaticResource icon_settings}"
+                                    Command="{Binding ChangeContentCommand}"
+                                    CommandParameter="settings"/>
             <controls:MainNavButton Text="Tasks"
-                                    IconData="{StaticResource icon_tasks}"/>
+                                    IconData="{StaticResource icon_tasks}"
+                                    Command="{Binding ChangeContentCommand}"
+                                    CommandParameter="tasks"/>
             <controls:MainNavButton Text="SteamCMD"
                                     IconData="{StaticResource icon_steamcmd}"
-                                    Command="{Binding ChangeContentCommand}"/>
+                                    Command="{Binding ChangeContentCommand}"
+                                    CommandParameter="steam_cmd"/>
             <controls:MainNavButton Text="About"
-                                    IconData="{StaticResource icon_about}"/>
+                                    IconData="{StaticResource icon_about}"
+                                    Command="{Binding ChangeContentCommand}"
+                                    CommandParameter="about"/>
 
             <TextBlock Margin="0 10 0 0"
                        Text="OTHER X"/>
@@ -144,7 +162,7 @@
         <!--
         <Panel Margin="0 30 0 0" Background="Red"></Panel>
         -->
-        <ContentPresenter Content="{Binding ContentViewModel}"/>
+        <ContentControl Content="{Binding ContentViewModel}"/>
         <!--
         <Panel x:Name="Content"></Panel>
         -->

@@ -13,7 +13,8 @@
         <Button Margin="0 7 0 0"
                 HorizontalAlignment="Stretch"
                 Padding="0"
-                Command="{TemplateBinding Command}">
+                Command="{TemplateBinding Command}"
+                CommandParameter="{TemplateBinding CommandParameter}">
           <Panel>
             <Image Source="{TemplateBinding ImageSource}"
                    Width="32"
