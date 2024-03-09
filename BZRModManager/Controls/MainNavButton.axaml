@@ -1,0 +1,48 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:BZRModManager.Controls">
+  <Design.PreviewWith>
+    <controls:MainNavButton Width="500"
+                            ImageSource="/Assets/bzcc.ico"/>
+  </Design.PreviewWith>
+
+  <Style Selector="controls|MainNavButton">
+    <!-- Set Defaults -->
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Button Margin="0 7 0 0"
+                HorizontalAlignment="Stretch"
+                Padding="0"
+                Command="{TemplateBinding Command}">
+          <Panel>
+            <Image Source="{TemplateBinding ImageSource}"
+                   Width="32"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"/>
+            <Grid Margin="5">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Panel Grid.Column="0"
+                     IsVisible="{TemplateBinding ImageSource,
+                                 Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                     Height="24"
+                     Width="28"
+                     Margin="0 0 5 0"/>
+              <PathIcon Grid.Column="1"
+                        Data="{TemplateBinding IconData}"
+                        Margin="0 0 5 0"
+                        IsVisible="{TemplateBinding IconData,
+                                    Converter={x:Static ObjectConverters.IsNotNull}}"/>
+              <TextBlock Grid.Column="2"
+                         Text="{TemplateBinding Text}"
+                         VerticalAlignment="Center"/>
+            </Grid>
+          </Panel>
+        </Button>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>

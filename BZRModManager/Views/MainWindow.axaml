@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BZRModManager.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:BZRModManager.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="BZRModManager.Views.MainWindow"
+        Icon="/Assets/modmanager.ico"
+        Title="BZRModManager"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        MinWidth="360">
+  <views:MainView />
+  <Window.Styles>
+    <Style Selector="ToggleButton TextBlock.left-open">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="ToggleButton:checked TextBlock.left-open">
+      <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="ToggleButton TextBlock.left-close">
+      <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="ToggleButton:checked TextBlock.left-close">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+  </Window.Styles>
+</Window>
