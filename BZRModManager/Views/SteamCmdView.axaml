@@ -9,5 +9,21 @@
          Background="Black"
          Foreground="White"/>
   -->
-  <TextBlock>Test</TextBlock>
+  <!--
+  <Panel Margin="0 30 0 0" Background="Red">
+    <TextBlock>Test</TextBlock>
+  </Panel>
+  -->
+  <TabControl>
+    <TabItem Header="Clean">
+      <Panel>
+        <TextBox IsReadOnly="True"/>
+      </Panel>
+    </TabItem>
+    <TabItem Header="Raw">
+      <Panel>
+        <TextBox IsReadOnly="True"/>
+      </Panel>
+    </TabItem>
+  </TabControl>
 </UserControl>

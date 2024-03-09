@@ -6,11 +6,11 @@ namespace BZRModManager.Views;
 
 public partial class MainView : UserControl
 {
-    public ObservableObject ViewModel { get; set; }
+    //public ObservableObject ViewModel { get; set; }
     public MainView()
     {
         InitializeComponent();
-        ViewModel = (ObservableObject?)DataContext;
+        //ViewModel = (ObservableObject?)DataContext;
     }
 
 }

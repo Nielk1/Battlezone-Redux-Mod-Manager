@@ -1,14 +1,18 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BZRModManager.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace BZRModManager.ViewModels;
 
-public partial class MainViewModel : ObservableObject
+public partial class MainViewModel : ViewModelBase
 {
     public string Greeting => "Welcome to Avalonia!";
 
     [ObservableProperty]
-    private ObservableObject _contentViewModel;
+    private ViewModelBase _contentViewModel;
+
+    private ManageModsViewModel vmManageMods = new ManageModsViewModel();
+    private SteamCmdViewModel vmSteamCmd = new SteamCmdViewModel();
 
     [RelayCommand]
     public void ChangeContent(string parameter)
@@ -16,7 +20,7 @@ public partial class MainViewModel : ObservableObject
         switch (parameter)
         {
             case "manage_mods":
-                ContentViewModel = null;
+                ContentViewModel = vmManageMods;
                 break;
             case "get_mods":
                 ContentViewModel = null;
@@ -34,7 +38,7 @@ public partial class MainViewModel : ObservableObject
                 ContentViewModel = null;
                 break;
             case "steam_cmd":
-                ContentViewModel = new SteamCmdViewModel();
+                ContentViewModel = vmSteamCmd;
                 break;
             case "about":
                 ContentViewModel = null;

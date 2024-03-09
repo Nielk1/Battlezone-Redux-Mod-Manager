@@ -33,17 +33,17 @@ namespace BZRModManager.Controls
             set => SetValue(TextProperty, value);
         }
 
-        public static readonly StyledProperty<RelayCommand?> CommandProperty =
-            AvaloniaProperty.Register<MainNavButton, RelayCommand?>(nameof(Command), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+        public static readonly StyledProperty<IRelayCommand?> CommandProperty =
+            AvaloniaProperty.Register<MainNavButton, IRelayCommand?>(nameof(Command), enableDataValidation: true);
 
-        public RelayCommand? Command
+        public IRelayCommand? Command
         {
             get => GetValue(CommandProperty);
             set => SetValue(CommandProperty, value);
         }
 
         public static readonly StyledProperty<object?> CommandParameterProperty =
-            AvaloniaProperty.Register<MainNavButton, object?>(nameof(CommandParameter), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+            AvaloniaProperty.Register<MainNavButton, object?>(nameof(CommandParameter));
 
         public object? CommandParameter
         {

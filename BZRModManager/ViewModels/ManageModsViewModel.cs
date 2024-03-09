@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BZRModManager.ViewModels
 {
-    public partial class SteamCmdViewModel : ViewModelBase
+    public partial class ManageModsViewModel : ViewModelBase
     {
-        public SteamCmdViewModel() { }
+        public ManageModsViewModel() { }
     }
 }
