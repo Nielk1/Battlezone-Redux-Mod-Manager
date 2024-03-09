@@ -56,11 +56,15 @@
              OpenPaneLength="375">
     <SplitView.Pane>
       <DockPanel Margin="10">
-          <TextBlock DockPanel.Dock="Top"
-                     Text="BZR Mod Manager"
+        <Panel DockPanel.Dock="Top">
+          <TextBlock Text="BZR Mod Manager"
                      FontSize="24"
                      FontWeight="Bold"
-                     Margin="0 0 0 10"/>
+                     Margin="0 0 0 16"/>
+          <TextBlock Margin="0 23 0 0"
+                     Text="{Binding VersionString}"
+                     FontSize="12"/>
+        </Panel>
         <ScrollViewer AllowAutoHide="True">
           <StackPanel Margin="0 0 10 0">
             <TextBlock Text="LAUNCH"/>

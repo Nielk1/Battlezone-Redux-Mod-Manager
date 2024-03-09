@@ -17,12 +17,16 @@
   <TabControl>
     <TabItem Header="Clean">
       <Panel>
-        <TextBox IsReadOnly="True"/>
+        <TextBox Name="SteamLogClean"
+                 IsReadOnly="True"
+                 Text="{Binding CleanLog}"/>
       </Panel>
     </TabItem>
     <TabItem Header="Raw">
       <Panel>
-        <TextBox IsReadOnly="True"/>
+        <TextBox Name="SteamLogRaw"
+                 IsReadOnly="True"
+                 Text="{Binding RawLog}"/>
       </Panel>
     </TabItem>
   </TabControl>
