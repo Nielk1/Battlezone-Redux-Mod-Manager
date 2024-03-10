@@ -9,8 +9,12 @@ namespace BZRModManager.ViewModels
 {
     public partial class SteamCmdViewModel : ViewModelBase
     {
-        public string RawLog { get; internal set; }
-        public string CleanLog { get; internal set; }
+        [ObservableProperty]
+        private string _rawLog;
+        [ObservableProperty]
+        private string _cleanLog;
+        //public string RawLog { get; internal set; }
+        //public string CleanLog { get; internal set; }
 
         public SteamCmdViewModel()
         {

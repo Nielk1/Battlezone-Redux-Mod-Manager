@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using SteamVent.SteamCmd;
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BZRModManager.ViewModels;
 
@@ -72,8 +73,11 @@ public partial class MainViewModel : ViewModelBase
 
         // We are blocking the UI thread here somehow, need to move this logic to another location.
         // Should rework the entire system into tasks run by a task handler.
-        SteamCmd.DownloadAsync();
-        SteamCmd.TestRunAsync();
+        Task.Run(async () =>
+        {
+            await SteamCmd.DownloadAsync();
+            await SteamCmd.TestRunAsync();
+        }).ConfigureAwait(false);
     }
 
     private void Steam_SteamCmdOutputFull(object sender, string msg)

@@ -19,14 +19,16 @@
       <Panel>
         <TextBox Name="SteamLogClean"
                  IsReadOnly="True"
-                 Text="{Binding CleanLog}"/>
+                 Text="{Binding CleanLog, Mode=OneWay}"
+                 FontFamily="Inconsolata,Consolas,Monospace,Courier"/>
       </Panel>
     </TabItem>
     <TabItem Header="Raw">
       <Panel>
         <TextBox Name="SteamLogRaw"
                  IsReadOnly="True"
-                 Text="{Binding RawLog}"/>
+                 Text="{Binding RawLog, Mode=OneWay}"
+                 FontFamily="Inconsolata,Consolas,Monospace,Courier"/>
       </Panel>
     </TabItem>
   </TabControl>
