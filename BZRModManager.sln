@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SteamVent", "SteamVent", "{11444873-1FC2-4290-B082-1A7F6CB85B8C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "steamcmdprox", "Deps\SteamVent\steamcmdprox\steamcmdprox.vcxproj", "{1B1CF7C2-DA92-4FFD-BC92-8332947A87BE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{58B7F843-3349-428D-B9A7-EE4BB36B30F4} = {58B7F843-3349-428D-B9A7-EE4BB36B30F4}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "steamcmdinj", "Deps\SteamVent\steamcmdinj\steamcmdinj.vcxproj", "{58B7F843-3349-428D-B9A7-EE4BB36B30F4}"
 EndProject
@@ -22,6 +25,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BZRModManager.Desktop", "BZRModManager.Desktop\BZRModManager.Desktop.csproj", "{D9A51A09-5F97-4990-97AC-9940D52C056B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamVent.SteamCmd", "Deps\SteamVent\SteamVent.SteamCmd\SteamVent.SteamCmd.csproj", "{2CEF3F85-518E-4270-91C6-87A6E0451A85}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1B1CF7C2-DA92-4FFD-BC92-8332947A87BE} = {1B1CF7C2-DA92-4FFD-BC92-8332947A87BE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="BZRModManager.Views.SteamCmdView">
+             x:Class="BZRModManager.Views.LogsView">
   <!--
   <TextBox IsReadOnly="True"
          Background="Black"
@@ -15,7 +15,7 @@
   </Panel>
   -->
   <TabControl>
-    <TabItem Header="Clean">
+    <TabItem Header="SteamCmd Clean">
       <Panel>
         <TextBox Name="SteamLogClean"
                  IsReadOnly="True"
@@ -23,7 +23,7 @@
                  FontFamily="Inconsolata,Consolas,Monospace,Courier"/>
       </Panel>
     </TabItem>
-    <TabItem Header="Raw">
+    <TabItem Header="SteamCmd Raw">
       <Panel>
         <TextBox Name="SteamLogRaw"
                  IsReadOnly="True"

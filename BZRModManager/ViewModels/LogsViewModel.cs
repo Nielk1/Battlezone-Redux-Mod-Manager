@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BZRModManager.ViewModels
 {
-    public partial class SteamCmdViewModel : ViewModelBase
+    public partial class LogsViewModel : ViewModelBase
     {
         [ObservableProperty]
         private string _rawLog;
@@ -16,7 +16,7 @@ namespace BZRModManager.ViewModels
         //public string RawLog { get; internal set; }
         //public string CleanLog { get; internal set; }
 
-        public SteamCmdViewModel()
+        public LogsViewModel()
         {
             RawLog = string.Empty;
             CleanLog = string.Empty;

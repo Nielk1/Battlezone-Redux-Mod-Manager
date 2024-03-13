@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:BZRModManager.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BZRModManager.Views.TasksView">
+  <UserControl.Styles>
+    <StyleInclude Source="/Controls/TaskItemPanel.axaml"/>
+  </UserControl.Styles>
+  <ScrollViewer AllowAutoHide="True"
+                Margin="0 30 0 0">
+    <WrapPanel>
+      <controls:TaskItemPanel Text="Template Control Text"
+                              ImageSource="/Assets/modmanager.ico"
+                              Percent="50"/>
+      <controls:TaskItemPanel Text="Template Control Text"
+                              ImageSource="/Assets/modmanager.ico"
+                              Percent="25"/>
+      <controls:TaskItemPanel Text="Template Control Text"
+                              ImageSource="/Assets/modmanager.ico"
+                              Percent="75"/>
+      <controls:TaskItemPanel Text="Template Control Text"
+                              ImageSource="/Assets/modmanager.ico"
+                              Percent=""/>
+    </WrapPanel>
+  </ScrollViewer>
+</UserControl>

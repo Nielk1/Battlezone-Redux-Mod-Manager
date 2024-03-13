@@ -23,7 +23,8 @@ public partial class MainViewModel : ViewModelBase
     private ViewModelBase _contentViewModel;
 
     private ManageModsViewModel vmManageMods = new ManageModsViewModel();
-    private SteamCmdViewModel vmSteamCmd = new SteamCmdViewModel();
+    private LogsViewModel vmLogs = new LogsViewModel();
+    private TasksViewModel vmTasks = new TasksViewModel();
 
     [RelayCommand]
     public void ChangeContent(string parameter)
@@ -46,10 +47,10 @@ public partial class MainViewModel : ViewModelBase
                 ContentViewModel = null;
                 break;
             case "tasks":
-                ContentViewModel = null;
+                ContentViewModel = vmTasks;
                 break;
-            case "steam_cmd":
-                ContentViewModel = vmSteamCmd;
+            case "logs":
+                ContentViewModel = vmLogs;
                 break;
             case "about":
                 ContentViewModel = null;
@@ -78,15 +79,33 @@ public partial class MainViewModel : ViewModelBase
             await SteamCmd.DownloadAsync();
             await SteamCmd.TestRunAsync();
         }).ConfigureAwait(false);
+
+        Task.Run(async () =>
+        {
+            await foreach (WorkshopItemStatus status in SteamCmd.WorkshopStatusAsync(301650))
+            {
+                status.ToString();
+            }
+
+        }).ConfigureAwait(false);
+
+        Task.Run(async () =>
+        {
+            await foreach (WorkshopItemStatus status in SteamCmd.WorkshopStatusAsync(624970))
+            {
+                status.ToString();
+            }
+
+        }).ConfigureAwait(false);
     }
 
     private void Steam_SteamCmdOutputFull(object sender, string msg)
     {
-        vmSteamCmd.RawLog += msg;
+        vmLogs.RawLog += msg;
     }
 
     private void Steam_SteamCmdOutput(object sender, string msg)
     {
-        vmSteamCmd.CleanLog += msg;
+        vmLogs.CleanLog += msg;
     }
 }
