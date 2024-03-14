@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,18 +11,15 @@ namespace BZRModManager.Models
 {
     public class TaskNode
     {
-        public ObservableCollection<TaskNode>? SubTasks { get; }
-        public string Title { get; }
+        public string Text { get; }
+        public IImage? ImageSource { get; }
+        public double? Percent { get; }
 
-        public TaskNode(string title)
+        public TaskNode(string text, IImage? image, double? percent)
         {
-            Title = title;
-        }
-
-        public TaskNode(string title, ObservableCollection<TaskNode> subTasks)
-        {
-            Title = title;
-            SubTasks = subTasks;
+            Text = text;
+            ImageSource = image ?? ImageHelper.LoadFromResource(new Uri("avares://BZRModManager/Assets/modmanager.ico"));
+            Percent = percent;
         }
     }
 }

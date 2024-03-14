@@ -57,12 +57,12 @@
     <SplitView.Pane>
       <DockPanel Margin="10">
         <Panel DockPanel.Dock="Top">
-          <Image Source="/Assets/modmanager.png"
+          <Image Source="/Assets/modmanager.ico"
                  Height="40"
                  Width="40"
                  VerticalAlignment="Top"
                  HorizontalAlignment="Left"
-                 Effect=""/>
+                 RenderOptions.BitmapInterpolationMode="HighQuality"/>
           <TextBlock Text="BZR Mod Manager"
                      FontSize="24"
                      FontWeight="Bold"

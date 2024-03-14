@@ -10,19 +10,17 @@
   </UserControl.Styles>
   <ScrollViewer AllowAutoHide="True"
                 Margin="0 30 0 0">
-    <WrapPanel>
-      <controls:TaskItemPanel Text="Template Control Text"
-                              ImageSource="/Assets/modmanager.ico"
-                              Percent="50"/>
-      <controls:TaskItemPanel Text="Template Control Text"
-                              ImageSource="/Assets/modmanager.ico"
-                              Percent="25"/>
-      <controls:TaskItemPanel Text="Template Control Text"
-                              ImageSource="/Assets/modmanager.ico"
-                              Percent="75"/>
-      <controls:TaskItemPanel Text="Template Control Text"
-                              ImageSource="/Assets/modmanager.ico"
-                              Percent=""/>
-    </WrapPanel>
+    <ItemsRepeater ItemsSource="{Binding Tasks}">
+      <ItemsRepeater.Layout>
+        <WrapLayout />
+      </ItemsRepeater.Layout>
+      <ItemsRepeater.ItemTemplate>
+        <DataTemplate>
+          <controls:TaskItemPanel Text="{Binding Text}"
+                                  ImageSource="{Binding ImageSource}"
+                                  Percent="{Binding Percent}"/>
+        </DataTemplate>
+      </ItemsRepeater.ItemTemplate>
+    </ItemsRepeater>
   </ScrollViewer>
 </UserControl>

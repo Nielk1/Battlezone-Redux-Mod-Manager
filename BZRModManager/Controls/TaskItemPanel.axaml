@@ -21,9 +21,9 @@
             <Image Source="{TemplateBinding ImageSource}"
                    Height="256"
                    Width="256"
-                   Opacity="0.25"/>
-            <Border IsVisible="{Binding Percent,
-                                Converter={x:Static ObjectConverters.IsNotNull}}">
+                   Opacity="0.25"
+                   RenderOptions.BitmapInterpolationMode="HighQuality"/>
+            <Border>
               <ui:ProgressRing StartAngle="90"
                                EndAngle="450"
                                Value="{TemplateBinding Percent}"

@@ -19,7 +19,8 @@
             <Image Source="{TemplateBinding ImageSource}"
                    Width="32"
                    VerticalAlignment="Center"
-                   HorizontalAlignment="Left"/>
+                   HorizontalAlignment="Left"
+                   RenderOptions.BitmapInterpolationMode="HighQuality"/>
             <Grid Margin="5">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
