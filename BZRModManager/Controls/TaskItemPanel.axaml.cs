@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using System;
 
 namespace BZRModManager.Controls
 {
@@ -30,6 +31,14 @@ namespace BZRModManager.Controls
         {
             get => GetValue(PercentProperty);
             set => SetValue(PercentProperty, value);
+        }
+
+        public static readonly StyledProperty<bool> ActiveProperty =
+            AvaloniaProperty.Register<MainNavButton, bool>(nameof(Active), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+        public bool Active
+        {
+            get => GetValue(ActiveProperty);
+            set => SetValue(ActiveProperty, value);
         }
     }
 }

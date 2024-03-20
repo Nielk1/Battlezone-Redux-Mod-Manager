@@ -6,7 +6,8 @@
   <Design.PreviewWith>
     <controls:TaskItemPanel Text="Template Control Text"
                             ImageSource="/Assets/modmanager.ico"
-                            Percent="50"/>
+                            Percent="50"
+                            Active="True"/>
   </Design.PreviewWith>
 
   <Style Selector="controls|TaskItemPanel">
@@ -23,7 +24,18 @@
                    Width="256"
                    Opacity="0.25"
                    RenderOptions.BitmapInterpolationMode="HighQuality"/>
+            <Border Padding="0"
+                    Margin="-5"
+                    BorderThickness="2"
+                    BorderBrush="Red"
+                    IsVisible="{TemplateBinding Active,
+                                              Converter={x:Static BoolConverters.Not}}"/>
             <Border>
+<!--
+                               Value="{Binding Percent,
+                                               RelativeSource={RelativeSource TemplatedParent},
+                                               TargetNullValue=0.0}"
+-->
               <ui:ProgressRing StartAngle="90"
                                EndAngle="450"
                                Value="{TemplateBinding Percent}"
@@ -31,8 +43,13 @@
                                                  Converter={x:Static ObjectConverters.IsNull}}"
                                BorderThickness="12"
                                Width="248"
-                               Height="248" />
+                               Height="248"/>
             </Border>
+            <ProgressBar Maximum="100"
+                         Value="{TemplateBinding Percent}"
+                         IsIndeterminate="{TemplateBinding Percent,
+                                           Converter={x:Static ObjectConverters.IsNull}}"
+                         Height="50"/>
             <controls:OutlinedTextBlock Text="{TemplateBinding Text}"
                                         Fill="White"
                                         Stroke="Black"
@@ -43,16 +60,6 @@
                                         VerticalAlignment="Center"
                                         TextAlignment="Center"
                                         Width="230"/>
-            <!--
-            <TextBlock Text="Templated Control With a Very Long Name"
-                       FontWeight="Bold"
-                       FontSize="20"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Width="230"
-                       TextWrapping="Wrap"
-                       TextAlignment="Center"/>
-            -->
           </Panel>
         </Border>
       </ControlTemplate>

@@ -7,6 +7,7 @@ using SteamVent.SteamCmd;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BZRModManager.ViewModels;
@@ -77,25 +78,34 @@ public partial class MainViewModel : ViewModelBase
 
         // We are blocking the UI thread here somehow, need to move this logic to another location.
         // Should rework the entire system into tasks run by a task handler.
-        vmTasks.RegisterTask("SteamCmd Startup", null, null, async (_) =>
+        SemaphoreSlim tmpSem = new SemaphoreSlim(0, 1);
+        vmTasks.RegisterTask("SteamCmd Startup", null, null, async (Node) =>
         {
+            await Task.Delay(1000);
+            Node.Active = true;
+            await Task.Delay(1000);
             await SteamCmd.DownloadAsync();
             await SteamCmd.TestRunAsync();
+            tmpSem.Release();
+            tmpSem.Release();
         }).ConfigureAwait(false);
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZ98R", null, null, async (Node) =>
         {
-            foreach (WorkshopItemStatus status in await SteamCmd.WorkshopStatusAsync(301650))
+            await tmpSem.WaitAsync();
+            Node.Active = true;
+            foreach (WorkshopItemStatus status in await SteamCmd.WorkshopStatusAsync(301650, Node))
             {
                 //status.ToString();
                 Debug.WriteLine(JsonConvert.SerializeObject(status, Formatting.None));
             }
-
         }).ConfigureAwait(false);
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
         {
-            foreach (WorkshopItemStatus status in await SteamCmd.WorkshopStatusAsync(624970))
+            await tmpSem.WaitAsync();
+            Node.Active = true;
+            foreach (WorkshopItemStatus status in await SteamCmd.WorkshopStatusAsync(624970, Node))
             {
                 //status.ToString();
                 Debug.WriteLine(JsonConvert.SerializeObject(status, Formatting.None));

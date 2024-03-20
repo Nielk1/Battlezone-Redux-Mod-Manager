@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,11 +10,14 @@ using System.Threading.Tasks;
 
 namespace BZRModManager.Models
 {
-    public class TaskNode : IProgress<double?>
+    public partial class TaskNode : ObservableObject, IProgress<double?>
     {
+        [ObservableProperty]
+        public bool _active;
         public string Text { get; }
         public IImage? ImageSource { get; }
-        public double? Percent { get; private set; }
+        [ObservableProperty]
+        public double? _percent;
 
         public TaskNode(string text, IImage? image, double? percent)
         {
