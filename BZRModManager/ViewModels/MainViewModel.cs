@@ -1,8 +1,11 @@
-﻿using BZRModManager.Views;
+﻿using BZRModManager.Models;
+using BZRModManager.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json;
 using SteamVent.SteamCmd;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -74,28 +77,29 @@ public partial class MainViewModel : ViewModelBase
 
         // We are blocking the UI thread here somehow, need to move this logic to another location.
         // Should rework the entire system into tasks run by a task handler.
-        Task.Run(async () =>
+        vmTasks.RegisterTask("SteamCmd Startup", null, null, async (_) =>
         {
             await SteamCmd.DownloadAsync();
             await SteamCmd.TestRunAsync();
         }).ConfigureAwait(false);
 
-        Task.Run(async () =>
+        vmTasks.RegisterTask("SteamCmd Workshop Status BZ98R", null, null, async (Node) =>
         {
-            await foreach (WorkshopItemStatus status in SteamCmd.WorkshopStatusAsync(301650))
+            foreach (WorkshopItemStatus status in await SteamCmd.WorkshopStatusAsync(301650))
             {
-                status.ToString();
+                //status.ToString();
+                Debug.WriteLine(JsonConvert.SerializeObject(status, Formatting.None));
             }
 
         }).ConfigureAwait(false);
 
-        Task.Run(async () =>
+        vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
         {
-            await foreach (WorkshopItemStatus status in SteamCmd.WorkshopStatusAsync(624970))
+            foreach (WorkshopItemStatus status in await SteamCmd.WorkshopStatusAsync(624970))
             {
-                status.ToString();
+                //status.ToString();
+                Debug.WriteLine(JsonConvert.SerializeObject(status, Formatting.None));
             }
-
         }).ConfigureAwait(false);
     }
 
