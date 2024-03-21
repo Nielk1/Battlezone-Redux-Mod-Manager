@@ -50,6 +50,10 @@ namespace BZRModManager.ViewModels
             return Task.Run(async () =>
             {
                 await value.Invoke(taskNode);
+                taskNode.Finished = true;
+                if (!taskNode.Percent.HasValue)
+                    taskNode.Percent = 1;
+                /*
                 await TasksLock.WaitAsync();
                 try
                 {
@@ -59,6 +63,7 @@ namespace BZRModManager.ViewModels
                 {
                     TasksLock.Release();
                 }
+                */
             });
         }
 
@@ -77,10 +82,32 @@ namespace BZRModManager.ViewModels
             return Task.Run(async () =>
             {
                 value.Invoke(taskNode);
+                taskNode.Finished = true;
+                /*
                 await TasksLock.WaitAsync();
-                try { Tasks.Remove(taskNode); }
-                finally { TasksLock.Release(); }
+                try
+                {
+                    Tasks.Remove(taskNode);
+                }
+                finally
+                {
+                    TasksLock.Release();
+                }
+                */
             });
+        }
+
+        public async Task ClearFinishedTasks()
+        {
+            await TasksLock.WaitAsync();
+            try
+            {
+                Tasks.RemoveMany(Tasks.Where(x => x.Finished));
+            }
+            finally
+            {
+                TasksLock.Release();
+            }
         }
     }
 }

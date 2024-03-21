@@ -52,6 +52,7 @@ public partial class MainViewModel : ViewModelBase
                 ContentViewModel = null;
                 break;
             case "tasks":
+                vmTasks.ClearFinishedTasks();
                 ContentViewModel = vmTasks;
                 break;
             case "logs":

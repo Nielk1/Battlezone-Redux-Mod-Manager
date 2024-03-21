@@ -13,6 +13,9 @@ namespace BZRModManager.Models
     public partial class TaskNode : ObservableObject, IProgress<double?>
     {
         [ObservableProperty]
+        public bool _finished;
+
+        [ObservableProperty]
         public bool _active;
         public string Text { get; }
         public IImage? ImageSource { get; }
@@ -21,14 +24,15 @@ namespace BZRModManager.Models
 
         public TaskNode(string text, IImage? image, double? percent)
         {
+            Finished = false;
             Text = text;
             ImageSource = image ?? ImageHelper.LoadFromResource(new Uri("avares://BZRModManager/Assets/modmanager.ico"));
-            Percent = percent * 100d;
+            Percent = percent;
         }
 
         public void Report(double? value)
         {
-            Percent = value * 100d;
+            Percent = value;
         }
     }
 }

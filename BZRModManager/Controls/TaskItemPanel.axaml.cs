@@ -9,7 +9,7 @@ namespace BZRModManager.Controls
     public class TaskItemPanel : TemplatedControl
     {
         public static readonly StyledProperty<string> TextProperty =
-            AvaloniaProperty.Register<MainNavButton, string>(nameof(Text), "Text", defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+            AvaloniaProperty.Register<TaskItemPanel, string>(nameof(Text), "Text", defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
 
         public string Text
         {
@@ -18,7 +18,7 @@ namespace BZRModManager.Controls
         }
 
         public static readonly StyledProperty<IImage?> ImageSourceProperty =
-            AvaloniaProperty.Register<MainNavButton, IImage?>(nameof(ImageSource), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+            AvaloniaProperty.Register<TaskItemPanel, IImage?>(nameof(ImageSource), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
         public IImage? ImageSource
         {
             get => GetValue(ImageSourceProperty);
@@ -26,7 +26,7 @@ namespace BZRModManager.Controls
         }
 
         public static readonly StyledProperty<double?> PercentProperty =
-            AvaloniaProperty.Register<MainNavButton, double?>(nameof(Percent), default(double?), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+            AvaloniaProperty.Register<TaskItemPanel, double?>(nameof(Percent), default(double?), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
         public double? Percent
         {
             get => GetValue(PercentProperty);
@@ -34,11 +34,19 @@ namespace BZRModManager.Controls
         }
 
         public static readonly StyledProperty<bool> ActiveProperty =
-            AvaloniaProperty.Register<MainNavButton, bool>(nameof(Active), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+            AvaloniaProperty.Register<TaskItemPanel, bool>(nameof(Active), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
         public bool Active
         {
             get => GetValue(ActiveProperty);
             set => SetValue(ActiveProperty, value);
+        }
+
+        public static readonly StyledProperty<bool> FinishedProperty =
+            AvaloniaProperty.Register<TaskItemPanel, bool>(nameof(Finished), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+        public bool Finished
+        {
+            get => GetValue(FinishedProperty);
+            set => SetValue(FinishedProperty, value);
         }
     }
 }

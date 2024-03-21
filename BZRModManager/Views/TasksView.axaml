@@ -19,7 +19,8 @@
           <controls:TaskItemPanel Text="{Binding Text}"
                                   ImageSource="{Binding ImageSource}"
                                   Percent="{Binding Percent}"
-                                  Active="{Binding Active}"/>
+                                  Active="{Binding Active}"
+                                  Finished="{Binding Finished}"/>
         </DataTemplate>
       </ItemsRepeater.ItemTemplate>
     </ItemsRepeater>
