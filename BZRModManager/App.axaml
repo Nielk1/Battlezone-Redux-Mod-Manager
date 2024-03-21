@@ -12,6 +12,8 @@
   
     <Application.Styles>
       <FluentTheme />
-      <StyleInclude Source="avares://FluentAvalonia.ProgressRing/Styling/Controls/ProgressRing.axaml" />
+      <!--
+      <StyleInclude Source="avares://Aura.UI.FluentTheme/AuraUI.xaml"/>
+      -->
     </Application.Styles>
 </Application>

@@ -12,6 +12,7 @@
   
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
+    <PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.0.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
@@ -19,7 +20,6 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.0.10.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="FluentAvalonia.ProgressRing" Version="1.69.2" />
   </ItemGroup>
 
   <ItemGroup>
