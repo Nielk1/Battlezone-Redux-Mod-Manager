@@ -1,0 +1,36 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+        xmlns:controls="using:BZRModManager.Controls">
+  <Design.PreviewWith>
+    <controls:ManageModItemPanel Title="Mod Title"
+                                 ImageSource="/Assets/modmanager.ico"
+                            />
+  </Design.PreviewWith>
+
+  <Style Selector="controls|ManageModItemPanel">
+    <!-- Set Defaults -->
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Margin="5"
+                BorderThickness="1"
+                BorderBrush="Gray">
+          <DockPanel>
+            <Image Source="{TemplateBinding ImageSource}"
+                   Height="256"
+                   Width="256"
+                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                   DockPanel.Dock="Top"/>
+            <DockPanel DockPanel.Dock="Bottom"
+                       Height="100">
+              <TextBlock Text="{TemplateBinding Title}"
+                         Padding="10"
+                         TextAlignment="Center" />
+            </DockPanel>
+          </DockPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>

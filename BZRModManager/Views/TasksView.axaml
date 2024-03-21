@@ -12,7 +12,7 @@
                 Margin="0 30 0 0">
     <ItemsRepeater ItemsSource="{Binding Tasks}">
       <ItemsRepeater.Layout>
-        <WrapLayout />
+        <UniformGridLayout/>
       </ItemsRepeater.Layout>
       <ItemsRepeater.ItemTemplate>
         <DataTemplate>

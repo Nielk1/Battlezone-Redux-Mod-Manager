@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using SteamVent.SteamCmd;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
@@ -94,22 +95,16 @@ public partial class MainViewModel : ViewModelBase
         {
             await tmpSem.WaitAsync();
             Node.Active = true;
-            foreach (WorkshopItemStatus status in await SteamCmd.WorkshopStatusAsync(301650, Node))
-            {
-                //status.ToString();
-                Debug.WriteLine(JsonConvert.SerializeObject(status, Formatting.None));
-            }
+            List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(301650, Node);
+            vmManageMods.AddMods(301650, mods);
         }).ConfigureAwait(false);
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
         {
             await tmpSem.WaitAsync();
             Node.Active = true;
-            foreach (WorkshopItemStatus status in await SteamCmd.WorkshopStatusAsync(624970, Node))
-            {
-                //status.ToString();
-                Debug.WriteLine(JsonConvert.SerializeObject(status, Formatting.None));
-            }
+            List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(624970, Node);
+            vmManageMods.AddMods(624970, mods);
         }).ConfigureAwait(false);
     }
 

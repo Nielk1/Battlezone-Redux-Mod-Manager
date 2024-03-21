@@ -2,9 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:BZRModManager.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BZRModManager.Views.ManageModsView">
+  <!--
   <Panel Margin="0 30 0 0" Background="Red">
     <TextBlock>Test</TextBlock>
   </Panel>
+  -->
+  <UserControl.Styles>
+    <StyleInclude Source="/Controls/ManageModItemPanel.axaml"/>
+  </UserControl.Styles>
+  <ScrollViewer AllowAutoHide="True"
+                Margin="0 30 0 0">
+    <ItemsRepeater ItemsSource="{Binding Mods}">
+      <ItemsRepeater.Layout>
+        <UniformGridLayout/>
+      </ItemsRepeater.Layout>
+      <ItemsRepeater.ItemTemplate>
+        <DataTemplate>
+          <controls:ManageModItemPanel Title="{Binding WorkshopId}"/>
+        </DataTemplate>
+      </ItemsRepeater.ItemTemplate>
+    </ItemsRepeater>
+  </ScrollViewer>
 </UserControl>
