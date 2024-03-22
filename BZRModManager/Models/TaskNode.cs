@@ -11,24 +11,27 @@ using System.Threading.Tasks;
 
 namespace BZRModManager.Models
 {
+    public enum TaskNodeState
+    {
+        None, // no state flags
+        Waiting,
+        Running,
+        Delayed,
+        Finished,
+    }
+
     public partial class TaskNode : ObservableObject, IProgress<double?>, IObserver<ESteamCmdTaskStatus>
     {
-        [ObservableProperty]
-        public bool _finished;
-
-        [ObservableProperty]
-        public bool _active;
-
-        [ObservableProperty]
-        public bool _delayed;
         public string Text { get; }
         public IImage? ImageSource { get; }
         [ObservableProperty]
         public double? _percent;
 
+        [ObservableProperty]
+        public TaskNodeState _state;
+
         public TaskNode(string text, IImage? image, double? percent)
         {
-            Finished = false;
             Text = text;
             ImageSource = image ?? ImageHelper.LoadFromResource(new Uri("avares://BZRModManager/Assets/modmanager.ico"));
             Percent = percent;

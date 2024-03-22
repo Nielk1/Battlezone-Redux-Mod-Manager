@@ -3,14 +3,13 @@
         xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
         xmlns:controls="using:BZRModManager.Controls"
-        xmlns:converters="using:BZRModManager.Converters">
+        xmlns:converters="using:BZRModManager.Converters"
+        xmlns:models="using:BZRModManager.Models">
   <Design.PreviewWith>
     <controls:TaskItemPanel Text="Template Control Text"
                             ImageSource="/Assets/modmanager.ico"
                             Percent="0.5"
-                            Active="True"
-                            Delayed="True"
-                            Finished="False"/>
+                            State="{x:Static models:TaskNodeState.Waiting}"/>
   </Design.PreviewWith>
   <Style Selector="controls|TaskItemPanel">
     <Style.Resources>
@@ -30,6 +29,11 @@
         M 6.5 0 a 3.5 3.5 0 0 0 -3.5 3.5 v 17 a 3.5 3.5 0 0 0 3.5 3.5 h 17 a 3.5 3.5 0 0 0 3.5 -3.5 v -17 a 3.5 3.5 0 0 0 -3.5 -3.5 Z
       </StreamGeometry>
       <converters:BoolToDoubleConverter x:Key="BoolToDoubleConverter" />
+      <converters:TaskNodeStateToBoolConverter x:Key="TaskNodeStateToBoolConverter" />
+      <converters:ValueConverterGroup x:Key="TaskNodeStateToDoubleConverter">
+        <converters:TaskNodeStateToBoolConverter />
+        <converters:BoolToDoubleConverter />
+      </converters:ValueConverterGroup>
     </Style.Resources>
     <!-- Set Defaults -->
     <Setter Property="Template">
@@ -39,9 +43,9 @@
                   Margin="5"
                   BorderThickness="1"
                   BorderBrush="Gray"
-                  Opacity="{Binding Finished,
-                            Converter={StaticResource BoolToDoubleConverter},
-                            ConverterParameter=1|0.25}">
+                  Opacity="{TemplateBinding State,
+                            Converter={StaticResource TaskNodeStateToDoubleConverter},
+                            ConverterParameter='Finished,1|0.25'}">
             <Panel>
               <Image Source="{TemplateBinding ImageSource}"
                      Height="256"
@@ -66,70 +70,48 @@
                                Margin="1 5 1 5"
                                Padding="1"
                                IsIndeterminate="{TemplateBinding Percent,
-                                               Converter={x:Static ObjectConverters.IsNull}}"
+                                                 Converter={x:Static ObjectConverters.IsNull}}"
                                Height="10"
-                               Background="Black"/>
+                               Background="Black"
+                               IsVisible="{TemplateBinding State,
+                                           Converter={StaticResource TaskNodeStateToBoolConverter},
+                                           ConverterParameter=!None}"/>
                   <Path Data="{StaticResource icon_pause}"
                         Margin="0"
                         Fill="Orange"
                         Stroke="Black"
                         StrokeThickness="1.0"
-                        HorizontalAlignment="Center">
-                    <Path.IsVisible>
-                      <MultiBinding Converter="{x:Static BoolConverters.And}">
-                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                 Path="Active"
-                                 Converter="{x:Static BoolConverters.Not}"/>
-                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                 Path="Finished"
-                                 Converter="{x:Static BoolConverters.Not}"/>
-                      </MultiBinding>
-                    </Path.IsVisible>
-                  </Path>
+                        HorizontalAlignment="Center"
+                        IsVisible="{TemplateBinding State,
+                                    Converter={StaticResource TaskNodeStateToBoolConverter},
+                                    ConverterParameter=Waiting}"/>
                   <Path Data="{StaticResource icon_play}"
                         Margin="0"
                         Fill="Green"
                         Stroke="Black"
                         StrokeThickness="1.0"
-                        HorizontalAlignment="Center">
-                    <Path.IsVisible>
-                      <MultiBinding Converter="{x:Static BoolConverters.And}">
-                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                 Path="Active"/>
-                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                 Path="Delayed"
-                                 Converter="{x:Static BoolConverters.Not}"/>
-                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                 Path="Finished"
-                                 Converter="{x:Static BoolConverters.Not}"/>
-                      </MultiBinding>
-                    </Path.IsVisible>
-                  </Path>
+                        HorizontalAlignment="Center"
+                        IsVisible="{TemplateBinding State,
+                                    Converter={StaticResource TaskNodeStateToBoolConverter},
+                                    ConverterParameter=Running}}"/>
                   <Path Data="{StaticResource icon_playpause}"
                         Margin="0"
                         Fill="DarkGreen"
                         Stroke="Black"
                         StrokeThickness="1.0"
-                        HorizontalAlignment="Center">
-                    <Path.IsVisible>
-                      <MultiBinding Converter="{x:Static BoolConverters.And}">
-                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                 Path="Active"/>
-                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                 Path="Delayed"/>
-                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                 Path="Finished"
-                                 Converter="{x:Static BoolConverters.Not}"/>
-                      </MultiBinding>
-                    </Path.IsVisible>
-                  </Path>
+                        HorizontalAlignment="Center"
+                        IsVisible="{TemplateBinding State,
+                                    Converter={StaticResource TaskNodeStateToBoolConverter},
+                                    ConverterParameter=Delayed}"/>
                   <Path Data="{StaticResource icon_done}"
                         Margin="0"
                         Fill="Blue"
                         Stroke="Black"
                         StrokeThickness="1.0"
                         HorizontalAlignment="Center"
-                        IsVisible="{TemplateBinding Finished}"/>
+                        IsVisible="{TemplateBinding State,
+                                    Converter={StaticResource TaskNodeStateToBoolConverter},
+                                    ConverterParameter=Finished}"/>
                 </StackPanel>
               </Panel>
             </Panel>

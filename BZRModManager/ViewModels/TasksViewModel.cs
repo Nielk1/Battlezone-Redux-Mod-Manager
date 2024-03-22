@@ -1,10 +1,13 @@
-﻿using Avalonia.Media;
+﻿using Avalonia;
+using Avalonia.Media;
+using BZRModManager.Controls;
 using BZRModManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -18,6 +21,11 @@ namespace BZRModManager.ViewModels
     {
         public ObservableCollection<TaskNode> Tasks { get; set; }
         private SemaphoreSlim TasksLock = new SemaphoreSlim(1, 1);
+
+        public bool IsEmpty
+        {
+            get => Tasks.Count == 0;
+        }
 
         public TasksViewModel()
         {
@@ -49,21 +57,11 @@ namespace BZRModManager.ViewModels
             }
             return Task.Run(async () =>
             {
+                taskNode.State = TaskNodeState.Waiting;
                 await value.Invoke(taskNode);
-                taskNode.Finished = true;
+                taskNode.State = TaskNodeState.Finished;
                 if (!taskNode.Percent.HasValue)
                     taskNode.Percent = 1;
-                /*
-                await TasksLock.WaitAsync();
-                try
-                {
-                    Tasks.Remove(taskNode);
-                }
-                finally
-                {
-                    TasksLock.Release();
-                }
-                */
             });
         }
 
@@ -79,21 +77,13 @@ namespace BZRModManager.ViewModels
             {
                 TasksLock.Release();
             }
-            Task t = Task.Run(async () =>
+            Task t = Task.Run(() =>
             {
+                taskNode.State = TaskNodeState.Waiting;
                 value.Invoke(taskNode);
-                taskNode.Finished = true;
-                /*
-                await TasksLock.WaitAsync();
-                try
-                {
-                    Tasks.Remove(taskNode);
-                }
-                finally
-                {
-                    TasksLock.Release();
-                }
-                */
+                taskNode.State = TaskNodeState.Finished;
+                if (!taskNode.Percent.HasValue)
+                    taskNode.Percent = 1;
             });
             return t;
         }
@@ -103,7 +93,8 @@ namespace BZRModManager.ViewModels
             await TasksLock.WaitAsync();
             try
             {
-                Tasks.RemoveMany(Tasks.Where(x => x.Finished));
+                Tasks.RemoveMany(Tasks.Where(x => x.State == TaskNodeState.Finished));
+                OnPropertyChanged(new PropertyChangedEventArgs("IsEmpty"));
             }
             finally
             {

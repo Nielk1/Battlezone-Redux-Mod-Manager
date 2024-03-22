@@ -3,27 +3,33 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:BZRModManager.Controls"
+             xmlns:converters="using:BZRModManager.Converters"
+             xmlns:models="using:BZRModManager.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BZRModManager.Views.TasksView">
   <UserControl.Styles>
     <StyleInclude Source="/Controls/TaskItemPanel.axaml"/>
   </UserControl.Styles>
-  <ScrollViewer AllowAutoHide="True"
-                Margin="0 30 0 0">
-    <ItemsRepeater ItemsSource="{Binding Tasks}">
-      <ItemsRepeater.Layout>
-        <UniformGridLayout/>
-      </ItemsRepeater.Layout>
-      <ItemsRepeater.ItemTemplate>
-        <DataTemplate>
-          <controls:TaskItemPanel Text="{Binding Text}"
-                                  ImageSource="{Binding ImageSource}"
-                                  Percent="{Binding Percent}"
-                                  Active="{Binding Active}"
-                                  Delayed="{Binding Delayed}"
-                                  Finished="{Binding Finished}"/>
-        </DataTemplate>
-      </ItemsRepeater.ItemTemplate>
-    </ItemsRepeater>
-  </ScrollViewer>
+  <Panel>
+    <ScrollViewer AllowAutoHide="True"
+                  Margin="0 30 0 0">
+      <ItemsRepeater ItemsSource="{Binding Tasks}">
+        <ItemsRepeater.Layout>
+          <UniformGridLayout/>
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <controls:TaskItemPanel Text="{Binding Text}"
+                                    ImageSource="{Binding ImageSource}"
+                                    Percent="{Binding Percent}"
+                                    State="{Binding State}"/>
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+    </ScrollViewer>
+    <TextBlock IsVisible="{Binding IsEmpty}"
+               Text="No Tasks Pending"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+  </Panel>
 </UserControl>

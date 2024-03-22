@@ -84,7 +84,7 @@ public partial class MainViewModel : ViewModelBase
         vmTasks.RegisterTask("SteamCmd Startup", null, null, async (Node) =>
         {
             await Task.Delay(1000);
-            Node.Active = true;
+            Node.State = TaskNodeState.Running;
             await Task.Delay(1000);
             await SteamCmd.DownloadAsync();
             await SteamCmd.TestRunAsync();
@@ -95,7 +95,7 @@ public partial class MainViewModel : ViewModelBase
         vmTasks.RegisterTask("SteamCmd Workshop Status BZ98R", null, null, async (Node) =>
         {
             await tmpSem.WaitAsync();
-            Node.Active = true;
+            Node.State = TaskNodeState.Waiting;
 
             // dynamicly adjust status based on being busy
             Node.StatusReceivedEvent += (ESteamCmdTaskStatus value) =>
@@ -104,12 +104,12 @@ public partial class MainViewModel : ViewModelBase
                 switch (value)
                 {
                     case ESteamCmdTaskStatus.Waiting:
-                        Node.Delayed = true;
+                        Node.State = TaskNodeState.Delayed;
                         break;
                     case ESteamCmdTaskStatus.WaitingToStart:
                     case ESteamCmdTaskStatus.Running:
                     case ESteamCmdTaskStatus.Finished:
-                        Node.Delayed = false;
+                        Node.State = TaskNodeState.Running;
                         break;
                 }
             };
@@ -121,7 +121,7 @@ public partial class MainViewModel : ViewModelBase
         vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
         {
             await tmpSem.WaitAsync();
-            Node.Active = true;
+            Node.State = TaskNodeState.Waiting;
 
             // dynamicly adjust status based on being busy
             Node.StatusReceivedEvent += (ESteamCmdTaskStatus value) =>
@@ -130,12 +130,12 @@ public partial class MainViewModel : ViewModelBase
                 switch (value)
                 {
                     case ESteamCmdTaskStatus.Waiting:
-                        Node.Delayed = true;
+                        Node.State = TaskNodeState.Delayed;
                         break;
                     case ESteamCmdTaskStatus.WaitingToStart:
                     case ESteamCmdTaskStatus.Running:
                     case ESteamCmdTaskStatus.Finished:
-                        Node.Delayed = false;
+                        Node.State = TaskNodeState.Running;
                         break;
                 }
             };

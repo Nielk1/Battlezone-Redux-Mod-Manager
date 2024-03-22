@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using BZRModManager.Models;
 using System;
 
 namespace BZRModManager.Controls
@@ -33,28 +34,12 @@ namespace BZRModManager.Controls
             set => SetValue(PercentProperty, value);
         }
 
-        public static readonly StyledProperty<bool> ActiveProperty =
-            AvaloniaProperty.Register<TaskItemPanel, bool>(nameof(Active), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
-        public bool Active
+        public static readonly StyledProperty<TaskNodeState> StateProperty =
+            AvaloniaProperty.Register<TaskItemPanel, TaskNodeState>(nameof(State), TaskNodeState.None, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+        public TaskNodeState State
         {
-            get => GetValue(ActiveProperty);
-            set => SetValue(ActiveProperty, value);
-        }
-
-        public static readonly StyledProperty<bool> DelayedProperty =
-            AvaloniaProperty.Register<TaskItemPanel, bool>(nameof(Delayed), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
-        public bool Delayed
-        {
-            get => GetValue(DelayedProperty);
-            set => SetValue(DelayedProperty, value);
-        }
-
-        public static readonly StyledProperty<bool> FinishedProperty =
-            AvaloniaProperty.Register<TaskItemPanel, bool>(nameof(Finished), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
-        public bool Finished
-        {
-            get => GetValue(FinishedProperty);
-            set => SetValue(FinishedProperty, value);
+            get => GetValue(StateProperty);
+            set => SetValue(StateProperty, value);
         }
     }
 }
