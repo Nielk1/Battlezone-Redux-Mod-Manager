@@ -8,13 +8,19 @@
     <controls:TaskItemPanel Text="Template Control Text"
                             ImageSource="/Assets/modmanager.ico"
                             Percent="0.5"
-                            Active="False"
-                            Finished="True"/>
+                            Active="True"
+                            Delayed="True"
+                            Finished="False"/>
   </Design.PreviewWith>
   <Style Selector="controls|TaskItemPanel">
     <Style.Resources>
       <StreamGeometry x:Key="icon_play">
         M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z
+      </StreamGeometry>
+      <StreamGeometry x:Key="icon_playpause">
+        M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z
+        M31.5,0A3.5,3.5,0,0,0,28,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,31.5,0Z
+        M42.5,0A3.5,3.5,0,0,0,39,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,42.5,0Z
       </StreamGeometry>
       <StreamGeometry x:Key="icon_pause">
         M6.5,0A3.5,3.5,0,0,0,3,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,6.5,0Z
@@ -28,79 +34,107 @@
     <!-- Set Defaults -->
     <Setter Property="Template">
       <ControlTemplate>
-        <Border Padding="5"
-                Margin="5"
-                BorderThickness="1"
-                BorderBrush="Gray"
-                Opacity="{Binding Finished,
-                          Converter={StaticResource BoolToDoubleConverter},
-                          ConverterParameter=1|0.25}">
-          <Panel>
-            <Image Source="{TemplateBinding ImageSource}"
-                   Height="256"
-                   Width="256"
-                   RenderOptions.BitmapInterpolationMode="HighQuality"/>
-            <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-              <controls:OutlinedTextBlock Text="{TemplateBinding Text}"
-                                          Fill="White"
-                                          Stroke="Black"
-                                          StrokeThickness="1.0"
-                                          FontWeight="Bold"
-                                          FontSize="20"
-                                          TextAlignment="Center"
-                                          Width="230"/>
-              <ProgressBar Maximum="1"
-                           Value="{TemplateBinding Percent}"
-                           Margin="1 5 1 5"
-                           Padding="1"
-                           IsIndeterminate="{TemplateBinding Percent,
-                                             Converter={x:Static ObjectConverters.IsNull}}"
-                           Height="10"
-                           Background="Black"/>
-              <Path Data="{StaticResource icon_pause}"
-                    Margin="0"
-                    Fill="Orange"
-                    Stroke="Black"
-                    StrokeThickness="1.0"
-                    HorizontalAlignment="Center">
-                <Path.IsVisible>
-                  <MultiBinding Converter="{x:Static BoolConverters.And}">
-                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                             Path="Active"
-                             Converter="{x:Static BoolConverters.Not}"/>
-                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                             Path="Finished"
-                             Converter="{x:Static BoolConverters.Not}"/>
-                  </MultiBinding>
-                </Path.IsVisible>
-              </Path>
-              <Path Data="{StaticResource icon_play}"
-                    Margin="0"
-                    Fill="Green"
-                    Stroke="Black"
-                    StrokeThickness="1.0"
-                    HorizontalAlignment="Center">
-                <Path.IsVisible>
-                  <MultiBinding Converter="{x:Static BoolConverters.And}">
-                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                             Path="Active"/>
-                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                             Path="Finished"
-                             Converter="{x:Static BoolConverters.Not}"/>
-                  </MultiBinding>
-                </Path.IsVisible>
-              </Path>
-              <Path Data="{StaticResource icon_done}"
-                    Margin="0"
-                    Fill="Blue"
-                    Stroke="Black"
-                    StrokeThickness="1.0"
-                    HorizontalAlignment="Center"
-                    IsVisible="{TemplateBinding Finished}"/>
-            </StackPanel>
-          </Panel>
-        </Border>
+        <Panel RenderOptions.RequiresFullOpacityHandling="True">
+          <Border Padding="5"
+                  Margin="5"
+                  BorderThickness="1"
+                  BorderBrush="Gray"
+                  Opacity="{Binding Finished,
+                            Converter={StaticResource BoolToDoubleConverter},
+                            ConverterParameter=1|0.25}">
+            <Panel>
+              <Image Source="{TemplateBinding ImageSource}"
+                     Height="256"
+                     Width="256"
+                     RenderOptions.BitmapInterpolationMode="HighQuality"/>
+              <Panel HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Background="#B000">
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Margin="5 5 5 5">
+                  <controls:OutlinedTextBlock Text="{TemplateBinding Text}"
+                                              Fill="White"
+                                              Stroke="Black"
+                                              StrokeThickness="1.0"
+                                              FontWeight="Bold"
+                                              FontSize="20"
+                                              TextAlignment="Center"
+                                              Width="230"/>
+                  <ProgressBar Maximum="1"
+                               Value="{TemplateBinding Percent}"
+                               Margin="1 5 1 5"
+                               Padding="1"
+                               IsIndeterminate="{TemplateBinding Percent,
+                                               Converter={x:Static ObjectConverters.IsNull}}"
+                               Height="10"
+                               Background="Black"/>
+                  <Path Data="{StaticResource icon_pause}"
+                        Margin="0"
+                        Fill="Orange"
+                        Stroke="Black"
+                        StrokeThickness="1.0"
+                        HorizontalAlignment="Center">
+                    <Path.IsVisible>
+                      <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                 Path="Active"
+                                 Converter="{x:Static BoolConverters.Not}"/>
+                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                 Path="Finished"
+                                 Converter="{x:Static BoolConverters.Not}"/>
+                      </MultiBinding>
+                    </Path.IsVisible>
+                  </Path>
+                  <Path Data="{StaticResource icon_play}"
+                        Margin="0"
+                        Fill="Green"
+                        Stroke="Black"
+                        StrokeThickness="1.0"
+                        HorizontalAlignment="Center">
+                    <Path.IsVisible>
+                      <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                 Path="Active"/>
+                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                 Path="Delayed"
+                                 Converter="{x:Static BoolConverters.Not}"/>
+                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                 Path="Finished"
+                                 Converter="{x:Static BoolConverters.Not}"/>
+                      </MultiBinding>
+                    </Path.IsVisible>
+                  </Path>
+                  <Path Data="{StaticResource icon_playpause}"
+                        Margin="0"
+                        Fill="DarkGreen"
+                        Stroke="Black"
+                        StrokeThickness="1.0"
+                        HorizontalAlignment="Center">
+                    <Path.IsVisible>
+                      <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                 Path="Active"/>
+                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                 Path="Delayed"/>
+                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                 Path="Finished"
+                                 Converter="{x:Static BoolConverters.Not}"/>
+                      </MultiBinding>
+                    </Path.IsVisible>
+                  </Path>
+                  <Path Data="{StaticResource icon_done}"
+                        Margin="0"
+                        Fill="Blue"
+                        Stroke="Black"
+                        StrokeThickness="1.0"
+                        HorizontalAlignment="Center"
+                        IsVisible="{TemplateBinding Finished}"/>
+                </StackPanel>
+              </Panel>
+            </Panel>
+          </Border>
+        </Panel>
       </ControlTemplate>
     </Setter>
   </Style>

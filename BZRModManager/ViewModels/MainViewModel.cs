@@ -32,7 +32,7 @@ public partial class MainViewModel : ViewModelBase
     private TasksViewModel vmTasks = new TasksViewModel();
 
     [RelayCommand]
-    public void ChangeContent(string parameter)
+    public async Task ChangeContent(string parameter)
     {
         switch (parameter)
         {
@@ -52,7 +52,7 @@ public partial class MainViewModel : ViewModelBase
                 ContentViewModel = null;
                 break;
             case "tasks":
-                vmTasks.ClearFinishedTasks();
+                await vmTasks.ClearFinishedTasks();
                 ContentViewModel = vmTasks;
                 break;
             case "logs":
@@ -96,7 +96,25 @@ public partial class MainViewModel : ViewModelBase
         {
             await tmpSem.WaitAsync();
             Node.Active = true;
-            List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(301650, Node);
+
+            // dynamicly adjust status based on being busy
+            Node.StatusReceivedEvent += (ESteamCmdTaskStatus value) =>
+            {
+                Trace.WriteLine($"Set BZ98R Status: {value.ToString()}");
+                switch (value)
+                {
+                    case ESteamCmdTaskStatus.Waiting:
+                        Node.Delayed = true;
+                        break;
+                    case ESteamCmdTaskStatus.WaitingToStart:
+                    case ESteamCmdTaskStatus.Running:
+                    case ESteamCmdTaskStatus.Finished:
+                        Node.Delayed = false;
+                        break;
+                }
+            };
+            //Node.Active = true;
+            List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(301650, Node, Node);
             vmManageMods.AddMods(301650, mods);
         }).ConfigureAwait(false);
 
@@ -104,7 +122,25 @@ public partial class MainViewModel : ViewModelBase
         {
             await tmpSem.WaitAsync();
             Node.Active = true;
-            List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(624970, Node);
+
+            // dynamicly adjust status based on being busy
+            Node.StatusReceivedEvent += (ESteamCmdTaskStatus value) =>
+            {
+                Trace.WriteLine($"Set BZCC Status: {value.ToString()}");
+                switch (value)
+                {
+                    case ESteamCmdTaskStatus.Waiting:
+                        Node.Delayed = true;
+                        break;
+                    case ESteamCmdTaskStatus.WaitingToStart:
+                    case ESteamCmdTaskStatus.Running:
+                    case ESteamCmdTaskStatus.Finished:
+                        Node.Delayed = false;
+                        break;
+                }
+            };
+            //Node.Active = true;
+            List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(624970, Node, Node);
             vmManageMods.AddMods(624970, mods);
         }).ConfigureAwait(false);
     }

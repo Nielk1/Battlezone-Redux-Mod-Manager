@@ -20,6 +20,7 @@
                                   ImageSource="{Binding ImageSource}"
                                   Percent="{Binding Percent}"
                                   Active="{Binding Active}"
+                                  Delayed="{Binding Delayed}"
                                   Finished="{Binding Finished}"/>
         </DataTemplate>
       </ItemsRepeater.ItemTemplate>

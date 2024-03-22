@@ -22,7 +22,10 @@ namespace BZRModManager.ViewModels
         {
             if (mods != null)
             {
-                Mods.AddRange(mods);
+                lock (Mods)
+                {
+                    Mods.AddRange(mods);
+                }
             }
         }
     }

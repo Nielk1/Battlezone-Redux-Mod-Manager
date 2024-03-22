@@ -79,7 +79,7 @@ namespace BZRModManager.ViewModels
             {
                 TasksLock.Release();
             }
-            return Task.Run(async () =>
+            Task t = Task.Run(async () =>
             {
                 value.Invoke(taskNode);
                 taskNode.Finished = true;
@@ -95,6 +95,7 @@ namespace BZRModManager.ViewModels
                 }
                 */
             });
+            return t;
         }
 
         public async Task ClearFinishedTasks()

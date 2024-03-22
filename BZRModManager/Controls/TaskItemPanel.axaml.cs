@@ -41,6 +41,14 @@ namespace BZRModManager.Controls
             set => SetValue(ActiveProperty, value);
         }
 
+        public static readonly StyledProperty<bool> DelayedProperty =
+            AvaloniaProperty.Register<TaskItemPanel, bool>(nameof(Delayed), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+        public bool Delayed
+        {
+            get => GetValue(DelayedProperty);
+            set => SetValue(DelayedProperty, value);
+        }
+
         public static readonly StyledProperty<bool> FinishedProperty =
             AvaloniaProperty.Register<TaskItemPanel, bool>(nameof(Finished), false, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
         public bool Finished
