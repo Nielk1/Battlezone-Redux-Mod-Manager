@@ -78,71 +78,55 @@ public partial class MainViewModel : ViewModelBase
         SteamCmd.SteamCmdOutput += Steam_SteamCmdOutput;
         SteamCmd.SteamCmdOutputFull += Steam_SteamCmdOutputFull;
 
-        // We are blocking the UI thread here somehow, need to move this logic to another location.
-        // Should rework the entire system into tasks run by a task handler.
-        SemaphoreSlim tmpSem = new SemaphoreSlim(0, 1);
+        StartupTasks();
+    }
+
+    private void StartupTasks()
+    {
+        SemaphoreSlim SteamStartupLock = new SemaphoreSlim(0, 1);
         vmTasks.RegisterTask("SteamCmd Startup", null, null, async (Node) =>
         {
-            await Task.Delay(1000);
             Node.State = TaskNodeState.Running;
-            await Task.Delay(1000);
             await SteamCmd.DownloadAsync();
             await SteamCmd.TestRunAsync();
-            tmpSem.Release();
-            tmpSem.Release();
+            SteamStartupLock.Release();
+            SteamStartupLock.Release();
         }).ConfigureAwait(false);
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZ98R", null, null, async (Node) =>
         {
-            await tmpSem.WaitAsync();
-            Node.State = TaskNodeState.Waiting;
-
-            // dynamicly adjust status based on being busy
-            Node.StatusReceivedEvent += (ESteamCmdTaskStatus value) =>
-            {
-                Trace.WriteLine($"Set BZ98R Status: {value.ToString()}");
-                switch (value)
-                {
-                    case ESteamCmdTaskStatus.Waiting:
-                        Node.State = TaskNodeState.Delayed;
-                        break;
-                    case ESteamCmdTaskStatus.WaitingToStart:
-                    case ESteamCmdTaskStatus.Running:
-                    case ESteamCmdTaskStatus.Finished:
-                        Node.State = TaskNodeState.Running;
-                        break;
-                }
-            };
-            //Node.Active = true;
-            List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(301650, Node, Node);
-            vmManageMods.AddMods(301650, mods);
+            await SteamStartupLock.WaitAsync();
+            await WorkshopModScan(301650, Node);
         }).ConfigureAwait(false);
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
         {
-            await tmpSem.WaitAsync();
-            Node.State = TaskNodeState.Waiting;
-
-            // dynamicly adjust status based on being busy
-            Node.StatusReceivedEvent += (ESteamCmdTaskStatus value) =>
-            {
-                Trace.WriteLine($"Set BZCC Status: {value.ToString()}");
-                switch (value)
-                {
-                    case ESteamCmdTaskStatus.Waiting:
-                        Node.State = TaskNodeState.Delayed;
-                        break;
-                    case ESteamCmdTaskStatus.WaitingToStart:
-                    case ESteamCmdTaskStatus.Running:
-                    case ESteamCmdTaskStatus.Finished:
-                        Node.State = TaskNodeState.Running;
-                        break;
-                }
-            };
-            //Node.Active = true;
-            List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(624970, Node, Node);
-            vmManageMods.AddMods(624970, mods);
+            await SteamStartupLock.WaitAsync();
+            await WorkshopModScan(624970, Node);
         }).ConfigureAwait(false);
+    }
+
+    private async Task WorkshopModScan(uint appId, TaskNode Node)
+    {
+        Node.State = TaskNodeState.Waiting;
+
+        // dynamicly adjust status based on being busy
+        Node.StatusReceivedEvent += (ESteamCmdTaskStatus value) =>
+        {
+            switch (value)
+            {
+                case ESteamCmdTaskStatus.Waiting:
+                    Node.State = TaskNodeState.Delayed;
+                    break;
+                case ESteamCmdTaskStatus.WaitingToStart:
+                case ESteamCmdTaskStatus.Running:
+                case ESteamCmdTaskStatus.Finished:
+                    Node.State = TaskNodeState.Running;
+                    break;
+            }
+        };
+        List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(appId, Node, Node);
+        vmManageMods.AddWorkshopModData(appId, mods);
     }
 
     private void Steam_SteamCmdOutputFull(object sender, string msg)

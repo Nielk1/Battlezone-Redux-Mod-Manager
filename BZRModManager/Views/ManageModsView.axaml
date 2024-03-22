@@ -15,13 +15,14 @@
   </UserControl.Styles>
   <ScrollViewer AllowAutoHide="True"
                 Margin="0 30 0 0">
-    <ItemsRepeater ItemsSource="{Binding Mods}">
+    <ItemsRepeater ItemsSource="{Binding FilteredMods}">
       <ItemsRepeater.Layout>
         <UniformGridLayout/>
       </ItemsRepeater.Layout>
       <ItemsRepeater.ItemTemplate>
         <DataTemplate>
-          <controls:ManageModItemPanel Title="{Binding WorkshopId}"/>
+          <controls:ManageModItemPanel Title="{Binding Name}"
+                                       ImageSource="{Binding Image}"/>
         </DataTemplate>
       </ItemsRepeater.ItemTemplate>
     </ItemsRepeater>
