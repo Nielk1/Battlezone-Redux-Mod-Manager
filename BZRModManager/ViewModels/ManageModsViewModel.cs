@@ -44,8 +44,8 @@ namespace BZRModManager.ViewModels
             FilteredMods = new ObservableCollectionView<ModData>(AllMods);
             modsLock = new SemaphoreSlim(1, 1);
             modsLocks = new Dictionary<string, SemaphoreSlim>();
-            FilteredMods.Order = entry => entry.Name;
-            FilteredMods.Ascending = false;
+            FilteredMods.Order = entry => entry.Title;
+            //FilteredMods.Ascending = false;
         }
 
         public async Task AddWorkshopModData(uint appId, List<WorkshopItemStatus> mods)
@@ -71,6 +71,7 @@ namespace BZRModManager.ViewModels
                         {
                             valueLock = modsLocks[key];
                         }
+                        value.DecorateMedia();
                     }
                     finally
                     {

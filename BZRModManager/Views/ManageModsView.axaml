@@ -10,6 +10,7 @@
     <TextBlock>Test</TextBlock>
   </Panel>
   -->
+  
   <UserControl.Styles>
     <StyleInclude Source="/Controls/ManageModItemPanel.axaml"/>
   </UserControl.Styles>
@@ -21,7 +22,7 @@
       </ItemsRepeater.Layout>
       <ItemsRepeater.ItemTemplate>
         <DataTemplate>
-          <controls:ManageModItemPanel Title="{Binding Name}"
+          <controls:ManageModItemPanel Title="{Binding Title}"
                                        ImageSource="{Binding Image}"/>
         </DataTemplate>
       </ItemsRepeater.ItemTemplate>

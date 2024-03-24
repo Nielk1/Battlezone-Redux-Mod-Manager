@@ -55,7 +55,7 @@
              DisplayMode="CompactInline"
              OpenPaneLength="375">
     <SplitView.Pane>
-      <DockPanel Margin="10">
+      <DockPanel Margin="10" x:Name="MainNav">
         <Panel DockPanel.Dock="Top">
           <Image Source="/Assets/modmanager.ico"
                  Height="40"

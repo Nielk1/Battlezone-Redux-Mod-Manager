@@ -2,10 +2,12 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using BZRModManager.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BZRModManager.Controls
 {
-    public class ManageModItemPanel : TemplatedControl
+    public partial class ManageModItemPanel : TemplatedControl
     {
         public static readonly StyledProperty<string> TitleProperty =
             AvaloniaProperty.Register<MainNavButton, string>(nameof(Title), "Title", defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);

@@ -6,37 +6,31 @@ namespace BZRModManager.Views;
 
 public partial class MainWindow : Window
 {
+    private Control? mainNav;
     public MainWindow()
     {
         InitializeComponent();
 
+        mainNav = (this.Content as MainView)?.FindControl<Control>("MainNav");
+
         PointerPressed += InputElement_OnPointerPressed;
-        PointerReleased += InputElement_OnPointerReleased;
-        PointerMoved += InputElement_OnPointerMoved;
-    }
-
-    private bool _mouseDownForWindowMoving = false;
-    private PointerPoint _originalPoint;
-
-    private void InputElement_OnPointerMoved(object? sender, PointerEventArgs e)
-    {
-        if (!_mouseDownForWindowMoving) return;
-
-        PointerPoint currentPoint = e.GetCurrentPoint(this);
-        Position = new PixelPoint(Position.X + (int)(currentPoint.Position.X - _originalPoint.Position.X),
-            Position.Y + (int)(currentPoint.Position.Y - _originalPoint.Position.Y));
     }
 
     private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (WindowState == WindowState.Maximized || WindowState == WindowState.FullScreen) return;
 
-        _mouseDownForWindowMoving = true;
-        _originalPoint = e.GetCurrentPoint(this);
-    }
+        PointerPoint originalPoint = e.GetCurrentPoint(this);
 
-    private void InputElement_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        _mouseDownForWindowMoving = false;
+        if (originalPoint.Position.Y > 32) // 32 is the height of the title bar
+        {
+            Rect? r = mainNav?.Bounds;
+            if (!r.HasValue)
+                return;
+            if (originalPoint.Position.X > r.Value.Width + r.Value.Left + r.Value.Right)
+                return;
+        }
+
+        BeginMoveDrag(e);
     }
 }
