@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SixLabors.ImageSharp;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
@@ -115,10 +116,21 @@ namespace BZRModManager
                         {
                             stream.CopyTo(fs);
                         }
+                        if (Path.GetExtension(local).ToLowerInvariant() == ".webp")
+                        {
+                            SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
+                            using(MemoryStream ms = new MemoryStream())
+                            {
+                                image.SaveAsPng(ms);
+                                ms.Position = 0;
+                                return new Bitmap(ms);
+                            }
+                        }
                         return new Bitmap(local);
                     }
                     else
                     {
+                        // no webp support here, probably kill it off?
                         var data = await response.Content.ReadAsByteArrayAsync();
                         return new Bitmap(new MemoryStream(data));
                     }

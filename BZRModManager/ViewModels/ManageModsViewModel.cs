@@ -71,7 +71,7 @@ namespace BZRModManager.ViewModels
                         {
                             valueLock = modsLocks[key];
                         }
-                        value.DecorateMedia();
+                        value.DownloadMetadata();
                     }
                     finally
                     {

@@ -1,29 +1,44 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 using BZRModManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace BZRModManager.Controls
 {
     public partial class ManageModItemPanel : TemplatedControl
     {
-        public static readonly StyledProperty<string> TitleProperty =
-            AvaloniaProperty.Register<MainNavButton, string>(nameof(Title), "Title", defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+        public Task<IImage?> LiveImage => ModData?.LiveImage;
+        public string Title => ModData?.Title;
 
-        public string Title
+        public static readonly StyledProperty<ModData?> ModDataProperty =
+            AvaloniaProperty.Register<MainNavButton, ModData?>(nameof(ModData), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+        public ModData? ModData
         {
-            get => GetValue(TitleProperty);
-            set => SetValue(TitleProperty, value);
+            get => GetValue(ModDataProperty);
+            set => SetValue(ModDataProperty, value);
         }
 
-        public static readonly StyledProperty<IImage?> ImageSourceProperty =
-            AvaloniaProperty.Register<MainNavButton, IImage?>(nameof(ImageSource), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
-        public IImage? ImageSource
+        private Visual parent1;
+        private Visual parent2;
+
+        public ManageModItemPanel()
         {
-            get => GetValue(ImageSourceProperty);
-            set => SetValue(ImageSourceProperty, value);
+            this.EffectiveViewportChanged += ManageModItemPanel_EffectiveViewportChanged;
+        }
+
+        private void ManageModItemPanel_EffectiveViewportChanged(object? sender, EffectiveViewportChangedEventArgs e)
+        {
+            parent1 ??= this.GetVisualParent();
+            parent2 ??= parent1.GetVisualParent();
+
+            //ModData?.UpdateVisibility(e.EffectiveViewport.Intersects(parent2.Bounds.WithY(parent1.Bounds.Y)));
+            ModData?.UpdateVisibility(e.EffectiveViewport.Intersects(parent2.Bounds));
         }
     }
 }

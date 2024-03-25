@@ -2,12 +2,14 @@
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.CodeAnalysis;
+using MyToolkit.MVVM;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -23,6 +25,10 @@ namespace BZRModManager.Models
         Battlezone98Redux = 301650,
         BattlezoneComatCommander = 624970,
     }
+    public static class Dummy
+    {
+        public static IImage FallbackImage => ImageHelper.LoadFromResource(new Uri("avares://BZRModManager/Assets/modmanager.ico"));
+    }
     public partial class ModData : ObservableObject
     {
         public GameId GameId { get; private set; }
@@ -31,39 +37,42 @@ namespace BZRModManager.Models
         [ObservableProperty]
         public string _title;
 
-        [ObservableProperty]
-        private IImage? _image;
+        public Task<IImage?> LiveImage => GetLiveImageAsync();
+        private string _loadedImage; // the last image we loaded to avoid double-actions
+        private IImage? _imageCache; // the last loaded image, might be null if we unloaded it for perf
+        private SemaphoreSlim GetLiveImageLock = new SemaphoreSlim(0, 1);
+        private SemaphoreSlim DecorateMetadataLock = new SemaphoreSlim(1, 1);
+        private bool FirstRun = true; // used to make data cache update stop image update, but only once
+
+        private bool _visible = true; // used to prevent image loading
 
         private IonDriverMod? _ionDriverData;
         public IonDriverMod? IonDriverData
         {
-            get
-            {
-                return _ionDriverData;
-            }
+            get { return _ionDriverData; }
             set
             {
-                _ionDriverData = value;
-                UpdateData();
-                DecorateMedia();
+                if (SetProperty(ref _ionDriverData, value))
+                {
+                    DownloadMetadata();
+                    UpdateData();
+                }
             }
         }
 
         private WorkshopItemStatus? _workshopData;
         public WorkshopItemStatus? WorkshopData
         {
-            get
-            {
-                return _workshopData;
-            }
+            get { return _workshopData; }
             set
             {
-                _workshopData = value;
-                UpdateData();
-                DecorateMedia();
+                if (SetProperty(ref _workshopData, value))
+                {
+                    DownloadMetadata();
+                    UpdateData();
+                }
             }
         }
-
         // this is called by property setters and thus could be triggered by DecorateMedia downloading new metadata
         private void UpdateData()
         {
@@ -74,167 +83,189 @@ namespace BZRModManager.Models
                  ?? ModId;
         }
 
+        /// <summary>
+        /// Get the mod's image, might be locally stored, might need to download it
+        /// </summary>
+        /// <returns></returns>
+        private async Task<IImage?> GetLiveImageAsync()
+        {
+            await GetLiveImageLock.WaitAsync();
+            try
+            {
+                if (!_visible)
+                    return null;
+                if (IonDriverData != null)
+                {
+                    if (IonDriverData?.Image != null)
+                    {
+                        string? gameIdString = null;
+                        switch (GameId)
+                        {
+                            case GameId.Battlezone98Redux:
+                                gameIdString = "bz98r";
+                                break;
+                            case GameId.BattlezoneComatCommander:
+                                gameIdString = "bzcc";
+                                break;
+                        }
+
+                        if (gameIdString != null)
+                        {
+                            string localImage = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}{Path.GetExtension(IonDriverData.Image)}");
+
+                            // if the image is already set, just spit out the existing image (might do a date check to reload)
+                            if (_imageCache != null && _loadedImage == localImage)
+                            {
+                                return _imageCache;
+                            }
+
+                            string? remoteAsset = $"https://gamelistassets.iondriver.com/{gameIdString}/{IonDriverData.Image}";
+                            Uri uri = new Uri(remoteAsset);
+
+                            // check if local properties are changed or not (or maybe do a datetime check)
+                            IImage? image = await AssetCache.Instance.GetImageAsync(uri, localImage);
+                            if (image != null)
+                            {
+                                _loadedImage = localImage;
+                                _imageCache = image;
+                                return _imageCache;
+                            }
+
+                        }
+                    }
+                }
+                return null;
+            }
+            finally
+            {
+                GetLiveImageLock.Release(); // make sure we always unlock
+            }
+        }
 
         private CancellationTokenSource DecorateCancelTokenSource;
-        // look at adding debounce, store a property for what the image source is and if it doesn't change, leave Image alone
-        // also consider dates, maybe include the last pulled date in said source string
-        private async Task DecorateMediaInternal(CancellationToken token)
+        // TODO consider dates, maybe include the last pulled date in said source string
+        private async Task DownloadMetadataInternal(CancellationToken? token = null)
         {
-            for (int i = 0; i < 10; i++)
+            await DecorateMetadataLock.WaitAsync();
+            try
             {
-                if (i > 0) await Task.Delay(1000);
-
-                try
+                for (int i = 0; i < 10; i++)
                 {
-                    // check existing files in cache and apply them or default
-                    string localMetadata = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}.json");
+                    if (i > 0) await Task.Delay(1000);
 
-                    if (token.IsCancellationRequested) return;
-
-                    // local images only, no downloads
+                    try
                     {
-                        bool GotImage = false;
-                        // load local nielk1 file if it exists
-                        if (File.Exists(localMetadata))
-                        {
-                            IonDriverMod? ionDriverDataTmp = JsonConvert.DeserializeObject<IonDriverMod>(File.ReadAllText(localMetadata));
-                            if (ionDriverDataTmp != null)
-                            {
-                                if (token.IsCancellationRequested) return;
-                                IonDriverData = ionDriverDataTmp;
-                                if (IonDriverData.Image != null)
-                                {
-                                    string localImage = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}{Path.GetExtension(IonDriverData.Image)}");
-                                    IImage? image = await AssetCache.Instance.GetImageAsync(null, localImage);
-                                    if (image != null)
-                                    {
-                                        GotImage = true;
-                                        Image = image;
+                        // check existing files in cache and apply them or default
+                        string localMetadata = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}.json");
 
-                                        //return; // if the date isn't too old
-                                    }
-                                }
-                            }
+                        string gameIdString = null;
+                        switch (GameId)
+                        {
+                            case GameId.Battlezone98Redux:
+                                gameIdString = "bz98r";
+                                break;
+                            case GameId.BattlezoneComatCommander:
+                                gameIdString = "bzcc";
+                                break;
                         }
 
-                        if (token.IsCancellationRequested) return;
-                        // we didn't get an image so load a default if none is set yet
-                        if (!GotImage)
+                        string? remoteMetadata = gameIdString != null ? $"https://gamelistassets.iondriver.com/{gameIdString}/getdata.php?mods={ModId}" : null;
+
+                        // download images now
                         {
-                            Image ??= await AssetCache.Instance.GetImageAsync(new Uri("avares://BZRModManager/Assets/modmanager.ico"), null);
-                        }
-                    }
-
-                    if (token.IsCancellationRequested) return;
-                    // wait a bit
-                    await Task.Delay(1000);
-                    if (token.IsCancellationRequested) return;
-
-                    string gameIdString = null;
-                    switch (GameId)
-                    {
-                        case GameId.Battlezone98Redux:
-                            gameIdString = "bz98r";
-                            break;
-                        case GameId.BattlezoneComatCommander:
-                            gameIdString = "bzcc";
-                            break;
-                    }
-
-                    string? remoteMetadata = gameIdString != null ? $"https://gamelistassets.iondriver.com/{gameIdString}/getdata.php?mods={ModId}" : null;
-
-                    // download images now
-                    {
-                        IonDriverMod localMetadataTemp = null;
-
-                        // download nielk1 metadata and image as needed
-                        if (!File.Exists(localMetadata) && !string.IsNullOrWhiteSpace(remoteMetadata))
-                        {
-                            // don't store local data since this can have more data in it than needed that we need to split up
-                            string? rawJson = await AssetCache.Instance.GetData(remoteMetadata, null);
-                            if (!string.IsNullOrWhiteSpace(rawJson))
+                            // load nielk1 metadata, download if not found
+                            // TODO add marker for 404s or something, timestamp can help here too for if it comes to exist
+                            if (!File.Exists(localMetadata) && !string.IsNullOrWhiteSpace(remoteMetadata))
                             {
-                                //File.WriteAllText(localMetadata, rawJson);
-                                IonDriverDataExtract? ionDriverDataTmp = JsonConvert.DeserializeObject<IonDriverDataExtract>(rawJson);
-                                if (ionDriverDataTmp != null && ionDriverDataTmp.Mods != null)
+                                // we might get multiple mods worth of data so we need to find our mod, save everything to cache since we got it
+                                string? rawJson = await AssetCache.Instance.GetData(remoteMetadata, null);
+                                if (!string.IsNullOrWhiteSpace(rawJson))
                                 {
-                                    foreach (var pair in ionDriverDataTmp.Mods)
+                                    IonDriverDataExtract? ionDriverDataTmp = JsonConvert.DeserializeObject<IonDriverDataExtract>(rawJson);
+                                    if (ionDriverDataTmp != null && ionDriverDataTmp.Mods != null)
                                     {
-                                        string localMetadataOtherMod = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{pair.Key}.json");
-
-                                        if (!Directory.Exists(Path.GetDirectoryName(localMetadataOtherMod)))
-                                            Directory.CreateDirectory(Path.GetDirectoryName(localMetadataOtherMod));
-
-                                        if (token.IsCancellationRequested) return;
-                                        if (pair.Key == ModId)// || !File.Exists(localMetadataOtherMod))
+                                        foreach (var pair in ionDriverDataTmp.Mods)
                                         {
-                                            // save the mod data for whatever mod we got
-                                            File.WriteAllText(localMetadataOtherMod, JsonConvert.SerializeObject(pair.Value));
+                                            string localMetadataOtherMod = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{pair.Key}.json");
 
-                                            if (pair.Key == ModId)
+                                            if (!Directory.Exists(Path.GetDirectoryName(localMetadataOtherMod)))
+                                                Directory.CreateDirectory(Path.GetDirectoryName(localMetadataOtherMod));
+
+                                            if (token?.IsCancellationRequested ?? false) return;
+                                            if (pair.Key == ModId || !File.Exists(localMetadataOtherMod))
                                             {
-                                                localMetadataTemp = pair.Value;
+                                                // save the mod data for whatever mod we got
+                                                File.WriteAllText(localMetadataOtherMod, JsonConvert.SerializeObject(pair.Value));
+
+                                                if (pair.Key == ModId)
+                                                {
+                                                    IonDriverData = pair.Value;
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
-
-                        if (token.IsCancellationRequested) return;
-                        // if we didn't already load localMetadataTemp from http, try loading it from file
-                        if (localMetadataTemp == null && File.Exists(localMetadata))
-                        {
-                            localMetadataTemp = JsonConvert.DeserializeObject<IonDriverMod>(File.ReadAllText(localMetadata));
-                        }
-
-                        // if we have localMetadataTemp use it
-                        if (localMetadataTemp != null)
-                        {
-                            IonDriverData = localMetadataTemp;
-
-                            if (_ionDriverData.Image != null)
+                            else
                             {
-                                string? remoteAsset = $"https://gamelistassets.iondriver.com/{gameIdString}/{IonDriverData.Image}";
-
-                                Uri uri = new Uri(remoteAsset);
-                                string localImage = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}{Path.GetExtension(IonDriverData.Image)}");
-                                if (token.IsCancellationRequested) return;
-                                // check if local properties are changed or not (or maybe do a datetime check)
-                                IImage? image = await AssetCache.Instance.GetImageAsync(uri, localImage, token);
-                                if (image != null)
-                                    Image = image;
+                                IonDriverData = JsonConvert.DeserializeObject<IonDriverMod>(File.ReadAllText(localMetadata));
                             }
                         }
+                        return; // we got to the end, return
                     }
-                    return; // we got to the end, return
-                }
-                catch (System.IO.IOException ex)
-                {
+                    catch (System.IO.IOException ex)
+                    {
 
+                    }
                 }
             }
+            finally
+            {
+                if (FirstRun)
+                {
+                    FirstRun = false;
+                    GetLiveImageLock.Release();
+                }
+                DecorateMetadataLock.Release();
+            }
         }
-        internal void DecorateMedia()
+        internal void DownloadMetadata()
         {
             DecorateCancelTokenSource?.Cancel();
             DecorateCancelTokenSource = new CancellationTokenSource();
             Task.Run(async () =>
             {
-                await DecorateMediaInternal(DecorateCancelTokenSource.Token);
+                await DownloadMetadataInternal(DecorateCancelTokenSource.Token);
             }, DecorateCancelTokenSource.Token);
         }
 
+        internal void UpdateVisibility(bool inViewport)
+        {
+            if (_visible != inViewport)
+            {
+                OnPropertyChanging(nameof(LiveImage));
+                _visible = inViewport;
+                if (!_visible)
+                {
+                    _imageCache = null;
+                }
+                OnPropertyChanged(nameof(LiveImage));
+            }
+        }
+
+        public ModData() : this((GameId)0, "0")
+        {
+        }
         public ModData(GameId gameId, string modId)
         {
             GameId = gameId;
             ModId = modId;
 
-            //UpdateImageList(null);
-
+            _ionDriverData = null;
             _workshopData = null;
-            //_imageSource = ("avares://BZRModManager/Assets/modmanager.ico", null);
-            _image = ImageHelper.LoadFromResource(new Uri("avares://BZRModManager/Assets/modmanager.ico"));
+
+            DownloadMetadata();
+            UpdateData();
         }
     }
 }

@@ -27,7 +27,7 @@ public partial class MainWindow : Window
             Rect? r = mainNav?.Bounds;
             if (!r.HasValue)
                 return;
-            if (originalPoint.Position.X > r.Value.Width + r.Value.Left + r.Value.Right)
+            if (originalPoint.Position.X > r.Value.Right)
                 return;
         }
 

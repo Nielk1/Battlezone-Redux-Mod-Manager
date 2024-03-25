@@ -2,11 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
-        xmlns:controls="using:BZRModManager.Controls">
+        xmlns:controls="using:BZRModManager.Controls"
+        xmlns:models="clr-namespace:BZRModManager.Models">
   <Design.PreviewWith>
-    <controls:ManageModItemPanel Title="Mod Title"
-                                 ImageSource="/Assets/modmanager.ico"
-                            />
+    <controls:ManageModItemPanel ModData=""/>
   </Design.PreviewWith>
 
   <Style Selector="controls|ManageModItemPanel">
@@ -17,14 +16,16 @@
                 BorderThickness="1"
                 BorderBrush="Gray">
           <DockPanel>
-            <Image Source="{TemplateBinding ImageSource}"
+            <Image Source="{Binding LiveImage^,
+                            TargetNullValue={x:Static models:Dummy.FallbackImage},
+                            FallbackValue={x:Static models:Dummy.FallbackImage}}"
                    Height="256"
                    Width="256"
                    RenderOptions.BitmapInterpolationMode="HighQuality"
                    DockPanel.Dock="Top"/>
             <DockPanel DockPanel.Dock="Bottom"
                        Height="100">
-              <TextBlock Text="{TemplateBinding Title}"
+              <TextBlock Text="{Binding Title}"
                          Padding="10"
                          TextAlignment="Center" />
             </DockPanel>

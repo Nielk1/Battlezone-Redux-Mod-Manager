@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:BZRModManager.Controls"
+             xmlns:models="using:BZRModManager.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BZRModManager.Views.ManageModsView">
   <!--
@@ -22,8 +23,7 @@
       </ItemsRepeater.Layout>
       <ItemsRepeater.ItemTemplate>
         <DataTemplate>
-          <controls:ManageModItemPanel Title="{Binding Title}"
-                                       ImageSource="{Binding Image}"/>
+          <controls:ManageModItemPanel ModData="{Binding}"/>
         </DataTemplate>
       </ItemsRepeater.ItemTemplate>
     </ItemsRepeater>
