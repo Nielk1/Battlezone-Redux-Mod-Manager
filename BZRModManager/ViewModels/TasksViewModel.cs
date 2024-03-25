@@ -22,25 +22,18 @@ namespace BZRModManager.ViewModels
         public ObservableCollection<TaskNode> Tasks { get; set; }
         private SemaphoreSlim TasksLock = new SemaphoreSlim(1, 1);
 
-        public bool IsEmpty
-        {
-            get => Tasks.Count == 0;
-        }
+        public int TaskCount => Tasks.Where(x => x.State != TaskNodeState.Finished).Count();
+
+        public bool IsEmpty => Tasks.Count == 0;
 
         public TasksViewModel()
         {
-            Tasks = new ObservableCollection<TaskNode>(/*new List<TaskNode> {
-                new TaskNode("Task 0", null, 0.000d),
-                new TaskNode("Task 1", null, 0.125d),
-                new TaskNode("Task 2", null, 0.250d),
-                new TaskNode("Task 3", null, 0.375d),
-                new TaskNode("Task 4", null, 0.500d),
-                new TaskNode("Task 5", null, 0.625d),
-                new TaskNode("Task 6", null, 0.750d),
-                new TaskNode("Task 7", null, 0.875d),
-                new TaskNode("Task 8", null, 1.000d),
-                new TaskNode("Task 9", null, null),
-            }*/);
+            Tasks = new ObservableCollection<TaskNode>();
+            Tasks.CollectionChanged += (sender, e) =>
+            {
+                OnPropertyChanged(new PropertyChangedEventArgs("IsEmpty"));
+                OnPropertyChanged(new PropertyChangedEventArgs("TaskCount"));
+            };  
         }
 
         public Task RegisterTask(string name, IImage? image, double? percent, TaskNodeDelegateAsync value)
@@ -62,6 +55,7 @@ namespace BZRModManager.ViewModels
                 taskNode.State = TaskNodeState.Finished;
                 if (!taskNode.Percent.HasValue)
                     taskNode.Percent = 1;
+                OnPropertyChanged(new PropertyChangedEventArgs("TaskCount")); // because the count didn't actually change, a sub-property did
             });
         }
 
@@ -84,6 +78,7 @@ namespace BZRModManager.ViewModels
                 taskNode.State = TaskNodeState.Finished;
                 if (!taskNode.Percent.HasValue)
                     taskNode.Percent = 1;
+                OnPropertyChanged(new PropertyChangedEventArgs("TaskCount")); // because the count didn't actually change, a sub-property did
             });
             return t;
         }
@@ -95,6 +90,7 @@ namespace BZRModManager.ViewModels
             {
                 Tasks.RemoveMany(Tasks.Where(x => x.State == TaskNodeState.Finished));
                 OnPropertyChanged(new PropertyChangedEventArgs("IsEmpty"));
+                OnPropertyChanged(new PropertyChangedEventArgs("TaskCount"));
             }
             finally
             {

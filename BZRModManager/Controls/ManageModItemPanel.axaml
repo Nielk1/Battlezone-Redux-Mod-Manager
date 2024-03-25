@@ -16,7 +16,7 @@
                 BorderThickness="1"
                 BorderBrush="Gray">
           <DockPanel>
-            <Image Source="{Binding LiveImage^,
+            <Image Source="{Binding Image,
                             TargetNullValue={x:Static models:Dummy.FallbackImage},
                             FallbackValue={x:Static models:Dummy.FallbackImage}}"
                    Height="256"

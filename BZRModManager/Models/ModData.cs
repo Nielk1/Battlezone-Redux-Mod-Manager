@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
+using DynamicData.Binding;
 using Microsoft.CodeAnalysis;
 using MyToolkit.MVVM;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -37,14 +39,16 @@ namespace BZRModManager.Models
         [ObservableProperty]
         public string _title;
 
-        public Task<IImage?> LiveImage => GetLiveImageAsync();
+        [ObservableProperty]
+        private IImage? _image;
+
         private string _loadedImage; // the last image we loaded to avoid double-actions
-        private IImage? _imageCache; // the last loaded image, might be null if we unloaded it for perf
-        private SemaphoreSlim GetLiveImageLock = new SemaphoreSlim(0, 1);
+        private SemaphoreSlim UpdateImageLock = new SemaphoreSlim(0, 1);
         private SemaphoreSlim DecorateMetadataLock = new SemaphoreSlim(1, 1);
         private bool FirstRun = true; // used to make data cache update stop image update, but only once
 
-        private bool _visible = true; // used to prevent image loading
+        [ObservableProperty]
+        private bool _visibleInViewport = true; // used to prevent image loading
 
         private IonDriverMod? _ionDriverData;
         public IonDriverMod? IonDriverData
@@ -74,26 +78,26 @@ namespace BZRModManager.Models
             }
         }
         // this is called by property setters and thus could be triggered by DecorateMedia downloading new metadata
-        private void UpdateData()
+        private async void UpdateData()
         {
             Title = IonDriverData?.WorkshopName
                  ?? IonDriverData?.Name
                  ?? WorkshopData?.Title
                  ?? WorkshopData?.WorkshopId.ToString()
                  ?? ModId;
+            await UpdateImageAsync();
         }
 
-        /// <summary>
-        /// Get the mod's image, might be locally stored, might need to download it
-        /// </summary>
-        /// <returns></returns>
-        private async Task<IImage?> GetLiveImageAsync()
+        private async Task UpdateImageAsync()
         {
-            await GetLiveImageLock.WaitAsync();
+            await UpdateImageLock.WaitAsync();
             try
             {
-                if (!_visible)
-                    return null;
+                if (!_visibleInViewport)
+                {
+                    Image = null;
+                    return;
+                }
                 if (IonDriverData != null)
                 {
                     if (IonDriverData?.Image != null)
@@ -113,32 +117,27 @@ namespace BZRModManager.Models
                         {
                             string localImage = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}{Path.GetExtension(IonDriverData.Image)}");
 
-                            // if the image is already set, just spit out the existing image (might do a date check to reload)
-                            if (_imageCache != null && _loadedImage == localImage)
-                            {
-                                return _imageCache;
-                            }
+                            if (_loadedImage == localImage && Image != null)
+                                return; // we already have the correct image loaded
 
                             string? remoteAsset = $"https://gamelistassets.iondriver.com/{gameIdString}/{IonDriverData.Image}";
                             Uri uri = new Uri(remoteAsset);
 
-                            // check if local properties are changed or not (or maybe do a datetime check)
-                            IImage? image = await AssetCache.Instance.GetImageAsync(uri, localImage);
+                            // TODO Datetime check should be added to prevent spurious web requests
+                            IImage? image = await AssetCache.Instance.GetImageAsync(uri, localImage);//, new Point(256, 256));
+
                             if (image != null)
                             {
                                 _loadedImage = localImage;
-                                _imageCache = image;
-                                return _imageCache;
+                                Image = image;
                             }
-
                         }
                     }
                 }
-                return null;
             }
             finally
             {
-                GetLiveImageLock.Release(); // make sure we always unlock
+                UpdateImageLock.Release(); // make sure we always unlock
             }
         }
 
@@ -224,7 +223,7 @@ namespace BZRModManager.Models
                 if (FirstRun)
                 {
                     FirstRun = false;
-                    GetLiveImageLock.Release();
+                    UpdateImageLock.Release();
                 }
                 DecorateMetadataLock.Release();
             }
@@ -241,16 +240,20 @@ namespace BZRModManager.Models
 
         internal void UpdateVisibility(bool inViewport)
         {
-            if (_visible != inViewport)
+            /*if (VisibleInViewport != inViewport)
             {
-                OnPropertyChanging(nameof(LiveImage));
-                _visible = inViewport;
-                if (!_visible)
+                OnPropertyChanging(nameof(Image));
+                VisibleInViewport = inViewport;
+                if (!VisibleInViewport)
                 {
-                    _imageCache = null;
+                    Image = null;
                 }
-                OnPropertyChanged(nameof(LiveImage));
-            }
+                //else if (Image == null)
+                //{
+                //    await UpdateImageAsync();
+                //}
+                OnPropertyChanged(nameof(Image));
+            }*/
         }
 
         public ModData() : this((GameId)0, "0")
@@ -263,6 +266,12 @@ namespace BZRModManager.Models
 
             _ionDriverData = null;
             _workshopData = null;
+
+            //this.WhenPropertyChanged(md => md.VisibleInViewport)
+            //    .Subscribe(async _ =>
+            //    {
+            //        await UpdateImageAsync().ConfigureAwait(false);
+            //    });
 
             DownloadMetadata();
             UpdateData();

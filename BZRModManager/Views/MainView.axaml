@@ -125,7 +125,8 @@
             <controls:MainNavButton Text="Tasks"
                                     IconData="{StaticResource icon_tasks}"
                                     Command="{Binding ChangeContentCommand}"
-                                    CommandParameter="tasks"/>
+                                    CommandParameter="tasks"
+                                    Badge="{Binding TaskCount}"/>
             <controls:MainNavButton Text="Logs"
                                     IconData="{StaticResource icon_logs}"
                                     Command="{Binding ChangeContentCommand}"

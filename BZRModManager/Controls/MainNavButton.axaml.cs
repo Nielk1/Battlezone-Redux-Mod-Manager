@@ -25,12 +25,21 @@ namespace BZRModManager.Controls
         }
 
         public static readonly StyledProperty<string> TextProperty =
-            AvaloniaProperty.Register<MainNavButton, string>(nameof(Text), "Text", defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+            AvaloniaProperty.Register<MainNavButton, string>(nameof(Text), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
 
         public string Text
         {
             get => GetValue(TextProperty);
             set => SetValue(TextProperty, value);
+        }
+
+        public static readonly StyledProperty<string> BadgeProperty =
+            AvaloniaProperty.Register<MainNavButton, string>(nameof(Badge), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+
+        public string Badge
+        {
+            get => GetValue(BadgeProperty);
+            set => SetValue(BadgeProperty, value);
         }
 
         public static readonly StyledProperty<IRelayCommand?> CommandProperty =

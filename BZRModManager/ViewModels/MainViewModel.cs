@@ -1,4 +1,5 @@
-﻿using BZRModManager.Models;
+﻿using Avalonia.Controls;
+using BZRModManager.Models;
 using BZRModManager.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -6,6 +7,7 @@ using Newtonsoft.Json;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
@@ -30,6 +32,8 @@ public partial class MainViewModel : ViewModelBase
     private ManageModsViewModel vmManageMods = new ManageModsViewModel();
     private LogsViewModel vmLogs = new LogsViewModel();
     private TasksViewModel vmTasks = new TasksViewModel();
+
+    public string? TaskCount => vmTasks.TaskCount > 0 ? vmTasks.TaskCount.ToString() : null;
 
     [RelayCommand]
     public async Task ChangeContent(string parameter)
@@ -77,6 +81,16 @@ public partial class MainViewModel : ViewModelBase
 
         SteamCmd.SteamCmdOutput += Steam_SteamCmdOutput;
         SteamCmd.SteamCmdOutputFull += Steam_SteamCmdOutputFull;
+
+        vmTasks.PropertyChanged += (sender, e) =>
+        {
+            switch(e.PropertyName)
+            {
+                case "TaskCount":
+                    OnPropertyChanged(new PropertyChangedEventArgs("TaskCount"));
+                    break;
+            }
+        };
 
         StartupTasks();
     }

@@ -2,6 +2,7 @@
 using Avalonia.Media.Imaging;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
@@ -79,7 +80,7 @@ namespace BZRModManager
             return null;
         }
 
-        public async Task<IImage?> GetImageAsync(Uri? url, string? local, CancellationToken? token = null)
+        public async Task<IImage?> GetImageAsync(Uri? url, string? local)//, System.Drawing.Point? size, CancellationToken? token = null)
         {
             if (url == null && !string.IsNullOrWhiteSpace(local))
             {
@@ -109,22 +110,29 @@ namespace BZRModManager
                         if (!Directory.Exists(localPath))
                             Directory.CreateDirectory(localPath);
 
-                        if (token?.IsCancellationRequested ?? false) return null;
+                        //if (token?.IsCancellationRequested ?? false) return null;
 
                         using (Stream stream = await response.Content.ReadAsStreamAsync())
                         using (FileStream fs = File.OpenWrite(local))
                         {
                             stream.CopyTo(fs);
                         }
-                        if (Path.GetExtension(local).ToLowerInvariant() == ".webp")
+                        // TODO replace this with logic from data builder to inspect file header instead
+                        // We'll probably make an exact size image baker for this but the logic will still help other data sources like Steam
+                        if (/*size.HasValue ||*/ Path.GetExtension(local).ToLowerInvariant() == ".webp")
                         {
-                            SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
-                            using(MemoryStream ms = new MemoryStream())
+                            return await Task.Run(() =>
                             {
-                                image.SaveAsPng(ms);
-                                ms.Position = 0;
-                                return new Bitmap(ms);
-                            }
+                                SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
+                                using (MemoryStream ms = new MemoryStream())
+                                {
+                                    //if (size != null)
+                                    //    image.Mutate(image => image.Resize(size.Value.X, size.Value.Y));
+                                    image.SaveAsPng(ms);
+                                    ms.Position = 0;
+                                    return new Bitmap(ms);
+                                }
+                            });
                         }
                         return new Bitmap(local);
                     }

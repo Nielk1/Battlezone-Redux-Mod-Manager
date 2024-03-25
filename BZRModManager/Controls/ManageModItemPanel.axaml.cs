@@ -13,8 +13,8 @@ namespace BZRModManager.Controls
 {
     public partial class ManageModItemPanel : TemplatedControl
     {
-        public Task<IImage?> LiveImage => ModData?.LiveImage;
-        public string Title => ModData?.Title;
+        public IImage? Image => ModData?.Image;
+        public string? Title => ModData?.Title;
 
         public static readonly StyledProperty<ModData?> ModDataProperty =
             AvaloniaProperty.Register<MainNavButton, ModData?>(nameof(ModData), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
