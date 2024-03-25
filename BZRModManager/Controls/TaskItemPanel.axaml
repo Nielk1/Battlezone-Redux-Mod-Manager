@@ -43,11 +43,11 @@
                   Margin="5"
                   BorderThickness="1"
                   BorderBrush="Gray"
-                  Opacity="{TemplateBinding State,
+                  Opacity="{Binding State,
                             Converter={StaticResource TaskNodeStateToDoubleConverter},
                             ConverterParameter='Finished,1|0.25'}">
             <Panel>
-              <Image Source="{TemplateBinding ImageSource}"
+              <Image Source="{Binding ImageSource}"
                      Height="256"
                      Width="256"
                      RenderOptions.BitmapInterpolationMode="HighQuality"/>
@@ -57,7 +57,7 @@
                 <StackPanel HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Margin="5 5 5 5">
-                  <controls:OutlinedTextBlock Text="{TemplateBinding Text}"
+                  <controls:OutlinedTextBlock Text="{Binding Text}"
                                               Fill="White"
                                               Stroke="Black"
                                               StrokeThickness="1.0"
@@ -66,14 +66,14 @@
                                               TextAlignment="Center"
                                               Width="230"/>
                   <ProgressBar Maximum="1"
-                               Value="{TemplateBinding Percent}"
+                               Value="{Binding Percent}"
                                Margin="1 5 1 5"
                                Padding="1"
-                               IsIndeterminate="{TemplateBinding Percent,
+                               IsIndeterminate="{Binding Percent,
                                                  Converter={x:Static ObjectConverters.IsNull}}"
                                Height="10"
                                Background="Black"
-                               IsVisible="{TemplateBinding State,
+                               IsVisible="{Binding State,
                                            Converter={StaticResource TaskNodeStateToBoolConverter},
                                            ConverterParameter=!None}"/>
                   <Path Data="{StaticResource icon_pause}"
@@ -82,7 +82,7 @@
                         Stroke="Black"
                         StrokeThickness="1.0"
                         HorizontalAlignment="Center"
-                        IsVisible="{TemplateBinding State,
+                        IsVisible="{Binding State,
                                     Converter={StaticResource TaskNodeStateToBoolConverter},
                                     ConverterParameter=Waiting}"/>
                   <Path Data="{StaticResource icon_play}"
@@ -91,7 +91,7 @@
                         Stroke="Black"
                         StrokeThickness="1.0"
                         HorizontalAlignment="Center"
-                        IsVisible="{TemplateBinding State,
+                        IsVisible="{Binding State,
                                     Converter={StaticResource TaskNodeStateToBoolConverter},
                                     ConverterParameter=Running}}"/>
                   <Path Data="{StaticResource icon_playpause}"
@@ -100,7 +100,7 @@
                         Stroke="Black"
                         StrokeThickness="1.0"
                         HorizontalAlignment="Center"
-                        IsVisible="{TemplateBinding State,
+                        IsVisible="{Binding State,
                                     Converter={StaticResource TaskNodeStateToBoolConverter},
                                     ConverterParameter=Delayed}"/>
                   <Path Data="{StaticResource icon_done}"
@@ -109,7 +109,7 @@
                         Stroke="Black"
                         StrokeThickness="1.0"
                         HorizontalAlignment="Center"
-                        IsVisible="{TemplateBinding State,
+                        IsVisible="{Binding State,
                                     Converter={StaticResource TaskNodeStateToBoolConverter},
                                     ConverterParameter=Finished}"/>
                 </StackPanel>

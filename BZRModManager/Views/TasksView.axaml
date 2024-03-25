@@ -19,10 +19,7 @@
         </ItemsRepeater.Layout>
         <ItemsRepeater.ItemTemplate>
           <DataTemplate>
-            <controls:TaskItemPanel Text="{Binding Text}"
-                                    ImageSource="{Binding ImageSource}"
-                                    Percent="{Binding Percent}"
-                                    State="{Binding State}"/>
+            <controls:TaskItemPanel TaskNode="{Binding}"/>
           </DataTemplate>
         </ItemsRepeater.ItemTemplate>
       </ItemsRepeater>

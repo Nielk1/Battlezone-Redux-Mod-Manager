@@ -33,7 +33,8 @@ namespace BZRModManager.Controls
 
         private void CreateTextGeometry()
         {
-            var formattedText = new FormattedText(Text, Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight,
+            // somehow this is getting a NULL text value from the TaskNode, so just force it to empty to hack fix for now
+            var formattedText = new FormattedText(Text ?? string.Empty, Thread.CurrentThread.CurrentUICulture, FlowDirection.LeftToRight,
                                     new Typeface(FontFamily, FontStyle, FontWeight, FontStretch.Normal), FontSize, Brushes.Black)
             {
                 MaxTextWidth = Width,

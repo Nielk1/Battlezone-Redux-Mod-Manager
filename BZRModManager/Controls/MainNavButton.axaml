@@ -25,7 +25,7 @@
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
               </Grid.ColumnDefinitions>
               <Panel Grid.Column="0"
                      IsVisible="{TemplateBinding ImageSource,
