@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace BZRModManager.Controls
 {
-    public class MainNavButton : TemplatedControl
+    public class MainNavButton : ContentControl
     {
         public static readonly StyledProperty<Geometry?> IconDataProperty =
             AvaloniaProperty.Register<MainNavButton, Geometry?>(nameof(IconData), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
@@ -31,15 +31,6 @@ namespace BZRModManager.Controls
         {
             get => GetValue(TextProperty);
             set => SetValue(TextProperty, value);
-        }
-
-        public static readonly StyledProperty<string> BadgeProperty =
-            AvaloniaProperty.Register<MainNavButton, string>(nameof(Badge), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
-
-        public string Badge
-        {
-            get => GetValue(BadgeProperty);
-            set => SetValue(BadgeProperty, value);
         }
 
         public static readonly StyledProperty<IRelayCommand?> CommandProperty =

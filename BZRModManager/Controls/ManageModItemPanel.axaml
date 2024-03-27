@@ -3,9 +3,19 @@
         xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
         xmlns:controls="using:BZRModManager.Controls"
-        xmlns:models="clr-namespace:BZRModManager.Models">
+        xmlns:models="using:BZRModManager.Models"
+        xmlns:anim="https://github.com/whistyun/AnimatedImage.Avalonia">
   <Design.PreviewWith>
-    <controls:ManageModItemPanel ModData=""/>
+    <controls:ManageModItemPanel>
+      <controls:ManageModItemPanel.ModData>
+        <models:ModData Title="TESTING">
+          <x:Arguments>
+            <models:GameId>Battlezone98Redux</models:GameId>
+            <x:String>0</x:String>
+          </x:Arguments>
+        </models:ModData>
+      </controls:ManageModItemPanel.ModData>
+    </controls:ManageModItemPanel>
   </Design.PreviewWith>
 
   <Style Selector="controls|ManageModItemPanel">
@@ -17,8 +27,8 @@
                 BorderBrush="Gray">
           <DockPanel>
             <Image Source="{Binding Image,
-                            TargetNullValue={x:Static models:Dummy.FallbackImage},
-                            FallbackValue={x:Static models:Dummy.FallbackImage}}"
+                            TargetNullValue={x:Static models:ModData.FallbackImage},
+                            FallbackValue={x:Static models:ModData.FallbackImage}}"
                    Height="256"
                    Width="256"
                    RenderOptions.BitmapInterpolationMode="HighQuality"
@@ -27,7 +37,9 @@
                        Height="100">
               <TextBlock Text="{Binding Title}"
                          Padding="10"
-                         TextAlignment="Center" />
+                         TextAlignment="Center"
+                         Width="256"
+                         TextWrapping="Wrap"/>
             </DockPanel>
           </DockPanel>
         </Border>

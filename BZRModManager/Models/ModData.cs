@@ -3,7 +3,6 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData.Binding;
 using Microsoft.CodeAnalysis;
-using MyToolkit.MVVM;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
@@ -27,12 +26,9 @@ namespace BZRModManager.Models
         Battlezone98Redux = 301650,
         BattlezoneComatCommander = 624970,
     }
-    public static class Dummy
-    {
-        public static IImage FallbackImage => ImageHelper.LoadFromResource(new Uri("avares://BZRModManager/Assets/modmanager.ico"));
-    }
     public partial class ModData : ObservableObject
     {
+        public static IImage FallbackImage => ImageHelper.LoadFromResource(new Uri("avares://BZRModManager/Assets/modmanager.ico"));
         public GameId GameId { get; private set; }
         public string ModId { get; private set; }
 
@@ -174,7 +170,7 @@ namespace BZRModManager.Models
                         {
                             // load nielk1 metadata, download if not found
                             // TODO add marker for 404s or something, timestamp can help here too for if it comes to exist
-                            if (!File.Exists(localMetadata) && !string.IsNullOrWhiteSpace(remoteMetadata))
+                            if ((!File.Exists(localMetadata) || new FileInfo(localMetadata).CreationTimeUtc.AddDays(1) < DateTime.UtcNow) && !string.IsNullOrWhiteSpace(remoteMetadata))
                             {
                                 // we might get multiple mods worth of data so we need to find our mod, save everything to cache since we got it
                                 string? rawJson = await AssetCache.Instance.GetData(remoteMetadata, null);
@@ -256,16 +252,17 @@ namespace BZRModManager.Models
             }*/
         }
 
-        public ModData() : this((GameId)0, "0")
-        {
-        }
         public ModData(GameId gameId, string modId)
         {
             GameId = gameId;
             ModId = modId;
 
+            _loadedImage = null;
             _ionDriverData = null;
             _workshopData = null;
+            _image = null;
+
+            _title = ModId;
 
             //this.WhenPropertyChanged(md => md.VisibleInViewport)
             //    .Subscribe(async _ =>

@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 
 namespace BZRModManager.ViewModels;
 
+// TODO make sure to fulfill attribution requirements for Flaticon before any release, probably via the about tab
+
 public partial class MainViewModel : ViewModelBase
 {
 #if !DEBUG
@@ -34,6 +36,7 @@ public partial class MainViewModel : ViewModelBase
     private TasksViewModel vmTasks = new TasksViewModel();
 
     public string? TaskCount => vmTasks.TaskCount > 0 ? vmTasks.TaskCount.ToString() : null;
+    public bool ManageModsIsBusy => vmManageMods.IsBusy;
 
     [RelayCommand]
     public async Task ChangeContent(string parameter)
@@ -92,11 +95,26 @@ public partial class MainViewModel : ViewModelBase
             }
         };
 
+        vmManageMods.PropertyChanged += (sender, e) =>
+        {
+            switch(e.PropertyName)
+            {
+                case "IsBusy":
+                    OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
+                    break;
+            }
+        };
+
+        ContentViewModel = vmManageMods;
+
         StartupTasks();
     }
 
     private void StartupTasks()
     {
+        if (Design.IsDesignMode)
+            return;
+
         SemaphoreSlim SteamStartupLock = new SemaphoreSlim(0, 1);
         vmTasks.RegisterTask("SteamCmd Startup", null, null, async (Node) =>
         {

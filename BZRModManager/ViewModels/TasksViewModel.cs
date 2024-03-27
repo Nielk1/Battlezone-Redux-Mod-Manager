@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media;
 using BZRModManager.Controls;
 using BZRModManager.Models;
@@ -22,7 +23,7 @@ namespace BZRModManager.ViewModels
         public ObservableCollection<TaskNode> Tasks { get; set; }
         private SemaphoreSlim TasksLock = new SemaphoreSlim(1, 1);
 
-        public int TaskCount => Tasks.Where(x => x.State != TaskNodeState.Finished).Count();
+        public int TaskCount => Design.IsDesignMode ? 99 : Tasks.Where(x => x.State != TaskNodeState.Finished).Count();
 
         public bool IsEmpty => Tasks.Count == 0;
 

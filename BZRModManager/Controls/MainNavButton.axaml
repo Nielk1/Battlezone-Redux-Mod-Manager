@@ -4,8 +4,7 @@
   <Design.PreviewWith>
     <controls:MainNavButton Width="500"
                             ImageSource="/Assets/bzcc.ico"
-                            Text="Test"
-                            Badge="0"/>
+                            Text="Test"/>
   </Design.PreviewWith>
 
   <Style Selector="controls|MainNavButton">
@@ -44,12 +43,11 @@
               <TextBlock Grid.Column="2"
                          Text="{TemplateBinding Text}"
                          VerticalAlignment="Center"/>
-              <TextBlock Grid.Column="3"
-                         Text="{TemplateBinding Badge}"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Right"
-                         IsVisible="{TemplateBinding Badge,
-                                     Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+              <ContentPresenter Grid.Column="3"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"/>
             </Grid>
           </Panel>
         </Button>

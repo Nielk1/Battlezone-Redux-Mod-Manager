@@ -22,8 +22,8 @@ namespace BZRModManager.Models
 
     public partial class TaskNode : ObservableObject, IProgress<double?>, IObserver<ESteamCmdTaskStatus>
     {
-        public string Text { get; }
-        public IImage? ImageSource { get; }
+        public string Text { get; private set; }
+        public IImage? ImageSource { get; private set; }
         [ObservableProperty]
         public double? _percent;
 

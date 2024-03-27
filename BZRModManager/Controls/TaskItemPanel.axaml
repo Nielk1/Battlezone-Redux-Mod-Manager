@@ -4,12 +4,20 @@
         xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
         xmlns:controls="using:BZRModManager.Controls"
         xmlns:converters="using:BZRModManager.Converters"
-        xmlns:models="using:BZRModManager.Models">
+        xmlns:models="using:BZRModManager.Models"
+        xmlns:media="using:Avalonia.Media">
   <Design.PreviewWith>
-    <controls:TaskItemPanel Text="Template Control Text"
-                            ImageSource="/Assets/modmanager.ico"
-                            Percent="0.5"
-                            State="{x:Static models:TaskNodeState.Waiting}"/>
+    <controls:TaskItemPanel>
+      <controls:TaskItemPanel.TaskNode>
+        <models:TaskNode State="{x:Static models:TaskNodeState.Waiting}">
+          <x:Arguments>
+            <x:String>Template Control Text</x:String>
+            <media:IImage>/Assets/modmanager.ico</media:IImage>
+            <x:Double>0.5</x:Double>
+          </x:Arguments>
+        </models:TaskNode>
+      </controls:TaskItemPanel.TaskNode>
+    </controls:TaskItemPanel>
   </Design.PreviewWith>
   <Style Selector="controls|TaskItemPanel">
     <Style.Resources>

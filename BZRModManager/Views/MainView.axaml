@@ -48,7 +48,39 @@
         <StreamGeometry x:Key="icon_tasks">
           m4 22a2.982 2.982 0 0 1 -2.122-.879l-1.544-1.374a1 1 0 0 1 1.332-1.494l1.585 1.414a1 1 0 0 0 1.456.04l3.6-3.431a1 1 0 1 1 1.378 1.448l-3.585 3.414a2.964 2.964 0 0 1 -2.1.862zm19-1h-10a1 1 0 0 1 0-2h10a1 1 0 0 1 0 2zm-19-7a2.982 2.982 0 0 1 -2.122-.879l-1.585-1.585a1 1 0 0 1 1.414-1.414l1.586 1.585a1.023 1.023 0 0 0 1.414 0l3.6-3.431a1 1 0 1 1 1.382 1.448l-3.589 3.414a2.964 2.964 0 0 1 -2.1.862zm19-1h-10a1 1 0 0 1 0-2h10a1 1 0 0 1 0 2zm-19-7a2.982 2.982 0 0 1 -2.122-.879l-1.544-1.374a1 1 0 0 1 1.332-1.494l1.585 1.414a1 1 0 0 0 1.456.04l3.604-3.431a1 1 0 0 1 1.378 1.448l-3.589 3.414a2.964 2.964 0 0 1 -2.1.862zm19-1h-10a1 1 0 0 1 0-2h10a1 1 0 0 1 0 2z
         </StreamGeometry>
+        <StreamGeometry x:Key="icon_spinner">
+          M268.078,512C126.693,511.962,12.108,397.316,12.146,255.932S126.83-0.038,268.215,0c96.559,0.026,184.888,54.38,228.428,140.565c7.695,15.91,1.035,35.046-14.875,42.74c-15.501,7.497-34.155,1.384-42.213-13.834C391.771,74.81,276.296,36.808,181.634,84.592S48.97,247.851,96.754,342.513s163.259,132.664,257.921,84.88c36.48-18.414,66.133-47.987,84.646-84.417c8.018-15.753,27.287-22.023,43.04-14.005c15.753,8.018,22.023,27.287,14.005,43.04l0,0C452.852,458.077,364.519,512.244,268.078,512z
+        </StreamGeometry>
       </Style.Resources>
+    </Style>
+    <Style Selector="PathIcon.Throbber">
+      <Style.Animations>
+        <Animation Duration="0:0:1"
+                   IterationCount="INFINITE"
+                   Easing="SineEaseInOut">
+          <KeyFrame Cue="0%">
+            <Setter Property="Opacity" Value="1.0"/>
+          </KeyFrame>
+          <KeyFrame Cue="50%">
+            <Setter Property="Opacity" Value="0.25"/>
+          </KeyFrame>
+          <KeyFrame Cue="100%">
+            <Setter Property="Opacity" Value="1.0"/>
+          </KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+    <Style Selector="PathIcon.Rotator">
+      <Style.Animations>
+        <Animation Duration="0:0:2" IterationCount="INFINITE">
+          <KeyFrame Cue="0%">
+            <Setter Property="RotateTransform.Angle" Value="0"/>
+          </KeyFrame>
+          <KeyFrame Cue="100%">
+            <Setter Property="RotateTransform.Angle" Value="360"/>
+          </KeyFrame>
+        </Animation>
+      </Style.Animations>
     </Style>
   </UserControl.Styles>
   <SplitView IsPaneOpen="True"
@@ -101,7 +133,14 @@
             <controls:MainNavButton Text="Manage Mods"
                                     IconData="{StaticResource icon_managemods}"
                                     Command="{Binding ChangeContentCommand}"
-                                    CommandParameter="manage_mods"/>
+                                    CommandParameter="manage_mods">
+              <controls:MainNavButton.Content>
+                <PathIcon Data="{StaticResource icon_spinner}"
+                          Classes="Rotator Throbber"
+                          IsVisible="{Binding ManageModsIsBusy}">
+                </PathIcon>
+              </controls:MainNavButton.Content>
+            </controls:MainNavButton>
             <controls:MainNavButton Text="Get Mods"
                                     IconData="{StaticResource icon_getmods}"
                                     Command="{Binding ChangeContentCommand}"
@@ -125,8 +164,13 @@
             <controls:MainNavButton Text="Tasks"
                                     IconData="{StaticResource icon_tasks}"
                                     Command="{Binding ChangeContentCommand}"
-                                    CommandParameter="tasks"
-                                    Badge="{Binding TaskCount}"/>
+                                    CommandParameter="tasks">
+              <controls:MainNavButton.Content>
+                <TextBlock Text="{Binding TaskCount}"
+                           IsVisible="{Binding TaskCount,
+                                       Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+              </controls:MainNavButton.Content>
+            </controls:MainNavButton>
             <controls:MainNavButton Text="Logs"
                                     IconData="{StaticResource icon_logs}"
                                     Command="{Binding ChangeContentCommand}"
