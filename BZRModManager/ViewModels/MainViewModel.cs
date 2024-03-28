@@ -36,7 +36,7 @@ public partial class MainViewModel : ViewModelBase
     private TasksViewModel vmTasks = new TasksViewModel();
 
     public string? TaskCount => vmTasks.TaskCount > 0 ? vmTasks.TaskCount.ToString() : null;
-    public bool ManageModsIsBusy => vmManageMods.IsBusy;
+    public bool ManageModsIsBusy => SteamCmdWorking_BZ98R || SteamCmdWorking_BZCC || vmManageMods.IsBusy;
 
     [RelayCommand]
     public async Task ChangeContent(string parameter)
@@ -110,6 +110,9 @@ public partial class MainViewModel : ViewModelBase
         StartupTasks();
     }
 
+    bool SteamStartupDone = false;
+    bool SteamCmdWorking_BZ98R = true;
+    bool SteamCmdWorking_BZCC = true;
     private void StartupTasks()
     {
         if (Design.IsDesignMode)
@@ -121,20 +124,27 @@ public partial class MainViewModel : ViewModelBase
             Node.State = TaskNodeState.Running;
             await SteamCmd.DownloadAsync();
             await SteamCmd.TestRunAsync();
+            SteamStartupDone = true;
             SteamStartupLock.Release();
             SteamStartupLock.Release();
         }).ConfigureAwait(false);
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZ98R", null, null, async (Node) =>
         {
-            await SteamStartupLock.WaitAsync();
+            if (!SteamStartupDone)
+                await SteamStartupLock.WaitAsync();
             await WorkshopModScan(301650, Node);
+            SteamCmdWorking_BZ98R = false;
+            OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
         }).ConfigureAwait(false);
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
         {
-            await SteamStartupLock.WaitAsync();
+            if (!SteamStartupDone)
+                await SteamStartupLock.WaitAsync();
             await WorkshopModScan(624970, Node);
+            SteamCmdWorking_BZCC = false;
+            OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
         }).ConfigureAwait(false);
     }
 
