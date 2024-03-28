@@ -1,0 +1,98 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:BZRModManager.Controls">
+  <Design.PreviewWith>
+    <controls:FilterButton Text="Test"
+                           IsChecked="{x:Null}"/>
+  </Design.PreviewWith>
+  
+  <StyleInclude Source="/Controls/ManageModItemPanel.axaml"/>
+
+  <Style Selector="ToggleButton.ThreeState">
+    <Style Selector="^ controls|OutlinedTextBlock.Yes">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="^ controls|OutlinedTextBlock.No">
+      <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="^ controls|OutlinedTextBlock.Off">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+  </Style>
+
+  <Style Selector="ToggleButton.ThreeState:checked">
+    <Style Selector="^ controls|OutlinedTextBlock.Yes">
+      <Setter Property="IsVisible" Value="True"/>
+    </Style>
+    <Style Selector="^ controls|OutlinedTextBlock.No">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="^ controls|OutlinedTextBlock.Off">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+  </Style>
+
+  <Style Selector="ToggleButton.ThreeState:indeterminate">
+    <Style Selector="^ controls|OutlinedTextBlock.Yes">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="^ controls|OutlinedTextBlock.No">
+      <Setter Property="IsVisible" Value="False"/>
+    </Style>
+    <Style Selector="^ controls|OutlinedTextBlock.Off">
+      <Setter Property="IsVisible" Value="True"/>
+    </Style>
+  </Style>
+  
+  <Style Selector="controls|FilterButton">
+    <!-- Set Defaults -->
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ToggleButton IsThreeState="True"
+                      Classes="ThreeState"
+                      Margin="0 0 5 5"
+                      IsChecked="{TemplateBinding IsChecked,
+                                  Mode=TwoWay}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="17"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="{TemplateBinding Text}"/>
+            <controls:OutlinedTextBlock Grid.Column="1"
+                                        Text="✓"
+                                        Classes="Yes"
+                                        Fill="Green"
+                                        HorizontalAlignment="Right"
+                                        Margin="0 -7 0 0"
+                                        Stroke="Black"
+                                        StrokeThickness="1.0"
+                                        FontWeight="Bold"
+                                        FontSize="25"/>
+            <controls:OutlinedTextBlock Grid.Column="1"
+                                        Text="⊝"
+                                        Classes="Off"
+                                        Fill="Gray"
+                                        HorizontalAlignment="Right"
+                                        Margin="0 -8 0 0"
+                                        Stroke="Black"
+                                        StrokeThickness="1.0"
+                                        FontWeight="Bold"
+                                        FontSize="25"/>
+            <controls:OutlinedTextBlock Grid.Column="1"
+                                        Text="⦸"
+                                        Classes="No"
+                                        Fill="Red"
+                                        HorizontalAlignment="Right"
+                                        Margin="0 -6 0 0"
+                                        Stroke="Black"
+                                        StrokeThickness="1.0"
+                                        FontWeight="Bold"
+                                        FontSize="25"/>
+          </Grid>
+        </ToggleButton>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+</Styles>

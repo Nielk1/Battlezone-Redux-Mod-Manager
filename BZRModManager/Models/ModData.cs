@@ -264,12 +264,6 @@ namespace BZRModManager.Models
 
             _title = ModId;
 
-            //this.WhenPropertyChanged(md => md.VisibleInViewport)
-            //    .Subscribe(async _ =>
-            //    {
-            //        await UpdateImageAsync().ConfigureAwait(false);
-            //    });
-
             DownloadMetadata();
             UpdateData();
         }

@@ -39,18 +39,58 @@ namespace BZRModManager.ViewModels
         private Dictionary<string, SemaphoreSlim> modsLocks;
 
 
-        private GameId? _gameFilter = null;
-        public GameId? GameFilter
+        private bool _gameFilterBZ98R;
+        public bool GameFilterBZ98R
         {
-            get { return _gameFilter; }
+            get { return _gameFilterBZ98R; }
             set
             {
-                if (SetProperty(ref _gameFilter, value))
+                if (SetProperty(ref _gameFilterBZ98R, value))
                 {
-                    FilteredMods.Filter = entry => !_gameFilter.HasValue || entry.GameId == _gameFilter;
+                    //if (!value && !GameFilterBZCC)
+                    //    GameFilterBZCC = true;
                     UpdateFilter();
+                    ApplyFilter();
                 }
             }
+        }
+        private bool _gameFilterBZCC;
+        public bool GameFilterBZCC
+        {
+            get { return _gameFilterBZCC; }
+            set
+            {
+                if (SetProperty(ref _gameFilterBZCC, value))
+                {
+                    //if (!value && !GameFilterBZ98R)
+                    //    GameFilterBZ98R = true;
+                    UpdateFilter();
+                    ApplyFilter();
+                }
+            }
+        }
+
+        public ObservableCollectionView<ModFilter> Filters { get; private set; }
+
+
+        private void UpdateFilter()
+        {
+            FilteredMods.Filter = (entry) =>
+            {
+                if (!_gameFilterBZ98R && entry.GameId == GameId.Battlezone98Redux)
+                    return false;
+                if (!_gameFilterBZCC && entry.GameId == GameId.BattlezoneComatCommander)
+                    return false;
+
+                if (Filters.Count > 0)
+                    return Filters.All((filter) =>
+                    {
+                        return filter.Active.HasValue ? (filter.Active.Value ? filter.IsVisible(entry) : !filter.IsVisible(entry)) : true;
+                    });
+
+                return true;
+            };
+            ApplyFilter();
         }
 
         [ObservableProperty]
@@ -58,6 +98,8 @@ namespace BZRModManager.ViewModels
 
         public ManageModsViewModel()
         {
+            _gameFilterBZ98R = true;
+            _gameFilterBZCC = true;
             ModsInternal = new Dictionary<string, ModData>();
             AllMods = new MtObservableCollection<ModData>();
             FilteredMods = new ObservableCollectionView<ModData>(AllMods);
@@ -66,10 +108,47 @@ namespace BZRModManager.ViewModels
             modsLocks = new Dictionary<string, SemaphoreSlim>();
             FilteredMods.Order = entry => entry.Title;
             //FilteredMods.Ascending = false;
+            Filters = new ObservableCollectionView<ModFilter>(new List<ModFilter>
+            {
+                // AI made this list, kinda amazing, not what we wanted but perfect examples
+                /*new ModFilter("Battlezone 98 Redux", true, (entry) => entry.GameId == GameId.Battlezone98Redux),
+                new ModFilter("Battlezone Combat Commander", true, (entry) => entry.GameId == GameId.BattlezoneComatCommander),
+                new ModFilter("Active", true, (entry) => entry.Active),
+                new ModFilter("Inactive", true, (entry) => !entry.Active),
+                new ModFilter("Installed", true, (entry) => entry.Installed),
+                new ModFilter("Not Installed", true, (entry) => !entry.Installed),
+                new ModFilter("Update Available", true, (entry) => entry.UpdateAvailable),
+                new ModFilter("No Update Available", true, (entry) => !entry.UpdateAvailable),
+                new ModFilter("Downloading", true, (entry) => entry.Downloading),
+                new ModFilter("Not Downloading", true, (entry) => !entry.Downloading),
+                new ModFilter("Downloaded", true, (entry) => entry.Downloaded),
+                new ModFilter("Not Downloaded", true, (entry) => !entry.Downloaded),
+                new ModFilter("Installed", true, (entry) => entry.Installed),
+                new ModFilter("Not Installed", true, (entry) => !entry.Installed),
+                new ModFilter("Enabled", true, (entry) => entry.Enabled),
+                new ModFilter("Disabled", true, (entry) => !entry.Enabled),
+                new ModFilter("Has Workshop Data", true, (entry) => entry.WorkshopData != null),
+                new ModFilter("No Workshop Data", true, (entry) => entry.WorkshopData == null),
+                new ModFilter("Has Metadata", true, (entry) => entry.Metadata != null),
+                new ModFilter("No Metadata", true, (entry) => entry.Metadata == null),*/
+
+                new ModFilter("Has Cloud Data", null, (entry) => {
+                    return entry.IonDriverData != null;
+                }),
+                new ModFilter("Needs Update", null, (entry) => {
+                    return entry.WorkshopData?.HasUpdate ?? false;
+                }),
+            });
+
+            Filters.PropertyChanged += (sender, e) => UpdateFilter();
+            foreach(var filter in Filters)
+            {
+                filter.PropertyChanged += (sender, e) => UpdateFilter();
+            }
         }
 
-        private CancellationTokenSource filterDebounceCancellationToken;
-        private void UpdateFilter()
+        private CancellationTokenSource? filterDebounceCancellationToken;
+        private void ApplyFilter()
         {
             IsBusy = true;
             filterDebounceCancellationToken?.Cancel();
@@ -109,8 +188,8 @@ namespace BZRModManager.ViewModels
                             ModsInternal[key] = value;
                             valueLock = modsLocks[key] = new SemaphoreSlim(1, 1);
                             AllMods.Add(value);
-                            value.PropertyChanged += (sender, e) => UpdateFilter();
-                            UpdateFilter();
+                            value.PropertyChanged += (sender, e) => ApplyFilter();
+                            ApplyFilter();
                         }
                         else
                         {
@@ -133,6 +212,24 @@ namespace BZRModManager.ViewModels
                     }
                 }
             }
+        }
+    }
+
+    public partial class ModFilter : ObservableObject
+    {
+        [ObservableProperty]
+        private string _text;
+
+        [ObservableProperty]
+        private bool? _active;
+
+        public Func<ModData, bool> IsVisible { get; private set; }
+
+        public ModFilter(string text, bool? active, Func<ModData, bool> isVisible)
+        {
+            _text = text;
+            _active = active;
+            IsVisible = isVisible;
         }
     }
 }

@@ -14,18 +14,123 @@
   
   <UserControl.Styles>
     <StyleInclude Source="/Controls/ManageModItemPanel.axaml"/>
+    <StyleInclude Source="/Controls/FilterButton.axaml"/>
+    <Style Selector="ToggleButton.IconButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{Binding $parent[Button].Background} "/>
+    </Style>
+    <Style Selector="ToggleButton.IconButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{Binding $parent[Button].Background} "/>
+    </Style>
   </UserControl.Styles>
-  <ScrollViewer AllowAutoHide="True"
-                Margin="0 30 0 0">
-    <ItemsRepeater ItemsSource="{Binding FilteredMods}">
-      <ItemsRepeater.Layout>
-        <UniformGridLayout/>
-      </ItemsRepeater.Layout>
-      <ItemsRepeater.ItemTemplate>
-        <DataTemplate>
-          <controls:ManageModItemPanel ModData="{Binding}"/>
-        </DataTemplate>
-      </ItemsRepeater.ItemTemplate>
-    </ItemsRepeater>
-  </ScrollViewer>
+  <DockPanel Margin="0">
+    <Border DockPanel.Dock="Top"
+            Padding="5 5 5 0"
+            BorderThickness="0 0 0 1"
+            BorderBrush="Gray">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal"
+                    Margin="0 0 0 5">
+          <ToggleButton Padding="0"
+                        Classes="IconButton"
+                        Margin="0 0 5 0"
+                        IsChecked="{Binding GameFilterBZ98R, Mode=TwoWay}">
+            <ToolTip.Tip>
+              <TextBlock Text="Battlezone 98 Redux"/>
+            </ToolTip.Tip>
+            <Border BorderThickness="1"
+                    BorderBrush="Gray"
+                    Padding="0">
+              <Panel>
+                <Image Source="/Assets/bz98r.ico"
+                        Width="40"
+                        Height="40"
+                        RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                <controls:OutlinedTextBlock Text="✓"
+                                            Fill="Green"
+                                            Stroke="Black"
+                                            StrokeThickness="1.0"
+                                            FontWeight="Bold"
+                                            FontSize="35"
+                                            TextAlignment="Center"
+                                            Width="40"
+                                            IsVisible="{Binding GameFilterBZ98R}"/>
+                <controls:OutlinedTextBlock Text="⦸"
+                                            Fill="Red"
+                                            Stroke="Black"
+                                            StrokeThickness="1.0"
+                                            FontWeight="Bold"
+                                            FontSize="35"
+                                            TextAlignment="Center"
+                                            Width="40"
+                                            IsVisible="{Binding GameFilterBZ98R,
+                                                        Converter={x:Static BoolConverters.Not}}"/>
+              </Panel>
+            </Border>
+          </ToggleButton>
+          <ToggleButton Padding="0"
+                        Classes="IconButton"
+                        IsChecked="{Binding GameFilterBZCC, Mode=TwoWay}">
+            <ToolTip.Tip>
+              <TextBlock Text="Battlezone Combat Commander"/>
+            </ToolTip.Tip>
+            <Border BorderThickness="1"
+                    BorderBrush="Gray"
+                    Padding="0"
+                    Margin="0">
+              <Panel>
+                <Image Source="/Assets/bzcc.ico"
+                      Width="40"
+                      Height="40"
+                      RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                <controls:OutlinedTextBlock Text="✓"
+                                            Fill="Green"
+                                            Stroke="Black"
+                                            StrokeThickness="1.0"
+                                            FontWeight="Bold"
+                                            FontSize="35"
+                                            TextAlignment="Center"
+                                            Width="40"
+                                            IsVisible="{Binding GameFilterBZCC}"/>
+                <controls:OutlinedTextBlock Text="⦸"
+                                            Fill="Red"
+                                            Stroke="Black"
+                                            StrokeThickness="1.0"
+                                            FontWeight="Bold"
+                                            FontSize="35"
+                                            TextAlignment="Center"
+                                            Width="40"
+                                            IsVisible="{Binding GameFilterBZCC,
+                                                      Converter={x:Static BoolConverters.Not}}"/>
+              </Panel>
+            </Border>
+          </ToggleButton>
+        </StackPanel>
+        <ItemsRepeater ItemsSource="{Binding Filters}">
+          <ItemsRepeater.Layout>
+            <WrapLayout/>
+          </ItemsRepeater.Layout>
+          <ItemsRepeater.ItemTemplate>
+            <DataTemplate>
+              <controls:FilterButton Text="{Binding Text}"
+                                     IsChecked="{Binding Active}"/>
+            </DataTemplate>
+          </ItemsRepeater.ItemTemplate>
+        </ItemsRepeater>
+      </DockPanel>
+    </Border>
+    <ScrollViewer AllowAutoHide="True"
+                  DockPanel.Dock="Bottom">
+      <ItemsRepeater ItemsSource="{Binding FilteredMods}">
+        <ItemsRepeater.Layout>
+          <UniformGridLayout/>
+        </ItemsRepeater.Layout>
+        <ItemsRepeater.ItemTemplate>
+          <DataTemplate>
+            <controls:ManageModItemPanel ModData="{Binding}"/>
+          </DataTemplate>
+        </ItemsRepeater.ItemTemplate>
+      </ItemsRepeater>
+    </ScrollViewer>
+  </DockPanel>
 </UserControl>
