@@ -36,6 +36,9 @@ namespace BZRModManager.Models
         public string _title;
 
         [ObservableProperty]
+        public string[] _modType;
+
+        [ObservableProperty]
         private IImage? _image;
 
         private string _loadedImage; // the last image we loaded to avoid double-actions
@@ -46,6 +49,20 @@ namespace BZRModManager.Models
         [ObservableProperty]
         private bool _visibleInViewport = true; // used to prevent image loading
 
+        private List<ModIniData>? _modIniData;
+        public List<ModIniData>? ModIniData
+        {
+            get { return _modIniData; }
+            set
+            {
+                if (SetProperty(ref _modIniData, value))
+                {
+                    //DownloadMetadata();
+                    UpdatePropertiesFromData();
+                }
+            }
+        }
+
         private IonDriverMod? _ionDriverData;
         public IonDriverMod? IonDriverData
         {
@@ -54,8 +71,8 @@ namespace BZRModManager.Models
             {
                 if (SetProperty(ref _ionDriverData, value))
                 {
-                    DownloadMetadata();
-                    UpdateData();
+                    //DownloadMetadata();
+                    UpdatePropertiesFromData();
                 }
             }
         }
@@ -68,19 +85,27 @@ namespace BZRModManager.Models
             {
                 if (SetProperty(ref _workshopData, value))
                 {
-                    DownloadMetadata();
-                    UpdateData();
+                    //DownloadMetadata();
+                    UpdatePropertiesFromData();
                 }
             }
         }
         // this is called by property setters and thus could be triggered by DecorateMedia downloading new metadata
-        private async void UpdateData()
+        private async void UpdatePropertiesFromData()
         {
             Title = IonDriverData?.WorkshopName
                  ?? IonDriverData?.Name
                  ?? WorkshopData?.Title
                  ?? WorkshopData?.WorkshopId.ToString()
+                 ?? ModIniData?.Select(dr => dr.ModManagerName)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.FirstOrDefault()
+                 ?? ((ModIniData?.Count ?? 0) == 1 ? ModIniData?.First()?.ModName : null)
                  ?? ModId;
+
+            ModType = IonDriverData?.ModTypes?.ToArray()
+                    ?? (!string.IsNullOrWhiteSpace(IonDriverData?.ModType) ? new string[] { IonDriverData.ModType } : null)
+                    ?? ModIniData?.Select(dr => dr.ModType)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.Distinct()?.ToArray()
+                    ?? new string[0];
+
             await UpdateImageAsync();
         }
 
@@ -234,6 +259,25 @@ namespace BZRModManager.Models
             }, DecorateCancelTokenSource.Token);
         }
 
+        private void LoadModInis()
+        {
+            List<string> PathCandidates = new List<string>();
+            //if (WorkshopData != null)
+            {
+                //PathCandidates.Add(Path.Combine("steamcmd", "steamapps", "workshop", "content", ((int)GameId).ToString(), WorkshopData.WorkshopId.ToString()));
+                PathCandidates.Add(Path.Combine("steamcmd", "steamapps", "workshop", "content", ((int)GameId).ToString(), ModId));
+            }
+            foreach (string path in PathCandidates)
+            {
+                var tmp = GameTools.GetModData(path).ToList();
+                if (tmp != null)
+                {
+                    ModIniData = tmp;
+                    break;
+                }
+            }
+        }
+
         internal void UpdateVisibility(bool inViewport)
         {
             /*if (VisibleInViewport != inViewport)
@@ -263,9 +307,11 @@ namespace BZRModManager.Models
             _image = null;
 
             _title = ModId;
+            _modType = new string[0];
 
             DownloadMetadata();
-            UpdateData();
+            LoadModInis();
+            UpdatePropertiesFromData();
         }
     }
 }

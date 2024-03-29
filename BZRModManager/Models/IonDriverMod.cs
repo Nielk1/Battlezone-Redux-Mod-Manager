@@ -34,7 +34,10 @@ namespace BZRModManager.Models
         public string? Image { get; set; }
 
         [JsonProperty(PropertyName = "type", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Type { get; set; }
+        public string ModType { get; set; }
+
+        [JsonProperty(PropertyName = "types", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public List<string>? ModTypes { get; set; }
 
         [JsonProperty(PropertyName = "search_paths", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public List<IonDriverPathData>? SearchPaths { get; set; }
@@ -45,21 +48,29 @@ namespace BZRModManager.Models
         [JsonProperty(PropertyName = "dependencies", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public List<string> Dependencies { get; set; }
 
+        [JsonProperty(PropertyName = "iondriver_tags", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public List<string> IondriverTags { get; set; }
         public bool Equals(IonDriverMod? other)
         {
             bool equal = this?.WorkshopName == other?.WorkshopName
                       && this?.Name == other?.Name
                       && this?.Image == other?.Image
-                      && this?.Type == other?.Type
+                      && this?.ModType == other?.ModType
+                      && (this?.ModTypes?.Count ?? 0) == (other?.ModTypes?.Count ?? 0)
                       && (this?.SearchPaths?.Count ?? 0) == (other?.SearchPaths?.Count ?? 0)
                       && (this?.Maps?.Count ?? 0) == (other?.Maps?.Count ?? 0)
-                      && (this?.Dependencies?.Count ?? 0) == (other?.Dependencies?.Count ?? 0);
+                      && (this?.Dependencies?.Count ?? 0) == (other?.Dependencies?.Count ?? 0)
+                      && (this?.IondriverTags?.Count ?? 0) == (other?.IondriverTags?.Count ?? 0);
+            if (!equal) return false;
+            if (this?.ModTypes != null && other?.ModTypes != null) equal &= this.ModTypes.SequenceEqual(other.ModTypes);
             if (!equal) return false;
             if (this?.SearchPaths != null && other?.SearchPaths != null) equal &= this.SearchPaths.SequenceEqual(other.SearchPaths);
             if (!equal) return false;
             if (this?.Maps != null && other?.Maps != null) equal &= this.Maps.SequenceEqual(other.Maps);
             if (!equal) return false;
             if (this?.Dependencies != null && other?.Dependencies != null) equal &= this.Dependencies.SequenceEqual(other.Dependencies);
+            if (!equal) return false;
+            if (this?.IondriverTags != null && other?.IondriverTags != null) equal &= this.IondriverTags.SequenceEqual(other.IondriverTags);
             return equal;
         }
     }

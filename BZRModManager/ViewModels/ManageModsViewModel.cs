@@ -138,6 +138,27 @@ namespace BZRModManager.ViewModels
                 new ModFilter("Needs Update", null, (entry) => {
                     return entry.WorkshopData?.HasUpdate ?? false;
                 }),
+                new ModFilter("Type: Campaign", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("campaign") ?? entry.ModType?.Contains(@"campaign") ?? false;
+                }),
+                new ModFilter("Type: Addon", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("mp_addon") ?? entry.ModType?.Contains(@"addon") ?? false;
+                }),
+                new ModFilter("Type: Asset", null, (entry) => {
+                    return entry.ModType?.Contains(@"asset") ?? false;
+                }),
+                new ModFilter("Type: Config", null, (entry) => {
+                    return entry.ModType?.Contains(@"config") ?? false;
+                }),
+                new ModFilter("Type: Mod", null, (entry) => {
+                    return entry.ModType?.Contains(@"mod") ?? false;
+                }),
+                new ModFilter("Type: Multiplayer", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("multiplayer") ?? entry.ModType?.Contains(@"multiplayer") ?? false;
+                }),
+                new ModFilter("Type: Instant Action", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("instant_action") ?? entry.ModType?.Contains(@"instant_action") ?? false;
+                }),
             });
 
             Filters.PropertyChanged += (sender, e) => UpdateFilter();
