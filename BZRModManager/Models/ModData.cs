@@ -264,8 +264,8 @@ namespace BZRModManager.Models
             List<string> PathCandidates = new List<string>();
             //if (WorkshopData != null)
             {
-                //PathCandidates.Add(Path.Combine("steamcmd", "steamapps", "workshop", "content", ((int)GameId).ToString(), WorkshopData.WorkshopId.ToString()));
-                PathCandidates.Add(Path.Combine("steamcmd", "steamapps", "workshop", "content", ((int)GameId).ToString(), ModId));
+                //PathCandidates.Add(Path.Combine("steamcmd", "steamapps", "workshop", "content", GameId.ToString("D"), WorkshopData.WorkshopId.ToString()));
+                PathCandidates.Add(Path.Combine("steamcmd", "steamapps", "workshop", "content", GameId.ToString("D"), ModId));
             }
             foreach (string path in PathCandidates)
             {

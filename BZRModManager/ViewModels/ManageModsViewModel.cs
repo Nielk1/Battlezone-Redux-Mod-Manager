@@ -1,4 +1,6 @@
-﻿using Avalonia.Collections;
+﻿using AngleSharp.Dom;
+using Avalonia.Collections;
+using Avalonia.Controls;
 using BZRModManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
@@ -132,32 +134,50 @@ namespace BZRModManager.ViewModels
                 new ModFilter("Has Metadata", true, (entry) => entry.Metadata != null),
                 new ModFilter("No Metadata", true, (entry) => entry.Metadata == null),*/
 
-                new ModFilter("Has Cloud Data", null, (entry) => {
+                new ModFilter("Has Cloud Data", "Mod has enhanced data from Nielk1's IonDriver server.  Mods without this data may not filter properly or lack other features.", null, (entry) => {
                     return entry.IonDriverData != null;
                 }),
-                new ModFilter("Needs Update", null, (entry) => {
+                new ModFilter("Needs Update", "Mod needs to be updated.", null, (entry) => {
                     return entry.WorkshopData?.HasUpdate ?? false;
                 }),
-                new ModFilter("Type: Campaign", null, (entry) => {
-                    return entry.IonDriverData?.IondriverTags?.Contains("campaign") ?? entry.ModType?.Contains(@"campaign") ?? false;
+                new ModFilter("Campaign", "Mod has campaign content.", null, (entry) => {
+                    return (entry.IonDriverData?.IondriverTags?.Contains("campaign") ?? false) || (entry.ModType?.Contains(@"campaign") ?? false);
                 }),
-                new ModFilter("Type: Addon", null, (entry) => {
-                    return entry.IonDriverData?.IondriverTags?.Contains("mp_addon") ?? entry.ModType?.Contains(@"addon") ?? false;
+                new ModFilter("Addon", "Mod has non-mutually-exclusive activation.", null, (entry) => {
+                    return (entry.ModType?.Contains(@"mod") ?? false) || (entry.ModType?.Contains(@"addon") ?? false);
                 }),
-                new ModFilter("Type: Asset", null, (entry) => {
+                new ModFilter("SP Addon", "Addon is single player only and will be disabled in multiplayer.", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("sp_addon") ?? false;
+                }),
+                new ModFilter("MP Addon", "Addon is multiplayer compatible and can remain active in multiplayer.", null, (entry) => {
+                    return (entry.IonDriverData?.IondriverTags?.Contains("mp_addon") ?? false) || (entry.ModType?.Contains(@"addon") ?? false);
+                }),
+                new ModFilter("Shell", "Mod modifies the shell visuals.", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("shell") ?? false;
+                }),
+                new ModFilter("Textures", "Mod has replacement textures.", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("texture") ?? false;
+                }),
+                new ModFilter("Reticle", "Mod has replacement reticles.", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("reticle") ?? false;
+                }),
+                new ModFilter("Sounds", "Mod has replacement sounds.", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("sfx") ?? false;
+                }),
+                new ModFilter("Music", "Mod has replacement or additional music.", null, (entry) => {
+                    return entry.IonDriverData?.IondriverTags?.Contains("music") ?? false;
+                }),
+                new ModFilter("Asset Package", "Mod is a shared asset package depended on by other mods.", null, (entry) => {
                     return entry.ModType?.Contains(@"asset") ?? false;
                 }),
-                new ModFilter("Type: Config", null, (entry) => {
+                new ModFilter("Config", "Mod is a mutually exclusive top-level mod. (BZCC Exclusive Mod Type)", null, (entry) => {
                     return entry.ModType?.Contains(@"config") ?? false;
                 }),
-                new ModFilter("Type: Mod", null, (entry) => {
-                    return entry.ModType?.Contains(@"mod") ?? false;
+                new ModFilter("Multiplayer", "Mod contains multiplayer maps.", null, (entry) => {
+                    return (entry.IonDriverData?.IondriverTags?.Contains("multiplayer") ?? false) || (entry.ModType?.Contains(@"multiplayer") ?? false);
                 }),
-                new ModFilter("Type: Multiplayer", null, (entry) => {
-                    return entry.IonDriverData?.IondriverTags?.Contains("multiplayer") ?? entry.ModType?.Contains(@"multiplayer") ?? false;
-                }),
-                new ModFilter("Type: Instant Action", null, (entry) => {
-                    return entry.IonDriverData?.IondriverTags?.Contains("instant_action") ?? entry.ModType?.Contains(@"instant_action") ?? false;
+                new ModFilter("Instant Action", "Mod contains instant-action maps.", null, (entry) => {
+                    return (entry.IonDriverData?.IondriverTags?.Contains("instant_action") ?? false) || (entry.ModType?.Contains(@"instant_action") ?? false);
                 }),
             });
 
@@ -242,13 +262,17 @@ namespace BZRModManager.ViewModels
         private string _text;
 
         [ObservableProperty]
+        private string _toolTip;
+
+        [ObservableProperty]
         private bool? _active;
 
         public Func<ModData, bool> IsVisible { get; private set; }
 
-        public ModFilter(string text, bool? active, Func<ModData, bool> isVisible)
+        public ModFilter(string text, string tip, bool? active, Func<ModData, bool> isVisible)
         {
             _text = text;
+            _toolTip = tip;
             _active = active;
             IsVisible = isVisible;
         }

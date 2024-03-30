@@ -113,7 +113,11 @@
           <ItemsRepeater.ItemTemplate>
             <DataTemplate>
               <controls:FilterButton Text="{Binding Text}"
-                                     IsChecked="{Binding Active}"/>
+                                     IsChecked="{Binding Active}">
+                <ToolTip.Tip>
+                  <TextBlock Text="{Binding ToolTip}"/>
+                </ToolTip.Tip>
+              </controls:FilterButton>
             </DataTemplate>
           </ItemsRepeater.ItemTemplate>
         </ItemsRepeater>

@@ -17,6 +17,15 @@ namespace BZRModManager.Controls
             set => SetValue(TextProperty, value);
         }
 
+        //public static readonly StyledProperty<string> ToolTipProperty =
+        //    AvaloniaProperty.Register<FilterButton, string>(nameof(ToolTip), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+        //
+        //public string ToolTip
+        //{
+        //    get => GetValue(ToolTipProperty);
+        //    set => SetValue(ToolTipProperty, value);
+        //}
+
         public static readonly StyledProperty<bool?> IsCheckedProperty =
             AvaloniaProperty.Register<FilterButton, bool?>(nameof(IsChecked), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
 
