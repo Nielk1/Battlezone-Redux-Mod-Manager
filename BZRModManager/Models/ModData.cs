@@ -1,4 +1,5 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData.Binding;
@@ -111,6 +112,9 @@ namespace BZRModManager.Models
 
         private async Task UpdateImageAsync()
         {
+            if (Design.IsDesignMode)
+                return;
+
             await UpdateImageLock.WaitAsync();
             try
             {
@@ -251,6 +255,9 @@ namespace BZRModManager.Models
         }
         internal void DownloadMetadata()
         {
+            if (Design.IsDesignMode)
+                return;
+
             DecorateCancelTokenSource?.Cancel();
             DecorateCancelTokenSource = new CancellationTokenSource();
             Task.Run(async () =>
@@ -261,6 +268,9 @@ namespace BZRModManager.Models
 
         private void LoadModInis()
         {
+            if (Design.IsDesignMode)
+                return;
+
             List<string> PathCandidates = new List<string>();
             //if (WorkshopData != null)
             {
@@ -309,8 +319,11 @@ namespace BZRModManager.Models
             _title = ModId;
             _modType = new string[0];
 
-            DownloadMetadata();
-            LoadModInis();
+            if (!Design.IsDesignMode)
+            {
+                DownloadMetadata();
+                LoadModInis();
+            }
             UpdatePropertiesFromData();
         }
     }

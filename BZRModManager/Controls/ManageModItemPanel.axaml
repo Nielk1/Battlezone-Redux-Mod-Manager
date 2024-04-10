@@ -8,10 +8,10 @@
   <Design.PreviewWith>
     <controls:ManageModItemPanel>
       <controls:ManageModItemPanel.ModData>
-        <models:ModData Title="TESTING">
+        <models:ModData Title="Test">
           <x:Arguments>
             <models:GameId>Battlezone98Redux</models:GameId>
-            <x:String>0</x:String>
+            <x:String>testmod1</x:String>
           </x:Arguments>
         </models:ModData>
       </controls:ManageModItemPanel.ModData>
@@ -24,21 +24,29 @@
       <ControlTemplate>
         <Border Margin="5"
                 BorderThickness="1"
-                BorderBrush="Gray">
-          <DockPanel>
+                BorderBrush="Gray"
+                MinWidth="600">
+          <DockPanel LastChildFill="True">
             <Image Source="{Binding Image,
                             TargetNullValue={x:Static models:ModData.FallbackImage},
                             FallbackValue={x:Static models:ModData.FallbackImage}}"
-                   Height="256"
-                   Width="256"
+                   Height="128"
+                   Width="128"
                    RenderOptions.BitmapInterpolationMode="HighQuality"
-                   DockPanel.Dock="Top"/>
-            <DockPanel DockPanel.Dock="Bottom"
-                       Height="100">
-              <TextBlock Text="{Binding Title}"
+                   DockPanel.Dock="Left"/>
+            <StackPanel Orientation="Vertical"
+                        DockPanel.Dock="Right">
+              <Button>test</Button>
+              <Button>test</Button>
+              <Button>test</Button>
+              <Button>test</Button>
+            </StackPanel>
+            <DockPanel>
+              <TextBlock Text="{Binding Title, FallbackValue=Mod Title}"
+                         DockPanel.Dock="Top"
+                         TextAlignment="Left"
+                         FontWeight="Bold"
                          Padding="10"
-                         TextAlignment="Center"
-                         Width="256"
                          TextWrapping="Wrap"/>
             </DockPanel>
           </DockPanel>

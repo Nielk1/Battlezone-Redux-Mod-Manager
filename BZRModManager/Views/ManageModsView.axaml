@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:BZRModManager.Controls"
              xmlns:models="using:BZRModManager.Models"
+             xmlns:vm="using:BZRModManager.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BZRModManager.Views.ManageModsView">
   <!--
@@ -11,6 +12,10 @@
     <TextBlock>Test</TextBlock>
   </Panel>
   -->
+
+  <Design.DataContext>
+    <vm:DesignManageModsViewModel />
+  </Design.DataContext>
   
   <UserControl.Styles>
     <StyleInclude Source="/Controls/ManageModItemPanel.axaml"/>
@@ -123,11 +128,12 @@
         </ItemsRepeater>
       </DockPanel>
     </Border>
-    <ScrollViewer AllowAutoHide="True"
+    <ScrollViewer AllowAutoHide="False"
                   DockPanel.Dock="Bottom">
-      <ItemsRepeater ItemsSource="{Binding FilteredMods}">
+      <ItemsRepeater ItemsSource="{Binding FilteredMods}"
+                     Margin="4 4 18 4">
         <ItemsRepeater.Layout>
-          <UniformGridLayout/>
+          <UniformGridLayout ItemsStretch="Fill"/>
         </ItemsRepeater.Layout>
         <ItemsRepeater.ItemTemplate>
           <DataTemplate>

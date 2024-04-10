@@ -22,11 +22,11 @@ namespace BZRModManager.ViewModels
         /// <summary>
         /// Observable collection of all mods
         /// </summary>
-        public MtObservableCollection<ModData> AllMods { get; private set; }
+        public MtObservableCollection<ModData> AllMods { get; protected set; }
         /// <summary>
         /// Filtered view of mods
         /// </summary>
-        public ObservableCollectionView<ModData> FilteredMods { get; private set; }
+        public ObservableCollectionView<ModData> FilteredMods { get; protected set; }
         /// <summary>
         /// Dictionary to prevent remaking mods that are already in the list
         /// </summary>
@@ -186,6 +186,19 @@ namespace BZRModManager.ViewModels
             {
                 filter.PropertyChanged += (sender, e) => UpdateFilter();
             }
+
+            /*if (Design.IsDesignMode)
+            {
+                string key = $"{(int)GameId.Battlezone98Redux}:1";
+                ModData value = new ModData(GameId.Battlezone98Redux, "1");
+                ModsInternal[key] = value;
+                AllMods.Add(value);
+
+                //FilteredMods.IsTracking = true;
+                //FilteredMods.IsTracking = false;
+
+                UpdateFilter();
+            }*/
         }
 
         private CancellationTokenSource? filterDebounceCancellationToken;
