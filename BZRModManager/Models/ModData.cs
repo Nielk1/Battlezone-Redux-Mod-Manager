@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using AngleSharp.Dom;
+using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -35,6 +36,12 @@ namespace BZRModManager.Models
 
         [ObservableProperty]
         public string _title;
+
+        [ObservableProperty]
+        public string _description;
+
+        [ObservableProperty]
+        public bool _hasUpdate;
 
         [ObservableProperty]
         public string[] _modType;
@@ -102,10 +109,16 @@ namespace BZRModManager.Models
                  ?? ((ModIniData?.Count ?? 0) == 1 ? ModIniData?.First()?.ModName : null)
                  ?? ModId;
 
+            Description = IonDriverData?.Description
+                       ?? ModIniData?.Select(dr => dr.Description)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.FirstOrDefault()
+            ?? null;
+
+            HasUpdate = WorkshopData?.HasUpdate ?? false;
+
             ModType = IonDriverData?.ModTypes?.ToArray()
-                    ?? (!string.IsNullOrWhiteSpace(IonDriverData?.ModType) ? new string[] { IonDriverData.ModType } : null)
-                    ?? ModIniData?.Select(dr => dr.ModType)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.Distinct()?.ToArray()
-                    ?? new string[0];
+                   ?? (!string.IsNullOrWhiteSpace(IonDriverData?.ModType) ? new string[] { IonDriverData.ModType } : null)
+                   ?? ModIniData?.Select(dr => dr.ModType)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.Distinct()?.ToArray()
+                   ?? new string[0];
 
             await UpdateImageAsync();
         }
@@ -279,7 +292,7 @@ namespace BZRModManager.Models
             }
             foreach (string path in PathCandidates)
             {
-                var tmp = GameTools.GetModData(path).ToList();
+                var tmp = GameTools.GetModData(GameId, path).ToList();
                 if (tmp != null)
                 {
                     ModIniData = tmp;

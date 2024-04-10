@@ -138,7 +138,8 @@ namespace BZRModManager.ViewModels
                     return entry.IonDriverData != null;
                 }),
                 new ModFilter("Needs Update", "Mod needs to be updated.", null, (entry) => {
-                    return entry.WorkshopData?.HasUpdate ?? false;
+                    //return entry.WorkshopData?.HasUpdate ?? false;
+                    return entry.HasUpdate;
                 }),
                 new ModFilter("Campaign", "Mod has campaign content.", null, (entry) => {
                     return (entry.IonDriverData?.IondriverTags?.Contains("campaign") ?? false) || (entry.ModType?.Contains(@"campaign") ?? false);

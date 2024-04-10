@@ -18,7 +18,7 @@ namespace BZRModManager.ViewModels
                 AllMods.Add(new ModData(GameId.Battlezone98Redux, $"testmod{i}")
                 {
                     Title = $"Test Mod {i}",
-                    //Description = "This is a test mod",
+                    Description = "This is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod",
                 });
             }
             FilteredMods = new ObservableCollectionView<ModData>(AllMods);

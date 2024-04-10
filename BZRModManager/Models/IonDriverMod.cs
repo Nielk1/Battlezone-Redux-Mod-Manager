@@ -30,6 +30,9 @@ namespace BZRModManager.Models
         [JsonProperty(PropertyName = "name", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? Name { get; set; }
 
+        [JsonProperty(PropertyName = "description", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string? Description { get; set; }
+
         [JsonProperty(PropertyName = "image", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? Image { get; set; }
 

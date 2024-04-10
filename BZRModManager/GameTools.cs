@@ -21,7 +21,7 @@ namespace BZRModManager
             return paths;
         }
 
-        public static IEnumerable<ModIniData> GetModData(string path)
+        public static IEnumerable<ModIniData> GetModData(GameId gameid, string path)
         {
             Regex AnyHeader = new Regex(@"^\[[^\]]*\]", RegexOptions.IgnoreCase);
             IEnumerable<string> paths = GetInis(path);
@@ -72,7 +72,24 @@ namespace BZRModManager
                             modIniData.ModType = data?["WORKSHOP"]?["modType"]?.Trim('"');
                             if (string.IsNullOrWhiteSpace(modIniData.ModType))
                                 modIniData.ModType = data?["WORKSHOP"]?["mapType"]?.Trim('"');
-                            modIniData.Description = data?["DESCRIPTION"]?["missionName"]?.Trim('"');
+                            switch (gameid)
+                            {
+                                case GameId.Battlezone98Redux:
+                                    modIniData.Description = data?["DESCRIPTION"]?["missionName"]?.Trim('"');
+                                    break;
+                                case GameId.BattlezoneComatCommander:
+                                    if (paths.Count() == 1)
+                                    {
+                                        string BZCC_DES_FILE = Path.ChangeExtension(iniPath, ".des");
+                                        if (File.Exists(BZCC_DES_FILE))
+                                        {
+                                            string tmpDesc = File.ReadAllText(BZCC_DES_FILE);
+                                            if (!string.IsNullOrWhiteSpace(tmpDesc))
+                                                modIniData.Description = tmpDesc;
+                                        }
+                                    }
+                                    break;
+                            }
                             modIniData.CustomTags = data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToList() ?? new List<string>();
                             modIniData.AssetDependencies = data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.Where(dr => dr != null && dr.Length > 0)?.ToList() ?? new List<string>();
                         }
