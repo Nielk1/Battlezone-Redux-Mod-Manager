@@ -54,13 +54,18 @@
                    Width="128"
                    RenderOptions.BitmapInterpolationMode="HighQuality"
                    DockPanel.Dock="Left"/>
-            <StackPanel Orientation="Vertical"
-                        DockPanel.Dock="Right">
-              <Button>test</Button>
-              <Button>test</Button>
-              <Button>test</Button>
-              <Button>test</Button>
-            </StackPanel>
+            <Grid DockPanel.Dock="Right">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+              </Grid.RowDefinitions>
+              <Button Grid.Row="0">test</Button>
+              <Button Grid.Row="1">test</Button>
+              <Button Grid.Row="2">test</Button>
+              <Button Grid.Row="3">test</Button>
+            </Grid>
             <DockPanel LastChildFill="True">
               <TextBlock Text="{Binding Title, FallbackValue=Mod Title}"
                          DockPanel.Dock="Top"

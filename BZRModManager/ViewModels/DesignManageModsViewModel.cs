@@ -15,10 +15,12 @@ namespace BZRModManager.ViewModels
             AllMods = new MtObservableCollection<ModData>();
             for (int i = 0; i < 100; i++)
             {
-                AllMods.Add(new ModData(GameId.Battlezone98Redux, $"testmod{i}")
+                AllMods.Add(new ModData(i % 2 == 0 ? GameId.Battlezone98Redux : GameId.BattlezoneComatCommander, $"testmod{i}")
                 {
                     Title = $"Test Mod {i}",
                     Description = "This is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod this is a test mod",
+                    HasUpdate = i % 3 == 0,
+                    //IonDriverData = i % 4 == 0 ? new IonDriverMod() { } : null,
                 });
             }
             FilteredMods = new ObservableCollectionView<ModData>(AllMods);

@@ -51,6 +51,7 @@
         <ToggleButton IsThreeState="True"
                       Classes="ThreeState"
                       Margin="0 0 5 5"
+                      x:Name="BtnFilter"
                       IsChecked="{TemplateBinding IsChecked,
                                   Mode=TwoWay}">
           <Grid>

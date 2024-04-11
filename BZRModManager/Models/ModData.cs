@@ -109,7 +109,8 @@ namespace BZRModManager.Models
                  ?? ((ModIniData?.Count ?? 0) == 1 ? ModIniData?.First()?.ModName : null)
                  ?? ModId;
 
-            Description = IonDriverData?.Description
+            Description = //IonDriverData?.WorkshopDescription
+                          IonDriverData?.Description
                        ?? ModIniData?.Select(dr => dr.Description)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.FirstOrDefault()
             ?? null;
 

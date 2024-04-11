@@ -153,19 +153,19 @@ namespace BZRModManager.ViewModels
                 new ModFilter("MP Addon", "Addon is multiplayer compatible and can remain active in multiplayer.", null, (entry) => {
                     return (entry.IonDriverData?.IondriverTags?.Contains("mp_addon") ?? false) || (entry.ModType?.Contains(@"addon") ?? false);
                 }),
-                new ModFilter("Shell", "Mod modifies the shell visuals.", null, (entry) => {
+                new ModFilter("Shell", "Addon modifies the shell visuals.", null, (entry) => {
                     return entry.IonDriverData?.IondriverTags?.Contains("shell") ?? false;
                 }),
-                new ModFilter("Textures", "Mod has replacement textures.", null, (entry) => {
+                new ModFilter("Textures", "Addon has replacement textures.", null, (entry) => {
                     return entry.IonDriverData?.IondriverTags?.Contains("texture") ?? false;
                 }),
-                new ModFilter("Reticle", "Mod has replacement reticles.", null, (entry) => {
+                new ModFilter("Reticle", "Addon has replacement reticles.", null, (entry) => {
                     return entry.IonDriverData?.IondriverTags?.Contains("reticle") ?? false;
                 }),
-                new ModFilter("Sounds", "Mod has replacement sounds.", null, (entry) => {
+                new ModFilter("Sounds", "Addon has replacement sounds.", null, (entry) => {
                     return entry.IonDriverData?.IondriverTags?.Contains("sfx") ?? false;
                 }),
-                new ModFilter("Music", "Mod has replacement or additional music.", null, (entry) => {
+                new ModFilter("Music", "Addon has replacement or additional music.", null, (entry) => {
                     return entry.IonDriverData?.IondriverTags?.Contains("music") ?? false;
                 }),
                 new ModFilter("Asset Package", "Mod is a shared asset package depended on by other mods.", null, (entry) => {
