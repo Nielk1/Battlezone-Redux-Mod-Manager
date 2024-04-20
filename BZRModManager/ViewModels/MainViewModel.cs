@@ -34,6 +34,7 @@ public partial class MainViewModel : ViewModelBase
     private ManageModsViewModel vmManageMods = new ManageModsViewModel();
     private LogsViewModel vmLogs = new LogsViewModel();
     private TasksViewModel vmTasks = new TasksViewModel();
+    private SettingsViewModel vmSettings = new SettingsViewModel();
 
     public string? TaskCount => vmTasks.TaskCount > 0 ? vmTasks.TaskCount.ToString() : null;
     public bool ManageModsIsBusy => SteamCmdWorking_BZ98R || SteamCmdWorking_BZCC || vmManageMods.IsBusy;
@@ -56,7 +57,7 @@ public partial class MainViewModel : ViewModelBase
                 ContentViewModel = null;
                 break;
             case "settings":
-                ContentViewModel = null;
+                ContentViewModel = vmSettings;
                 break;
             case "tasks":
                 await vmTasks.ClearFinishedTasks();

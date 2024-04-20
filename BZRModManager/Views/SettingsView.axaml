@@ -1,0 +1,231 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:BZRModManager.Controls"
+             xmlns:converters="using:BZRModManager.Converters"
+             xmlns:models="using:BZRModManager.Models"
+             xmlns:gb="using:GroupBox.Avalonia.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BZRModManager.Views.SettingsView">
+  <UserControl.Styles>
+    <StyleInclude Source="/Controls/MainNavButton.axaml"/>
+    <Style>
+      <Style.Resources>
+        <StreamGeometry x:Key="icon_changed">
+          m19.414,5h-4.414V.586l4.414,4.414Zm4.586,9.537c0,.678-.264,1.316-.744,1.795l-7.667,7.667h-3.59v-3.59l7.668-7.667c.99-.99,2.6-.99,3.59,0,.479.479.744,1.117.744,1.795Zm-14.001,5.044l8.253-8.252c.5-.5,1.096-.869,1.748-1.089v-3.239h-7V0H3C1.343,0,0,1.343,0,3v21h9.999v-4.419Z
+        </StreamGeometry>
+      </Style.Resources>
+    </Style>
+  </UserControl.Styles>
+  <Panel>
+    <ScrollViewer AllowAutoHide="False"
+                  Margin="0 30 0 0">
+      <StackPanel Orientation="Vertical"
+                  Margin="4 4 18 4">
+        <gb:GroupBox Header="steamapps folder that contains BZ98R"
+                     Theme="{StaticResource GroupBoxClassic}"
+                     Margin="0 0 0 4">
+          <Grid Margin="1 5 1 1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" SharedSizeGroup="B" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Command="{Binding QuickFindCommand}"
+                    CommandParameter="BZ98RSteam"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="0 0 4 0">Quick Find</Button>
+            <Panel Grid.Column="1">
+              <PathIcon Data="{StaticResource icon_changed}"
+                        Margin="5 0"
+                        HorizontalAlignment="Left"
+                        IsVisible="{Binding bBZ98RSteam}">
+              </PathIcon>
+              <TextBox Text="{Binding TxtBZ98RSteam}"
+                       Padding="28 6 10 6">
+              </TextBox>
+            </Panel>
+            <Button Grid.Column="2"
+                    Command="{Binding ApplyCommand}"
+                    CommandParameter="BZ98RSteam"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="4 0 0 0">Apply</Button>
+          </Grid>
+        </gb:GroupBox>
+        <gb:GroupBox Header="steamapps folder that contains BZCC"
+                     Theme="{StaticResource GroupBoxClassic}"
+                     Margin="0 0 0 4">
+          <Grid Margin="1 5 1 1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" SharedSizeGroup="B" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Command="{Binding QuickFindCommand}"
+                    CommandParameter="BZCCSteam"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="0 0 4 0">Quick Find</Button>
+            <Panel Grid.Column="1">
+              <PathIcon Data="{StaticResource icon_changed}"
+                        Margin="5 0"
+                        HorizontalAlignment="Left"
+                        IsVisible="{Binding bBZCCSteam}">
+              </PathIcon>
+              <TextBox Text="{Binding TxtBZCCSteam}"
+                       Padding="28 6 10 6">
+              </TextBox>
+            </Panel>
+            <Button Grid.Column="2"
+                    Command="{Binding ApplyCommand}"
+                    CommandParameter="BZCCSteam"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="4 0 0 0">Apply</Button>
+          </Grid>
+        </gb:GroupBox>
+        <gb:GroupBox Header="GOG install of BZ98R"
+                     Theme="{StaticResource GroupBoxClassic}"
+                     Margin="0 0 0 4">
+          <Grid Margin="1 5 1 1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" SharedSizeGroup="B" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Command="{Binding QuickFindCommand}"
+                    CommandParameter="BZ98RGOG"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="0 0 4 0">Quick Find</Button>
+            <Panel Grid.Column="1">
+              <PathIcon Data="{StaticResource icon_changed}"
+                        Margin="5 0"
+                        HorizontalAlignment="Left"
+                        IsVisible="{Binding bBZ98RGog}">
+              </PathIcon>
+              <TextBox Text="{Binding TxtBZ98RGog}"
+                       Padding="28 6 10 6">
+              </TextBox>
+            </Panel>
+            <Button Grid.Column="2"
+                    Command="{Binding ApplyCommand}"
+                    CommandParameter="BZ98RGOG"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="4 0 0 0">Apply</Button>
+          </Grid>
+        </gb:GroupBox>
+        <gb:GroupBox Header="BZCC Folder in My Docs/My Games"
+                     Theme="{StaticResource GroupBoxClassic}"
+                     Margin="0 0 0 4">
+          <Grid Margin="1 5 1 1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" SharedSizeGroup="B" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Command="{Binding QuickFindCommand}"
+                    CommandParameter="BZCCMyDocs"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="0 0 4 0">Quick Find</Button>
+            <Panel Grid.Column="1">
+              <PathIcon Data="{StaticResource icon_changed}"
+                        Margin="5 0"
+                        HorizontalAlignment="Left"
+                        IsVisible="{Binding bBZCCMyDocs}">
+              </PathIcon>
+              <TextBox Text="{Binding TxtBZCCMyDocs}"
+                       Padding="28 6 10 6">
+              </TextBox>
+            </Panel>
+            <Button Grid.Column="2"
+                    Command="{Binding ApplyCommand}"
+                    CommandParameter="BZCCMyDocs"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="4 0 0 0">Apply</Button>
+          </Grid>
+        </gb:GroupBox>
+        <gb:GroupBox Header="GOG install of BZCC (only needed for multiplayer quicklaunch)"
+                     Theme="{StaticResource GroupBoxClassic}"
+                     Margin="0 0 0 4">
+          <Grid Margin="1 5 1 1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" SharedSizeGroup="B" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Command="{Binding QuickFindCommand}"
+                    CommandParameter="BZCCGOG"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="0 0 4 0">Quick Find</Button>
+            <Panel Grid.Column="1">
+              <PathIcon Data="{StaticResource icon_changed}"
+                        Margin="5 0"
+                        HorizontalAlignment="Left"
+                        IsVisible="{Binding bBZCCGog}">
+              </PathIcon>
+              <TextBox Text="{Binding TxtBZCCGog}"
+                       Padding="28 6 10 6">
+              </TextBox>
+            </Panel>
+            <Button Grid.Column="2"
+                    Command="{Binding ApplyCommand}"
+                    CommandParameter="BZCCGOG"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="4 0 0 0">Apply</Button>
+          </Grid>
+        </gb:GroupBox>
+        <gb:GroupBox Header="git.exe location"
+                     Theme="{StaticResource GroupBoxClassic}"
+                     Margin="0 0 0 4">
+          <Grid Margin="1 5 1 1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" SharedSizeGroup="A" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" SharedSizeGroup="B" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Command="{Binding QuickFindCommand}"
+                    CommandParameter="GIT"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="0 0 4 0">Quick Find</Button>
+            <Panel Grid.Column="1">
+              <PathIcon Data="{StaticResource icon_changed}"
+                        Margin="5 0"
+                        HorizontalAlignment="Left"
+                        IsVisible="{Binding bGit}">
+              </PathIcon>
+              <TextBox Text="{Binding TxtGit}"
+                       Padding="28 6 10 6">
+              </TextBox>
+            </Panel>
+            <Button Grid.Column="2"
+                    Command="{Binding ApplyCommand}"
+                    CommandParameter="GIT"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="4 0 0 0">Apply</Button>
+          </Grid>
+        </gb:GroupBox>
+        <Button HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center">
+          Delete and Rebuild SteamCmd
+        </Button>
+      </StackPanel>
+    </ScrollViewer>
+  </Panel>
+</UserControl>
