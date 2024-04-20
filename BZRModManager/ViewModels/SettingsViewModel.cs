@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BZRModManager.ViewModels
@@ -96,6 +97,7 @@ namespace BZRModManager.ViewModels
             StrBZCCMyDocs = MainViewModel.settings.BZCCMyDocsPath;
             StrBZCCGog = MainViewModel.settings.BZCCGogPath;
             StrGit = MainViewModel.settings.GitPath;
+
             TxtBZ98RSteam = StrBZ98RSteam;
             TxtBZCCSteam = StrBZCCSteam;
             TxtBZ98RGog = StrBZ98RGog;
@@ -104,9 +106,18 @@ namespace BZRModManager.ViewModels
             TxtGit = StrGit;
         }
 
+        SemaphoreSlim settingsProtect = new SemaphoreSlim(1, 1);
         private void SaveSettings()
         {
-            File.WriteAllText("settings.json", JsonConvert.SerializeObject(MainViewModel.settings));
+            settingsProtect.Wait();
+            try
+            {
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(MainViewModel.settings));
+            }
+            finally
+            {
+                settingsProtect.Release();
+            }
         }
         partial void OnStrBZ98RSteamChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
         partial void OnStrBZCCSteamChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
