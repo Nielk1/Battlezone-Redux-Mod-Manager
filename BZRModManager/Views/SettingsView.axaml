@@ -44,6 +44,16 @@
                         HorizontalAlignment="Left"
                         IsVisible="{Binding bBZ98RSteam}">
               </PathIcon>
+              <controls:OutlinedTextBlock Text="✓"
+                                          Classes="Yes"
+                                          Fill="Green"
+                                          HorizontalAlignment="Left"
+                                          Margin="5 0"
+                                          Stroke="Black"
+                                          StrokeThickness="1.0"
+                                          FontWeight="Bold"
+                                          FontSize="25"
+                                          IsVisible="{Binding b2BZ98RSteam}"/>
               <TextBox Text="{Binding TxtBZ98RSteam}"
                        Padding="28 6 10 6">
               </TextBox>
@@ -77,6 +87,16 @@
                         HorizontalAlignment="Left"
                         IsVisible="{Binding bBZCCSteam}">
               </PathIcon>
+              <controls:OutlinedTextBlock Text="✓"
+                                          Classes="Yes"
+                                          Fill="Green"
+                                          HorizontalAlignment="Left"
+                                          Margin="5 0"
+                                          Stroke="Black"
+                                          StrokeThickness="1.0"
+                                          FontWeight="Bold"
+                                          FontSize="25"
+                                          IsVisible="{Binding b2BZCCSteam}"/>
               <TextBox Text="{Binding TxtBZCCSteam}"
                        Padding="28 6 10 6">
               </TextBox>
@@ -110,6 +130,16 @@
                         HorizontalAlignment="Left"
                         IsVisible="{Binding bBZ98RGog}">
               </PathIcon>
+              <controls:OutlinedTextBlock Text="✓"
+                                          Classes="Yes"
+                                          Fill="Green"
+                                          HorizontalAlignment="Left"
+                                          Margin="5 0"
+                                          Stroke="Black"
+                                          StrokeThickness="1.0"
+                                          FontWeight="Bold"
+                                          FontSize="25"
+                                          IsVisible="{Binding b2BZ98RGog}"/>
               <TextBox Text="{Binding TxtBZ98RGog}"
                        Padding="28 6 10 6">
               </TextBox>
@@ -143,6 +173,16 @@
                         HorizontalAlignment="Left"
                         IsVisible="{Binding bBZCCMyDocs}">
               </PathIcon>
+              <controls:OutlinedTextBlock Text="✓"
+                                          Classes="Yes"
+                                          Fill="Green"
+                                          HorizontalAlignment="Left"
+                                          Margin="5 0"
+                                          Stroke="Black"
+                                          StrokeThickness="1.0"
+                                          FontWeight="Bold"
+                                          FontSize="25"
+                                          IsVisible="{Binding b2BZCCMyDocs}"/>
               <TextBox Text="{Binding TxtBZCCMyDocs}"
                        Padding="28 6 10 6">
               </TextBox>
@@ -176,6 +216,16 @@
                         HorizontalAlignment="Left"
                         IsVisible="{Binding bBZCCGog}">
               </PathIcon>
+              <controls:OutlinedTextBlock Text="✓"
+                                          Classes="Yes"
+                                          Fill="Green"
+                                          HorizontalAlignment="Left"
+                                          Margin="5 0"
+                                          Stroke="Black"
+                                          StrokeThickness="1.0"
+                                          FontWeight="Bold"
+                                          FontSize="25"
+                                          IsVisible="{Binding b2BZCCGog}"/>
               <TextBox Text="{Binding TxtBZCCGog}"
                        Padding="28 6 10 6">
               </TextBox>
@@ -209,6 +259,16 @@
                         HorizontalAlignment="Left"
                         IsVisible="{Binding bGit}">
               </PathIcon>
+              <controls:OutlinedTextBlock Text="✓"
+                                          Classes="Yes"
+                                          Fill="Green"
+                                          HorizontalAlignment="Left"
+                                          Margin="5 0"
+                                          Stroke="Black"
+                                          StrokeThickness="1.0"
+                                          FontWeight="Bold"
+                                          FontSize="25"
+                                          IsVisible="{Binding b2Git}"/>
               <TextBox Text="{Binding TxtGit}"
                        Padding="28 6 10 6">
               </TextBox>

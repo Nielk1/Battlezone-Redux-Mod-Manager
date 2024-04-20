@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,10 +32,12 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private ViewModelBase _contentViewModel;
 
-    private ManageModsViewModel vmManageMods = new ManageModsViewModel();
-    private LogsViewModel vmLogs = new LogsViewModel();
-    private TasksViewModel vmTasks = new TasksViewModel();
-    private SettingsViewModel vmSettings = new SettingsViewModel();
+    static public SettingsContainer settings;
+
+    private ManageModsViewModel vmManageMods;
+    private LogsViewModel vmLogs;
+    private TasksViewModel vmTasks;
+    private SettingsViewModel vmSettings;
 
     public string? TaskCount => vmTasks.TaskCount > 0 ? vmTasks.TaskCount.ToString() : null;
     public bool ManageModsIsBusy => SteamCmdWorking_BZ98R || SteamCmdWorking_BZCC || vmManageMods.IsBusy;
@@ -81,6 +84,15 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
+        if (!File.Exists("settings.json"))
+            File.WriteAllText("settings.json", JsonConvert.SerializeObject(new SettingsContainer()));
+        settings = JsonConvert.DeserializeObject<SettingsContainer>(System.IO.File.ReadAllText("settings.json"));
+
+        vmManageMods = new ManageModsViewModel();
+        vmLogs = new LogsViewModel();
+        vmTasks = new TasksViewModel();
+        vmSettings = new SettingsViewModel();
+
         //SteamCmd.PropertyChanged += SteamCmd_PropertyChanged;
 
         SteamCmd.SteamCmdOutput += Steam_SteamCmdOutput;

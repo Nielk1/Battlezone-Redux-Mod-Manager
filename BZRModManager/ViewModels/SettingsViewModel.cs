@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,50 +15,62 @@ namespace BZRModManager.ViewModels
     {
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZ98RSteam))]
+        [NotifyPropertyChangedFor(nameof(b2BZ98RSteam))]
         private string _txtBZ98RSteam;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZCCSteam))]
+        [NotifyPropertyChangedFor(nameof(b2BZCCSteam))]
         private string _txtBZCCSteam;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZ98RGog))]
+        [NotifyPropertyChangedFor(nameof(b2BZ98RGog))]
         private string _txtBZ98RGog;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZCCMyDocs))]
+        [NotifyPropertyChangedFor(nameof(b2BZCCMyDocs))]
         private string _txtBZCCMyDocs;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZCCGog))]
+        [NotifyPropertyChangedFor(nameof(b2BZCCGog))]
         private string _txtBZCCGog;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bGit))]
+        [NotifyPropertyChangedFor(nameof(b2Git))]
         private string _txtGit;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZ98RSteam))]
+        [NotifyPropertyChangedFor(nameof(b2BZ98RSteam))]
         private string _strBZ98RSteam;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZCCSteam))]
+        [NotifyPropertyChangedFor(nameof(b2BZCCSteam))]
         private string _strBZCCSteam;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZ98RGog))]
+        [NotifyPropertyChangedFor(nameof(b2BZ98RGog))]
         private string _strBZ98RGog;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZCCMyDocs))]
+        [NotifyPropertyChangedFor(nameof(b2BZCCMyDocs))]
         private string _strBZCCMyDocs;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bBZCCGog))]
+        [NotifyPropertyChangedFor(nameof(b2BZCCGog))]
         private string _strBZCCGog;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(bGit))]
+        [NotifyPropertyChangedFor(nameof(b2Git))]
         private string _strGit;
 
         public bool bBZ98RSteam => StrBZ98RSteam != TxtBZ98RSteam;
@@ -66,6 +79,41 @@ namespace BZRModManager.ViewModels
         public bool bBZCCMyDocs => StrBZCCMyDocs != TxtBZCCMyDocs;
         public bool bBZCCGog => StrBZCCGog != TxtBZCCGog;
         public bool bGit => StrGit != TxtGit;
+
+        public bool b2BZ98RSteam => !string.IsNullOrEmpty(StrBZ98RSteam) && StrBZ98RSteam == TxtBZ98RSteam;
+        public bool b2BZCCSteam => !string.IsNullOrEmpty(StrBZCCSteam) && StrBZCCSteam == TxtBZCCSteam;
+        public bool b2BZ98RGog => !string.IsNullOrEmpty(StrBZ98RGog) && StrBZ98RGog == TxtBZ98RGog;
+        public bool b2BZCCMyDocs => !string.IsNullOrEmpty(StrBZCCMyDocs) && StrBZCCMyDocs == TxtBZCCMyDocs;
+        public bool b2BZCCGog => !string.IsNullOrEmpty(StrBZCCGog) && StrBZCCGog == TxtBZCCGog;
+        public bool b2Git => !string.IsNullOrEmpty(StrGit) && StrGit == TxtGit;
+
+
+        public SettingsViewModel()
+        {
+            StrBZ98RSteam = MainViewModel.settings.BZ98RSteamPath;
+            StrBZCCSteam = MainViewModel.settings.BZCCSteamPath;
+            StrBZ98RGog = MainViewModel.settings.BZ98RGogPath;
+            StrBZCCMyDocs = MainViewModel.settings.BZCCMyDocsPath;
+            StrBZCCGog = MainViewModel.settings.BZCCGogPath;
+            StrGit = MainViewModel.settings.GitPath;
+            TxtBZ98RSteam = StrBZ98RSteam;
+            TxtBZCCSteam = StrBZCCSteam;
+            TxtBZ98RGog = StrBZ98RGog;
+            TxtBZCCMyDocs = StrBZCCMyDocs;
+            TxtBZCCGog = StrBZCCGog;
+            TxtGit = StrGit;
+        }
+
+        private void SaveSettings()
+        {
+            File.WriteAllText("settings.json", JsonConvert.SerializeObject(MainViewModel.settings));
+        }
+        partial void OnStrBZ98RSteamChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
+        partial void OnStrBZCCSteamChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
+        partial void OnStrBZ98RGogChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
+        partial void OnStrBZCCMyDocsChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
+        partial void OnStrBZCCGogChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
+        partial void OnStrGitChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
 
         [RelayCommand]
         public void QuickFind(string parameter)
@@ -142,7 +190,27 @@ namespace BZRModManager.ViewModels
         [RelayCommand]
         public void Apply(string parameter)
         {
-
+            switch (parameter)
+            {
+                case "BZ98RSteam":
+                    StrBZ98RSteam = TxtBZ98RSteam;
+                    break;
+                case "BZCCSteam":
+                    StrBZCCSteam = TxtBZCCSteam;
+                    break;
+                case "BZ98RGOG":
+                    StrBZ98RGog = TxtBZ98RGog;
+                    break;
+                case "BZCCMyDocs":
+                    StrBZCCMyDocs = TxtBZCCMyDocs;
+                    break;
+                case "BZCCGOG":
+                    StrBZCCGog = TxtBZCCGog;
+                    break;
+                case "GIT":
+                    StrGit = TxtGit;
+                    break;
+            }
         }
 
         private static string Where(string file)
