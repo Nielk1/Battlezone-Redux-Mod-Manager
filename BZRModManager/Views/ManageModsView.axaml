@@ -111,6 +111,11 @@
             </Border>
           </ToggleButton>
         </StackPanel>
+        <TextBox DockPanel.Dock="Top"
+                 Margin="0 0 0 5"
+                 Watermark="Filter String"
+                 Text="{Binding FilterString}">
+        </TextBox>
         <ItemsRepeater ItemsSource="{Binding Filters}">
           <ItemsRepeater.Layout>
             <WrapLayout/>

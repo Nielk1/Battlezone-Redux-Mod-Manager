@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using BZRModManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
@@ -47,6 +48,13 @@ namespace BZRModManager.ViewModels
         /// </summary>
         public ObservableCollectionView<ModFilter> Filters { get; private set; }
 
+        [ObservableProperty]
+        private string _filterString;
+
+        partial void OnFilterStringChanged(string value)
+        {
+            UpdateFilter();
+        }
 
         private bool _gameFilterBZ98R;
         public bool GameFilterBZ98R
@@ -85,13 +93,15 @@ namespace BZRModManager.ViewModels
                 if (!_gameFilterBZCC && entry.GameId == GameId.BattlezoneComatCommander)
                     return false;
 
+                bool filterStringMatch = string.IsNullOrWhiteSpace(FilterString) || FilterString.ToLowerInvariant().Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(set => set.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).All(dr => entry.Title.ToLowerInvariant().Contains(dr)));
+
                 if (Filters.Count > 0)
                     return Filters.All((filter) =>
                     {
-                        return filter.Active.HasValue ? (filter.Active.Value ? filter.IsVisible(entry) : !filter.IsVisible(entry)) : true;
+                        return filterStringMatch & (filter.Active.HasValue ? (filter.Active.Value ? filter.IsVisible(entry) : !filter.IsVisible(entry)) : true);
                     });
 
-                return true;
+                return filterStringMatch;
             };
             ApplyFilter();
         }
