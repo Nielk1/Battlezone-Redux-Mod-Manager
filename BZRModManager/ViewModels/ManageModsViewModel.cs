@@ -53,7 +53,7 @@ namespace BZRModManager.ViewModels
 
         partial void OnFilterStringChanged(string value)
         {
-            UpdateFilter();
+            ApplyFilter();
         }
 
         private bool _gameFilterBZ98R;
@@ -64,7 +64,6 @@ namespace BZRModManager.ViewModels
             {
                 if (SetProperty(ref _gameFilterBZ98R, value))
                 {
-                    UpdateFilter();
                     ApplyFilter();
                 }
             }
@@ -78,33 +77,11 @@ namespace BZRModManager.ViewModels
             {
                 if (SetProperty(ref _gameFilterBZCC, value))
                 {
-                    UpdateFilter();
                     ApplyFilter();
                 }
             }
         }
 
-        private void UpdateFilter()
-        {
-            FilteredMods.Filter = (entry) =>
-            {
-                if (!_gameFilterBZ98R && entry.GameId == GameId.Battlezone98Redux)
-                    return false;
-                if (!_gameFilterBZCC && entry.GameId == GameId.BattlezoneComatCommander)
-                    return false;
-
-                bool filterStringMatch = string.IsNullOrWhiteSpace(FilterString) || FilterString.ToLowerInvariant().Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(set => set.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).All(dr => entry.Title.ToLowerInvariant().Contains(dr)));
-
-                if (Filters.Count > 0)
-                    return Filters.All((filter) =>
-                    {
-                        return filterStringMatch & (filter.Active.HasValue ? (filter.Active.Value ? filter.IsVisible(entry) : !filter.IsVisible(entry)) : true);
-                    });
-
-                return filterStringMatch;
-            };
-            ApplyFilter();
-        }
 
         [ObservableProperty]
         private bool _isBusy;
@@ -193,10 +170,10 @@ namespace BZRModManager.ViewModels
                 }),
             });
 
-            Filters.PropertyChanged += (sender, e) => UpdateFilter();
+            Filters.PropertyChanged += (sender, e) => ApplyFilter();
             foreach(var filter in Filters)
             {
-                filter.PropertyChanged += (sender, e) => UpdateFilter();
+                filter.PropertyChanged += (sender, e) => ApplyFilter();
             }
 
             /*if (Design.IsDesignMode)
@@ -230,6 +207,25 @@ namespace BZRModManager.ViewModels
                 await Task.Delay(100);
                 if (tok.IsCancellationRequested)
                     return;
+
+                FilteredMods.Filter = (entry) =>
+                {
+                    if (!_gameFilterBZ98R && entry.GameId == GameId.Battlezone98Redux)
+                        return false;
+                    if (!_gameFilterBZCC && entry.GameId == GameId.BattlezoneComatCommander)
+                        return false;
+
+                    bool filterStringMatch = string.IsNullOrWhiteSpace(FilterString) || FilterString.ToLowerInvariant().Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(set => set.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).All(dr => entry.Title.ToLowerInvariant().Contains(dr)));
+
+                    if (Filters.Count > 0)
+                        return Filters.All((filter) =>
+                        {
+                            return filterStringMatch & (filter.Active.HasValue ? (filter.Active.Value ? filter.IsVisible(entry) : !filter.IsVisible(entry)) : true);
+                        });
+
+                    return filterStringMatch;
+                };
+
                 FilteredMods.IsTracking = true;
                 FilteredMods.IsTracking = false;
                 IsBusy = false;
