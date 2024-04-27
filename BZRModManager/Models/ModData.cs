@@ -173,7 +173,7 @@ namespace BZRModManager.Models
 
                         if (gameIdString != null)
                         {
-                            string localImage = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}{Path.GetExtension(IonDriverData.Image)}");
+                            string localImage = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}{Path.GetExtension(IonDriverData.Image)};128;128"); // TODO consider making this somehow come from a setting for the UI scale
 
                             if (_loadedImage == localImage && Image != null)
                                 return; // we already have the correct image loaded

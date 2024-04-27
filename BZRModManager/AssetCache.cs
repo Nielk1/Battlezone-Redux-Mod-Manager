@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -82,13 +83,49 @@ namespace BZRModManager
 
         public async Task<IImage?> GetImageAsync(Uri? url, string? local)//, System.Drawing.Point? size, CancellationToken? token = null)
         {
+            int? width = null;
+            int? height = null;
+            if (local != null)
+            {
+                if (local.Contains(";"))
+                {
+                    string[] parts = local.Split(';');
+                    if (parts.Length > 1)
+                    {
+                        width = int.Parse(parts[1]);
+                        height = width;
+                    }
+                    if (parts.Length > 2)
+                        height = int.Parse(parts[2]);
+                    local = parts[0];
+                }
+            }
+
             if (url == null && !string.IsNullOrWhiteSpace(local))
             {
                 if (File.Exists(local))
                 {
+                    if (width.HasValue || height.HasValue || Path.GetExtension(local).ToLowerInvariant() == ".webp")
+                    {
+                        return await Task.Run(() =>
+                        {
+                            SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                if (width.HasValue && height.HasValue)
+                                    image.Mutate(img => img.Resize(new ResizeOptions()
+                                    {
+                                        Mode = ResizeMode.Max,
+                                        Size = new Size() { Height = height.Value, Width = width.Value },
+                                    }));
+                                image.SaveAsPng(ms);
+                                ms.Position = 0;
+                                return new Bitmap(ms);
+                            }
+                        });
+                    }
                     return new Bitmap(local);
                 }
-
             }
 
             if (url != null && url.Scheme == @"avares")
@@ -119,15 +156,19 @@ namespace BZRModManager
                         }
                         // TODO replace this with logic from data builder to inspect file header instead
                         // We'll probably make an exact size image baker for this but the logic will still help other data sources like Steam
-                        if (/*size.HasValue ||*/ Path.GetExtension(local).ToLowerInvariant() == ".webp")
+                        if (width.HasValue || height.HasValue || Path.GetExtension(local).ToLowerInvariant() == ".webp")
                         {
                             return await Task.Run(() =>
                             {
                                 SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
                                 using (MemoryStream ms = new MemoryStream())
                                 {
-                                    //if (size != null)
-                                    //    image.Mutate(image => image.Resize(size.Value.X, size.Value.Y));
+                                    if (width.HasValue && height.HasValue)
+                                        image.Mutate(img => img.Resize(new ResizeOptions()
+                                        {
+                                            Mode = ResizeMode.Max,
+                                            Size = new Size() { Height = height.Value, Width = width.Value },
+                                        }));
                                     image.SaveAsPng(ms);
                                     ms.Position = 0;
                                     return new Bitmap(ms);
