@@ -5,6 +5,7 @@ using BZRModManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using MyToolkit.Collections;
+using SteamVent.Common;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
@@ -35,10 +36,16 @@ namespace BZRModManager.ViewModels
         /// Lock when modifying mods collections
         /// </summary>
         private SemaphoreSlim modsLock;
+
         /// <summary>
         /// Locks for individual mods
         /// </summary>
         private Dictionary<string, SemaphoreSlim> modsLocks;
+
+        /// <summary>
+        /// Filter definitions for filter button bar
+        /// </summary>
+        public ObservableCollectionView<ModFilter> Filters { get; private set; }
 
 
         private bool _gameFilterBZ98R;
@@ -49,13 +56,12 @@ namespace BZRModManager.ViewModels
             {
                 if (SetProperty(ref _gameFilterBZ98R, value))
                 {
-                    //if (!value && !GameFilterBZCC)
-                    //    GameFilterBZCC = true;
                     UpdateFilter();
                     ApplyFilter();
                 }
             }
         }
+
         private bool _gameFilterBZCC;
         public bool GameFilterBZCC
         {
@@ -64,16 +70,11 @@ namespace BZRModManager.ViewModels
             {
                 if (SetProperty(ref _gameFilterBZCC, value))
                 {
-                    //if (!value && !GameFilterBZ98R)
-                    //    GameFilterBZ98R = true;
                     UpdateFilter();
                     ApplyFilter();
                 }
             }
         }
-
-        public ObservableCollectionView<ModFilter> Filters { get; private set; }
-
 
         private void UpdateFilter()
         {
@@ -225,43 +226,72 @@ namespace BZRModManager.ViewModels
             }, filterDebounceCancellationToken.Token);
         }
 
-        public async Task AddWorkshopModData(uint appId, List<WorkshopItemStatus> mods)
+        // unprotected, make sure you lock up before calling this
+        private async Task<(ModData, SemaphoreSlim)> GetModItemAsync(uint appId, string workshopId)
+        {
+            await modsLock.WaitAsync();
+            try
+            {
+                ModData? value;
+                SemaphoreSlim valueLock;
+
+                string key = $"{appId}:{workshopId}";
+                if (!ModsInternal.TryGetValue(key, out value))
+                {
+                    value = new ModData((GameId)appId, workshopId);
+                    ModsInternal[key] = value;
+                    valueLock = modsLocks[key] = new SemaphoreSlim(1, 1);
+                    AllMods.Add(value);
+                    value.PropertyChanged += (sender, e) => ApplyFilter();
+                    ApplyFilter();
+                }
+                else
+                {
+                    valueLock = modsLocks[key];
+                }
+                value.DownloadMetadata();
+
+                return (value, valueLock);
+            }
+            finally
+            {
+                modsLock.Release();
+            }
+        }
+
+        public async Task AddInternalWorkshopModData(uint appId, List<WorkshopItemStatus> mods)
         {
             if (mods != null)
             {
                 foreach (WorkshopItemStatus mod in mods)
                 {
-                    ModData value;
-                    SemaphoreSlim valueLock;
-                    await modsLock.WaitAsync();
-                    try
-                    {
-                        string key = $"{appId}:{mod.WorkshopId}";
-                        if (!ModsInternal.TryGetValue(key, out value))
-                        {
-                            value = new ModData((GameId)appId, mod.WorkshopId.ToString());
-                            ModsInternal[key] = value;
-                            valueLock = modsLocks[key] = new SemaphoreSlim(1, 1);
-                            AllMods.Add(value);
-                            value.PropertyChanged += (sender, e) => ApplyFilter();
-                            ApplyFilter();
-                        }
-                        else
-                        {
-                            valueLock = modsLocks[key];
-                        }
-                        value.DownloadMetadata();
-                    }
-                    finally
-                    {
-                        modsLock.Release();
-                    }
+                    (ModData value, SemaphoreSlim valueLock) = await GetModItemAsync(appId, mod.WorkshopId.ToString());
                     await valueLock.WaitAsync();
                     try
                     {
-                        value.WorkshopData = mod;
+                        value.InternalWorkshopData = mod;
                     }
-                    catch
+                    finally
+                    {
+                        valueLock.Release();
+                    }
+                }
+            }
+        }
+
+        public async Task AddExternalWorkshopModData(uint appId, List<WorkshopItemStatus> mods)
+        {
+            if (mods != null)
+            {
+                foreach (WorkshopItemStatus mod in mods)
+                {
+                    (ModData value, SemaphoreSlim valueLock) = await GetModItemAsync(appId, mod.WorkshopId.ToString());
+                    await valueLock.WaitAsync();
+                    try
+                    {
+                        value.ExternalWorkshopData = mod;
+                    }
+                    finally
                     {
                         valueLock.Release();
                     }

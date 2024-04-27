@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
+using SteamVent.Common;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
@@ -85,26 +86,43 @@ namespace BZRModManager.Models
             }
         }
 
-        private WorkshopItemStatus? _workshopData;
-        public WorkshopItemStatus? WorkshopData
+        private WorkshopItemStatus? _internalWorkshopData;
+        public WorkshopItemStatus? InternalWorkshopData
         {
-            get { return _workshopData; }
+            get { return _internalWorkshopData; }
             set
             {
-                if (SetProperty(ref _workshopData, value))
+                if (SetProperty(ref _internalWorkshopData, value))
                 {
                     //DownloadMetadata();
                     UpdatePropertiesFromData();
                 }
             }
         }
+
+        private WorkshopItemStatus? _externalWorkshopData;
+        public WorkshopItemStatus? ExternalWorkshopData
+        {
+            get { return _externalWorkshopData; }
+            set
+            {
+                if (SetProperty(ref _externalWorkshopData, value))
+                {
+                    //DownloadMetadata();
+                    UpdatePropertiesFromData();
+                }
+            }
+        }
+
         // this is called by property setters and thus could be triggered by DecorateMedia downloading new metadata
         private async void UpdatePropertiesFromData()
         {
             Title = IonDriverData?.WorkshopName
                  ?? IonDriverData?.Name
-                 ?? WorkshopData?.Title
-                 ?? WorkshopData?.WorkshopId.ToString()
+                 ?? InternalWorkshopData?.Title
+                 ?? ExternalWorkshopData?.Title
+                 ?? InternalWorkshopData?.WorkshopId.ToString()
+                 ?? ExternalWorkshopData?.WorkshopId.ToString()
                  ?? ModIniData?.Select(dr => dr.ModManagerName)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.FirstOrDefault()
                  ?? ((ModIniData?.Count ?? 0) == 1 ? ModIniData?.First()?.ModName : null)
                  ?? ModId;
@@ -114,7 +132,8 @@ namespace BZRModManager.Models
                        ?? ModIniData?.Select(dr => dr.Description)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.FirstOrDefault()
             ?? null;
 
-            HasUpdate = WorkshopData?.HasUpdate ?? false;
+            // TODO consider external update handling
+            HasUpdate = InternalWorkshopData?.HasUpdate ?? false;
 
             ModType = IonDriverData?.ModTypes?.ToArray()
                    ?? (!string.IsNullOrWhiteSpace(IonDriverData?.ModType) ? new string[] { IonDriverData.ModType } : null)
@@ -327,7 +346,8 @@ namespace BZRModManager.Models
 
             _loadedImage = null;
             _ionDriverData = null;
-            _workshopData = null;
+            _internalWorkshopData = null;
+            _externalWorkshopData = null;
             _image = null;
 
             _title = ModId;

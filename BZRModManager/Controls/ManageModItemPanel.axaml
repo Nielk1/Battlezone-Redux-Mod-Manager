@@ -120,6 +120,18 @@
                     Has Update
                   </ToolTip.Tip>
                 </PathIcon>
+                <TextBlock Margin="4 0 0 4"
+                           IsVisible="{Binding InternalWorkshopData,
+                                       Converter={x:Static ObjectConverters.IsNotNull}}"
+                           FontSize="10">
+                  [SteamCmdData]
+                </TextBlock>
+                <TextBlock Margin="4 0 0 4"
+                           IsVisible="{Binding ExternalWorkshopData,
+                                       Converter={x:Static ObjectConverters.IsNotNull}}"
+                           FontSize="10">
+                  [SteamData]
+                </TextBlock>
               </StackPanel>
               <TextBlock Text="{Binding Description, FallbackValue=Mod Description}"
                          TextWrapping="Wrap"

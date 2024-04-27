@@ -22,6 +22,7 @@ public partial class App : Application
             {
                 DataContext = new MainViewModel()
             };
+            desktop.Exit += OnExit;
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
@@ -32,5 +33,10 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        ((ApplicationLifetime as IClassicDesktopStyleApplicationLifetime).MainWindow.DataContext as MainViewModel).Shutdown();
     }
 }

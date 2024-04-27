@@ -15,8 +15,10 @@ namespace BZRModManager
 {
     internal class GameTools
     {
-        private static IEnumerable<string> GetInis(string path)
+        private static IEnumerable<string>? GetInis(string path)
         {
+            if (!Directory.Exists(path))
+                return null;
             IEnumerable<string> paths = Directory.EnumerateFiles(path, "*.ini", SearchOption.TopDirectoryOnly);
             return paths;
         }
@@ -24,14 +26,17 @@ namespace BZRModManager
         public static IEnumerable<ModIniData> GetModData(GameId gameid, string path)
         {
             Regex AnyHeader = new Regex(@"^\[[^\]]*\]", RegexOptions.IgnoreCase);
-            IEnumerable<string> paths = GetInis(path);
-            FileIniDataParser parser = new FileIniDataParser();
+            IEnumerable<string>? paths = GetInis(path);
             List<ModIniData> mods = new List<ModIniData>();
+            if (paths == null)
+                return mods;
+            FileIniDataParser parser = new FileIniDataParser();
             foreach (string iniPath in paths)
             {
                 ModIniData modIniData = new ModIniData(Path.GetFileNameWithoutExtension(iniPath));
                 try
                 {
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                     string rawIni = File.ReadAllText(iniPath, Encoding.GetEncoding(1252)); // TODO confirm this encoding is correct for BZCC as well or if it's just for BZ98R
                     rawIni = Regex.Replace(rawIni, "^//.*$", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Multiline); // remove lines with bad comment method
                     rawIni = Regex.Replace(rawIni, @"^ *[^\[]((?!=).)* *$", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Multiline); // remove lines without an equal sign and not starting with a [ (header)

@@ -4,6 +4,10 @@ using BZRModManager.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
+using SteamVent;
+using SteamVent.Common;
+using SteamVent.InterProc;
+using SteamVent.InterProc.Interfaces;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
@@ -84,9 +88,16 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
-        if (!File.Exists("settings.json"))
-            File.WriteAllText("settings.json", JsonConvert.SerializeObject(new SettingsContainer()));
-        settings = JsonConvert.DeserializeObject<SettingsContainer>(System.IO.File.ReadAllText("settings.json"));
+        if(Design.IsDesignMode)
+        {
+            settings = new SettingsContainer();
+        }
+        else
+        {
+            if (!File.Exists("settings.json"))
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(new SettingsContainer()));
+            settings = JsonConvert.DeserializeObject<SettingsContainer>(System.IO.File.ReadAllText("settings.json"));
+        }
 
         vmManageMods = new ManageModsViewModel();
         vmLogs = new LogsViewModel();
@@ -120,12 +131,45 @@ public partial class MainViewModel : ViewModelBase
 
         ContentViewModel = vmManageMods;
 
+        StartupSteam();
+
         StartupTasks();
     }
 
-    bool SteamStartupDone = false;
+
+    ISteamClient SteamClient = null;
+    Int32 Pipe = 0;
+    Int32 User = 0;
+    ISteamApps SteamApps = null;
+    private void StartupSteam()
+    {
+        Steam.Load();
+        SteamClient = Steam.CreateInterface<ISteamClient017>();
+        if (SteamClient != null)
+        {
+            Pipe = SteamClient.CreateSteamPipe();
+            User = SteamClient.ConnectToGlobalUser(Pipe);
+            if (User > 0)
+            {
+                SteamApps = SteamClient.GetISteamApps<ISteamApps008>(User, Pipe);
+            }
+        }
+    }
+
+    private void ShutdownSteam()
+    {
+        if (SteamClient == null)
+            return;
+
+        SteamClient.ReleaseUser(Pipe, User);
+        SteamClient.BReleaseSteamPipe(Pipe);
+    }
+
+    bool SteamCmdStartupDone = false;
     bool SteamCmdWorking_BZ98R = true;
     bool SteamCmdWorking_BZCC = true;
+    bool SteamWorking_BZ98R = true;
+    bool SteamWorking_BZCC = true;
     private void StartupTasks()
     {
         if (Design.IsDesignMode)
@@ -137,14 +181,14 @@ public partial class MainViewModel : ViewModelBase
             Node.State = TaskNodeState.Running;
             await SteamCmd.DownloadAsync();
             await SteamCmd.TestRunAsync();
-            SteamStartupDone = true;
+            SteamCmdStartupDone = true;
             SteamStartupLock.Release();
             SteamStartupLock.Release();
         }).ConfigureAwait(false);
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZ98R", null, null, async (Node) =>
         {
-            if (!SteamStartupDone)
+            if (!SteamCmdStartupDone)
                 await SteamStartupLock.WaitAsync();
             await WorkshopModScan(301650, Node);
             SteamCmdWorking_BZ98R = false;
@@ -153,12 +197,31 @@ public partial class MainViewModel : ViewModelBase
 
         vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
         {
-            if (!SteamStartupDone)
+            if (!SteamCmdStartupDone)
                 await SteamStartupLock.WaitAsync();
             await WorkshopModScan(624970, Node);
             SteamCmdWorking_BZCC = false;
             OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
         }).ConfigureAwait(false);
+
+        vmTasks.RegisterTask("Steam Workshop Status BZ98R", null, null, async (Node) =>
+        {
+            await SteamWorkshopModScan(301650, Node);
+            SteamWorking_BZ98R = false;
+            OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
+        }).ConfigureAwait(false);
+
+        vmTasks.RegisterTask("Steam Workshop Status BZCC", null, null, async (Node) =>
+        {
+            await SteamWorkshopModScan(624970, Node);
+            SteamWorking_BZCC = false;
+            OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
+        }).ConfigureAwait(false);
+    }
+
+    public void Shutdown()
+    {
+        ShutdownSteam();
     }
 
     private async Task WorkshopModScan(uint appId, TaskNode Node)
@@ -181,7 +244,22 @@ public partial class MainViewModel : ViewModelBase
             }
         };
         List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(appId, Node, Node);
-        vmManageMods.AddWorkshopModData(appId, mods);
+        vmManageMods.AddInternalWorkshopModData(appId, mods);
+    }
+
+    private async Task SteamWorkshopModScan(uint appId, TaskNode Node)
+    {
+        Node.State = TaskNodeState.Waiting;
+
+        if (SteamApps.BIsAppInstalled(appId))
+        {
+            string InstallDir = SteamApps.GetAppInstallDir(appId);
+            InstallDir = Path.GetDirectoryName(InstallDir);
+            InstallDir = Path.GetDirectoryName(InstallDir);
+            List<WorkshopItemStatus> mods = await SteamVent.FileSystem.Workshop.WorkshopStatusAsync(InstallDir, appId, Node);
+            vmManageMods.AddExternalWorkshopModData(appId, mods);
+        }
+        Node.State = TaskNodeState.Finished;
     }
 
     private void Steam_SteamCmdOutputFull(object sender, string msg)
