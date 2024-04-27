@@ -11,7 +11,7 @@
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="PreferSystemChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
-        MinWidth="360">
+        MinWidth="1005">
   <views:MainView />
   <Window.Styles>
     <Style Selector="ToggleButton TextBlock.left-open">

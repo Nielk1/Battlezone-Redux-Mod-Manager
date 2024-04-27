@@ -105,18 +105,20 @@ namespace BZRModManager
             {
                 if (File.Exists(local))
                 {
-                    if (width.HasValue || height.HasValue || Path.GetExtension(local).ToLowerInvariant() == ".webp")
+                    if ((width.HasValue && height.HasValue) || Path.GetExtension(local).ToLowerInvariant() == ".webp")
                     {
                         return await Task.Run(() =>
                         {
                             SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
                             using (MemoryStream ms = new MemoryStream())
                             {
-                                if (width.HasValue && height.HasValue)
+                                // only resize if the image is larger than the requested size
+                                if (width.HasValue && height.HasValue && (width.Value < image.Width || height.Value < image.Height))
                                     image.Mutate(img => img.Resize(new ResizeOptions()
                                     {
                                         Mode = ResizeMode.Max,
                                         Size = new Size() { Height = height.Value, Width = width.Value },
+                                        //Compand = true,
                                     }));
                                 image.SaveAsPng(ms);
                                 ms.Position = 0;
@@ -156,18 +158,20 @@ namespace BZRModManager
                         }
                         // TODO replace this with logic from data builder to inspect file header instead
                         // We'll probably make an exact size image baker for this but the logic will still help other data sources like Steam
-                        if (width.HasValue || height.HasValue || Path.GetExtension(local).ToLowerInvariant() == ".webp")
+                        if ((width.HasValue && height.HasValue) || Path.GetExtension(local).ToLowerInvariant() == ".webp")
                         {
                             return await Task.Run(() =>
                             {
                                 SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
                                 using (MemoryStream ms = new MemoryStream())
                                 {
-                                    if (width.HasValue && height.HasValue)
+                                    // only resize if the image is larger than the requested size
+                                    if (width.HasValue && height.HasValue && (width.Value < image.Width || height.Value < image.Height))
                                         image.Mutate(img => img.Resize(new ResizeOptions()
                                         {
                                             Mode = ResizeMode.Max,
                                             Size = new Size() { Height = height.Value, Width = width.Value },
+                                            //Compand = true,
                                         }));
                                     image.SaveAsPng(ms);
                                     ms.Position = 0;
