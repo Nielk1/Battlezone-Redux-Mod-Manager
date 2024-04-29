@@ -3,6 +3,7 @@ using BZRModManager.Models;
 using BZRModManager.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DynamicData;
 using Newtonsoft.Json;
 using SteamVent;
 using SteamVent.Common;
@@ -15,6 +16,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,7 +46,11 @@ public partial class MainViewModel : ViewModelBase
     private SettingsViewModel vmSettings;
 
     public string? TaskCount => vmTasks.TaskCount > 0 ? vmTasks.TaskCount.ToString() : null;
-    public bool ManageModsIsBusy => SteamCmdWorking_BZ98R || SteamCmdWorking_BZCC || vmManageMods.IsBusy;
+    public bool ManageModsIsBusy => vmManageMods.IsBusy
+                                 || SteamCmdWorking_BZ98R
+                                 || SteamCmdWorking_BZCC
+                                 || SteamWorking_BZ98R
+                                 || SteamWorking_BZCC;
 
     [RelayCommand]
     public async Task ChangeContent(string parameter)
@@ -103,6 +109,10 @@ public partial class MainViewModel : ViewModelBase
         vmLogs = new LogsViewModel();
         vmTasks = new TasksViewModel();
         vmSettings = new SettingsViewModel();
+        vmSettings.ManageSettingChanged += (sender, e) =>
+        {
+            ListModsTask();
+        };
 
         //SteamCmd.PropertyChanged += SteamCmd_PropertyChanged;
 
@@ -133,7 +143,7 @@ public partial class MainViewModel : ViewModelBase
 
         StartupSteam();
 
-        StartupTasks();
+        ListModsTask();
     }
 
 
@@ -166,57 +176,111 @@ public partial class MainViewModel : ViewModelBase
     }
 
     bool SteamCmdStartupDone = false;
-    bool SteamCmdWorking_BZ98R = true;
-    bool SteamCmdWorking_BZCC = true;
-    bool SteamWorking_BZ98R = true;
-    bool SteamWorking_BZCC = true;
-    private void StartupTasks()
+    bool SteamCmdWorking_BZ98R = false;
+    bool SteamCmdWorking_BZCC = false;
+    bool SteamWorking_BZ98R = false;
+    bool SteamWorking_BZCC = false;
+    SemaphoreSlim ListModsTaskLock = new SemaphoreSlim(1, 1);
+    FifoSemaphoreSlim ListModsTaskQueueLock = new FifoSemaphoreSlim();
+    int ListStack = 0;
+    private void ListModsTask()
     {
         if (Design.IsDesignMode)
             return;
 
-        SemaphoreSlim SteamStartupLock = new SemaphoreSlim(0, 1);
-        vmTasks.RegisterTask("SteamCmd Startup", null, null, async (Node) =>
+        ListModsTaskLock.Wait();
+        try
         {
-            Node.State = TaskNodeState.Running;
-            await SteamCmd.DownloadAsync();
-            await SteamCmd.TestRunAsync();
-            SteamCmdStartupDone = true;
-            SteamStartupLock.Release();
-            SteamStartupLock.Release();
-        }).ConfigureAwait(false);
+            vmTasks.RegisterTask("List Mods Pending", null, null, async (Node) =>
+            {
+                Node.State = TaskNodeState.Waiting;
+                ListStack++;
+                await ListModsTaskQueueLock.WaitAsync();
+                try
+                {
+                    await vmManageMods.ClearMods();
+                    Node.State = TaskNodeState.Finished;
+                    OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
 
-        vmTasks.RegisterTask("SteamCmd Workshop Status BZ98R", null, null, async (Node) =>
-        {
-            if (!SteamCmdStartupDone)
-                await SteamStartupLock.WaitAsync();
-            await WorkshopModScan(301650, Node);
-            SteamCmdWorking_BZ98R = false;
-            OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
-        }).ConfigureAwait(false);
+                    // skip subtasks if we have more pending list tasks
+                    if (ListStack == 1)
+                    {
+                        List<Task> Tasks = new List<Task>();
 
-        vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
-        {
-            if (!SteamCmdStartupDone)
-                await SteamStartupLock.WaitAsync();
-            await WorkshopModScan(624970, Node);
-            SteamCmdWorking_BZCC = false;
-            OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
-        }).ConfigureAwait(false);
+                        if (settings.ManageSteamCmd)
+                        {
+                            SemaphoreSlim SteamCmdStartupLock = null;
+                            if (!SteamCmdStartupDone)
+                                SteamCmdStartupLock = new SemaphoreSlim(0, 1);
 
-        vmTasks.RegisterTask("Steam Workshop Status BZ98R", null, null, async (Node) =>
-        {
-            await SteamWorkshopModScan(301650, Node);
-            SteamWorking_BZ98R = false;
-            OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
-        }).ConfigureAwait(false);
+                            Tasks.Add(vmTasks.RegisterTask("SteamCmd Workshop Status BZ98R", null, null, async (Node) =>
+                            {
+                                SteamCmdWorking_BZ98R = true;
+                                if (!SteamCmdStartupDone)
+                                    await SteamCmdStartupLock?.WaitAsync();
+                                await WorkshopModScan(301650, Node);
+                                SteamCmdWorking_BZ98R = false;
+                                OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
+                            }));
 
-        vmTasks.RegisterTask("Steam Workshop Status BZCC", null, null, async (Node) =>
+                            Tasks.Add(vmTasks.RegisterTask("SteamCmd Workshop Status BZCC", null, null, async (Node) =>
+                            {
+                                SteamCmdWorking_BZCC = true;
+                                if (!SteamCmdStartupDone)
+                                    await SteamCmdStartupLock?.WaitAsync();
+                                await WorkshopModScan(624970, Node);
+                                SteamCmdWorking_BZCC = false;
+                                OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
+                            }));
+
+                            if (!SteamCmdStartupDone)
+                            {
+                                Tasks.Add(vmTasks.RegisterTask("SteamCmd Startup", null, null, async (Node) =>
+                                {
+                                    Node.State = TaskNodeState.Running;
+                                    await SteamCmd.DownloadAsync();
+                                    await SteamCmd.TestRunAsync();
+                                    SteamCmdStartupDone = true;
+                                    SteamCmdStartupLock.Release();
+                                    SteamCmdStartupLock.Release();
+                                }));
+                            }
+                        }
+
+                        if (settings.ManageSteam)
+                        {
+                            Tasks.Add(vmTasks.RegisterTask("Steam Workshop Status BZ98R", null, null, async (Node) =>
+                            {
+                                SteamWorking_BZ98R = true;
+                                await SteamWorkshopModScan(301650, Node);
+                                SteamWorking_BZ98R = false;
+                                OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
+                            }));
+
+                            Tasks.Add(vmTasks.RegisterTask("Steam Workshop Status BZCC", null, null, async (Node) =>
+                            {
+                                SteamWorking_BZCC = true;
+                                await SteamWorkshopModScan(624970, Node);
+                                SteamWorking_BZCC = false;
+                                OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
+                            }));
+                        }
+
+                        await Task.WhenAll(Tasks);
+                    }
+                }
+                finally
+                {
+                    ListStack--;
+                    ListModsTaskQueueLock.Release();
+                    Node.State = TaskNodeState.Finished;
+                }
+            }).ConfigureAwait(false);
+        }
+        finally
         {
-            await SteamWorkshopModScan(624970, Node);
-            SteamWorking_BZCC = false;
-            OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
-        }).ConfigureAwait(false);
+            ListModsTaskLock.Release();
+        }
     }
 
     public void Shutdown()
@@ -244,7 +308,7 @@ public partial class MainViewModel : ViewModelBase
             }
         };
         List<WorkshopItemStatus> mods = await SteamCmd.WorkshopStatusAsync(appId, Node, Node);
-        vmManageMods.AddInternalWorkshopModData(appId, mods);
+        await vmManageMods.AddInternalWorkshopModData(appId, mods);
     }
 
     private async Task SteamWorkshopModScan(uint appId, TaskNode Node)
@@ -257,7 +321,7 @@ public partial class MainViewModel : ViewModelBase
             InstallDir = Path.GetDirectoryName(InstallDir);
             InstallDir = Path.GetDirectoryName(InstallDir);
             List<WorkshopItemStatus> mods = await SteamVent.FileSystem.Workshop.WorkshopStatusAsync(InstallDir, appId, Node);
-            vmManageMods.AddExternalWorkshopModData(appId, mods);
+            await vmManageMods.AddExternalWorkshopModData(appId, mods);
         }
         Node.State = TaskNodeState.Finished;
     }

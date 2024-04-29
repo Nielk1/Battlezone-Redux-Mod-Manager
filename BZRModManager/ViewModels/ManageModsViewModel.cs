@@ -304,6 +304,21 @@ namespace BZRModManager.ViewModels
                 }
             }
         }
+
+        public async Task ClearMods()
+        {
+            await modsLock.WaitAsync();
+            try
+            {
+                ModsInternal.Clear();
+                AllMods.Clear();
+                ApplyFilter();
+            }
+            finally
+            {
+                modsLock.Release();
+            }
+        }
     }
 
     public partial class ModFilter : ObservableObject

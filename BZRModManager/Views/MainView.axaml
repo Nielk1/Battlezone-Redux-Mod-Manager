@@ -179,24 +179,6 @@
                                     IconData="{StaticResource icon_about}"
                                     Command="{Binding ChangeContentCommand}"
                                     CommandParameter="about"/>
-
-            <TextBlock Margin="0 10 0 0"
-                       Text="OTHER X"/>
-
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
-            <controls:MainNavButton Text="SCROLL DUMMY"/>
           </StackPanel>
         </ScrollViewer>
       </DockPanel>

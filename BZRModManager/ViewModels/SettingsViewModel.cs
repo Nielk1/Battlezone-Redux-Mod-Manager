@@ -74,6 +74,12 @@ namespace BZRModManager.ViewModels
         [NotifyPropertyChangedFor(nameof(b2Git))]
         private string _strGit;
 
+        [ObservableProperty]
+        private bool _chkManageSteamCmd;
+
+        [ObservableProperty]
+        private bool _chkManageSteam;
+
         public bool bBZ98RSteam => StrBZ98RSteam != TxtBZ98RSteam;
         public bool bBZCCSteam => StrBZCCSteam != TxtBZCCSteam;
         public bool bBZ98RGog => StrBZ98RGog != TxtBZ98RGog;
@@ -97,6 +103,8 @@ namespace BZRModManager.ViewModels
             StrBZCCMyDocs = MainViewModel.settings.BZCCMyDocsPath;
             StrBZCCGog = MainViewModel.settings.BZCCGogPath;
             StrGit = MainViewModel.settings.GitPath;
+            ChkManageSteamCmd = MainViewModel.settings.ManageSteamCmd;
+            ChkManageSteam = MainViewModel.settings.ManageSteam;
 
             TxtBZ98RSteam = StrBZ98RSteam;
             TxtBZCCSteam = StrBZCCSteam;
@@ -105,6 +113,8 @@ namespace BZRModManager.ViewModels
             TxtBZCCGog = StrBZCCGog;
             TxtGit = StrGit;
         }
+
+        public event EventHandler ManageSettingChanged;
 
         SemaphoreSlim settingsProtect = new SemaphoreSlim(1, 1);
         private void SaveSettings()
@@ -125,6 +135,24 @@ namespace BZRModManager.ViewModels
         partial void OnStrBZCCMyDocsChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
         partial void OnStrBZCCGogChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
         partial void OnStrGitChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
+        partial void OnChkManageSteamCmdChanged(bool oldValue, bool newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.ManageSteamCmd = ChkManageSteamCmd;
+                SaveSettings();
+                ManageSettingChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        partial void OnChkManageSteamChanged(bool oldValue, bool newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.ManageSteam = ChkManageSteam;
+                SaveSettings();
+                ManageSettingChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         [RelayCommand]
         public void QuickFind(string parameter)

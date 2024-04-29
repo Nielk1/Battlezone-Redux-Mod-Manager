@@ -23,7 +23,7 @@ namespace BZRModManager.ViewModels
         public ObservableCollection<TaskNode> Tasks { get; set; }
         private SemaphoreSlim TasksLock = new SemaphoreSlim(1, 1);
 
-        public int TaskCount => Design.IsDesignMode ? 99 : Tasks.Where(x => x.State != TaskNodeState.Finished).Count();
+        public int TaskCount => Design.IsDesignMode ? 99 : Tasks.ToList().Where(x => x.State != TaskNodeState.Finished).Count();
 
         public bool IsEmpty => Tasks.Count == 0;
 
