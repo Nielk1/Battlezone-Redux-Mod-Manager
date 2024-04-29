@@ -129,16 +129,16 @@ namespace BZRModManager.ViewModels
                     //return entry.WorkshopData?.HasUpdate ?? false;
                     return entry.HasUpdate;
                 }),
-                new ModFilter("Campaign", "Mod has campaign content.", null, (entry) => {
+                new ModFilter("Campaign", "Mod has campaign content.\r\n(BZ98R Campaign Mod)\r\n(BZCC Config Mod with campaign content)", null, (entry) => {
                     return (entry.IonDriverData?.IondriverTags?.Contains("campaign") ?? false) || (entry.ModType?.Contains(@"campaign") ?? false);
                 }),
-                new ModFilter("Addon", "Mod has non-mutually-exclusive activation.", null, (entry) => {
+                new ModFilter("Addon", "Mod has non-mutually-exclusive activation.\r\n(BZ98R Mods and BZCC Addons)", null, (entry) => {
                     return (entry.ModType?.Contains(@"mod") ?? false) || (entry.ModType?.Contains(@"addon") ?? false);
                 }),
-                new ModFilter("SP Addon", "Addon is single player only and will be disabled in multiplayer.", null, (entry) => {
+                new ModFilter("SP Addon", "Addon is single player only and will be disabled in multiplayer.\r\n(Some BZ98R Mods)", null, (entry) => {
                     return entry.IonDriverData?.IondriverTags?.Contains("sp_addon") ?? false;
                 }),
-                new ModFilter("MP Addon", "Addon is multiplayer compatible and can remain active in multiplayer.", null, (entry) => {
+                new ModFilter("MP Addon", "Addon is multiplayer compatible and can remain active in multiplayer.\r\n(Some BZ98R Mods and all BZCC Addons)", null, (entry) => {
                     return (entry.IonDriverData?.IondriverTags?.Contains("mp_addon") ?? false) || (entry.ModType?.Contains(@"addon") ?? false);
                 }),
                 new ModFilter("Shell", "Addon modifies the shell visuals.", null, (entry) => {
@@ -159,7 +159,7 @@ namespace BZRModManager.ViewModels
                 new ModFilter("Asset Package", "Mod is a shared asset package depended on by other mods.", null, (entry) => {
                     return entry.ModType?.Contains(@"asset") ?? false;
                 }),
-                new ModFilter("Config", "Mod is a mutually exclusive top-level mod. (BZCC Exclusive Mod Type)", null, (entry) => {
+                new ModFilter("Config", "Mod is a mutually exclusive top-level mod.\r\n(BZCC Exclusive Mod Type)", null, (entry) => {
                     return entry.ModType?.Contains(@"config") ?? false;
                 }),
                 new ModFilter("Multiplayer", "Mod contains multiplayer maps.", null, (entry) => {

@@ -191,15 +191,16 @@ public partial class MainViewModel : ViewModelBase
         ListModsTaskLock.Wait();
         try
         {
+            ListStack++;
             vmTasks.RegisterTask("List Mods Pending", null, null, async (Node) =>
             {
                 Node.State = TaskNodeState.Waiting;
-                ListStack++;
                 await ListModsTaskQueueLock.WaitAsync();
                 try
                 {
                     await vmManageMods.ClearMods();
                     Node.State = TaskNodeState.Finished;
+                    Node.Percent = 1;
                     OnPropertyChanged(new PropertyChangedEventArgs("ManageModsIsBusy"));
 
                     // skip subtasks if we have more pending list tasks

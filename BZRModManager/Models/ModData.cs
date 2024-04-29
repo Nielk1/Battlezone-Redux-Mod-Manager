@@ -132,7 +132,7 @@ namespace BZRModManager.Models
                        ?? ModIniData?.Select(dr => dr.Description)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.FirstOrDefault()
             ?? null;
 
-            // TODO consider external update handling
+            // TODO consider external update handling (Steam handled mods)
             HasUpdate = InternalWorkshopData?.HasUpdate ?? false;
 
             ModType = IonDriverData?.ModTypes?.ToArray()
