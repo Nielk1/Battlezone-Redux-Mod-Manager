@@ -8,7 +8,9 @@ using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
+using SteamVent;
 using SteamVent.Common;
+using SteamVent.InterProc.Interfaces;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
@@ -95,6 +97,7 @@ namespace BZRModManager.Models
                 if (SetProperty(ref _internalWorkshopData, value))
                 {
                     //DownloadMetadata();
+                    LoadModInis();
                     UpdatePropertiesFromData();
                 }
             }
@@ -109,6 +112,7 @@ namespace BZRModManager.Models
                 if (SetProperty(ref _externalWorkshopData, value))
                 {
                     //DownloadMetadata();
+                    LoadModInis();
                     UpdatePropertiesFromData();
                 }
             }
@@ -305,10 +309,15 @@ namespace BZRModManager.Models
                 return;
 
             List<string> PathCandidates = new List<string>();
-            //if (WorkshopData != null)
-            {
-                //PathCandidates.Add(Path.Combine("steamcmd", "steamapps", "workshop", "content", GameId.ToString("D"), WorkshopData.WorkshopId.ToString()));
+            if (InternalWorkshopData != null)
                 PathCandidates.Add(Path.Combine("steamcmd", "steamapps", "workshop", "content", GameId.ToString("D"), ModId));
+            if (ExternalWorkshopData != null)
+            {
+                // TODO this doesn't check the path override
+                SteamContext Steam = SteamContext.GetInstance();
+                string? LibraryPath = Steam.GetAppLibrary((UInt32)GameId);
+                if (LibraryPath != null)
+                    PathCandidates.Add(Path.Combine(LibraryPath, "steamapps", "workshop", "content", GameId.ToString("D"), ModId));
             }
             foreach (string path in PathCandidates)
             {

@@ -75,6 +75,7 @@
           </ToggleButton>
           <ToggleButton Padding="0"
                         Classes="IconButton"
+                        Margin="0 0 5 0"
                         IsChecked="{Binding GameFilterBZCC, Mode=TwoWay}">
             <ToolTip.Tip>
               <TextBlock Text="Battlezone Combat Commander"/>
@@ -106,7 +107,79 @@
                                             TextAlignment="Center"
                                             Width="40"
                                             IsVisible="{Binding GameFilterBZCC,
-                                                      Converter={x:Static BoolConverters.Not}}"/>
+                                                        Converter={x:Static BoolConverters.Not}}"/>
+              </Panel>
+            </Border>
+          </ToggleButton>
+          <ToggleButton Padding="0"
+                        Classes="IconButton"
+                        Margin="0 0 5 0"
+                        IsChecked="{Binding SourceFilterSteamCmd, Mode=TwoWay}">
+            <ToolTip.Tip>
+              <TextBlock Text="Mod sourced from SteamCmd"/>
+            </ToolTip.Tip>
+            <Border BorderThickness="1"
+                    BorderBrush="Gray"
+                    Padding="0"
+                    Margin="0">
+              <Panel>
+                <TextBlock Width="40"
+                           Height="40">Cmd</TextBlock>
+                <controls:OutlinedTextBlock Text="✓"
+                                            Fill="Green"
+                                            Stroke="Black"
+                                            StrokeThickness="1.0"
+                                            FontWeight="Bold"
+                                            FontSize="35"
+                                            TextAlignment="Center"
+                                            Width="40"
+                                            IsVisible="{Binding SourceFilterSteamCmd}"/>
+                <controls:OutlinedTextBlock Text="⊝"
+                                            Fill="Gray"
+                                            Stroke="Black"
+                                            StrokeThickness="1.0"
+                                            FontWeight="Bold"
+                                            FontSize="35"
+                                            TextAlignment="Center"
+                                            Width="40"
+                                            IsVisible="{Binding SourceFilterSteamCmd,
+                                                        Converter={x:Static BoolConverters.Not}}"/>
+              </Panel>
+            </Border>
+          </ToggleButton>
+          <ToggleButton Padding="0"
+                        Classes="IconButton"
+                        Margin="0 0 5 0"
+                        IsChecked="{Binding SourceFilterSteam, Mode=TwoWay}">
+            <ToolTip.Tip>
+              <TextBlock Text="Mod sourced from Steam"/>
+            </ToolTip.Tip>
+            <Border BorderThickness="1"
+                    BorderBrush="Gray"
+                    Padding="0"
+                    Margin="0">
+              <Panel>
+                <TextBlock Width="40"
+                           Height="40">Steam</TextBlock>
+                <controls:OutlinedTextBlock Text="✓"
+                                            Fill="Green"
+                                            Stroke="Black"
+                                            StrokeThickness="1.0"
+                                            FontWeight="Bold"
+                                            FontSize="35"
+                                            TextAlignment="Center"
+                                            Width="40"
+                                            IsVisible="{Binding SourceFilterSteam}"/>
+                <controls:OutlinedTextBlock Text="⊝"
+                                            Fill="Gray"
+                                            Stroke="Black"
+                                            StrokeThickness="1.0"
+                                            FontWeight="Bold"
+                                            FontSize="35"
+                                            TextAlignment="Center"
+                                            Width="40"
+                                            IsVisible="{Binding SourceFilterSteam,
+                                                        Converter={x:Static BoolConverters.Not}}"/>
               </Panel>
             </Border>
           </ToggleButton>

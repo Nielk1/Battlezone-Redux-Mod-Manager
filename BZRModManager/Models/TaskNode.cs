@@ -20,7 +20,7 @@ namespace BZRModManager.Models
         Finished,
     }
 
-    public partial class TaskNode : ObservableObject, IProgress<double?>, IObserver<ESteamCmdTaskStatus>
+    public partial class TaskNode : ObservableObject, IProgress<double?>
     {
         public string Text { get; private set; }
         public IImage? ImageSource { get; private set; }
@@ -40,25 +40,6 @@ namespace BZRModManager.Models
         public void Report(double? value)
         {
             Percent = value;
-        }
-
-
-        public delegate void StatusReceived(ESteamCmdTaskStatus value);
-        public event StatusReceived StatusReceivedEvent;
-        void IObserver<ESteamCmdTaskStatus>.OnNext(ESteamCmdTaskStatus value)
-        {
-            StatusReceivedEvent?.Invoke(value);
-        }
-
-        // we are not a true IObserver, so no event for finalizing by removing all observers
-        void IObserver<ESteamCmdTaskStatus>.OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IObserver<ESteamCmdTaskStatus>.OnError(Exception error)
-        {
-            throw new NotImplementedException();
         }
     }
 }

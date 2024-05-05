@@ -83,6 +83,36 @@ namespace BZRModManager.ViewModels
         }
 
 
+
+        private bool _sourceFilterSteamCmd;
+        public bool SourceFilterSteamCmd
+        {
+            get { return _sourceFilterSteamCmd; }
+            set
+            {
+                if (SetProperty(ref _sourceFilterSteamCmd, value))
+                {
+                    ApplyFilter();
+                }
+            }
+        }
+
+        private bool _sourceFilterSteam;
+        public bool SourceFilterSteam
+        {
+            get { return _sourceFilterSteam; }
+            set
+            {
+                if (SetProperty(ref _sourceFilterSteam, value))
+                {
+                    ApplyFilter();
+                }
+            }
+        }
+
+
+
+
         [ObservableProperty]
         private bool _isBusy;
 
@@ -90,6 +120,8 @@ namespace BZRModManager.ViewModels
         {
             _gameFilterBZ98R = true;
             _gameFilterBZCC = true;
+            _sourceFilterSteamCmd = true;
+            _sourceFilterSteam = true;
             ModsInternal = new Dictionary<string, ModData>();
             AllMods = new MtObservableCollection<ModData>();
             FilteredMods = new ObservableCollectionView<ModData>(AllMods);
@@ -213,6 +245,9 @@ namespace BZRModManager.ViewModels
                     if (!_gameFilterBZ98R && entry.GameId == GameId.Battlezone98Redux)
                         return false;
                     if (!_gameFilterBZCC && entry.GameId == GameId.BattlezoneComatCommander)
+                        return false;
+
+                    if ((!_sourceFilterSteamCmd || entry.InternalWorkshopData == null) && (!_sourceFilterSteam || entry.ExternalWorkshopData == null))
                         return false;
 
                     bool filterStringMatch = string.IsNullOrWhiteSpace(FilterString) || FilterString.ToLowerInvariant().Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(set => set.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).All(dr => entry.Title.ToLowerInvariant().Contains(dr)));

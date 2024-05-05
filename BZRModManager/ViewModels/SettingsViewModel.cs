@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Data.Converters;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -129,12 +130,54 @@ namespace BZRModManager.ViewModels
                 settingsProtect.Release();
             }
         }
-        partial void OnStrBZ98RSteamChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
-        partial void OnStrBZCCSteamChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
-        partial void OnStrBZ98RGogChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
-        partial void OnStrBZCCMyDocsChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
-        partial void OnStrBZCCGogChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
-        partial void OnStrGitChanged(string? oldValue, string newValue) { if (oldValue != newValue) SaveSettings(); }
+        partial void OnStrBZ98RSteamChanged(string? oldValue, string newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.BZ98RSteamPath = StrBZ98RSteam;
+                SaveSettings();
+            }
+        }
+        partial void OnStrBZCCSteamChanged(string? oldValue, string newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.BZCCSteamPath = StrBZCCSteam;
+                SaveSettings();
+            }
+        }
+        partial void OnStrBZ98RGogChanged(string? oldValue, string newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.BZ98RGogPath = StrBZ98RGog;
+                SaveSettings();
+            }
+        }
+        partial void OnStrBZCCMyDocsChanged(string? oldValue, string newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.BZCCMyDocsPath = StrBZCCMyDocs;
+                SaveSettings();
+            }
+        }
+        partial void OnStrBZCCGogChanged(string? oldValue, string newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.BZCCGogPath = StrBZCCGog;
+                SaveSettings();
+            }
+        }
+        partial void OnStrGitChanged(string? oldValue, string newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.GitPath = StrGit;
+                SaveSettings();
+            }
+        }
         partial void OnChkManageSteamCmdChanged(bool oldValue, bool newValue)
         {
             if (oldValue != newValue)
@@ -167,7 +210,7 @@ namespace BZRModManager.ViewModels
                             string gameFolder = Path.Combine(basePath, "steamapps", "common", "Battlezone 98 Redux");
                             if (Directory.Exists(gameFolder) && File.Exists(Path.Combine(gameFolder, "battlezone98redux.exe")))
                             {
-                                TxtBZ98RSteam = Path.Combine(basePath, "steamapps");
+                                TxtBZ98RSteam = basePath;
                                 return;
                             }
                         }
@@ -182,7 +225,7 @@ namespace BZRModManager.ViewModels
                             string gameFolder = Path.Combine(basePath, "steamapps", "common", "BZ2R");
                             if (Directory.Exists(gameFolder) && File.Exists(Path.Combine(gameFolder, "battlezone2.exe")))
                             {
-                                TxtBZCCSteam = Path.Combine(basePath, "steamapps");
+                                TxtBZCCSteam = basePath;
                                 return;
                             }
                         }
