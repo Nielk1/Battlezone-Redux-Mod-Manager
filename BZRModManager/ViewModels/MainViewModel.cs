@@ -185,7 +185,7 @@ public partial class MainViewModel : ViewModelBase
                     {
                         List<Task> Tasks = new List<Task>();
 
-                        if (settings.ManageSteamCmd)
+                        if (settings.ManageSourceSteamCmd)
                         {
                             SemaphoreSlim? SteamCmdStartupLock = null;
                             if (!SteamCmdStartupDone)
@@ -225,7 +225,7 @@ public partial class MainViewModel : ViewModelBase
                             }
                         }
 
-                        if (settings.ManageSteam)
+                        if (settings.SourceSteam || settings.ManageSteam)
                         {
                             Tasks.Add(vmTasks.RegisterTask("Steam Workshop Status BZ98R", null, null, async (Node) =>
                             {
@@ -294,7 +294,7 @@ public partial class MainViewModel : ViewModelBase
 
     private async Task ExternalWorkshopModScan(UInt32 appId, TaskNode Node)
     {
-        Node.State = TaskNodeState.Waiting;
+        Node.State = TaskNodeState.Running;
 
         string? SteamLibraryPath = settings.GetLibraryPathOverrideForAppId(appId);
 

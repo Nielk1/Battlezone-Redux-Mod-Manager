@@ -13,7 +13,8 @@ namespace BZRModManager
         public string? BZCCMyDocsPath { get; set; }
         public string? GitPath { get; set; }
         public bool ManageSteam { get; set; }
-        public bool ManageSteamCmd { get; set; }
+        public bool SourceSteam { get; set; }
+        public bool ManageSourceSteamCmd { get; set; }
         //public bool FallbackSteamCmdHandling { get; set; }
 
         /// <summary>

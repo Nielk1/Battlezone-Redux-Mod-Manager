@@ -287,8 +287,9 @@
           <StackPanel Orientation="Vertical"
                       Margin="4">
             <TextBlock TextWrapping="Wrap">Through this application mods can be managed for Battlezone 98 Redux and Battlezone Combat Commander.  Mods can be provided from 3 sources: Steam, SteamCmd, and Git.  Steam sourced mods are downloaded and maintained by the Steam client and require ownership of the target game on the Steam platform. They can be installed into the GOG version of the game to reduce space wasted by downloading mods individually for both platforms.  SteamCmd sourced mods are maintained fully by this Mod Manager and can only be installed into the GOG version of the target game as they would conflict with the Steam version's mod handling.  Git sourced mods are maintained fully by this Mod Manager and can be installed into both the Steam and GOG version of the target game.  This Mod manager is capable of directing the Steam client to download mods if enabled extending its advanced features for Steam users as well.</TextBlock>
-            <CheckBox IsChecked="{Binding ChkManageSteamCmd}" Content="Manage Workshop Mods via SteamCmd"/>
+            <CheckBox IsChecked="{Binding ChkManageSourceSteamCmd}" Content="Manage and Source Workshop Mods via SteamCmd"/>
             <CheckBox IsChecked="{Binding ChkManageSteam}" Content="Manage Workshop Mods via Steam"/>
+            <CheckBox IsChecked="{Binding ChkSourceSteam}" Content="Source Workshop Mods via Steam"/>
           </StackPanel>
         </gb:GroupBox>
         <Button HorizontalAlignment="Stretch"

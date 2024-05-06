@@ -76,10 +76,13 @@ namespace BZRModManager.ViewModels
         private string _strGit;
 
         [ObservableProperty]
-        private bool _chkManageSteamCmd;
+        private bool _chkManageSourceSteamCmd;
 
         [ObservableProperty]
         private bool _chkManageSteam;
+
+        [ObservableProperty]
+        private bool _chkSourceSteam;
 
         public bool bBZ98RSteam => StrBZ98RSteam != TxtBZ98RSteam;
         public bool bBZCCSteam => StrBZCCSteam != TxtBZCCSteam;
@@ -104,8 +107,9 @@ namespace BZRModManager.ViewModels
             StrBZCCMyDocs = MainViewModel.settings.BZCCMyDocsPath;
             StrBZCCGog = MainViewModel.settings.BZCCGogPath;
             StrGit = MainViewModel.settings.GitPath;
-            ChkManageSteamCmd = MainViewModel.settings.ManageSteamCmd;
+            ChkManageSourceSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
             ChkManageSteam = MainViewModel.settings.ManageSteam;
+            ChkSourceSteam = MainViewModel.settings.SourceSteam;
 
             TxtBZ98RSteam = StrBZ98RSteam;
             TxtBZCCSteam = StrBZCCSteam;
@@ -178,11 +182,11 @@ namespace BZRModManager.ViewModels
                 SaveSettings();
             }
         }
-        partial void OnChkManageSteamCmdChanged(bool oldValue, bool newValue)
+        partial void OnChkManageSourceSteamCmdChanged(bool oldValue, bool newValue)
         {
             if (oldValue != newValue)
             {
-                MainViewModel.settings.ManageSteamCmd = ChkManageSteamCmd;
+                MainViewModel.settings.ManageSourceSteamCmd = ChkManageSourceSteamCmd;
                 SaveSettings();
                 ManageSettingChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -192,6 +196,19 @@ namespace BZRModManager.ViewModels
             if (oldValue != newValue)
             {
                 MainViewModel.settings.ManageSteam = ChkManageSteam;
+                if (ChkManageSteam)
+                    ChkSourceSteam = true;
+                SaveSettings();
+                ManageSettingChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        partial void OnChkSourceSteamChanged(bool oldValue, bool newValue)
+        {
+            if (oldValue != newValue)
+            {
+                MainViewModel.settings.SourceSteam = ChkSourceSteam;
+                if (!ChkSourceSteam)
+                    ChkManageSteam = false;
                 SaveSettings();
                 ManageSettingChanged?.Invoke(this, EventArgs.Empty);
             }
