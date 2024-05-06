@@ -31,7 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamVent.Common", "Deps\St
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamVent.Tests", "Deps\SteamVent\SteamVent.Tests\SteamVent.Tests.csproj", "{66F8E4A3-3D75-42F0-8423-55D3EED47F08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamVentContextBridge", "Deps\SteamVent\SteamVentContextBridge\SteamVentContextBridge.csproj", "{0ED688FE-E34F-497C-ACCF-410275A89E7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamVentContextBridge", "Deps\SteamVent\SteamVentContextBridge\SteamVentContextBridge.csproj", "{0ED688FE-E34F-497C-ACCF-410275A89E7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamVent.Bridge", "Deps\SteamVent\SteamVent.Bridge\SteamVent.Bridge.csproj", "{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -147,6 +149,18 @@ Global
 		{0ED688FE-E34F-497C-ACCF-410275A89E7C}.Release|x64.Build.0 = Release|Any CPU
 		{0ED688FE-E34F-497C-ACCF-410275A89E7C}.Release|x86.ActiveCfg = Release|Any CPU
 		{0ED688FE-E34F-497C-ACCF-410275A89E7C}.Release|x86.Build.0 = Release|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Debug|x64.Build.0 = Debug|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Debug|x86.Build.0 = Debug|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Release|x64.ActiveCfg = Release|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Release|x64.Build.0 = Release|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Release|x86.ActiveCfg = Release|Any CPU
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,6 +175,7 @@ Global
 		{91C205A1-E5FC-4043-B40E-3B8AA725B96D} = {11444873-1FC2-4290-B082-1A7F6CB85B8C}
 		{66F8E4A3-3D75-42F0-8423-55D3EED47F08} = {11444873-1FC2-4290-B082-1A7F6CB85B8C}
 		{0ED688FE-E34F-497C-ACCF-410275A89E7C} = {11444873-1FC2-4290-B082-1A7F6CB85B8C}
+		{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2} = {11444873-1FC2-4290-B082-1A7F6CB85B8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {322D604F-AAB1-43EE-8D7A-C0BC7EC4C0B4}

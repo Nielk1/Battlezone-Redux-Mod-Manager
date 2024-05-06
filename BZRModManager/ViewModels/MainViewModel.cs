@@ -300,7 +300,7 @@ public partial class MainViewModel : ViewModelBase
 
         if (SteamLibraryPath != null && Directory.Exists(SteamLibraryPath))
         {
-            List<WorkshopItemStatus>? mods = await Steam.GetSteamWorkshop().WorkshopStatusAsync(SteamLibraryPath, appId, Node);
+            List<WorkshopItemStatus>? mods = await Steam.GetSteamWorkshop().WorkshopStatusAsync(SteamLibraryPath, appId, Node, settings.ManageSteam); // only talk to steam via bridge if we might manage steam because bridge can be strange
             if (mods != null)
                 await vmManageMods.AddExternalWorkshopModData(appId, mods);
         }
