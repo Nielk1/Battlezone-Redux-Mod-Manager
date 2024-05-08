@@ -215,6 +215,10 @@ namespace BZRModManager
                     {
                         //return null;
                     }
+                    catch (TaskCanceledException ex)
+                    {
+
+                    }
                 }
                 return null;
             }

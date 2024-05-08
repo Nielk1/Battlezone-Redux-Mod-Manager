@@ -125,10 +125,10 @@ namespace BZRModManager.Models
                  ?? IonDriverData?.Name
                  ?? InternalWorkshopData?.Title
                  ?? ExternalWorkshopData?.Title
-                 ?? InternalWorkshopData?.WorkshopId.ToString()
-                 ?? ExternalWorkshopData?.WorkshopId.ToString()
                  ?? ModIniData?.Select(dr => dr.ModManagerName)?.Where(dr => !string.IsNullOrWhiteSpace(dr))?.FirstOrDefault()
                  ?? ((ModIniData?.Count ?? 0) == 1 ? ModIniData?.First()?.ModName : null)
+                 ?? InternalWorkshopData?.WorkshopId.ToString()
+                 ?? ExternalWorkshopData?.WorkshopId.ToString()
                  ?? ModId;
 
             Description = //IonDriverData?.WorkshopDescription

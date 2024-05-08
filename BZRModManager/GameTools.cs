@@ -40,6 +40,7 @@ namespace BZRModManager
                     string rawIni = File.ReadAllText(iniPath, Encoding.GetEncoding(1252)); // TODO confirm this encoding is correct for BZCC as well or if it's just for BZ98R
                     rawIni = Regex.Replace(rawIni, "^//.*$", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Multiline); // remove lines with bad comment method
                     rawIni = Regex.Replace(rawIni, @"^ *[^\[]((?!=).)* *$", string.Empty, RegexOptions.IgnoreCase | RegexOptions.Multiline); // remove lines without an equal sign and not starting with a [ (header)
+                    rawIni = Regex.Replace(rawIni, @"^(\[.*?\]).+$", "$1", RegexOptions.IgnoreCase | RegexOptions.Multiline); // any headers that contain junk after the closing ] remove the junk (good job GrizzlyOne, I mean really? "[MISSION10]a"? Are you even trying?)
                     while (rawIni.Contains("\r"))
                         rawIni = rawIni.Replace("\r", "\n");
                     while (rawIni.Contains("\n\n"))
@@ -71,18 +72,30 @@ namespace BZRModManager
 
                         using (var reader = new StreamReader(stream))
                         {
-                            IniData data = parser.ReadData(reader); ;
-                            modIniData.ModName = data?["WORKSHOP"]?["modName"]?.Trim('"');
+                            IniData data = parser.ReadData(reader);
                             modIniData.ModManagerName = data?["MODMANAGER"]?["name"]?.Trim('"');
-                            modIniData.ModType = data?["WORKSHOP"]?["modType"]?.Trim('"');
+                            modIniData.ModType = data?["WORKSHOP"]?["modType"]?.Trim('"'); // BZCC
                             if (string.IsNullOrWhiteSpace(modIniData.ModType))
-                                modIniData.ModType = data?["WORKSHOP"]?["mapType"]?.Trim('"');
+                                modIniData.ModType = data?["WORKSHOP"]?["mapType"]?.Trim('"'); // BZ98R
                             switch (gameid)
                             {
                                 case GameId.Battlezone98Redux:
+                                    modIniData.ModName = data?["DESCRIPTION"]?["missionName"]?.Trim('"');
                                     modIniData.Description = data?["DESCRIPTION"]?["missionName"]?.Trim('"');
+                                    //if (paths.Count() == 1)
+                                    {
+                                        string BZ98R_DES_FILE = Path.ChangeExtension(iniPath, ".des");
+                                        if (File.Exists(BZ98R_DES_FILE))
+                                        {
+                                            string tmpDesc = File.ReadAllText(BZ98R_DES_FILE);
+                                            if (!string.IsNullOrWhiteSpace(tmpDesc))
+                                                modIniData.Description = tmpDesc;
+                                        }
+                                    }
                                     break;
                                 case GameId.BattlezoneComatCommander:
+                                    modIniData.ModName = data?["WORKSHOP"]?["modName"]?.Trim('"');
+                                    modIniData.Description = data?["WORKSHOP"]?["modName"]?.Trim('"');
                                     if (paths.Count() == 1)
                                     {
                                         string BZCC_DES_FILE = Path.ChangeExtension(iniPath, ".des");

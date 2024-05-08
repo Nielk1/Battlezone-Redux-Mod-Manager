@@ -7,7 +7,14 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>modmanager.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="modmanager.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="modmanager.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
