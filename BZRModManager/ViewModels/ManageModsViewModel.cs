@@ -231,39 +231,47 @@ namespace BZRModManager.ViewModels
             Task.Run(async () =>
             {
                 CancellationToken tok = filterDebounceCancellationToken.Token;
-                /*try
-                {
-                    await Task.Delay(1000, tok);
-                }
-                catch (System.Threading.Tasks.TaskCanceledException) { }*/
+
                 await Task.Delay(100);
+
                 if (tok.IsCancellationRequested)
                     return;
 
-                FilteredMods.Filter = (entry) =>
+                await modsLock.WaitAsync();
+                try
                 {
-                    if (!_gameFilterBZ98R && entry.GameId == GameId.Battlezone98Redux)
-                        return false;
-                    if (!_gameFilterBZCC && entry.GameId == GameId.BattlezoneComatCommander)
-                        return false;
+                    if (tok.IsCancellationRequested)
+                        return;
 
-                    if ((!_sourceFilterSteamCmd || entry.InternalWorkshopData == null) && (!_sourceFilterSteam || entry.ExternalWorkshopData == null))
-                        return false;
+                    FilteredMods.Filter = (entry) =>
+                    {
+                        if (!_gameFilterBZ98R && entry.GameId == GameId.Battlezone98Redux)
+                            return false;
+                        if (!_gameFilterBZCC && entry.GameId == GameId.BattlezoneComatCommander)
+                            return false;
 
-                    bool filterStringMatch = string.IsNullOrWhiteSpace(FilterString) || FilterString.ToLowerInvariant().Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(set => set.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).All(dr => entry.Title.ToLowerInvariant().Contains(dr)));
+                        if ((!_sourceFilterSteamCmd || entry.InternalWorkshopData == null) && (!_sourceFilterSteam || entry.ExternalWorkshopData == null))
+                            return false;
 
-                    if (Filters.Count > 0)
-                        return Filters.All((filter) =>
-                        {
-                            return filterStringMatch & (filter.Active.HasValue ? (filter.Active.Value ? filter.IsVisible(entry) : !filter.IsVisible(entry)) : true);
-                        });
+                        bool filterStringMatch = string.IsNullOrWhiteSpace(FilterString) || FilterString.ToLowerInvariant().Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Any(set => set.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).All(dr => entry.Title.ToLowerInvariant().Contains(dr)));
 
-                    return filterStringMatch;
-                };
+                        if (Filters.Count > 0)
+                            return Filters.All((filter) =>
+                            {
+                                return filterStringMatch & (filter.Active.HasValue ? (filter.Active.Value ? filter.IsVisible(entry) : !filter.IsVisible(entry)) : true);
+                            });
 
-                FilteredMods.IsTracking = true;
-                FilteredMods.IsTracking = false;
-                IsBusy = false;
+                        return filterStringMatch;
+                    };
+
+                    FilteredMods.IsTracking = true;
+                    FilteredMods.IsTracking = false;
+                    IsBusy = false;
+                }
+                finally
+                {
+                    modsLock.Release();
+                }
             }, filterDebounceCancellationToken.Token);
         }
 
