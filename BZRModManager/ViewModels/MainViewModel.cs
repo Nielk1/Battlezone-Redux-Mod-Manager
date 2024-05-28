@@ -41,6 +41,7 @@ public partial class MainViewModel : ViewModelBase
     static public SettingsContainer settings;
 
     private ManageModsViewModel vmManageMods;
+    private GetModsViewModel vmGetMods;
     private LogsViewModel vmLogs;
     private TasksViewModel vmTasks;
     private SettingsViewModel vmSettings;
@@ -61,7 +62,7 @@ public partial class MainViewModel : ViewModelBase
                 ContentViewModel = vmManageMods;
                 break;
             case "get_mods":
-                ContentViewModel = null;
+                ContentViewModel = vmGetMods;
                 break;
             case "multiplayer":
                 ContentViewModel = null;
@@ -106,12 +107,15 @@ public partial class MainViewModel : ViewModelBase
         }
 
         vmManageMods = new ManageModsViewModel();
+        vmGetMods = new GetModsViewModel();
         vmLogs = new LogsViewModel();
         vmTasks = new TasksViewModel();
         vmSettings = new SettingsViewModel();
+
         vmSettings.ManageSettingChanged += (sender, e) =>
         {
             ListModsTask();
+            vmGetMods.Refresh();
         };
 
         //SteamCmd.PropertyChanged += SteamCmd_PropertyChanged;
@@ -264,6 +268,7 @@ public partial class MainViewModel : ViewModelBase
     public void Shutdown()
     {
         ShutdownSteam();
+        vmGetMods.Shutdown();
     }
 
     private async Task InternalWorkshopModScan(uint appId, TaskNode Node)

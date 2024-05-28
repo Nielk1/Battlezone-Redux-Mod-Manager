@@ -46,31 +46,37 @@ namespace BZRModManager
                 //if (File.Exists(localFile))
                 //    httpRequestMessage.Headers.Add(HttpRequestHeader.IfModifiedSince.ToString(), File.GetLastWriteTimeUtc(localFile).ToString("r"));
                 //var response = await httpClient.SendAsync(httpRequestMessage);
-                var response = await httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                if (!string.IsNullOrWhiteSpace(local))
+                using (var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                 {
-                    string localPath = Path.GetDirectoryName(local);
-                    if (!Directory.Exists(localPath))
-                        Directory.CreateDirectory(localPath);
+                    response.EnsureSuccessStatusCode();
 
-                    using (Stream stream = await response.Content.ReadAsStreamAsync())
-                    using (FileStream fs = File.OpenWrite(local + ".download"))
+                    if (!string.IsNullOrWhiteSpace(local))
                     {
-                        stream.CopyTo(fs);
+                        if (!File.Exists(local) || !response.Content.Headers.LastModified.HasValue || response.Content.Headers.LastModified > new FileInfo(local).LastWriteTimeUtc)
+                        {
+                            string localPath = Path.GetDirectoryName(local);
+                            if (!Directory.Exists(localPath))
+                                Directory.CreateDirectory(localPath);
+
+                            using (Stream stream = await response.Content.ReadAsStreamAsync())
+                            using (FileStream fs = File.OpenWrite(local + ".download"))
+                            {
+                                stream.CopyTo(fs);
+                            }
+                            File.Delete(local);
+                            File.Move(local + ".download", local);
+                            return File.ReadAllText(local);
+                        }
                     }
-                    File.Delete(local);
-                    File.Move(local + ".download", local);
-                    return File.ReadAllText(local);
-                }
-                else
-                {
-                    return await response.Content.ReadAsStringAsync();
+                    else
+                    {
+                        return await response.Content.ReadAsStringAsync();
+                    }
                 }
             }
             catch (HttpRequestException ex)
             {
-                //return null;
+                // return stale data
             }
 
             if (File.Exists(local))
@@ -159,56 +165,39 @@ namespace BZRModManager
                 }
 
                 // you can have a null local path, but it's probably a bad idea to allow it for non resource URLs
-                if (url != null && (url.Scheme == @"http" || url.Scheme == @"https"))
+                // TODO added local check here temporarily to reduce load on server, not saving the result is shitty
+                if (!string.IsNullOrWhiteSpace(local) && url != null && (url.Scheme == @"http" || url.Scheme == @"https"))
                 {
                     using var httpClient = new HttpClient();
+                    //httpClient.Timeout = TimeSpan.FromSeconds(1);
                     try
                     {
-                        var response = await httpClient.GetAsync(url);
-                        response.EnsureSuccessStatusCode();
-                        if (!string.IsNullOrWhiteSpace(local))
+                        using (var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                         {
-                            string localPath = Path.GetDirectoryName(local);
-                            if (!Directory.Exists(localPath))
-                                Directory.CreateDirectory(localPath);
+                            response.EnsureSuccessStatusCode();
 
-                            //if (token?.IsCancellationRequested ?? false) return null;
+                            // Check date headers here?
 
-                            using (Stream stream = await response.Content.ReadAsStreamAsync())
-                            using (FileStream fs = File.OpenWrite(local))
+                            if (!string.IsNullOrWhiteSpace(local))
                             {
-                                stream.CopyTo(fs);
-                            }
-                            // TODO replace this with logic from data builder to inspect file header instead
-                            // We'll probably make an exact size image baker for this but the logic will still help other data sources like Steam
-                            if ((width.HasValue && height.HasValue) || Path.GetExtension(local).ToLowerInvariant() == ".webp")
-                            {
-                                return await Task.Run(() =>
+                                string localPath = Path.GetDirectoryName(local);
+                                if (!Directory.Exists(localPath))
+                                    Directory.CreateDirectory(localPath);
+
+                                //if (token?.IsCancellationRequested ?? false) return null;
+
+                                using (Stream stream = await response.Content.ReadAsStreamAsync())
+                                using (FileStream fs = File.OpenWrite(local))
                                 {
-                                    SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
-                                    using (MemoryStream ms = new MemoryStream())
-                                    {
-                                        // only resize if the image is larger than the requested size
-                                        if (width.HasValue && height.HasValue && (width.Value < image.Width || height.Value < image.Height))
-                                            image.Mutate(img => img.Resize(new ResizeOptions()
-                                            {
-                                                Mode = ResizeMode.Max,
-                                                Size = new Size() { Height = height.Value, Width = width.Value },
-                                                //Compand = true,
-                                            }));
-                                        image.SaveAsPng(ms);
-                                        ms.Position = 0;
-                                        return new Bitmap(ms);
-                                    }
-                                });
+                                    stream.CopyTo(fs);
+                                }
                             }
-                            return new Bitmap(local);
-                        }
-                        else
-                        {
-                            // no webp support here, probably kill it off?
-                            var data = await response.Content.ReadAsByteArrayAsync();
-                            return new Bitmap(new MemoryStream(data));
+                            else
+                            {
+                                // no webp support here, probably kill it off?
+                                var data = await response.Content.ReadAsByteArrayAsync();
+                                return new Bitmap(new MemoryStream(data));
+                            }
                         }
                     }
                     catch (HttpRequestException ex)
@@ -218,6 +207,33 @@ namespace BZRModManager
                     catch (TaskCanceledException ex)
                     {
 
+                    }
+                    if (!string.IsNullOrWhiteSpace(local) && File.Exists(local))
+                    {
+                        // TODO replace this with logic from data builder to inspect file header instead
+                        // We'll probably make an exact size image baker for this but the logic will still help other data sources like Steam
+                        if ((width.HasValue && height.HasValue) || Path.GetExtension(local).ToLowerInvariant() == ".webp")
+                        {
+                            return await Task.Run(() =>
+                            {
+                                SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(local);
+                                using (MemoryStream ms = new MemoryStream())
+                                {
+                                    // only resize if the image is larger than the requested size
+                                    if (width.HasValue && height.HasValue && (width.Value < image.Width || height.Value < image.Height))
+                                        image.Mutate(img => img.Resize(new ResizeOptions()
+                                        {
+                                            Mode = ResizeMode.Max,
+                                            Size = new Size() { Height = height.Value, Width = width.Value },
+                                            //Compand = true,
+                                        }));
+                                    image.SaveAsPng(ms);
+                                    ms.Position = 0;
+                                    return new Bitmap(ms);
+                                }
+                            });
+                        }
+                        return new Bitmap(local);
                     }
                 }
                 return null;

@@ -52,7 +52,9 @@ namespace BZRModManager.ViewModels
             return Task.Run(async () =>
             {
                 taskNode.State = TaskNodeState.Waiting;
-                await value.Invoke(taskNode);
+                //await value.Invoke(taskNode);
+                Task tmpTask = value.Invoke(taskNode);
+                await tmpTask;
                 taskNode.State = TaskNodeState.Finished;
                 if (!taskNode.Percent.HasValue)
                     taskNode.Percent = 1;

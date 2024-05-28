@@ -236,13 +236,20 @@ namespace BZRModManager.Models
                         {
                             // load nielk1 metadata, download if not found
                             // TODO add marker for 404s or something, timestamp can help here too for if it comes to exist
-                            if ((!File.Exists(localMetadata) || new FileInfo(localMetadata).CreationTimeUtc.AddDays(1) < DateTime.UtcNow) && !string.IsNullOrWhiteSpace(remoteMetadata))
+                            //if ((!File.Exists(localMetadata) || new FileInfo(localMetadata).CreationTimeUtc.AddDays(1) < DateTime.UtcNow) && !string.IsNullOrWhiteSpace(remoteMetadata))
+                            if (!string.IsNullOrWhiteSpace(remoteMetadata))
                             {
                                 // we might get multiple mods worth of data so we need to find our mod, save everything to cache since we got it
-                                string? rawJson = await AssetCache.Instance.GetData(remoteMetadata, null);
+                                string localMetaDataMainMod = Path.Combine("cache", "nielk1", GameId.ToString("D"), "mod", $"{ModId}.json");
+                                string? rawJson = await AssetCache.Instance.GetData(remoteMetadata, localMetaDataMainMod);
                                 if (!string.IsNullOrWhiteSpace(rawJson))
                                 {
-                                    IonDriverDataExtract? ionDriverDataTmp = JsonConvert.DeserializeObject<IonDriverDataExtract>(rawJson);
+                                    IonDriverDataExtract? ionDriverDataTmp = null;
+                                    try
+                                    {
+                                        ionDriverDataTmp = JsonConvert.DeserializeObject<IonDriverDataExtract>(rawJson);
+                                    }
+                                    catch { }
                                     if (ionDriverDataTmp != null && ionDriverDataTmp.Mods != null)
                                     {
                                         foreach (var pair in ionDriverDataTmp.Mods)
@@ -255,6 +262,16 @@ namespace BZRModManager.Models
                                             if (token?.IsCancellationRequested ?? false) return;
                                             if (pair.Key == ModId || !File.Exists(localMetadataOtherMod))
                                             {
+                                                /*if (pair.Value.Vehicles == null)
+                                                {
+                                                    var tmpVehiclesDict = ionDriverDataTmp?.Vehicles?.Where(dr => dr.Value.ModId == ModId)?.ToDictionary(dr => dr.Key, dr => dr.Value);
+
+                                                    if ((tmpVehiclesDict?.Count ?? 0) == 0)
+                                                        tmpVehiclesDict = null;
+
+                                                    pair.Value.Vehicles = tmpVehiclesDict;
+                                                }*/
+
                                                 // save the mod data for whatever mod we got
                                                 File.WriteAllText(localMetadataOtherMod, JsonConvert.SerializeObject(pair.Value));
 
@@ -264,6 +281,16 @@ namespace BZRModManager.Models
                                                 }
                                             }
                                         }
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            IonDriverMod? ionDriverDataTmp2 = JsonConvert.DeserializeObject<IonDriverMod>(rawJson);
+                                            if (ionDriverDataTmp2 != null)
+                                                IonDriverData = ionDriverDataTmp2;
+                                        }
+                                        catch { }
                                     }
                                 }
                             }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -30,6 +31,7 @@ namespace BZRModManager.Models
         [JsonProperty(PropertyName = "name", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? Name { get; set; }
 
+        // does this property actually exist?
         [JsonProperty(PropertyName = "description", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? Description { get; set; }
 
@@ -53,6 +55,19 @@ namespace BZRModManager.Models
 
         [JsonProperty(PropertyName = "iondriver_tags", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public List<string> IondriverTags { get; set; }
+
+
+
+
+
+        // data moved in here
+        //[JsonProperty(PropertyName = "vehicles", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        //public Dictionary<string, IonDriverVehicle>? Vehicles { get; set; }
+
+
+
+
+
         public bool Equals(IonDriverMod? other)
         {
             bool equal = this?.WorkshopName == other?.WorkshopName
@@ -78,10 +93,66 @@ namespace BZRModManager.Models
         }
     }
 
+    public class IonDriverDescriptionFile
+    {
+        [JsonProperty(PropertyName = "file", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string? File { get; set; }
+
+        [JsonProperty(PropertyName = "content", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string? Content { get; set; }
+    }
+    public class IonDriverVehicle
+    {
+        [JsonProperty(PropertyName = "name", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string? Name { get; set; }
+
+        [JsonProperty(PropertyName = "mod_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string? ModId { get; set; }
+
+        [JsonProperty(PropertyName = "description", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public Dictionary<string, IonDriverDescriptionFile>? Description { get; set; }
+    }
+
     public class IonDriverDataExtract
     {
         [JsonProperty(PropertyName = "mods", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, IonDriverMod> Mods { get; set; }
+        public Dictionary<string, IonDriverMod>? Mods { get; set; }
 
+        [JsonProperty(PropertyName = "vehicles", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonConverter(typeof(EmptyArrayOrDictionaryConverter))]
+        public Dictionary<string, IonDriverVehicle>? Vehicles { get; set; }
+
+    }
+}
+
+public class EmptyArrayOrDictionaryConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType)
+    {
+        return objectType.IsAssignableFrom(typeof(Dictionary<string, object>));
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        JToken token = JToken.Load(reader);
+        if (token.Type == JTokenType.Object)
+        {
+            return token.ToObject(objectType, serializer);
+        }
+        else if (token.Type == JTokenType.Array)
+        {
+            if (!token.HasValues)
+            {
+                // create empty dictionary
+                return Activator.CreateInstance(objectType);
+            }
+        }
+
+        throw new JsonSerializationException("Object or empty array expected");
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        serializer.Serialize(writer, value);
     }
 }

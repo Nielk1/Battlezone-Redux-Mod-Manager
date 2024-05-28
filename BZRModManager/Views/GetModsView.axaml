@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:BZRModManager.Controls"
+             xmlns:converters="using:BZRModManager.Converters"
+             xmlns:models="using:BZRModManager.Models"
+             xmlns:gb="using:GroupBox.Avalonia.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
+             x:Class="BZRModManager.Views.GetModsView">
+  <TabControl>
+    <TabItem Header="From URL">
+      <StackPanel Orientation="Vertical">
+        <TextBox Grid.ColumnSpan="2"
+                 Grid.Row="0"
+                 Grid.Column="0"
+                 Height="30"
+                 Margin="0 5 0 5"
+                 Watermark="Workshop Published File ID or URL"
+                 Text="{Binding Url}"/>
+        <UniformGrid Columns="2">
+          <Button HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Height="100"
+                  Margin="2"
+                  IsEnabled="{Binding EnableUrlTypeBZ98RSteamCmd}"
+                  Content="98 Redux via SteamCmd"/>
+          <Button HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Height="100"
+                  Margin="2"
+                  IsEnabled="{Binding EnableUrlTypeBZCCSteamCmd}"
+                  Content="Combat Commander via SteamCmd"/>
+          <Button HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Height="100"
+                  Margin="2"
+                  IsEnabled="{Binding EnableUrlTypeBZ98RSteam}"
+                  Content="98 Redux via Steam"/>
+          <Button HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Height="100"
+                  Margin="2"
+                  IsEnabled="{Binding EnableUrlTypeBZCCSteam}"
+                  Content="Combat Commander via Steam"/>
+          <Button HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Height="100"
+                  Margin="2"
+                  IsEnabled="{Binding EnableUrlTypeBZ98RGit}"
+                  Content="98 Redux via Git"/>
+          <Button HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Height="100"
+                  Margin="2"
+                  IsEnabled="{Binding EnableUrlTypeBZCCGit}"
+                  Content="Combat Commander via Git"/>
+        </UniformGrid>
+      </StackPanel>
+    </TabItem>
+    <TabItem Header="Curated">
+      <Panel>
+        <TextBlock>Curated</TextBlock>
+      </Panel>
+    </TabItem>
+    <TabItem Header="Workshop">
+      <Panel>
+        <TextBlock>Workshop</TextBlock>
+      </Panel>
+    </TabItem>
+  </TabControl>
+</UserControl>
