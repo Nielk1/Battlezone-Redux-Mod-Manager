@@ -131,13 +131,15 @@ public partial class GetModsViewModel : ViewModelBase
             // confirmed git
             if (uri?.Scheme == "git")
             {
-                EnableUrlTypeBZ98RSteamCmd = false;
-                EnableUrlTypeBZ98RSteam = false;
-                EnableUrlTypeBZ98RGit = true;
+                ProcGit(uri);
 
-                EnableUrlTypeBZCCSteamCmd = false;
-                EnableUrlTypeBZCCSteam = false;
-                EnableUrlTypeBZCCGit = true;
+                //EnableUrlTypeBZ98RSteamCmd = false;
+                //EnableUrlTypeBZ98RSteam = false;
+                //EnableUrlTypeBZ98RGit = true;
+                //
+                //EnableUrlTypeBZCCSteamCmd = false;
+                //EnableUrlTypeBZCCSteam = false;
+                //EnableUrlTypeBZCCGit = true;
 
                 return;
             }
@@ -145,14 +147,20 @@ public partial class GetModsViewModel : ViewModelBase
             // possible git
             if (uri != null)
             {
-                EnableUrlTypeBZ98RSteamCmd = false;
-                EnableUrlTypeBZ98RSteam = false;
-                EnableUrlTypeBZ98RGit = true;
+                //if (ProcGitAsync(uri))
+                //    return;
 
-                EnableUrlTypeBZCCSteamCmd = false;
-                EnableUrlTypeBZCCSteam = false;
-                EnableUrlTypeBZCCGit = true;
+                //EnableUrlTypeBZ98RSteamCmd = false;
+                //EnableUrlTypeBZ98RSteam = false;
+                //EnableUrlTypeBZ98RGit = true;
+                //
+                //EnableUrlTypeBZCCSteamCmd = false;
+                //EnableUrlTypeBZCCSteam = false;
+                //EnableUrlTypeBZCCGit = true;
+                //
+                //return;
 
+                ProcGit(uri);
                 return;
             }
         }
@@ -166,12 +174,97 @@ public partial class GetModsViewModel : ViewModelBase
         EnableUrlTypeBZCCGit = false;
     }
 
+    private void ProcGit(Uri uri)
+    {
+        FromUrlIsBusy = true;
+        workshopDebounceCancellationToken?.Cancel();
+        workshopDebounceCancellationToken = new CancellationTokenSource();
+        Task.Run(async () =>
+        {
+            CancellationToken tok = workshopDebounceCancellationToken.Token;
+
+            await Task.Delay(500); // this is basically how we debounce
+
+            if (tok.IsCancellationRequested)
+                return;
+
+            await workshopWebLock.WaitAsync();
+            try
+            {
+                if (tok.IsCancellationRequested)
+                    return;
+
+                if (MainViewModel.settings.GitPath == null || !System.IO.File.Exists(MainViewModel.settings.GitPath))
+                {
+                    EnableUrlTypeBZ98RSteamCmd = false;
+                    EnableUrlTypeBZ98RSteam = false;
+                    EnableUrlTypeBZ98RGit = false;
+
+                    EnableUrlTypeBZCCSteamCmd = false;
+                    EnableUrlTypeBZCCSteam = false;
+                    EnableUrlTypeBZCCGit = false;
+
+                    return;
+                }
+
+                string[] branches = await GitContext.GetModBranchesAsync(MainViewModel.settings.GitPath, uri.ToString());
+
+                if (branches.Count() > 0)
+                {
+                    EnableUrlTypeBZ98RSteamCmd = false;
+                    EnableUrlTypeBZ98RSteam = false;
+                    EnableUrlTypeBZ98RGit = true;
+
+                    EnableUrlTypeBZCCSteamCmd = false;
+                    EnableUrlTypeBZCCSteam = false;
+                    EnableUrlTypeBZCCGit = true;
+                }
+                else
+                {
+                    EnableUrlTypeBZ98RSteamCmd = false;
+                    EnableUrlTypeBZ98RSteam = false;
+                    EnableUrlTypeBZ98RGit = false;
+
+                    EnableUrlTypeBZCCSteamCmd = false;
+                    EnableUrlTypeBZCCSteam = false;
+                    EnableUrlTypeBZCCGit = false;
+                }
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                EnableUrlTypeBZ98RSteamCmd = false;
+                EnableUrlTypeBZ98RSteam = false;
+                EnableUrlTypeBZ98RGit = false;
+
+                EnableUrlTypeBZCCSteamCmd = false;
+                EnableUrlTypeBZCCSteam = false;
+                EnableUrlTypeBZCCGit = false;
+
+                if (ex.Message == @"The system cannot find the file specified")
+                {
+                    //MessageBox.Show("Workshop ID was not detected, GIT download attempted.\r\ngit.exe not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //return;
+                }
+
+                return;
+            }
+            finally
+            {
+                FromUrlIsBusy = false;
+                workshopWebLock.Release();
+            }
+        }, workshopDebounceCancellationToken.Token);
+
+        //return true;
+    }
+
     private bool ProcWorkshopId(ulong workshopId, bool ManageSteamBZ98R, bool ManageSteamBZCC)
     {
         // no steam based systems are active, so abort early
         if (!MainViewModel.settings.ManageSourceSteamCmd && !(MainViewModel.settings.ManageSteam && (ManageSteamBZ98R || ManageSteamBZCC)))
             return false;
 
+        // the first mod id used by this game is over 650000000 so use that as a cutoff
         if (workshopId > 650000000)
         {
             FromUrlIsBusy = true;
@@ -208,11 +301,10 @@ public partial class GetModsViewModel : ViewModelBase
                             EnableUrlTypeBZCCGit = false;
                         }
                     }
-
-                    FromUrlIsBusy = false;
                 }
                 finally
                 {
+                    FromUrlIsBusy = false;
                     workshopWebLock.Release();
                 }
             }, workshopDebounceCancellationToken.Token);
