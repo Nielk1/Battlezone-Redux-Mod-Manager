@@ -110,9 +110,6 @@ namespace BZRModManager.ViewModels
             }
         }
 
-
-
-
         [ObservableProperty]
         private bool _isBusy;
 

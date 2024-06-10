@@ -149,10 +149,12 @@
                                     IconData="{StaticResource icon_multiplayer}"
                                     Command="{Binding ChangeContentCommand}"
                                     CommandParameter="multiplayer"/>
+            <!--
             <controls:MainNavButton Text="Chat"
                                     IconData="{StaticResource icon_chat}"
                                     Command="{Binding ChangeContentCommand}"
                                     CommandParameter="chat"/>
+            -->
 
             <TextBlock Margin="0 10 0 0"
                        Text="OTHER"/>
