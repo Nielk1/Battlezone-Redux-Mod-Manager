@@ -5,9 +5,15 @@
              xmlns:controls="using:BZRModManager.Controls"
              xmlns:converters="using:BZRModManager.Converters"
              xmlns:models="using:BZRModManager.Models"
+             xmlns:vm="using:BZRModManager.ViewModels"
              xmlns:gb="using:GroupBox.Avalonia.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="850"
              x:Class="BZRModManager.Views.GetModsView">
+
+  <Design.DataContext>
+    <vm:DesignGetModsViewModel />
+  </Design.DataContext>
+  
   <UserControl.Styles>
     <Style>
       <Style.Resources>
@@ -43,7 +49,7 @@
                  Margin="2.5 5 2.5 5"
                  Watermark="Workshop Published File ID or URL"
                  Text="{Binding Url}"/>
-        <UniformGrid Columns="1">
+        <StackPanel Orientation="Vertical">
           <Button HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   HorizontalContentAlignment="Center"
@@ -64,11 +70,31 @@
                   VerticalAlignment="Stretch"
                   HorizontalContentAlignment="Center"
                   VerticalContentAlignment="Center"
-                  Height="100"
                   Margin="2"
-                  IsEnabled="{Binding EnableUrlTypeGit}"
-                  Content="Download via Git"/>
-        </UniformGrid>
+                  IsEnabled="{Binding EnableUrlTypeGit}">
+            <Button.Content>
+              <StackPanel>
+                <Panel Height="100">
+                  <TextBlock HorizontalAlignment="Center"
+                             VerticalAlignment="Center">Download via Git</TextBlock>
+                </Panel>
+                <ItemsRepeater ItemsSource="{Binding GitBranches}">
+                  <ItemsRepeater.Layout>
+                    <WrapLayout HorizontalSpacing="5"
+                                VerticalSpacing="5"/>
+                  </ItemsRepeater.Layout>
+                  <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                      <ToggleButton Content="{Binding}"
+                                    Padding="10"
+                                    HorizontalContentAlignment="Center"/>
+                    </DataTemplate>
+                  </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+              </StackPanel>
+            </Button.Content>
+          </Button>
+        </StackPanel>
       </StackPanel>
     </TabItem>
     <TabItem Header="Curated">

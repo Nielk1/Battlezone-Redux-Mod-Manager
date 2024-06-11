@@ -19,20 +19,6 @@ namespace BZRModManager.ViewModels;
 public partial class GetModsViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private bool _enableUrlTypeBZ98RSteamCmd;
-    [ObservableProperty]
-    private bool _enableUrlTypeBZ98RSteam;
-    [ObservableProperty]
-    private bool _enableUrlTypeBZ98RGit;
-
-    [ObservableProperty]
-    private bool _enableUrlTypeBZCCSteamCmd;
-    [ObservableProperty]
-    private bool _enableUrlTypeBZCCSteam;
-    [ObservableProperty]
-    private bool _enableUrlTypeBZCCGit;
-
-    [ObservableProperty]
     private bool _enableUrlTypeSteamCmd;
     [ObservableProperty]
     private bool _enableUrlTypeSteam;
@@ -74,14 +60,6 @@ public partial class GetModsViewModel : ViewModelBase
     {
         if ((value?.Length ?? 0) == 0)
         {
-            EnableUrlTypeBZ98RSteamCmd = false;
-            EnableUrlTypeBZ98RSteam = false;
-            EnableUrlTypeBZ98RGit = false;
-
-            EnableUrlTypeBZCCSteamCmd = false;
-            EnableUrlTypeBZCCSteam = false;
-            EnableUrlTypeBZCCGit = false;
-
             EnableUrlTypeSteamCmd = false;
             EnableUrlTypeSteam = false;
             GitBranches.Clear();
@@ -119,14 +97,6 @@ public partial class GetModsViewModel : ViewModelBase
                         {
                             if (UInt64.TryParse(ids[0], out workshopId))
                             {
-                                EnableUrlTypeBZ98RSteamCmd = false;
-                                EnableUrlTypeBZ98RSteam = false;
-                                EnableUrlTypeBZ98RGit = false;
-
-                                EnableUrlTypeBZCCSteamCmd = false;
-                                EnableUrlTypeBZCCSteam = false;
-                                EnableUrlTypeBZCCGit = false;
-
                                 EnableUrlTypeSteamCmd = false;
                                 EnableUrlTypeSteam = false;
                                 GitBranches.Clear();
@@ -138,14 +108,6 @@ public partial class GetModsViewModel : ViewModelBase
                         }
                     }
                 }
-
-                EnableUrlTypeBZ98RSteamCmd = false;
-                EnableUrlTypeBZ98RSteam = false;
-                EnableUrlTypeBZ98RGit = false;
-
-                EnableUrlTypeBZCCSteamCmd = false;
-                EnableUrlTypeBZCCSteam = false;
-                EnableUrlTypeBZCCGit = false;
 
                 EnableUrlTypeSteamCmd = false;
                 EnableUrlTypeSteam = false;
@@ -192,14 +154,6 @@ public partial class GetModsViewModel : ViewModelBase
             }
         }
 
-        EnableUrlTypeBZ98RSteamCmd = false;
-        EnableUrlTypeBZ98RSteam = false;
-        EnableUrlTypeBZ98RGit = false;
-
-        EnableUrlTypeBZCCSteamCmd = false;
-        EnableUrlTypeBZCCSteam = false;
-        EnableUrlTypeBZCCGit = false;
-
         EnableUrlTypeSteamCmd = false;
         EnableUrlTypeSteam = false;
         GitBranches.Clear();
@@ -211,14 +165,6 @@ public partial class GetModsViewModel : ViewModelBase
         FromUrlIsBusy = true;
         workshopDebounceCancellationToken?.Cancel();
         workshopDebounceCancellationToken = new CancellationTokenSource();
-
-        EnableUrlTypeBZ98RSteamCmd = false;
-        EnableUrlTypeBZ98RSteam = false;
-        EnableUrlTypeBZ98RGit = false;
-
-        EnableUrlTypeBZCCSteamCmd = false;
-        EnableUrlTypeBZCCSteam = false;
-        EnableUrlTypeBZCCGit = false;
 
         EnableUrlTypeSteamCmd = false;
         EnableUrlTypeSteam = false;
@@ -242,14 +188,6 @@ public partial class GetModsViewModel : ViewModelBase
 
                 if (MainViewModel.settings.GitPath == null || !System.IO.File.Exists(MainViewModel.settings.GitPath))
                 {
-                    EnableUrlTypeBZ98RSteamCmd = false;
-                    EnableUrlTypeBZ98RSteam = false;
-                    EnableUrlTypeBZ98RGit = false;
-
-                    EnableUrlTypeBZCCSteamCmd = false;
-                    EnableUrlTypeBZCCSteam = false;
-                    EnableUrlTypeBZCCGit = false;
-
                     EnableUrlTypeSteamCmd = false;
                     EnableUrlTypeSteam = false;
                     GitBranches.Clear();
@@ -262,14 +200,6 @@ public partial class GetModsViewModel : ViewModelBase
 
                 if (branches.Count() > 0)
                 {
-                    EnableUrlTypeBZ98RSteamCmd = false;
-                    EnableUrlTypeBZ98RSteam = false;
-                    EnableUrlTypeBZ98RGit = true;
-
-                    EnableUrlTypeBZCCSteamCmd = false;
-                    EnableUrlTypeBZCCSteam = false;
-                    EnableUrlTypeBZCCGit = true;
-
                     EnableUrlTypeSteamCmd = false;
                     EnableUrlTypeSteam = false;
                     GitBranches.Clear();
@@ -278,14 +208,6 @@ public partial class GetModsViewModel : ViewModelBase
                 }
                 else
                 {
-                    EnableUrlTypeBZ98RSteamCmd = false;
-                    EnableUrlTypeBZ98RSteam = false;
-                    EnableUrlTypeBZ98RGit = false;
-
-                    EnableUrlTypeBZCCSteamCmd = false;
-                    EnableUrlTypeBZCCSteam = false;
-                    EnableUrlTypeBZCCGit = false;
-
                     EnableUrlTypeSteamCmd = false;
                     EnableUrlTypeSteam = false;
                     GitBranches.Clear();
@@ -294,14 +216,6 @@ public partial class GetModsViewModel : ViewModelBase
             }
             catch (System.ComponentModel.Win32Exception ex)
             {
-                EnableUrlTypeBZ98RSteamCmd = false;
-                EnableUrlTypeBZ98RSteam = false;
-                EnableUrlTypeBZ98RGit = false;
-
-                EnableUrlTypeBZCCSteamCmd = false;
-                EnableUrlTypeBZCCSteam = false;
-                EnableUrlTypeBZCCGit = false;
-
                 EnableUrlTypeSteamCmd = false;
                 EnableUrlTypeSteam = false;
                 GitBranches.Clear();
@@ -357,10 +271,6 @@ public partial class GetModsViewModel : ViewModelBase
                     {
                         if (appId == (UInt32)GameId.Battlezone98Redux)
                         {
-                            EnableUrlTypeBZ98RSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
-                            EnableUrlTypeBZ98RSteam = MainViewModel.settings.ManageSteam && ManageSteamBZ98R;
-                            EnableUrlTypeBZ98RGit = false;
-
                             EnableUrlTypeSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
                             EnableUrlTypeSteam = MainViewModel.settings.ManageSteam && ManageSteamBZ98R;
                             GitBranches.Clear();
@@ -368,10 +278,6 @@ public partial class GetModsViewModel : ViewModelBase
                         }
                         else if (appId == (UInt32)GameId.BattlezoneComatCommander)
                         {
-                            EnableUrlTypeBZCCSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
-                            EnableUrlTypeBZCCSteam = MainViewModel.settings.ManageSteam && ManageSteamBZCC;
-                            EnableUrlTypeBZCCGit = false;
-
                             EnableUrlTypeSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
                             EnableUrlTypeSteam = MainViewModel.settings.ManageSteam && ManageSteamBZCC;
                             GitBranches.Clear();
