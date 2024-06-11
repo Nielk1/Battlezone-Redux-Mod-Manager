@@ -11,6 +11,9 @@ using SteamVent;
 using BZRModManager.Models;
 using System.Net.Http;
 using System.Threading;
+using System.Collections.ObjectModel;
+using DynamicData;
+using System.ComponentModel;
 
 namespace BZRModManager.ViewModels;
 public partial class GetModsViewModel : ViewModelBase
@@ -30,6 +33,14 @@ public partial class GetModsViewModel : ViewModelBase
     private bool _enableUrlTypeBZCCGit;
 
     [ObservableProperty]
+    private bool _enableUrlTypeSteamCmd;
+    [ObservableProperty]
+    private bool _enableUrlTypeSteam;
+
+    public bool EnableUrlTypeGit => GitBranches.Count > 0;
+    public ObservableCollection<string> GitBranches { get; set; }
+
+    [ObservableProperty]
     private string _url;
 
     [ObservableProperty]
@@ -38,6 +49,7 @@ public partial class GetModsViewModel : ViewModelBase
     SteamVent.Adaptive.SteamContext Steam = new SteamVent.Adaptive.SteamContext();
     public GetModsViewModel()
     {
+        GitBranches = new ObservableCollection<string>();
         Steam.GetSteamApps();
     }
 
@@ -69,6 +81,11 @@ public partial class GetModsViewModel : ViewModelBase
             EnableUrlTypeBZCCSteamCmd = false;
             EnableUrlTypeBZCCSteam = false;
             EnableUrlTypeBZCCGit = false;
+
+            EnableUrlTypeSteamCmd = false;
+            EnableUrlTypeSteam = false;
+            GitBranches.Clear();
+            OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
 
             return;
         }
@@ -110,6 +127,11 @@ public partial class GetModsViewModel : ViewModelBase
                                 EnableUrlTypeBZCCSteam = false;
                                 EnableUrlTypeBZCCGit = false;
 
+                                EnableUrlTypeSteamCmd = false;
+                                EnableUrlTypeSteam = false;
+                                GitBranches.Clear();
+                                OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
+
                                 ProcWorkshopId(workshopId, ManageSteamBZ98R, ManageSteamBZCC);
                                 return;
                             }
@@ -124,6 +146,11 @@ public partial class GetModsViewModel : ViewModelBase
                 EnableUrlTypeBZCCSteamCmd = false;
                 EnableUrlTypeBZCCSteam = false;
                 EnableUrlTypeBZCCGit = false;
+
+                EnableUrlTypeSteamCmd = false;
+                EnableUrlTypeSteam = false;
+                GitBranches.Clear();
+                OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
 
                 return;
             }
@@ -172,6 +199,11 @@ public partial class GetModsViewModel : ViewModelBase
         EnableUrlTypeBZCCSteamCmd = false;
         EnableUrlTypeBZCCSteam = false;
         EnableUrlTypeBZCCGit = false;
+
+        EnableUrlTypeSteamCmd = false;
+        EnableUrlTypeSteam = false;
+        GitBranches.Clear();
+        OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
     }
 
     private void ProcGit(Uri uri)
@@ -179,6 +211,20 @@ public partial class GetModsViewModel : ViewModelBase
         FromUrlIsBusy = true;
         workshopDebounceCancellationToken?.Cancel();
         workshopDebounceCancellationToken = new CancellationTokenSource();
+
+        EnableUrlTypeBZ98RSteamCmd = false;
+        EnableUrlTypeBZ98RSteam = false;
+        EnableUrlTypeBZ98RGit = false;
+
+        EnableUrlTypeBZCCSteamCmd = false;
+        EnableUrlTypeBZCCSteam = false;
+        EnableUrlTypeBZCCGit = false;
+
+        EnableUrlTypeSteamCmd = false;
+        EnableUrlTypeSteam = false;
+        GitBranches.Clear();
+        OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
+
         Task.Run(async () =>
         {
             CancellationToken tok = workshopDebounceCancellationToken.Token;
@@ -204,6 +250,11 @@ public partial class GetModsViewModel : ViewModelBase
                     EnableUrlTypeBZCCSteam = false;
                     EnableUrlTypeBZCCGit = false;
 
+                    EnableUrlTypeSteamCmd = false;
+                    EnableUrlTypeSteam = false;
+                    GitBranches.Clear();
+                    OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
+
                     return;
                 }
 
@@ -218,6 +269,12 @@ public partial class GetModsViewModel : ViewModelBase
                     EnableUrlTypeBZCCSteamCmd = false;
                     EnableUrlTypeBZCCSteam = false;
                     EnableUrlTypeBZCCGit = true;
+
+                    EnableUrlTypeSteamCmd = false;
+                    EnableUrlTypeSteam = false;
+                    GitBranches.Clear();
+                    GitBranches.AddRange(branches);
+                    OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
                 }
                 else
                 {
@@ -228,6 +285,11 @@ public partial class GetModsViewModel : ViewModelBase
                     EnableUrlTypeBZCCSteamCmd = false;
                     EnableUrlTypeBZCCSteam = false;
                     EnableUrlTypeBZCCGit = false;
+
+                    EnableUrlTypeSteamCmd = false;
+                    EnableUrlTypeSteam = false;
+                    GitBranches.Clear();
+                    OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
                 }
             }
             catch (System.ComponentModel.Win32Exception ex)
@@ -239,6 +301,11 @@ public partial class GetModsViewModel : ViewModelBase
                 EnableUrlTypeBZCCSteamCmd = false;
                 EnableUrlTypeBZCCSteam = false;
                 EnableUrlTypeBZCCGit = false;
+
+                EnableUrlTypeSteamCmd = false;
+                EnableUrlTypeSteam = false;
+                GitBranches.Clear();
+                OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
 
                 if (ex.Message == @"The system cannot find the file specified")
                 {
@@ -293,12 +360,22 @@ public partial class GetModsViewModel : ViewModelBase
                             EnableUrlTypeBZ98RSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
                             EnableUrlTypeBZ98RSteam = MainViewModel.settings.ManageSteam && ManageSteamBZ98R;
                             EnableUrlTypeBZ98RGit = false;
+
+                            EnableUrlTypeSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
+                            EnableUrlTypeSteam = MainViewModel.settings.ManageSteam && ManageSteamBZ98R;
+                            GitBranches.Clear();
+                            OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
                         }
                         else if (appId == (UInt32)GameId.BattlezoneComatCommander)
                         {
                             EnableUrlTypeBZCCSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
                             EnableUrlTypeBZCCSteam = MainViewModel.settings.ManageSteam && ManageSteamBZCC;
                             EnableUrlTypeBZCCGit = false;
+
+                            EnableUrlTypeSteamCmd = MainViewModel.settings.ManageSourceSteamCmd;
+                            EnableUrlTypeSteam = MainViewModel.settings.ManageSteam && ManageSteamBZCC;
+                            GitBranches.Clear();
+                            OnPropertyChanged(new PropertyChangedEventArgs("EnableUrlTypeGit"));
                         }
                     }
                 }
