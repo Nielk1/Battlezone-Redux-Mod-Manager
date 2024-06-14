@@ -26,7 +26,7 @@
       </Style.Resources>
     </Style>
   </UserControl.Styles>
-  <TabControl>
+  <TabControl Padding="0">
     <TabItem>
       <TabItem.Header>
         <Panel>
@@ -41,43 +41,38 @@
                     HorizontalAlignment="Right"/>
         </Panel>
       </TabItem.Header>
-      <StackPanel Orientation="Vertical">
-        <TextBox Grid.ColumnSpan="2"
-                 Grid.Row="0"
-                 Grid.Column="0"
-                 Height="30"
-                 Margin="2.5 5 2.5 5"
-                 Watermark="Workshop Published File ID or URL"
-                 Text="{Binding Url}"/>
-        <StackPanel Orientation="Vertical">
-          <Button HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                  HorizontalContentAlignment="Center"
-                  VerticalContentAlignment="Center"
-                  Height="100"
-                  Margin="2"
-                  IsEnabled="{Binding EnableUrlTypeSteamCmd}"
-                  Content="Download via SteamCmd"/>
-          <Button HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                  HorizontalContentAlignment="Center"
-                  VerticalContentAlignment="Center"
-                  Height="100"
-                  Margin="2"
-                  IsEnabled="{Binding EnableUrlTypeSteam}"
-                  Content="Download via Steam"/>
-          <Button HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                  HorizontalContentAlignment="Center"
-                  VerticalContentAlignment="Center"
-                  Margin="2"
-                  IsEnabled="{Binding EnableUrlTypeGit}">
-            <Button.Content>
-              <StackPanel>
-                <Panel Height="100">
-                  <TextBlock HorizontalAlignment="Center"
-                             VerticalAlignment="Center">Download via Git</TextBlock>
-                </Panel>
+      <ScrollViewer AllowAutoHide="False">
+        <StackPanel Orientation="Vertical"
+                    Margin="10 0 18 0">
+          <TextBox Grid.ColumnSpan="2"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   Height="30"
+                   Margin="2.5 5 2.5 5"
+                   Watermark="Workshop Published File ID or URL"
+                   Text="{Binding Url}"/>
+          <StackPanel Orientation="Vertical">
+            <Button HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="100"
+                    Margin="2"
+                    IsEnabled="{Binding EnableUrlTypeSteamCmd}"
+                    Content="Download via SteamCmd"/>
+            <Button HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="100"
+                    Margin="2"
+                    IsEnabled="{Binding EnableUrlTypeSteam}"
+                    Content="Download via Steam"/>
+            <gb:GroupBox Header="Download Branch via Git"
+                         Theme="{StaticResource GroupBoxClassic}"
+                         Margin="2.5 0 2.5 5">
+              <Panel Margin="3 3 3 3"
+                     MinHeight="100">
                 <ItemsRepeater ItemsSource="{Binding GitBranches}">
                   <ItemsRepeater.Layout>
                     <WrapLayout HorizontalSpacing="5"
@@ -85,17 +80,27 @@
                   </ItemsRepeater.Layout>
                   <ItemsRepeater.ItemTemplate>
                     <DataTemplate>
-                      <ToggleButton Content="{Binding}"
-                                    Padding="10"
-                                    HorizontalContentAlignment="Center"/>
+                      <Button Padding="14"
+                              HorizontalContentAlignment="Center">
+                        <Button.Content>
+                          <MultiBinding StringFormat="{}{0}">
+                            <Binding/>
+                          </MultiBinding>
+                        </Button.Content>
+                      </Button>
                     </DataTemplate>
                   </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>
-              </StackPanel>
-            </Button.Content>
-          </Button>
+                <TextBlock IsVisible="{Binding EnableUrlTypeGit,
+                                       Converter={x:Static BoolConverters.Not}}"
+                           Text="No Git Branches Detected"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+              </Panel>
+            </gb:GroupBox>
+          </StackPanel>
         </StackPanel>
-      </StackPanel>
+      </ScrollViewer>
     </TabItem>
     <TabItem Header="Curated">
       <Panel>

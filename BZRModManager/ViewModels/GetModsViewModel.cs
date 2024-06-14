@@ -14,6 +14,7 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using DynamicData;
 using System.ComponentModel;
+using Avalonia.Controls;
 
 namespace BZRModManager.ViewModels;
 public partial class GetModsViewModel : ViewModelBase
@@ -32,11 +33,13 @@ public partial class GetModsViewModel : ViewModelBase
     [ObservableProperty]
     private bool _fromUrlIsBusy;
 
-    SteamVent.Adaptive.SteamContext Steam = new SteamVent.Adaptive.SteamContext();
+    SteamVent.Adaptive.SteamContext Steam;
     public GetModsViewModel()
     {
         GitBranches = new ObservableCollection<string>();
-        Steam.GetSteamApps();
+        //Steam.GetSteamApps();
+        if (!Design.IsDesignMode)
+            Steam = new SteamVent.Adaptive.SteamContext();
     }
 
     internal void Refresh()
@@ -70,7 +73,7 @@ public partial class GetModsViewModel : ViewModelBase
 
         bool ManageSteamBZ98R = false;
         bool ManageSteamBZCC = false;
-        if (MainViewModel.settings.ManageSteam)
+        if (MainViewModel.settings.ManageSteam && Steam != null)
         {
             ManageSteamBZ98R = Steam.GetSteamApps().GetAppInstalled((UInt32)GameId.Battlezone98Redux);
             ManageSteamBZCC = Steam.GetSteamApps().GetAppInstalled((UInt32)GameId.BattlezoneComatCommander);

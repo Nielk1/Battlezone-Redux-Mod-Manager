@@ -22,7 +22,7 @@
     <ScrollViewer AllowAutoHide="False"
                   Margin="0 30 0 0">
       <StackPanel Orientation="Vertical"
-                  Margin="4 4 18 4">
+                  Margin="10 4 18 4">
         <gb:GroupBox Header="Override automatic detection of steam library folder that contains BZ98R"
                      Theme="{StaticResource GroupBoxClassic}"
                      Margin="0 0 0 4">
