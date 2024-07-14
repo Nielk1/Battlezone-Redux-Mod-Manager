@@ -45,6 +45,7 @@ public partial class MainViewModel : ViewModelBase
     private LogsViewModel vmLogs;
     private TasksViewModel vmTasks;
     private SettingsViewModel vmSettings;
+    private AboutViewModel vmAbout;
 
     public string? TaskCount => vmTasks.TaskCount > 0 ? vmTasks.TaskCount.ToString() : null;
     public bool ManageModsIsBusy => vmManageMods.IsBusy
@@ -81,7 +82,7 @@ public partial class MainViewModel : ViewModelBase
                 ContentViewModel = vmLogs;
                 break;
             case "about":
-                ContentViewModel = null;
+                ContentViewModel = vmAbout;
                 break;
             default:
                 ContentViewModel = null;
@@ -111,6 +112,7 @@ public partial class MainViewModel : ViewModelBase
         vmLogs = new LogsViewModel();
         vmTasks = new TasksViewModel();
         vmSettings = new SettingsViewModel();
+        vmAbout = new AboutViewModel();
 
         vmSettings.ManageSettingChanged += (sender, e) =>
         {

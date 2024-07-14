@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="BZRModManager.Views.AboutView">
+  <UserControl.Styles>
+    <StyleInclude Source="/Styles/Common.axaml"/>
+  </UserControl.Styles>
+  <TabControl Padding="0">
+    <TabItem Header="Flaticon">
+      <ScrollViewer AllowAutoHide="False">
+        <StackPanel Orientation="Vertical"
+                    Margin="10 0 18 0">
+          <WrapPanel ItemWidth="80"
+                     ItemHeight="80">
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_earth}" Classes="Rotator"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_changed}" Classes="RotatorS2"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_settings}" Classes="RotatorS4"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_chat}" Classes="RotatorS2"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_multiplayer}" Classes="Rotator"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_managemods}" Classes="RotatorS2"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_getmods}" Classes="RotatorS4"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_about}" Classes="RotatorS2"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_logs}" Classes="Rotator"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_tasks}" Classes="RotatorS2"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_spinner}" Classes="RotatorS4"/>
+          </WrapPanel>
+          <TextBlock>
+            Uicons by Flaticon (https://www.flaticon.com/uicons)
+          </TextBlock>
+        </StackPanel>
+      </ScrollViewer>
+    </TabItem>
+    <TabItem Header="Brand Assets">
+      <ScrollViewer AllowAutoHide="False">
+        <StackPanel Orientation="Vertical"
+                    Margin="10 0 18 0">
+          <WrapPanel ItemWidth="80"
+                     ItemHeight="80">
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_steam}" Classes="Rotator"/>
+            <PathIcon Width="40" Height="40" Data="{StaticResource icon_gog}" Classes="RotatorS2"/>
+            <Image Source="/Assets/bz98r.ico"
+                   Width="40"
+                   Height="40"
+                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                   Classes="RotatorS4"/>
+            <Image Source="/Assets/bzcc.ico"
+                   Width="40"
+                   Height="40"
+                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                   Classes="RotatorS2"/>
+          </WrapPanel>
+          <TextBlock>
+            Brand assets by respective companies
+          </TextBlock>
+          <TextBlock>
+            Steam Logo by Valve Corporation
+          </TextBlock>
+          <TextBlock>
+            GOG Logo by GOG sp. z o.o.
+          </TextBlock>
+          <TextBlock>
+            Battlezone 98 Redux and Battlezone Combat Commander logos by Rebellion Developments Ltd.
+          </TextBlock>
+        </StackPanel>
+      </ScrollViewer>
+    </TabItem>
+  </TabControl>
+</UserControl>
