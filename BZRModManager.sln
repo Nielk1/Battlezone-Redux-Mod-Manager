@@ -19,6 +19,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BZRModManager", "BZRModManager\BZRModManager.csproj", "{D847B11B-13D7-4830-B121-A33B64570292}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BZRModManager.Desktop", "BZRModManager.Desktop\BZRModManager.Desktop.csproj", "{D9A51A09-5F97-4990-97AC-9940D52C056B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1B1CF7C2-DA92-4FFD-BC92-8332947A87BE} = {1B1CF7C2-DA92-4FFD-BC92-8332947A87BE}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamVent.SteamCmd", "Deps\SteamVent\SteamVent.SteamCmd\SteamVent.SteamCmd.csproj", "{2CEF3F85-518E-4270-91C6-87A6E0451A85}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -33,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamVent.Tests", "Deps\Ste
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamVentContextBridge", "Deps\SteamVent\SteamVentContextBridge\SteamVentContextBridge.csproj", "{0ED688FE-E34F-497C-ACCF-410275A89E7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamVent.Bridge", "Deps\SteamVent\SteamVent.Bridge\SteamVent.Bridge.csproj", "{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SteamVent.Bridge", "Deps\SteamVent\SteamVent.Bridge\SteamVent.Bridge.csproj", "{742227B6-A4D9-4B81-B8DC-050AC7F9DBB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
