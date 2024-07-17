@@ -14,10 +14,58 @@
     <TextBlock>Test</TextBlock>
   </Panel>
   -->
-  <TabControl>
+    
+  <TabControl Padding="12 0 0 0">
+    <TabItem Header="Main">
+      <ScrollViewer AllowAutoHide="False"
+                    Margin="0 0 0 0">
+        <Panel Margin="0 0 12 0">
+          <ItemsRepeater ItemsSource="{Binding LogItems}">
+            <ItemsRepeater.Layout>
+              <StackLayout Orientation="Vertical"/>
+            </ItemsRepeater.Layout>
+            <ItemsRepeater.ItemTemplate>
+              <DataTemplate>
+                <!--
+                <controls:TaskItemPanel TaskNode="{Binding}"/>
+                -->
+                <Panel>
+                  <Panel Background="{Binding Color}" Opacity="0.1"/>
+                  <Border BorderBrush="{Binding Color}"
+                          BorderThickness="5 0 0 0"
+                          Padding="5 0 0 0">
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70"></ColumnDefinition>
+                        <ColumnDefinition Width="70"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                      </Grid.ColumnDefinitions>
+                      <TextBlock Text="{Binding Type}"
+                                 Grid.Column="0"
+                                 FontFamily="Inconsolata,Consolas,Monospace,Courier"/>
+                      <TextBlock Text="{Binding SubType}"
+                                 Grid.Column="1"
+                                 FontFamily="Inconsolata,Consolas,Monospace,Courier"/>
+                      <Border BorderBrush="{Binding Color}"
+                              Grid.Column="2"
+                              BorderThickness="5 0 0 0"
+                              Padding="5 0 0 0">
+                        <TextBlock Text="{Binding Text}"
+                                   FontFamily="Inconsolata,Consolas,Monospace,Courier"/>
+                      </Border>
+                    </Grid>
+                  </Border>
+                </Panel>
+              </DataTemplate>
+            </ItemsRepeater.ItemTemplate>
+          </ItemsRepeater>
+        </Panel>
+      </ScrollViewer>
+    </TabItem>
     <TabItem Header="SteamCmd Clean">
       <Panel>
         <TextBox Name="SteamLogClean"
+                 Margin="0 0 12 0"
                  IsReadOnly="True"
                  Text="{Binding CleanLog, Mode=OneWay}"
                  FontFamily="Inconsolata,Consolas,Monospace,Courier"/>
@@ -26,6 +74,7 @@
     <TabItem Header="SteamCmd Raw">
       <Panel>
         <TextBox Name="SteamLogRaw"
+                 Margin="0 0 12 0"
                  IsReadOnly="True"
                  Text="{Binding RawLog, Mode=OneWay}"
                  FontFamily="Inconsolata,Consolas,Monospace,Courier"/>

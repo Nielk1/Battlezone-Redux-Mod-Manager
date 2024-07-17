@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Media;
 using BZRModManager.Models;
 using BZRModManager.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -124,6 +125,9 @@ public partial class MainViewModel : ViewModelBase
 
         SteamCmd.SteamCmdOutput += Steam_SteamCmdOutput;
         SteamCmd.SteamCmdOutputFull += Steam_SteamCmdOutputFull;
+        SteamCmd.SteamCmdRichOutput += Steam_SteamCmdRichOutput;
+        SteamCmd.SteamCmdArgs += SteamCmd_SteamCmdArgs;
+        SteamCmd.SteamCmdStatusChange += SteamCmd_SteamCmdStatusChange;
 
         vmTasks.PropertyChanged += (sender, e) =>
         {
@@ -320,5 +324,29 @@ public partial class MainViewModel : ViewModelBase
     private void Steam_SteamCmdOutput(object sender, string msg)
     {
         vmLogs.CleanLog += msg;
+    }
+
+    private void Steam_SteamCmdRichOutput(object sender, SteamCmdRichOutput msg)
+    {
+        string subType = "        ";
+        IBrush color = Brushes.DarkBlue;
+        switch(msg.Type)
+        {
+            case SteamCmdLogType.Workshop:
+                subType = "WORKSHOP";
+                color = Brushes.Blue;
+                break;
+        }
+        vmLogs.AddLogItem(color, "STEAMCMD", subType, msg.Text);
+    }
+
+    private void SteamCmd_SteamCmdArgs(object sender, string msg)
+    {
+        vmLogs.AddLogItem(Brushes.Cyan, "STEAMCMD", "CMD     ", msg);
+    }
+
+    private void SteamCmd_SteamCmdStatusChange(object sender, SteamCmdStatusChangeEventArgs e)
+    {
+        vmLogs.AddLogItem(Brushes.DarkCyan, "STEAMCMD", "STATE   ", e.Status.ToString());
     }
 }
