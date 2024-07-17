@@ -49,9 +49,17 @@ namespace BZRModManager.ViewModels
             {
                 TasksLock.Release();
             }
+            
+            taskNode.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == "State")
+                    OnTaskStateChanged(taskNode.Text, taskNode.State);
+            };
+
             return Task.Run(async () =>
             {
                 taskNode.State = TaskNodeState.Waiting;
+
                 //await value.Invoke(taskNode);
                 Task tmpTask = value.Invoke(taskNode);
                 await tmpTask;
@@ -99,6 +107,15 @@ namespace BZRModManager.ViewModels
             {
                 TasksLock.Release();
             }
+        }
+
+
+        public delegate void TaskStateChangedHandler(object sender, string name, TaskNodeState state);
+        public event TaskStateChangedHandler TaskStateChanged;
+
+        private void OnTaskStateChanged(string text, TaskNodeState state)
+        {
+            TaskStateChanged?.Invoke(this, text, state);
         }
     }
 }

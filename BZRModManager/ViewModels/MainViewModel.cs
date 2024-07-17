@@ -94,6 +94,7 @@ public partial class MainViewModel : ViewModelBase
     #endregion UI_Pages
 
     SteamCmdContext SteamCmd = SteamCmdContext.Instance;
+    SteamVent.Adaptive.SteamContext Steam = new SteamVent.Adaptive.SteamContext();
 
     public MainViewModel()
     {
@@ -129,6 +130,7 @@ public partial class MainViewModel : ViewModelBase
         SteamCmd.SteamCmdArgs += SteamCmd_SteamCmdArgs;
         SteamCmd.SteamCmdStatusChange += SteamCmd_SteamCmdStatusChange;
 
+
         vmTasks.PropertyChanged += (sender, e) =>
         {
             switch(e.PropertyName)
@@ -138,6 +140,7 @@ public partial class MainViewModel : ViewModelBase
                     break;
             }
         };
+        vmTasks.TaskStateChanged += VmTasks_TaskStateChanged;
 
         vmManageMods.PropertyChanged += (sender, e) =>
         {
@@ -153,8 +156,6 @@ public partial class MainViewModel : ViewModelBase
 
         ListModsTask();
     }
-
-    SteamVent.Adaptive.SteamContext Steam = new SteamVent.Adaptive.SteamContext();
 
     private void ShutdownSteam()
     {
@@ -326,13 +327,13 @@ public partial class MainViewModel : ViewModelBase
         vmLogs.CleanLog += msg;
     }
 
-    private void Steam_SteamCmdRichOutput(object sender, SteamCmdRichOutput msg)
+    private void Steam_SteamCmdRichOutput(object sender, SteamVentRichLogAtom msg)
     {
         string subType = "        ";
         IBrush color = Brushes.DarkBlue;
         switch(msg.Type)
         {
-            case SteamCmdLogType.Workshop:
+            case SteamVentRichLogAtomType.Workshop:
                 subType = "WORKSHOP";
                 color = Brushes.Blue;
                 break;
@@ -348,5 +349,10 @@ public partial class MainViewModel : ViewModelBase
     private void SteamCmd_SteamCmdStatusChange(object sender, SteamCmdStatusChangeEventArgs e)
     {
         vmLogs.AddLogItem(Brushes.DarkCyan, "STEAMCMD", "STATE   ", e.Status.ToString());
+    }
+
+    private void VmTasks_TaskStateChanged(object sender, string name, TaskNodeState state)
+    {
+        vmLogs.AddLogItem(Brushes.Orange, "TASKS   ", "STATE   ", $"{state.ToString().PadRight(8)}  :  {name}");
     }
 }
