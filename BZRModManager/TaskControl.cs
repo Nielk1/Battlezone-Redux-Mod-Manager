@@ -35,6 +35,7 @@ namespace BZRModManager
         }
 
         private int _Value;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int Value
         {
             get
@@ -59,6 +60,7 @@ namespace BZRModManager
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int Maximum
         {
             get

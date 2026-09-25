@@ -128,6 +128,7 @@ namespace BZRModManager
         }
 
         List<int> sorts = new List<int>();
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public List<string> TypeFilter { get { return _TypeFilter; } set { _TypeFilter = value; ApplySortAndFilter(); } }
         private List<string> _TypeFilter;
         private void LinqListView2_ColumnClick(object sender, ColumnClickEventArgs e)

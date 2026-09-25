@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <RootNamespace>BZRModManager</RootNamespace>
     <AssemblyName>BZRModManager</AssemblyName>
     <UseWindowsForms>true</UseWindowsForms>
@@ -54,7 +54,7 @@
     built with the .NET CLI, so only copy them if they were already built and warn otherwise.
   -->
   <PropertyGroup>
-    <SteamVentNativeDir>$(MSBuildThisFileDirectory)..\Deps\SteamVent\SteamVent.SteamCmd\bin\$(Configuration)\net8.0</SteamVentNativeDir>
+    <SteamVentNativeDir>$(MSBuildThisFileDirectory)..\Deps\SteamVent\SteamVent.SteamCmd\bin\$(Configuration)\net10.0</SteamVentNativeDir>
   </PropertyGroup>
 
   <Target Name="CopySteamVentNativeRuntimeDeps" AfterTargets="PostBuildEvent"

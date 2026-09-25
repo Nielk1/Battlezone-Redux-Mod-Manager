@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Tests (SteamVent.Tests · xunit.v3 / MTP)",
+      "detail": "Runs the xunit.v3 tests through the Microsoft.Testing.Platform runner via 'dotnet test' (uses the MTP opt-in in global.json).",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "Deps/SteamVent/SteamVent.Tests/SteamVent.Tests.csproj"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    }
+  ]
+}
