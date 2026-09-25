@@ -1,4 +1,5 @@
 ﻿using BZRModManager.ModItem;
+using SteamVent.Common;
 using SteamVent.SteamCmd;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace BZRModManager
                             try
                             {
                                 TaskControl UpdateTask = UpdateBZ98RModListsTaskControl.AddTask("Update BZ98 Mod List (SteamCmd)", 0);
-                                List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatus(AppIdBZ98);
+                                List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatusAsync(AppIdBZ98).GetAwaiter().GetResult();
                                 stats?.ForEach(dr =>
                                 {
                                     string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
@@ -49,7 +50,7 @@ namespace BZRModManager
                                         ((SteamCmdMod)Mods[AppIdBZ98][ModId]).Workshop = dr;
                                     }
                                     Mods[AppIdBZ98][ModId].HasUpdate = dr.HasUpdate;
-                                    Mods[AppIdBZ98][ModId].FolderOnlyDetection = dr.FolderOnlyDetection;
+                                    Mods[AppIdBZ98][ModId].FolderOnlyDetection = dr.Detection.HasFlag(WorkshopItemStatus.WorkshopDetectionType.Folder);
                                     FoundModIDs.Add(ModId);
                                 });
                                 UpdateBZ98RModListsTaskControl.EndTask(UpdateTask);
@@ -203,7 +204,7 @@ namespace BZRModManager
                                                 ex_ = null;
                                                 try
                                                 {
-                                                    SteamCmd.WorkshopDownloadItem(AppIdBZ98, modSteam.Workshop.WorkshopId);
+                                                    SteamCmd.WorkshopDownloadItemAsync(AppIdBZ98, modSteam.Workshop.WorkshopId).GetAwaiter().GetResult();
                                                 }
                                                 catch (SteamCmdWorkshopDownloadException ex)
                                                 {

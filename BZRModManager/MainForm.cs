@@ -16,12 +16,14 @@ using System.Windows.Forms;
 using BZRModManager.ModItem;
 using IniParser;
 using System.Net;
+// .NET 8 added System.Reflection.MethodInvoker, which collides with System.Windows.Forms.MethodInvoker
+using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
 namespace BZRModManager
 {
     public partial class MainForm : Form
     {
-        SteamCmdContext SteamCmd = SteamCmdContext.GetInstance();
+        SteamCmdContext SteamCmd = SteamCmdContext.Instance;
 
         public const int AppIdBZ98 = 301650;
         public const int AppIdBZCC = 624970;
@@ -375,7 +377,7 @@ namespace BZRModManager
             ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
             new Thread(() =>
             {
-                SteamCmd.Download();
+                SteamCmd.DownloadAsync().GetAwaiter().GetResult();
                 if (exitingStage > 1) return;
                 //this.Invoke((MethodInvoker)delegate
                 //{
@@ -458,7 +460,7 @@ namespace BZRModManager
                             ex_ = null;
                             try
                             {
-                                SteamCmd.WorkshopDownloadItem(AppId, workshopID);
+                                SteamCmd.WorkshopDownloadItemAsync(AppId, workshopID).GetAwaiter().GetResult();
                             }
                             catch (SteamCmdWorkshopDownloadException ex)
                             {
@@ -888,7 +890,7 @@ namespace BZRModManager
                     RemovingSteamCmd = null;
 
                     ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
-                    SteamCmd.Download();
+                    SteamCmd.DownloadAsync().GetAwaiter().GetResult();
                     if (exitingStage > 1) return;
                     this.Invoke((MethodInvoker)delegate
                     {

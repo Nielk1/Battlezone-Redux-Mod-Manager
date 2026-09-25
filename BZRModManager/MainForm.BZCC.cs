@@ -2,6 +2,7 @@
 using IniParser;
 using IniParser.Model;
 using Monitor.Core.Utilities;
+using SteamVent.Common;
 using SteamVent.SteamCmd;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace BZRModManager
                             try
                             {
                                 TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (SteamCmd)", 0);
-                                List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatus(AppIdBZCC);
+                                List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatusAsync(AppIdBZCC).GetAwaiter().GetResult();
                                 stats?.ForEach(dr =>
                                 {
                                     string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
@@ -51,7 +52,7 @@ namespace BZRModManager
                                         ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
                                     }
                                     Mods[AppIdBZCC][ModId].HasUpdate = dr.HasUpdate;
-                                    Mods[AppIdBZCC][ModId].FolderOnlyDetection = dr.FolderOnlyDetection;
+                                    Mods[AppIdBZCC][ModId].FolderOnlyDetection = dr.Detection.HasFlag(WorkshopItemStatus.WorkshopDetectionType.Folder);
                                     FoundModIDs.Add(ModId);
                                 });
                                 UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
@@ -229,7 +230,7 @@ namespace BZRModManager
                                                 ex_ = null;
                                                 try
                                                 {
-                                                    SteamCmd.WorkshopDownloadItem(AppIdBZCC, modSteam.Workshop.WorkshopId);
+                                                    SteamCmd.WorkshopDownloadItemAsync(AppIdBZCC, modSteam.Workshop.WorkshopId).GetAwaiter().GetResult();
                                                 }
                                                 catch (SteamCmdWorkshopDownloadException ex)
                                                 {
@@ -333,7 +334,7 @@ namespace BZRModManager
                                     ex_ = null;
                                     try
                                     {
-                                        SteamCmd.WorkshopDownloadItem(AppIdBZCC, tmpLong);
+                                        SteamCmd.WorkshopDownloadItemAsync(AppIdBZCC, tmpLong).GetAwaiter().GetResult();
                                     }
                                     catch (SteamCmdWorkshopDownloadException ex)
                                     {
