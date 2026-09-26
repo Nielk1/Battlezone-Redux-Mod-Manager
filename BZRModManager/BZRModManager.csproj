@@ -48,10 +48,9 @@
   </ItemGroup>
 
   <!--
-    Native runtime dependencies of SteamVent.SteamCmd (steamcmdprox.exe, steamcmdinj.dll, EasyHook32.dll)
-    are produced by the Visual Studio C++ projects Deps\SteamVent\steamcmdinj and Deps\SteamVent\steamcmdprox
-    (or the EasyHookNativePackage.redist NuGet package in a packages.config style layout). They cannot be
-    built with the .NET CLI, so only copy them if they were already built and warn otherwise.
+    Native runtime dependencies of SteamVent.SteamCmd (steamcmdprox.exe, steamcmdinj.dll)
+    are produced by the Visual Studio C++ projects Deps\SteamVent\steamcmdinj and Deps\SteamVent\steamcmdprox.
+    They cannot be built with the .NET CLI, so only copy them if they were already built and warn otherwise.
   -->
   <PropertyGroup>
     <SteamVentNativeDir>$(MSBuildThisFileDirectory)..\Deps\SteamVent\SteamVent.SteamCmd\bin\$(Configuration)\net10.0</SteamVentNativeDir>
@@ -59,14 +58,13 @@
 
   <Target Name="CopySteamVentNativeRuntimeDeps" AfterTargets="PostBuildEvent"
           Condition="Exists('$(SteamVentNativeDir)\steamcmdprox.exe')">
-    <Exec Command="copy /Y &quot;$(SteamVentNativeDir)\EasyHook32.dll&quot; &quot;$(TargetDir)EasyHook32.dll&quot;
-copy /Y &quot;$(SteamVentNativeDir)\steamcmdinj.dll&quot; &quot;$(TargetDir)steamcmdinj.dll&quot;
+    <Exec Command="copy /Y &quot;$(SteamVentNativeDir)\steamcmdinj.dll&quot; &quot;$(TargetDir)steamcmdinj.dll&quot;
 copy /Y &quot;$(SteamVentNativeDir)\steamcmdprox.exe&quot; &quot;$(TargetDir)\steamcmdprox.exe&quot;
 copy /Y &quot;$(SteamVentNativeDir)\steamcmdprox.pdb&quot; &quot;$(TargetDir)\steamcmdprox.pdb&quot;" />
   </Target>
   <Target Name="WarnMissingSteamVentNativeRuntimeDeps" AfterTargets="PostBuildEvent"
           Condition="!Exists('$(SteamVentNativeDir)\steamcmdprox.exe')">
-    <Warning Text="SteamVent native runtime dependencies (steamcmdprox.exe, steamcmdinj.dll, EasyHook32.dll) were not found in '$(SteamVentNativeDir)'. Build the steamcmdinj/steamcmdprox C++ projects with Visual Studio to enable SteamCmd automation." />
+    <Warning Text="SteamVent native runtime dependencies (steamcmdprox.exe, steamcmdinj.dll) were not found in '$(SteamVentNativeDir)'. Build the steamcmdinj/steamcmdprox C++ projects with Visual Studio to enable SteamCmd automation." />
   </Target>
 
 </Project>
