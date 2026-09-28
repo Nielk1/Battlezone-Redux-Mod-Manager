@@ -28,7 +28,7 @@ namespace BZRModManager
                     {
                         HashSet<string> FoundModIDs = new HashSet<string>();
 
-                        Semaphore loadSemaphore = new Semaphore(0, 2);
+                        Semaphore loadSemaphore = new Semaphore(0, 3);
                         Task.Factory.StartNew(() =>
                         {
                             try
