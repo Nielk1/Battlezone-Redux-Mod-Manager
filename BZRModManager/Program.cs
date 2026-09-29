@@ -16,6 +16,7 @@ namespace BZRModManager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetColorMode(SystemColorMode.System);
             Application.Run(new MainForm(args.Length > 0 && args[0] == "downloadall"));
         }
     }

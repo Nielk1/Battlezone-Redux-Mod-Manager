@@ -28,1519 +28,1557 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tpBZ98R = new System.Windows.Forms.TabPage();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.cbBZ98RTypeError = new System.Windows.Forms.CheckBox();
-            this.cbBZ98RTypeCampaign = new System.Windows.Forms.CheckBox();
-            this.cbBZ98RTypeInstantAction = new System.Windows.Forms.CheckBox();
-            this.cbBZ98RTypeMultiplayer = new System.Windows.Forms.CheckBox();
-            this.cbBZ98RTypeMod = new System.Windows.Forms.CheckBox();
-            this.btnHardUpdateBZ98R = new System.Windows.Forms.Button();
-            this.btnUpdateBZ98R = new System.Windows.Forms.Button();
-            this.btnRefreshBZ98R = new System.Windows.Forms.Button();
-            this.lvModsBZ98R = new BZRModManager.LinqListViewMods();
-            this.btnDownloadBZ98R = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtDownloadBZ98R = new System.Windows.Forms.TextBox();
-            this.tpBZCC = new System.Windows.Forms.TabPage();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.cbBZCCTypeAsset = new System.Windows.Forms.CheckBox();
-            this.cbBZCCTypeError = new System.Windows.Forms.CheckBox();
-            this.cbBZCCTypeConfig = new System.Windows.Forms.CheckBox();
-            this.cbBZCCTypeAddon = new System.Windows.Forms.CheckBox();
-            this.btnHardUpdateBZCC = new System.Windows.Forms.Button();
-            this.btnDependenciesBZ98R = new System.Windows.Forms.Button();
-            this.btnUpdateBZCC = new System.Windows.Forms.Button();
-            this.btnRefreshBZCC = new System.Windows.Forms.Button();
-            this.lvModsBZCC = new BZRModManager.LinqListViewMods();
-            this.btnDownloadBZCC = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtDownloadBZCC = new System.Windows.Forms.TextBox();
-            this.tpFindMods = new System.Windows.Forms.TabPage();
-            this.btnDownloadSelectedFoundMods = new System.Windows.Forms.Button();
-            this.cbFindModsNewOnly = new System.Windows.Forms.CheckBox();
-            this.rbFindModsTable = new System.Windows.Forms.RadioButton();
-            this.btnFindMods = new System.Windows.Forms.Button();
-            this.rbFindModsIcon = new System.Windows.Forms.RadioButton();
-            this.tcFindMods = new System.Windows.Forms.TabControl();
-            this.tpFindModsBZ98R = new System.Windows.Forms.TabPage();
-            this.lvFindModsBZ98R = new BZRModManager.LinqListViewFindMods();
-            this.tpFindModsBZCC = new System.Windows.Forms.TabPage();
-            this.lvFindModsBZCC = new BZRModManager.LinqListViewFindMods();
-            this.tabMultiplayer = new System.Windows.Forms.TabPage();
-            this.lvPlayers = new BZRModManager.LinqListViewPlayers();
-            this.rbFindGamesTable = new System.Windows.Forms.RadioButton();
-            this.btnGetModSteamCmd = new System.Windows.Forms.Button();
-            this.btnMultiGetModSteam = new System.Windows.Forms.Button();
-            this.rbFindGamesMap = new System.Windows.Forms.RadioButton();
-            this.btnMultiJoinGOG = new System.Windows.Forms.Button();
-            this.btnMultiJoinSteam = new System.Windows.Forms.Button();
-            this.btnMultiRefresh = new System.Windows.Forms.Button();
-            this.tcMultiplayer = new System.Windows.Forms.TabControl();
-            this.tpMultiplayerBZ98R = new System.Windows.Forms.TabPage();
-            this.lvMultiplayerBZ98R = new BZRModManager.LinqListViewMultiplayer();
-            this.tpMultiplayerBZCC = new System.Windows.Forms.TabPage();
-            this.lvMultiplayerBZCC = new BZRModManager.LinqListViewMultiplayer();
-            this.tpAudit = new System.Windows.Forms.TabPage();
-            this.txtAuditLog = new System.Windows.Forms.RichTextBox();
-            this.btnRunAudit = new System.Windows.Forms.Button();
-            this.tpSettings = new System.Windows.Forms.TabPage();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.btnBZCCGogFind = new System.Windows.Forms.Button();
-            this.txtBZCCGog = new System.Windows.Forms.TextBox();
-            this.btnBZCCRGogApply = new System.Windows.Forms.Button();
-            this.btnFixSteamCmd = new System.Windows.Forms.Button();
-            this.cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.btnBZCCMyDocsFind = new System.Windows.Forms.Button();
-            this.txtBZCCMyDocs = new System.Windows.Forms.TextBox();
-            this.btnBZCCMyDocsApply = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.btnBZ98RGogFind = new System.Windows.Forms.Button();
-            this.txtBZ98RGog = new System.Windows.Forms.TextBox();
-            this.btnBZ98RGogApply = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.btnBZCCSteamFind = new System.Windows.Forms.Button();
-            this.txtBZCCSteam = new System.Windows.Forms.TextBox();
-            this.btnBZCCSteamApply = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnBZ98RSteamFind = new System.Windows.Forms.Button();
-            this.txtBZ98RSteam = new System.Windows.Forms.TextBox();
-            this.btnBZ98RSteamApply = new System.Windows.Forms.Button();
-            this.tpTasks = new System.Windows.Forms.TabPage();
-            this.pnlTasks = new System.Windows.Forms.TableLayoutPanel();
-            this.tpLog = new System.Windows.Forms.TabPage();
-            this.txtLog = new System.Windows.Forms.TextBox();
-            this.tpLogSteamCmd = new System.Windows.Forms.TabPage();
-            this.txtLogSteamCmd = new System.Windows.Forms.RichTextBox();
-            this.tpLogSteamCmdFull = new System.Windows.Forms.TabPage();
-            this.txtLogSteamCmdFull = new System.Windows.Forms.RichTextBox();
-            this.tpAbout = new System.Windows.Forms.TabPage();
-            this.label3 = new System.Windows.Forms.Label();
-            this.btnGithub = new System.Windows.Forms.Button();
-            this.btnDiscord = new System.Windows.Forms.Button();
-            this.btnSteamAward = new System.Windows.Forms.Button();
-            this.logoPictureBox = new System.Windows.Forms.PictureBox();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsslSteamCmd = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.txtGit = new System.Windows.Forms.TextBox();
-            this.btnGitApply = new System.Windows.Forms.Button();
-            this.btnGitFind = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
-            this.tpBZ98R.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tpBZCC.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.tpFindMods.SuspendLayout();
-            this.tcFindMods.SuspendLayout();
-            this.tpFindModsBZ98R.SuspendLayout();
-            this.tpFindModsBZCC.SuspendLayout();
-            this.tabMultiplayer.SuspendLayout();
-            this.tcMultiplayer.SuspendLayout();
-            this.tpMultiplayerBZ98R.SuspendLayout();
-            this.tpMultiplayerBZCC.SuspendLayout();
-            this.tpAudit.SuspendLayout();
-            this.tpSettings.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.tpTasks.SuspendLayout();
-            this.tpLog.SuspendLayout();
-            this.tpLogSteamCmd.SuspendLayout();
-            this.tpLogSteamCmdFull.SuspendLayout();
-            this.tpAbout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
-            this.statusStrip1.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            tabControl1 = new System.Windows.Forms.TabControl();
+            tpBZ98R = new System.Windows.Forms.TabPage();
+            tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            cbBZ98RTypeError = new System.Windows.Forms.CheckBox();
+            cbBZ98RTypeCampaign = new System.Windows.Forms.CheckBox();
+            cbBZ98RTypeInstantAction = new System.Windows.Forms.CheckBox();
+            cbBZ98RTypeMultiplayer = new System.Windows.Forms.CheckBox();
+            cbBZ98RTypeMod = new System.Windows.Forms.CheckBox();
+            btnHardUpdateBZ98R = new System.Windows.Forms.Button();
+            btnUpdateBZ98R = new System.Windows.Forms.Button();
+            btnRefreshBZ98R = new System.Windows.Forms.Button();
+            lvModsBZ98R = new LinqListViewMods();
+            btnDownloadBZ98R = new System.Windows.Forms.Button();
+            label1 = new System.Windows.Forms.Label();
+            txtDownloadBZ98R = new System.Windows.Forms.TextBox();
+            tpBZCC = new System.Windows.Forms.TabPage();
+            tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            cbBZCCTypeAsset = new System.Windows.Forms.CheckBox();
+            cbBZCCTypeError = new System.Windows.Forms.CheckBox();
+            cbBZCCTypeConfig = new System.Windows.Forms.CheckBox();
+            cbBZCCTypeAddon = new System.Windows.Forms.CheckBox();
+            btnHardUpdateBZCC = new System.Windows.Forms.Button();
+            btnDependenciesBZ98R = new System.Windows.Forms.Button();
+            btnUpdateBZCC = new System.Windows.Forms.Button();
+            btnRefreshBZCC = new System.Windows.Forms.Button();
+            lvModsBZCC = new LinqListViewMods();
+            btnDownloadBZCC = new System.Windows.Forms.Button();
+            label2 = new System.Windows.Forms.Label();
+            txtDownloadBZCC = new System.Windows.Forms.TextBox();
+            tpFindMods = new System.Windows.Forms.TabPage();
+            btnDownloadSelectedFoundMods = new System.Windows.Forms.Button();
+            cbFindModsNewOnly = new System.Windows.Forms.CheckBox();
+            rbFindModsTable = new System.Windows.Forms.RadioButton();
+            btnFindMods = new System.Windows.Forms.Button();
+            rbFindModsIcon = new System.Windows.Forms.RadioButton();
+            tcFindMods = new System.Windows.Forms.TabControl();
+            tpFindModsBZ98R = new System.Windows.Forms.TabPage();
+            lvFindModsBZ98R = new LinqListViewFindMods();
+            tpFindModsBZCC = new System.Windows.Forms.TabPage();
+            lvFindModsBZCC = new LinqListViewFindMods();
+            tabMultiplayer = new System.Windows.Forms.TabPage();
+            lvPlayers = new LinqListViewPlayers();
+            rbFindGamesTable = new System.Windows.Forms.RadioButton();
+            btnGetModSteamCmd = new System.Windows.Forms.Button();
+            btnMultiGetModSteam = new System.Windows.Forms.Button();
+            rbFindGamesMap = new System.Windows.Forms.RadioButton();
+            btnMultiJoinGOG = new System.Windows.Forms.Button();
+            btnMultiJoinSteam = new System.Windows.Forms.Button();
+            btnMultiRefresh = new System.Windows.Forms.Button();
+            tcMultiplayer = new System.Windows.Forms.TabControl();
+            tpMultiplayerBZ98R = new System.Windows.Forms.TabPage();
+            lvMultiplayerBZ98R = new LinqListViewMultiplayer();
+            tpMultiplayerBZCC = new System.Windows.Forms.TabPage();
+            lvMultiplayerBZCC = new LinqListViewMultiplayer();
+            tpAudit = new System.Windows.Forms.TabPage();
+            txtAuditLog = new System.Windows.Forms.RichTextBox();
+            btnRunAudit = new System.Windows.Forms.Button();
+            tpSettings = new System.Windows.Forms.TabPage();
+            groupBox6 = new System.Windows.Forms.GroupBox();
+            btnGitFind = new System.Windows.Forms.Button();
+            txtGit = new System.Windows.Forms.TextBox();
+            btnGitApply = new System.Windows.Forms.Button();
+            groupBox5 = new System.Windows.Forms.GroupBox();
+            btnBZCCGogFind = new System.Windows.Forms.Button();
+            txtBZCCGog = new System.Windows.Forms.TextBox();
+            btnBZCCRGogApply = new System.Windows.Forms.Button();
+            btnFixSteamCmd = new System.Windows.Forms.Button();
+            cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
+            groupBox4 = new System.Windows.Forms.GroupBox();
+            btnBZCCMyDocsFind = new System.Windows.Forms.Button();
+            txtBZCCMyDocs = new System.Windows.Forms.TextBox();
+            btnBZCCMyDocsApply = new System.Windows.Forms.Button();
+            groupBox3 = new System.Windows.Forms.GroupBox();
+            btnBZ98RGogFind = new System.Windows.Forms.Button();
+            txtBZ98RGog = new System.Windows.Forms.TextBox();
+            btnBZ98RGogApply = new System.Windows.Forms.Button();
+            groupBox2 = new System.Windows.Forms.GroupBox();
+            btnBZCCSteamFind = new System.Windows.Forms.Button();
+            txtBZCCSteam = new System.Windows.Forms.TextBox();
+            btnBZCCSteamApply = new System.Windows.Forms.Button();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            btnBZ98RSteamFind = new System.Windows.Forms.Button();
+            txtBZ98RSteam = new System.Windows.Forms.TextBox();
+            btnBZ98RSteamApply = new System.Windows.Forms.Button();
+            tpTasks = new System.Windows.Forms.TabPage();
+            pnlTasks = new System.Windows.Forms.TableLayoutPanel();
+            tpLog = new System.Windows.Forms.TabPage();
+            txtLog = new System.Windows.Forms.TextBox();
+            tpLogSteamCmd = new System.Windows.Forms.TabPage();
+            txtLogSteamCmd = new System.Windows.Forms.RichTextBox();
+            tpLogSteamCmdFull = new System.Windows.Forms.TabPage();
+            txtLogSteamCmdFull = new System.Windows.Forms.RichTextBox();
+            tpAbout = new System.Windows.Forms.TabPage();
+            label3 = new System.Windows.Forms.Label();
+            btnGithub = new System.Windows.Forms.Button();
+            btnDiscord = new System.Windows.Forms.Button();
+            btnSteamAward = new System.Windows.Forms.Button();
+            logoPictureBox = new System.Windows.Forms.PictureBox();
+            statusStrip1 = new System.Windows.Forms.StatusStrip();
+            toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            tsslSteamCmd = new System.Windows.Forms.ToolStripStatusLabel();
+            toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
+            toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            tsslActiveTasks = new System.Windows.Forms.ToolStripStatusLabel();
+            toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            ofdGOGBZCCASM = new System.Windows.Forms.OpenFileDialog();
+            tabControl1.SuspendLayout();
+            tpBZ98R.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            tpBZCC.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
+            tpFindMods.SuspendLayout();
+            tcFindMods.SuspendLayout();
+            tpFindModsBZ98R.SuspendLayout();
+            tpFindModsBZCC.SuspendLayout();
+            tabMultiplayer.SuspendLayout();
+            tcMultiplayer.SuspendLayout();
+            tpMultiplayerBZ98R.SuspendLayout();
+            tpMultiplayerBZCC.SuspendLayout();
+            tpAudit.SuspendLayout();
+            tpSettings.SuspendLayout();
+            groupBox6.SuspendLayout();
+            groupBox5.SuspendLayout();
+            groupBox4.SuspendLayout();
+            groupBox3.SuspendLayout();
+            groupBox2.SuspendLayout();
+            groupBox1.SuspendLayout();
+            tpTasks.SuspendLayout();
+            tpLog.SuspendLayout();
+            tpLogSteamCmd.SuspendLayout();
+            tpLogSteamCmdFull.SuspendLayout();
+            tpAbout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)logoPictureBox).BeginInit();
+            statusStrip1.SuspendLayout();
+            SuspendLayout();
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tpBZ98R);
-            this.tabControl1.Controls.Add(this.tpBZCC);
-            this.tabControl1.Controls.Add(this.tpFindMods);
-            this.tabControl1.Controls.Add(this.tabMultiplayer);
-            this.tabControl1.Controls.Add(this.tpAudit);
-            this.tabControl1.Controls.Add(this.tpSettings);
-            this.tabControl1.Controls.Add(this.tpTasks);
-            this.tabControl1.Controls.Add(this.tpLog);
-            this.tabControl1.Controls.Add(this.tpLogSteamCmd);
-            this.tabControl1.Controls.Add(this.tpLogSteamCmdFull);
-            this.tabControl1.Controls.Add(this.tpAbout);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Multiline = true;
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(742, 419);
-            this.tabControl1.TabIndex = 0;
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            tabControl1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tabControl1.Controls.Add(tpBZ98R);
+            tabControl1.Controls.Add(tpBZCC);
+            tabControl1.Controls.Add(tpFindMods);
+            tabControl1.Controls.Add(tabMultiplayer);
+            tabControl1.Controls.Add(tpAudit);
+            tabControl1.Controls.Add(tpSettings);
+            tabControl1.Controls.Add(tpTasks);
+            tabControl1.Controls.Add(tpLog);
+            tabControl1.Controls.Add(tpLogSteamCmd);
+            tabControl1.Controls.Add(tpLogSteamCmdFull);
+            tabControl1.Controls.Add(tpAbout);
+            tabControl1.Location = new System.Drawing.Point(14, 14);
+            tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabControl1.Multiline = true;
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new System.Drawing.Size(866, 483);
+            tabControl1.TabIndex = 0;
+            tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // tpBZ98R
             // 
-            this.tpBZ98R.Controls.Add(this.tableLayoutPanel1);
-            this.tpBZ98R.Controls.Add(this.btnHardUpdateBZ98R);
-            this.tpBZ98R.Controls.Add(this.btnUpdateBZ98R);
-            this.tpBZ98R.Controls.Add(this.btnRefreshBZ98R);
-            this.tpBZ98R.Controls.Add(this.lvModsBZ98R);
-            this.tpBZ98R.Controls.Add(this.btnDownloadBZ98R);
-            this.tpBZ98R.Controls.Add(this.label1);
-            this.tpBZ98R.Controls.Add(this.txtDownloadBZ98R);
-            this.tpBZ98R.Location = new System.Drawing.Point(4, 22);
-            this.tpBZ98R.Name = "tpBZ98R";
-            this.tpBZ98R.Padding = new System.Windows.Forms.Padding(3);
-            this.tpBZ98R.Size = new System.Drawing.Size(734, 381);
-            this.tpBZ98R.TabIndex = 0;
-            this.tpBZ98R.Text = "BZ98R";
-            this.tpBZ98R.UseVisualStyleBackColor = true;
+            tpBZ98R.Controls.Add(tableLayoutPanel1);
+            tpBZ98R.Controls.Add(btnHardUpdateBZ98R);
+            tpBZ98R.Controls.Add(btnUpdateBZ98R);
+            tpBZ98R.Controls.Add(btnRefreshBZ98R);
+            tpBZ98R.Controls.Add(lvModsBZ98R);
+            tpBZ98R.Controls.Add(btnDownloadBZ98R);
+            tpBZ98R.Controls.Add(label1);
+            tpBZ98R.Controls.Add(txtDownloadBZ98R);
+            tpBZ98R.Location = new System.Drawing.Point(4, 24);
+            tpBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpBZ98R.Name = "tpBZ98R";
+            tpBZ98R.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpBZ98R.Size = new System.Drawing.Size(858, 455);
+            tpBZ98R.TabIndex = 0;
+            tpBZ98R.Text = "BZ98R";
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeError, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeCampaign, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeInstantAction, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeMultiplayer, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.cbBZ98RTypeMod, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 35);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(434, 23);
-            this.tableLayoutPanel1.TabIndex = 10;
+            tableLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tableLayoutPanel1.ColumnCount = 5;
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel1.Controls.Add(cbBZ98RTypeError, 4, 0);
+            tableLayoutPanel1.Controls.Add(cbBZ98RTypeCampaign, 3, 0);
+            tableLayoutPanel1.Controls.Add(cbBZ98RTypeInstantAction, 2, 0);
+            tableLayoutPanel1.Controls.Add(cbBZ98RTypeMultiplayer, 1, 0);
+            tableLayoutPanel1.Controls.Add(cbBZ98RTypeMod, 0, 0);
+            tableLayoutPanel1.Location = new System.Drawing.Point(7, 40);
+            tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 1;
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new System.Drawing.Size(506, 27);
+            tableLayoutPanel1.TabIndex = 10;
             // 
             // cbBZ98RTypeError
             // 
-            this.cbBZ98RTypeError.AutoSize = true;
-            this.cbBZ98RTypeError.Checked = true;
-            this.cbBZ98RTypeError.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZ98RTypeError.Location = new System.Drawing.Point(312, 3);
-            this.cbBZ98RTypeError.Name = "cbBZ98RTypeError";
-            this.cbBZ98RTypeError.Size = new System.Drawing.Size(47, 17);
-            this.cbBZ98RTypeError.TabIndex = 9;
-            this.cbBZ98RTypeError.Text = "error";
-            this.cbBZ98RTypeError.UseVisualStyleBackColor = true;
-            this.cbBZ98RTypeError.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            cbBZ98RTypeError.AutoSize = true;
+            cbBZ98RTypeError.Checked = true;
+            cbBZ98RTypeError.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZ98RTypeError.Location = new System.Drawing.Point(352, 3);
+            cbBZ98RTypeError.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZ98RTypeError.Name = "cbBZ98RTypeError";
+            cbBZ98RTypeError.Size = new System.Drawing.Size(51, 19);
+            cbBZ98RTypeError.TabIndex = 9;
+            cbBZ98RTypeError.Text = "error";
+            cbBZ98RTypeError.UseVisualStyleBackColor = true;
+            cbBZ98RTypeError.CheckedChanged += cbBZ98RType_CheckedChanged;
             // 
             // cbBZ98RTypeCampaign
             // 
-            this.cbBZ98RTypeCampaign.AutoSize = true;
-            this.cbBZ98RTypeCampaign.Checked = true;
-            this.cbBZ98RTypeCampaign.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZ98RTypeCampaign.Location = new System.Drawing.Point(234, 3);
-            this.cbBZ98RTypeCampaign.Name = "cbBZ98RTypeCampaign";
-            this.cbBZ98RTypeCampaign.Size = new System.Drawing.Size(72, 17);
-            this.cbBZ98RTypeCampaign.TabIndex = 8;
-            this.cbBZ98RTypeCampaign.Text = "campaign";
-            this.cbBZ98RTypeCampaign.UseVisualStyleBackColor = true;
-            this.cbBZ98RTypeCampaign.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            cbBZ98RTypeCampaign.AutoSize = true;
+            cbBZ98RTypeCampaign.Checked = true;
+            cbBZ98RTypeCampaign.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZ98RTypeCampaign.Location = new System.Drawing.Point(265, 3);
+            cbBZ98RTypeCampaign.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZ98RTypeCampaign.Name = "cbBZ98RTypeCampaign";
+            cbBZ98RTypeCampaign.Size = new System.Drawing.Size(79, 19);
+            cbBZ98RTypeCampaign.TabIndex = 8;
+            cbBZ98RTypeCampaign.Text = "campaign";
+            cbBZ98RTypeCampaign.UseVisualStyleBackColor = true;
+            cbBZ98RTypeCampaign.CheckedChanged += cbBZ98RType_CheckedChanged;
             // 
             // cbBZ98RTypeInstantAction
             // 
-            this.cbBZ98RTypeInstantAction.AutoSize = true;
-            this.cbBZ98RTypeInstantAction.Checked = true;
-            this.cbBZ98RTypeInstantAction.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZ98RTypeInstantAction.Location = new System.Drawing.Point(136, 3);
-            this.cbBZ98RTypeInstantAction.Name = "cbBZ98RTypeInstantAction";
-            this.cbBZ98RTypeInstantAction.Size = new System.Drawing.Size(92, 17);
-            this.cbBZ98RTypeInstantAction.TabIndex = 7;
-            this.cbBZ98RTypeInstantAction.Text = "instant_action";
-            this.cbBZ98RTypeInstantAction.UseVisualStyleBackColor = true;
-            this.cbBZ98RTypeInstantAction.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            cbBZ98RTypeInstantAction.AutoSize = true;
+            cbBZ98RTypeInstantAction.Checked = true;
+            cbBZ98RTypeInstantAction.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZ98RTypeInstantAction.Location = new System.Drawing.Point(157, 3);
+            cbBZ98RTypeInstantAction.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZ98RTypeInstantAction.Name = "cbBZ98RTypeInstantAction";
+            cbBZ98RTypeInstantAction.Size = new System.Drawing.Size(100, 19);
+            cbBZ98RTypeInstantAction.TabIndex = 7;
+            cbBZ98RTypeInstantAction.Text = "instant_action";
+            cbBZ98RTypeInstantAction.UseVisualStyleBackColor = true;
+            cbBZ98RTypeInstantAction.CheckedChanged += cbBZ98RType_CheckedChanged;
             // 
             // cbBZ98RTypeMultiplayer
             // 
-            this.cbBZ98RTypeMultiplayer.AutoSize = true;
-            this.cbBZ98RTypeMultiplayer.Checked = true;
-            this.cbBZ98RTypeMultiplayer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZ98RTypeMultiplayer.Location = new System.Drawing.Point(55, 3);
-            this.cbBZ98RTypeMultiplayer.Name = "cbBZ98RTypeMultiplayer";
-            this.cbBZ98RTypeMultiplayer.Size = new System.Drawing.Size(75, 17);
-            this.cbBZ98RTypeMultiplayer.TabIndex = 6;
-            this.cbBZ98RTypeMultiplayer.Text = "multiplayer";
-            this.cbBZ98RTypeMultiplayer.UseVisualStyleBackColor = true;
-            this.cbBZ98RTypeMultiplayer.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            cbBZ98RTypeMultiplayer.AutoSize = true;
+            cbBZ98RTypeMultiplayer.Checked = true;
+            cbBZ98RTypeMultiplayer.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZ98RTypeMultiplayer.Location = new System.Drawing.Point(63, 3);
+            cbBZ98RTypeMultiplayer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZ98RTypeMultiplayer.Name = "cbBZ98RTypeMultiplayer";
+            cbBZ98RTypeMultiplayer.Size = new System.Drawing.Size(86, 19);
+            cbBZ98RTypeMultiplayer.TabIndex = 6;
+            cbBZ98RTypeMultiplayer.Text = "multiplayer";
+            cbBZ98RTypeMultiplayer.UseVisualStyleBackColor = true;
+            cbBZ98RTypeMultiplayer.CheckedChanged += cbBZ98RType_CheckedChanged;
             // 
             // cbBZ98RTypeMod
             // 
-            this.cbBZ98RTypeMod.AutoSize = true;
-            this.cbBZ98RTypeMod.Checked = true;
-            this.cbBZ98RTypeMod.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZ98RTypeMod.Location = new System.Drawing.Point(3, 3);
-            this.cbBZ98RTypeMod.Name = "cbBZ98RTypeMod";
-            this.cbBZ98RTypeMod.Size = new System.Drawing.Size(46, 17);
-            this.cbBZ98RTypeMod.TabIndex = 5;
-            this.cbBZ98RTypeMod.Text = "mod";
-            this.cbBZ98RTypeMod.UseVisualStyleBackColor = true;
-            this.cbBZ98RTypeMod.CheckedChanged += new System.EventHandler(this.cbBZ98RType_CheckedChanged);
+            cbBZ98RTypeMod.AutoSize = true;
+            cbBZ98RTypeMod.Checked = true;
+            cbBZ98RTypeMod.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZ98RTypeMod.Location = new System.Drawing.Point(4, 3);
+            cbBZ98RTypeMod.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZ98RTypeMod.Name = "cbBZ98RTypeMod";
+            cbBZ98RTypeMod.Size = new System.Drawing.Size(51, 19);
+            cbBZ98RTypeMod.TabIndex = 5;
+            cbBZ98RTypeMod.Text = "mod";
+            cbBZ98RTypeMod.UseVisualStyleBackColor = true;
+            cbBZ98RTypeMod.CheckedChanged += cbBZ98RType_CheckedChanged;
             // 
             // btnHardUpdateBZ98R
             // 
-            this.btnHardUpdateBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHardUpdateBZ98R.Location = new System.Drawing.Point(446, 35);
-            this.btnHardUpdateBZ98R.Name = "btnHardUpdateBZ98R";
-            this.btnHardUpdateBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnHardUpdateBZ98R.TabIndex = 10;
-            this.btnHardUpdateBZ98R.Text = "Hard Update";
-            this.btnHardUpdateBZ98R.UseVisualStyleBackColor = true;
-            this.btnHardUpdateBZ98R.Click += new System.EventHandler(this.btnHardUpdateBZ98R_Click);
+            btnHardUpdateBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnHardUpdateBZ98R.Location = new System.Drawing.Point(520, 40);
+            btnHardUpdateBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnHardUpdateBZ98R.Name = "btnHardUpdateBZ98R";
+            btnHardUpdateBZ98R.Size = new System.Drawing.Size(105, 27);
+            btnHardUpdateBZ98R.TabIndex = 10;
+            btnHardUpdateBZ98R.Text = "Hard Update";
+            btnHardUpdateBZ98R.UseVisualStyleBackColor = true;
+            btnHardUpdateBZ98R.Click += btnHardUpdateBZ98R_Click;
             // 
             // btnUpdateBZ98R
             // 
-            this.btnUpdateBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdateBZ98R.Location = new System.Drawing.Point(542, 35);
-            this.btnUpdateBZ98R.Name = "btnUpdateBZ98R";
-            this.btnUpdateBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnUpdateBZ98R.TabIndex = 11;
-            this.btnUpdateBZ98R.Text = "Update Mods";
-            this.btnUpdateBZ98R.UseVisualStyleBackColor = true;
-            this.btnUpdateBZ98R.Click += new System.EventHandler(this.btnUpdateBZ98R_Click);
+            btnUpdateBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnUpdateBZ98R.Location = new System.Drawing.Point(632, 40);
+            btnUpdateBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnUpdateBZ98R.Name = "btnUpdateBZ98R";
+            btnUpdateBZ98R.Size = new System.Drawing.Size(105, 27);
+            btnUpdateBZ98R.TabIndex = 11;
+            btnUpdateBZ98R.Text = "Update Mods";
+            btnUpdateBZ98R.UseVisualStyleBackColor = true;
+            btnUpdateBZ98R.Click += btnUpdateBZ98R_Click;
             // 
             // btnRefreshBZ98R
             // 
-            this.btnRefreshBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefreshBZ98R.Location = new System.Drawing.Point(638, 35);
-            this.btnRefreshBZ98R.Name = "btnRefreshBZ98R";
-            this.btnRefreshBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnRefreshBZ98R.TabIndex = 12;
-            this.btnRefreshBZ98R.Text = "Refresh List";
-            this.btnRefreshBZ98R.UseVisualStyleBackColor = true;
-            this.btnRefreshBZ98R.Click += new System.EventHandler(this.btnRefreshBZ98R_Click);
+            btnRefreshBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnRefreshBZ98R.Location = new System.Drawing.Point(744, 40);
+            btnRefreshBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnRefreshBZ98R.Name = "btnRefreshBZ98R";
+            btnRefreshBZ98R.Size = new System.Drawing.Size(105, 27);
+            btnRefreshBZ98R.TabIndex = 12;
+            btnRefreshBZ98R.Text = "Refresh List";
+            btnRefreshBZ98R.UseVisualStyleBackColor = true;
+            btnRefreshBZ98R.Click += btnRefreshBZ98R_Click;
             // 
             // lvModsBZ98R
             // 
-            this.lvModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZ98R.FullRowSelect = true;
-            this.lvModsBZ98R.GridLines = true;
-            this.lvModsBZ98R.HideSelection = false;
-            this.lvModsBZ98R.Location = new System.Drawing.Point(6, 64);
-            this.lvModsBZ98R.Name = "lvModsBZ98R";
-            this.lvModsBZ98R.Size = new System.Drawing.Size(722, 311);
-            this.lvModsBZ98R.TabIndex = 13;
-            this.lvModsBZ98R.TypeFilter = null;
-            this.lvModsBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZ98R.View = System.Windows.Forms.View.Details;
-            this.lvModsBZ98R.VirtualMode = true;
+            lvModsBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lvModsBZ98R.FullRowSelect = true;
+            lvModsBZ98R.GridLines = true;
+            lvModsBZ98R.Location = new System.Drawing.Point(7, 74);
+            lvModsBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lvModsBZ98R.Name = "lvModsBZ98R";
+            lvModsBZ98R.Size = new System.Drawing.Size(842, 358);
+            lvModsBZ98R.TabIndex = 13;
+            lvModsBZ98R.TypeFilter = null;
+            lvModsBZ98R.UseCompatibleStateImageBehavior = false;
+            lvModsBZ98R.View = System.Windows.Forms.View.Details;
+            lvModsBZ98R.VirtualMode = true;
             // 
             // btnDownloadBZ98R
             // 
-            this.btnDownloadBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZ98R.Location = new System.Drawing.Point(638, 7);
-            this.btnDownloadBZ98R.Name = "btnDownloadBZ98R";
-            this.btnDownloadBZ98R.Size = new System.Drawing.Size(90, 23);
-            this.btnDownloadBZ98R.TabIndex = 3;
-            this.btnDownloadBZ98R.Text = "Download";
-            this.btnDownloadBZ98R.UseVisualStyleBackColor = true;
-            this.btnDownloadBZ98R.Click += new System.EventHandler(this.btnDownloadBZ98R_Click);
+            btnDownloadBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnDownloadBZ98R.Location = new System.Drawing.Point(744, 8);
+            btnDownloadBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnDownloadBZ98R.Name = "btnDownloadBZ98R";
+            btnDownloadBZ98R.Size = new System.Drawing.Size(105, 27);
+            btnDownloadBZ98R.TabIndex = 3;
+            btnDownloadBZ98R.Text = "Download";
+            btnDownloadBZ98R.UseVisualStyleBackColor = true;
+            btnDownloadBZ98R.Click += btnDownloadBZ98R_Click;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(56, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Mod URL:";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(7, 14);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(59, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Mod URL:";
             // 
             // txtDownloadBZ98R
             // 
-            this.txtDownloadBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDownloadBZ98R.Location = new System.Drawing.Point(68, 9);
-            this.txtDownloadBZ98R.Name = "txtDownloadBZ98R";
-            this.txtDownloadBZ98R.Size = new System.Drawing.Size(564, 20);
-            this.txtDownloadBZ98R.TabIndex = 2;
+            txtDownloadBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtDownloadBZ98R.Location = new System.Drawing.Point(79, 10);
+            txtDownloadBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtDownloadBZ98R.Name = "txtDownloadBZ98R";
+            txtDownloadBZ98R.Size = new System.Drawing.Size(657, 23);
+            txtDownloadBZ98R.TabIndex = 2;
             // 
             // tpBZCC
             // 
-            this.tpBZCC.Controls.Add(this.tableLayoutPanel2);
-            this.tpBZCC.Controls.Add(this.btnHardUpdateBZCC);
-            this.tpBZCC.Controls.Add(this.btnDependenciesBZ98R);
-            this.tpBZCC.Controls.Add(this.btnUpdateBZCC);
-            this.tpBZCC.Controls.Add(this.btnRefreshBZCC);
-            this.tpBZCC.Controls.Add(this.lvModsBZCC);
-            this.tpBZCC.Controls.Add(this.btnDownloadBZCC);
-            this.tpBZCC.Controls.Add(this.label2);
-            this.tpBZCC.Controls.Add(this.txtDownloadBZCC);
-            this.tpBZCC.Location = new System.Drawing.Point(4, 22);
-            this.tpBZCC.Name = "tpBZCC";
-            this.tpBZCC.Padding = new System.Windows.Forms.Padding(3);
-            this.tpBZCC.Size = new System.Drawing.Size(734, 381);
-            this.tpBZCC.TabIndex = 1;
-            this.tpBZCC.Text = "BZCC";
-            this.tpBZCC.UseVisualStyleBackColor = true;
+            tpBZCC.Controls.Add(tableLayoutPanel2);
+            tpBZCC.Controls.Add(btnHardUpdateBZCC);
+            tpBZCC.Controls.Add(btnDependenciesBZ98R);
+            tpBZCC.Controls.Add(btnUpdateBZCC);
+            tpBZCC.Controls.Add(btnRefreshBZCC);
+            tpBZCC.Controls.Add(lvModsBZCC);
+            tpBZCC.Controls.Add(btnDownloadBZCC);
+            tpBZCC.Controls.Add(label2);
+            tpBZCC.Controls.Add(txtDownloadBZCC);
+            tpBZCC.Location = new System.Drawing.Point(4, 24);
+            tpBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpBZCC.Name = "tpBZCC";
+            tpBZCC.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpBZCC.Size = new System.Drawing.Size(858, 455);
+            tpBZCC.TabIndex = 1;
+            tpBZCC.Text = "BZCC";
             // 
             // tableLayoutPanel2
             // 
-            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel2.ColumnCount = 4;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Controls.Add(this.cbBZCCTypeAsset, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cbBZCCTypeError, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cbBZCCTypeConfig, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cbBZCCTypeAddon, 0, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 35);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(288, 23);
-            this.tableLayoutPanel2.TabIndex = 12;
+            tableLayoutPanel2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tableLayoutPanel2.ColumnCount = 4;
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            tableLayoutPanel2.Controls.Add(cbBZCCTypeAsset, 0, 0);
+            tableLayoutPanel2.Controls.Add(cbBZCCTypeError, 2, 0);
+            tableLayoutPanel2.Controls.Add(cbBZCCTypeConfig, 1, 0);
+            tableLayoutPanel2.Controls.Add(cbBZCCTypeAddon, 0, 0);
+            tableLayoutPanel2.Location = new System.Drawing.Point(7, 40);
+            tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new System.Drawing.Size(336, 27);
+            tableLayoutPanel2.TabIndex = 12;
             // 
             // cbBZCCTypeAsset
             // 
-            this.cbBZCCTypeAsset.AutoSize = true;
-            this.cbBZCCTypeAsset.Checked = true;
-            this.cbBZCCTypeAsset.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZCCTypeAsset.Location = new System.Drawing.Point(65, 3);
-            this.cbBZCCTypeAsset.Name = "cbBZCCTypeAsset";
-            this.cbBZCCTypeAsset.Size = new System.Drawing.Size(51, 17);
-            this.cbBZCCTypeAsset.TabIndex = 6;
-            this.cbBZCCTypeAsset.Text = "asset";
-            this.cbBZCCTypeAsset.UseVisualStyleBackColor = true;
-            this.cbBZCCTypeAsset.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
+            cbBZCCTypeAsset.AutoSize = true;
+            cbBZCCTypeAsset.Checked = true;
+            cbBZCCTypeAsset.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZCCTypeAsset.Location = new System.Drawing.Point(72, 3);
+            cbBZCCTypeAsset.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZCCTypeAsset.Name = "cbBZCCTypeAsset";
+            cbBZCCTypeAsset.Size = new System.Drawing.Size(52, 19);
+            cbBZCCTypeAsset.TabIndex = 6;
+            cbBZCCTypeAsset.Text = "asset";
+            cbBZCCTypeAsset.UseVisualStyleBackColor = true;
+            cbBZCCTypeAsset.CheckStateChanged += cbBZCCType_CheckedChanged;
             // 
             // cbBZCCTypeError
             // 
-            this.cbBZCCTypeError.AutoSize = true;
-            this.cbBZCCTypeError.Checked = true;
-            this.cbBZCCTypeError.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZCCTypeError.Location = new System.Drawing.Point(183, 3);
-            this.cbBZCCTypeError.Name = "cbBZCCTypeError";
-            this.cbBZCCTypeError.Size = new System.Drawing.Size(47, 17);
-            this.cbBZCCTypeError.TabIndex = 8;
-            this.cbBZCCTypeError.Text = "error";
-            this.cbBZCCTypeError.UseVisualStyleBackColor = true;
-            this.cbBZCCTypeError.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
+            cbBZCCTypeError.AutoSize = true;
+            cbBZCCTypeError.Checked = true;
+            cbBZCCTypeError.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZCCTypeError.Location = new System.Drawing.Point(200, 3);
+            cbBZCCTypeError.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZCCTypeError.Name = "cbBZCCTypeError";
+            cbBZCCTypeError.Size = new System.Drawing.Size(51, 19);
+            cbBZCCTypeError.TabIndex = 8;
+            cbBZCCTypeError.Text = "error";
+            cbBZCCTypeError.UseVisualStyleBackColor = true;
+            cbBZCCTypeError.CheckStateChanged += cbBZCCType_CheckedChanged;
             // 
             // cbBZCCTypeConfig
             // 
-            this.cbBZCCTypeConfig.AutoSize = true;
-            this.cbBZCCTypeConfig.Checked = true;
-            this.cbBZCCTypeConfig.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZCCTypeConfig.Location = new System.Drawing.Point(122, 3);
-            this.cbBZCCTypeConfig.Name = "cbBZCCTypeConfig";
-            this.cbBZCCTypeConfig.Size = new System.Drawing.Size(55, 17);
-            this.cbBZCCTypeConfig.TabIndex = 7;
-            this.cbBZCCTypeConfig.Text = "config";
-            this.cbBZCCTypeConfig.UseVisualStyleBackColor = true;
-            this.cbBZCCTypeConfig.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
+            cbBZCCTypeConfig.AutoSize = true;
+            cbBZCCTypeConfig.Checked = true;
+            cbBZCCTypeConfig.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZCCTypeConfig.Location = new System.Drawing.Point(132, 3);
+            cbBZCCTypeConfig.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZCCTypeConfig.Name = "cbBZCCTypeConfig";
+            cbBZCCTypeConfig.Size = new System.Drawing.Size(60, 19);
+            cbBZCCTypeConfig.TabIndex = 7;
+            cbBZCCTypeConfig.Text = "config";
+            cbBZCCTypeConfig.UseVisualStyleBackColor = true;
+            cbBZCCTypeConfig.CheckStateChanged += cbBZCCType_CheckedChanged;
             // 
             // cbBZCCTypeAddon
             // 
-            this.cbBZCCTypeAddon.AutoSize = true;
-            this.cbBZCCTypeAddon.Checked = true;
-            this.cbBZCCTypeAddon.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBZCCTypeAddon.Location = new System.Drawing.Point(3, 3);
-            this.cbBZCCTypeAddon.Name = "cbBZCCTypeAddon";
-            this.cbBZCCTypeAddon.Size = new System.Drawing.Size(56, 17);
-            this.cbBZCCTypeAddon.TabIndex = 5;
-            this.cbBZCCTypeAddon.Text = "addon";
-            this.cbBZCCTypeAddon.UseVisualStyleBackColor = true;
-            this.cbBZCCTypeAddon.CheckStateChanged += new System.EventHandler(this.cbBZCCType_CheckedChanged);
+            cbBZCCTypeAddon.AutoSize = true;
+            cbBZCCTypeAddon.Checked = true;
+            cbBZCCTypeAddon.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbBZCCTypeAddon.Location = new System.Drawing.Point(4, 3);
+            cbBZCCTypeAddon.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbBZCCTypeAddon.Name = "cbBZCCTypeAddon";
+            cbBZCCTypeAddon.Size = new System.Drawing.Size(60, 19);
+            cbBZCCTypeAddon.TabIndex = 5;
+            cbBZCCTypeAddon.Text = "addon";
+            cbBZCCTypeAddon.UseVisualStyleBackColor = true;
+            cbBZCCTypeAddon.CheckStateChanged += cbBZCCType_CheckedChanged;
             // 
             // btnHardUpdateBZCC
             // 
-            this.btnHardUpdateBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnHardUpdateBZCC.Location = new System.Drawing.Point(446, 35);
-            this.btnHardUpdateBZCC.Name = "btnHardUpdateBZCC";
-            this.btnHardUpdateBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnHardUpdateBZCC.TabIndex = 10;
-            this.btnHardUpdateBZCC.Text = "Hard Update";
-            this.btnHardUpdateBZCC.UseVisualStyleBackColor = true;
-            this.btnHardUpdateBZCC.Click += new System.EventHandler(this.btnHardUpdateBZCC_Click);
+            btnHardUpdateBZCC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnHardUpdateBZCC.Location = new System.Drawing.Point(520, 40);
+            btnHardUpdateBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnHardUpdateBZCC.Name = "btnHardUpdateBZCC";
+            btnHardUpdateBZCC.Size = new System.Drawing.Size(105, 27);
+            btnHardUpdateBZCC.TabIndex = 10;
+            btnHardUpdateBZCC.Text = "Hard Update";
+            btnHardUpdateBZCC.UseVisualStyleBackColor = true;
+            btnHardUpdateBZCC.Click += btnHardUpdateBZCC_Click;
             // 
             // btnDependenciesBZ98R
             // 
-            this.btnDependenciesBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDependenciesBZ98R.Location = new System.Drawing.Point(300, 35);
-            this.btnDependenciesBZ98R.Name = "btnDependenciesBZ98R";
-            this.btnDependenciesBZ98R.Size = new System.Drawing.Size(140, 23);
-            this.btnDependenciesBZ98R.TabIndex = 9;
-            this.btnDependenciesBZ98R.Text = "Download Dependencies";
-            this.btnDependenciesBZ98R.UseVisualStyleBackColor = true;
-            this.btnDependenciesBZ98R.Click += new System.EventHandler(this.btnDependenciesBZ98R_Click);
+            btnDependenciesBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnDependenciesBZ98R.Location = new System.Drawing.Point(350, 40);
+            btnDependenciesBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnDependenciesBZ98R.Name = "btnDependenciesBZ98R";
+            btnDependenciesBZ98R.Size = new System.Drawing.Size(163, 27);
+            btnDependenciesBZ98R.TabIndex = 9;
+            btnDependenciesBZ98R.Text = "Download Dependencies";
+            btnDependenciesBZ98R.UseVisualStyleBackColor = true;
+            btnDependenciesBZ98R.Click += btnDependenciesBZ98R_Click;
             // 
             // btnUpdateBZCC
             // 
-            this.btnUpdateBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdateBZCC.Location = new System.Drawing.Point(542, 35);
-            this.btnUpdateBZCC.Name = "btnUpdateBZCC";
-            this.btnUpdateBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnUpdateBZCC.TabIndex = 11;
-            this.btnUpdateBZCC.Text = "Update Mods";
-            this.btnUpdateBZCC.UseVisualStyleBackColor = true;
-            this.btnUpdateBZCC.Click += new System.EventHandler(this.btnUpdateBZCC_Click);
+            btnUpdateBZCC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnUpdateBZCC.Location = new System.Drawing.Point(632, 40);
+            btnUpdateBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnUpdateBZCC.Name = "btnUpdateBZCC";
+            btnUpdateBZCC.Size = new System.Drawing.Size(105, 27);
+            btnUpdateBZCC.TabIndex = 11;
+            btnUpdateBZCC.Text = "Update Mods";
+            btnUpdateBZCC.UseVisualStyleBackColor = true;
+            btnUpdateBZCC.Click += btnUpdateBZCC_Click;
             // 
             // btnRefreshBZCC
             // 
-            this.btnRefreshBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefreshBZCC.Location = new System.Drawing.Point(638, 35);
-            this.btnRefreshBZCC.Name = "btnRefreshBZCC";
-            this.btnRefreshBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnRefreshBZCC.TabIndex = 12;
-            this.btnRefreshBZCC.Text = "Refresh List";
-            this.btnRefreshBZCC.UseVisualStyleBackColor = true;
-            this.btnRefreshBZCC.Click += new System.EventHandler(this.btnRefreshBZCC_Click);
+            btnRefreshBZCC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnRefreshBZCC.Location = new System.Drawing.Point(744, 40);
+            btnRefreshBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnRefreshBZCC.Name = "btnRefreshBZCC";
+            btnRefreshBZCC.Size = new System.Drawing.Size(105, 27);
+            btnRefreshBZCC.TabIndex = 12;
+            btnRefreshBZCC.Text = "Refresh List";
+            btnRefreshBZCC.UseVisualStyleBackColor = true;
+            btnRefreshBZCC.Click += btnRefreshBZCC_Click;
             // 
             // lvModsBZCC
             // 
-            this.lvModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvModsBZCC.FullRowSelect = true;
-            this.lvModsBZCC.GridLines = true;
-            this.lvModsBZCC.HideSelection = false;
-            this.lvModsBZCC.Location = new System.Drawing.Point(6, 64);
-            this.lvModsBZCC.Name = "lvModsBZCC";
-            this.lvModsBZCC.Size = new System.Drawing.Size(722, 311);
-            this.lvModsBZCC.TabIndex = 13;
-            this.lvModsBZCC.TypeFilter = null;
-            this.lvModsBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvModsBZCC.View = System.Windows.Forms.View.Details;
-            this.lvModsBZCC.VirtualMode = true;
+            lvModsBZCC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lvModsBZCC.FullRowSelect = true;
+            lvModsBZCC.GridLines = true;
+            lvModsBZCC.Location = new System.Drawing.Point(7, 74);
+            lvModsBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lvModsBZCC.Name = "lvModsBZCC";
+            lvModsBZCC.Size = new System.Drawing.Size(842, 358);
+            lvModsBZCC.TabIndex = 13;
+            lvModsBZCC.TypeFilter = null;
+            lvModsBZCC.UseCompatibleStateImageBehavior = false;
+            lvModsBZCC.View = System.Windows.Forms.View.Details;
+            lvModsBZCC.VirtualMode = true;
             // 
             // btnDownloadBZCC
             // 
-            this.btnDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadBZCC.Location = new System.Drawing.Point(638, 7);
-            this.btnDownloadBZCC.Name = "btnDownloadBZCC";
-            this.btnDownloadBZCC.Size = new System.Drawing.Size(90, 23);
-            this.btnDownloadBZCC.TabIndex = 3;
-            this.btnDownloadBZCC.Text = "Download";
-            this.btnDownloadBZCC.UseVisualStyleBackColor = true;
-            this.btnDownloadBZCC.Click += new System.EventHandler(this.btnDownloadBZCC_Click);
+            btnDownloadBZCC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnDownloadBZCC.Location = new System.Drawing.Point(744, 8);
+            btnDownloadBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnDownloadBZCC.Name = "btnDownloadBZCC";
+            btnDownloadBZCC.Size = new System.Drawing.Size(105, 27);
+            btnDownloadBZCC.TabIndex = 3;
+            btnDownloadBZCC.Text = "Download";
+            btnDownloadBZCC.UseVisualStyleBackColor = true;
+            btnDownloadBZCC.Click += btnDownloadBZCC_Click;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 12);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Mod URL:";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(7, 14);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(59, 15);
+            label2.TabIndex = 1;
+            label2.Text = "Mod URL:";
             // 
             // txtDownloadBZCC
             // 
-            this.txtDownloadBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDownloadBZCC.Location = new System.Drawing.Point(68, 9);
-            this.txtDownloadBZCC.Name = "txtDownloadBZCC";
-            this.txtDownloadBZCC.Size = new System.Drawing.Size(564, 20);
-            this.txtDownloadBZCC.TabIndex = 2;
+            txtDownloadBZCC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtDownloadBZCC.Location = new System.Drawing.Point(79, 10);
+            txtDownloadBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtDownloadBZCC.Name = "txtDownloadBZCC";
+            txtDownloadBZCC.Size = new System.Drawing.Size(657, 23);
+            txtDownloadBZCC.TabIndex = 2;
             // 
             // tpFindMods
             // 
-            this.tpFindMods.Controls.Add(this.btnDownloadSelectedFoundMods);
-            this.tpFindMods.Controls.Add(this.cbFindModsNewOnly);
-            this.tpFindMods.Controls.Add(this.rbFindModsTable);
-            this.tpFindMods.Controls.Add(this.btnFindMods);
-            this.tpFindMods.Controls.Add(this.rbFindModsIcon);
-            this.tpFindMods.Controls.Add(this.tcFindMods);
-            this.tpFindMods.Location = new System.Drawing.Point(4, 22);
-            this.tpFindMods.Name = "tpFindMods";
-            this.tpFindMods.Padding = new System.Windows.Forms.Padding(3);
-            this.tpFindMods.Size = new System.Drawing.Size(734, 381);
-            this.tpFindMods.TabIndex = 7;
-            this.tpFindMods.Text = "Find Mods";
-            this.tpFindMods.UseVisualStyleBackColor = true;
+            tpFindMods.Controls.Add(btnDownloadSelectedFoundMods);
+            tpFindMods.Controls.Add(cbFindModsNewOnly);
+            tpFindMods.Controls.Add(rbFindModsTable);
+            tpFindMods.Controls.Add(btnFindMods);
+            tpFindMods.Controls.Add(rbFindModsIcon);
+            tpFindMods.Controls.Add(tcFindMods);
+            tpFindMods.Location = new System.Drawing.Point(4, 24);
+            tpFindMods.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpFindMods.Name = "tpFindMods";
+            tpFindMods.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpFindMods.Size = new System.Drawing.Size(858, 455);
+            tpFindMods.TabIndex = 7;
+            tpFindMods.Text = "Find Mods";
             // 
             // btnDownloadSelectedFoundMods
             // 
-            this.btnDownloadSelectedFoundMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDownloadSelectedFoundMods.Location = new System.Drawing.Point(495, 3);
-            this.btnDownloadSelectedFoundMods.Name = "btnDownloadSelectedFoundMods";
-            this.btnDownloadSelectedFoundMods.Size = new System.Drawing.Size(133, 23);
-            this.btnDownloadSelectedFoundMods.TabIndex = 10;
-            this.btnDownloadSelectedFoundMods.Text = "Download Selected";
-            this.btnDownloadSelectedFoundMods.UseVisualStyleBackColor = true;
-            this.btnDownloadSelectedFoundMods.Click += new System.EventHandler(this.btnDownloadSelectedFoundMods_Click);
+            btnDownloadSelectedFoundMods.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnDownloadSelectedFoundMods.Location = new System.Drawing.Point(578, 3);
+            btnDownloadSelectedFoundMods.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnDownloadSelectedFoundMods.Name = "btnDownloadSelectedFoundMods";
+            btnDownloadSelectedFoundMods.Size = new System.Drawing.Size(155, 27);
+            btnDownloadSelectedFoundMods.TabIndex = 10;
+            btnDownloadSelectedFoundMods.Text = "Download Selected";
+            btnDownloadSelectedFoundMods.UseVisualStyleBackColor = true;
+            btnDownloadSelectedFoundMods.Click += btnDownloadSelectedFoundMods_Click;
             // 
             // cbFindModsNewOnly
             // 
-            this.cbFindModsNewOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbFindModsNewOnly.AutoSize = true;
-            this.cbFindModsNewOnly.Checked = true;
-            this.cbFindModsNewOnly.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbFindModsNewOnly.Location = new System.Drawing.Point(307, 7);
-            this.cbFindModsNewOnly.Name = "cbFindModsNewOnly";
-            this.cbFindModsNewOnly.Size = new System.Drawing.Size(72, 17);
-            this.cbFindModsNewOnly.TabIndex = 9;
-            this.cbFindModsNewOnly.Text = "New Only";
-            this.cbFindModsNewOnly.UseVisualStyleBackColor = true;
-            this.cbFindModsNewOnly.CheckedChanged += new System.EventHandler(this.cbFindModsNewOnly_CheckedChanged);
+            cbFindModsNewOnly.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            cbFindModsNewOnly.AutoSize = true;
+            cbFindModsNewOnly.Checked = true;
+            cbFindModsNewOnly.CheckState = System.Windows.Forms.CheckState.Checked;
+            cbFindModsNewOnly.Location = new System.Drawing.Point(364, 8);
+            cbFindModsNewOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbFindModsNewOnly.Name = "cbFindModsNewOnly";
+            cbFindModsNewOnly.Size = new System.Drawing.Size(78, 19);
+            cbFindModsNewOnly.TabIndex = 9;
+            cbFindModsNewOnly.Text = "New Only";
+            cbFindModsNewOnly.UseVisualStyleBackColor = true;
+            cbFindModsNewOnly.CheckedChanged += cbFindModsNewOnly_CheckedChanged;
             // 
             // rbFindModsTable
             // 
-            this.rbFindModsTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rbFindModsTable.AutoSize = true;
-            this.rbFindModsTable.Location = new System.Drawing.Point(385, 6);
-            this.rbFindModsTable.Name = "rbFindModsTable";
-            this.rbFindModsTable.Size = new System.Drawing.Size(52, 17);
-            this.rbFindModsTable.TabIndex = 2;
-            this.rbFindModsTable.Text = "Table";
-            this.rbFindModsTable.UseVisualStyleBackColor = true;
-            this.rbFindModsTable.CheckedChanged += new System.EventHandler(this.rbFindMods_CheckedChanged);
+            rbFindModsTable.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            rbFindModsTable.AutoSize = true;
+            rbFindModsTable.Location = new System.Drawing.Point(457, 7);
+            rbFindModsTable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rbFindModsTable.Name = "rbFindModsTable";
+            rbFindModsTable.Size = new System.Drawing.Size(53, 19);
+            rbFindModsTable.TabIndex = 2;
+            rbFindModsTable.Text = "Table";
+            rbFindModsTable.UseVisualStyleBackColor = true;
+            rbFindModsTable.CheckedChanged += rbFindMods_CheckedChanged;
             // 
             // btnFindMods
             // 
-            this.btnFindMods.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFindMods.Location = new System.Drawing.Point(634, 3);
-            this.btnFindMods.Name = "btnFindMods";
-            this.btnFindMods.Size = new System.Drawing.Size(93, 23);
-            this.btnFindMods.TabIndex = 4;
-            this.btnFindMods.Text = "Find Mods";
-            this.btnFindMods.UseVisualStyleBackColor = true;
-            this.btnFindMods.Click += new System.EventHandler(this.btnFindMods_Click);
+            btnFindMods.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnFindMods.Location = new System.Drawing.Point(740, 3);
+            btnFindMods.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnFindMods.Name = "btnFindMods";
+            btnFindMods.Size = new System.Drawing.Size(108, 27);
+            btnFindMods.TabIndex = 4;
+            btnFindMods.Text = "Find Mods";
+            btnFindMods.UseVisualStyleBackColor = true;
+            btnFindMods.Click += btnFindMods_Click;
             // 
             // rbFindModsIcon
             // 
-            this.rbFindModsIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rbFindModsIcon.AutoSize = true;
-            this.rbFindModsIcon.Checked = true;
-            this.rbFindModsIcon.Location = new System.Drawing.Point(443, 6);
-            this.rbFindModsIcon.Name = "rbFindModsIcon";
-            this.rbFindModsIcon.Size = new System.Drawing.Size(46, 17);
-            this.rbFindModsIcon.TabIndex = 3;
-            this.rbFindModsIcon.TabStop = true;
-            this.rbFindModsIcon.Text = "Icon";
-            this.rbFindModsIcon.UseVisualStyleBackColor = true;
-            this.rbFindModsIcon.CheckedChanged += new System.EventHandler(this.rbFindMods_CheckedChanged);
+            rbFindModsIcon.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            rbFindModsIcon.AutoSize = true;
+            rbFindModsIcon.Checked = true;
+            rbFindModsIcon.Location = new System.Drawing.Point(522, 7);
+            rbFindModsIcon.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rbFindModsIcon.Name = "rbFindModsIcon";
+            rbFindModsIcon.Size = new System.Drawing.Size(48, 19);
+            rbFindModsIcon.TabIndex = 3;
+            rbFindModsIcon.TabStop = true;
+            rbFindModsIcon.Text = "Icon";
+            rbFindModsIcon.UseVisualStyleBackColor = true;
+            rbFindModsIcon.CheckedChanged += rbFindMods_CheckedChanged;
             // 
             // tcFindMods
             // 
-            this.tcFindMods.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tcFindMods.Controls.Add(this.tpFindModsBZ98R);
-            this.tcFindMods.Controls.Add(this.tpFindModsBZCC);
-            this.tcFindMods.Location = new System.Drawing.Point(6, 7);
-            this.tcFindMods.Name = "tcFindMods";
-            this.tcFindMods.SelectedIndex = 0;
-            this.tcFindMods.Size = new System.Drawing.Size(722, 368);
-            this.tcFindMods.TabIndex = 1;
+            tcFindMods.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tcFindMods.Controls.Add(tpFindModsBZ98R);
+            tcFindMods.Controls.Add(tpFindModsBZCC);
+            tcFindMods.Location = new System.Drawing.Point(7, 8);
+            tcFindMods.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tcFindMods.Name = "tcFindMods";
+            tcFindMods.SelectedIndex = 0;
+            tcFindMods.Size = new System.Drawing.Size(842, 425);
+            tcFindMods.TabIndex = 1;
             // 
             // tpFindModsBZ98R
             // 
-            this.tpFindModsBZ98R.Controls.Add(this.lvFindModsBZ98R);
-            this.tpFindModsBZ98R.Location = new System.Drawing.Point(4, 22);
-            this.tpFindModsBZ98R.Name = "tpFindModsBZ98R";
-            this.tpFindModsBZ98R.Padding = new System.Windows.Forms.Padding(3);
-            this.tpFindModsBZ98R.Size = new System.Drawing.Size(714, 342);
-            this.tpFindModsBZ98R.TabIndex = 0;
-            this.tpFindModsBZ98R.Text = "BZ98R";
-            this.tpFindModsBZ98R.UseVisualStyleBackColor = true;
+            tpFindModsBZ98R.Controls.Add(lvFindModsBZ98R);
+            tpFindModsBZ98R.Location = new System.Drawing.Point(4, 24);
+            tpFindModsBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpFindModsBZ98R.Name = "tpFindModsBZ98R";
+            tpFindModsBZ98R.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpFindModsBZ98R.Size = new System.Drawing.Size(834, 397);
+            tpFindModsBZ98R.TabIndex = 0;
+            tpFindModsBZ98R.Text = "BZ98R";
             // 
             // lvFindModsBZ98R
             // 
-            this.lvFindModsBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvFindModsBZ98R.FullRowSelect = true;
-            this.lvFindModsBZ98R.GridLines = true;
-            this.lvFindModsBZ98R.HideSelection = false;
-            this.lvFindModsBZ98R.Location = new System.Drawing.Point(3, 3);
-            this.lvFindModsBZ98R.Name = "lvFindModsBZ98R";
-            this.lvFindModsBZ98R.Size = new System.Drawing.Size(708, 336);
-            this.lvFindModsBZ98R.TabIndex = 0;
-            this.lvFindModsBZ98R.TypeFilter = null;
-            this.lvFindModsBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvFindModsBZ98R.VirtualMode = true;
+            lvFindModsBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lvFindModsBZ98R.FullRowSelect = true;
+            lvFindModsBZ98R.GridLines = true;
+            lvFindModsBZ98R.Location = new System.Drawing.Point(4, 3);
+            lvFindModsBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lvFindModsBZ98R.Name = "lvFindModsBZ98R";
+            lvFindModsBZ98R.Size = new System.Drawing.Size(825, 385);
+            lvFindModsBZ98R.TabIndex = 0;
+            lvFindModsBZ98R.TypeFilter = null;
+            lvFindModsBZ98R.UseCompatibleStateImageBehavior = false;
+            lvFindModsBZ98R.VirtualMode = true;
             // 
             // tpFindModsBZCC
             // 
-            this.tpFindModsBZCC.Controls.Add(this.lvFindModsBZCC);
-            this.tpFindModsBZCC.Location = new System.Drawing.Point(4, 22);
-            this.tpFindModsBZCC.Name = "tpFindModsBZCC";
-            this.tpFindModsBZCC.Padding = new System.Windows.Forms.Padding(3);
-            this.tpFindModsBZCC.Size = new System.Drawing.Size(714, 342);
-            this.tpFindModsBZCC.TabIndex = 1;
-            this.tpFindModsBZCC.Text = "BZCC";
-            this.tpFindModsBZCC.UseVisualStyleBackColor = true;
+            tpFindModsBZCC.Controls.Add(lvFindModsBZCC);
+            tpFindModsBZCC.Location = new System.Drawing.Point(4, 24);
+            tpFindModsBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpFindModsBZCC.Name = "tpFindModsBZCC";
+            tpFindModsBZCC.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpFindModsBZCC.Size = new System.Drawing.Size(834, 397);
+            tpFindModsBZCC.TabIndex = 1;
+            tpFindModsBZCC.Text = "BZCC";
             // 
             // lvFindModsBZCC
             // 
-            this.lvFindModsBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvFindModsBZCC.FullRowSelect = true;
-            this.lvFindModsBZCC.GridLines = true;
-            this.lvFindModsBZCC.HideSelection = false;
-            this.lvFindModsBZCC.Location = new System.Drawing.Point(3, 3);
-            this.lvFindModsBZCC.Name = "lvFindModsBZCC";
-            this.lvFindModsBZCC.Size = new System.Drawing.Size(708, 336);
-            this.lvFindModsBZCC.TabIndex = 1;
-            this.lvFindModsBZCC.TypeFilter = null;
-            this.lvFindModsBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvFindModsBZCC.VirtualMode = true;
+            lvFindModsBZCC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lvFindModsBZCC.FullRowSelect = true;
+            lvFindModsBZCC.GridLines = true;
+            lvFindModsBZCC.Location = new System.Drawing.Point(4, 3);
+            lvFindModsBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lvFindModsBZCC.Name = "lvFindModsBZCC";
+            lvFindModsBZCC.Size = new System.Drawing.Size(825, 385);
+            lvFindModsBZCC.TabIndex = 1;
+            lvFindModsBZCC.TypeFilter = null;
+            lvFindModsBZCC.UseCompatibleStateImageBehavior = false;
+            lvFindModsBZCC.VirtualMode = true;
             // 
             // tabMultiplayer
             // 
-            this.tabMultiplayer.Controls.Add(this.lvPlayers);
-            this.tabMultiplayer.Controls.Add(this.rbFindGamesTable);
-            this.tabMultiplayer.Controls.Add(this.btnGetModSteamCmd);
-            this.tabMultiplayer.Controls.Add(this.btnMultiGetModSteam);
-            this.tabMultiplayer.Controls.Add(this.rbFindGamesMap);
-            this.tabMultiplayer.Controls.Add(this.btnMultiJoinGOG);
-            this.tabMultiplayer.Controls.Add(this.btnMultiJoinSteam);
-            this.tabMultiplayer.Controls.Add(this.btnMultiRefresh);
-            this.tabMultiplayer.Controls.Add(this.tcMultiplayer);
-            this.tabMultiplayer.Location = new System.Drawing.Point(4, 22);
-            this.tabMultiplayer.Name = "tabMultiplayer";
-            this.tabMultiplayer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMultiplayer.Size = new System.Drawing.Size(734, 381);
-            this.tabMultiplayer.TabIndex = 8;
-            this.tabMultiplayer.Text = "Multiplayer";
-            this.tabMultiplayer.UseVisualStyleBackColor = true;
+            tabMultiplayer.Controls.Add(lvPlayers);
+            tabMultiplayer.Controls.Add(rbFindGamesTable);
+            tabMultiplayer.Controls.Add(btnGetModSteamCmd);
+            tabMultiplayer.Controls.Add(btnMultiGetModSteam);
+            tabMultiplayer.Controls.Add(rbFindGamesMap);
+            tabMultiplayer.Controls.Add(btnMultiJoinGOG);
+            tabMultiplayer.Controls.Add(btnMultiJoinSteam);
+            tabMultiplayer.Controls.Add(btnMultiRefresh);
+            tabMultiplayer.Controls.Add(tcMultiplayer);
+            tabMultiplayer.Location = new System.Drawing.Point(4, 24);
+            tabMultiplayer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabMultiplayer.Name = "tabMultiplayer";
+            tabMultiplayer.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tabMultiplayer.Size = new System.Drawing.Size(858, 455);
+            tabMultiplayer.TabIndex = 8;
+            tabMultiplayer.Text = "Multiplayer";
             // 
             // lvPlayers
             // 
-            this.lvPlayers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvPlayers.HideSelection = false;
-            this.lvPlayers.Location = new System.Drawing.Point(6, 278);
-            this.lvPlayers.MultiSelect = false;
-            this.lvPlayers.Name = "lvPlayers";
-            this.lvPlayers.Size = new System.Drawing.Size(721, 97);
-            this.lvPlayers.TabIndex = 13;
-            this.lvPlayers.UseCompatibleStateImageBehavior = false;
-            this.lvPlayers.VirtualMode = true;
-            this.lvPlayers.DoubleClick += new System.EventHandler(this.lvPlayers_DoubleClick);
+            lvPlayers.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lvPlayers.Location = new System.Drawing.Point(7, 321);
+            lvPlayers.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lvPlayers.MultiSelect = false;
+            lvPlayers.Name = "lvPlayers";
+            lvPlayers.Size = new System.Drawing.Size(840, 111);
+            lvPlayers.TabIndex = 13;
+            lvPlayers.UseCompatibleStateImageBehavior = false;
+            lvPlayers.VirtualMode = true;
+            lvPlayers.DoubleClick += lvPlayers_DoubleClick;
             // 
             // rbFindGamesTable
             // 
-            this.rbFindGamesTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rbFindGamesTable.AutoSize = true;
-            this.rbFindGamesTable.Checked = true;
-            this.rbFindGamesTable.Location = new System.Drawing.Point(144, 6);
-            this.rbFindGamesTable.Name = "rbFindGamesTable";
-            this.rbFindGamesTable.Size = new System.Drawing.Size(52, 17);
-            this.rbFindGamesTable.TabIndex = 11;
-            this.rbFindGamesTable.TabStop = true;
-            this.rbFindGamesTable.Text = "Table";
-            this.rbFindGamesTable.UseVisualStyleBackColor = true;
-            this.rbFindGamesTable.CheckedChanged += new System.EventHandler(this.rbFindGames_CheckedChanged);
+            rbFindGamesTable.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            rbFindGamesTable.AutoSize = true;
+            rbFindGamesTable.Checked = true;
+            rbFindGamesTable.Location = new System.Drawing.Point(176, 7);
+            rbFindGamesTable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rbFindGamesTable.Name = "rbFindGamesTable";
+            rbFindGamesTable.Size = new System.Drawing.Size(53, 19);
+            rbFindGamesTable.TabIndex = 11;
+            rbFindGamesTable.TabStop = true;
+            rbFindGamesTable.Text = "Table";
+            rbFindGamesTable.UseVisualStyleBackColor = true;
+            rbFindGamesTable.CheckedChanged += rbFindGames_CheckedChanged;
             // 
             // btnGetModSteamCmd
             // 
-            this.btnGetModSteamCmd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGetModSteamCmd.Enabled = false;
-            this.btnGetModSteamCmd.Location = new System.Drawing.Point(254, 3);
-            this.btnGetModSteamCmd.Name = "btnGetModSteamCmd";
-            this.btnGetModSteamCmd.Size = new System.Drawing.Size(131, 23);
-            this.btnGetModSteamCmd.TabIndex = 10;
-            this.btnGetModSteamCmd.Text = "Get Mods (SteamCmd)";
-            this.btnGetModSteamCmd.UseVisualStyleBackColor = true;
-            this.btnGetModSteamCmd.Click += new System.EventHandler(this.btnGetModSteamCmd_Click);
+            btnGetModSteamCmd.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnGetModSteamCmd.Enabled = false;
+            btnGetModSteamCmd.Location = new System.Drawing.Point(296, 3);
+            btnGetModSteamCmd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnGetModSteamCmd.Name = "btnGetModSteamCmd";
+            btnGetModSteamCmd.Size = new System.Drawing.Size(153, 27);
+            btnGetModSteamCmd.TabIndex = 10;
+            btnGetModSteamCmd.Text = "Get Mods (SteamCmd)";
+            btnGetModSteamCmd.UseVisualStyleBackColor = true;
+            btnGetModSteamCmd.Click += btnGetModSteamCmd_Click;
             // 
             // btnMultiGetModSteam
             // 
-            this.btnMultiGetModSteam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMultiGetModSteam.Enabled = false;
-            this.btnMultiGetModSteam.Location = new System.Drawing.Point(391, 3);
-            this.btnMultiGetModSteam.Name = "btnMultiGetModSteam";
-            this.btnMultiGetModSteam.Size = new System.Drawing.Size(102, 23);
-            this.btnMultiGetModSteam.TabIndex = 9;
-            this.btnMultiGetModSteam.Text = "Get Mod (Steam)";
-            this.btnMultiGetModSteam.UseVisualStyleBackColor = true;
-            this.btnMultiGetModSteam.Click += new System.EventHandler(this.btnMultiGetModSteam_Click);
+            btnMultiGetModSteam.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnMultiGetModSteam.Enabled = false;
+            btnMultiGetModSteam.Location = new System.Drawing.Point(456, 3);
+            btnMultiGetModSteam.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMultiGetModSteam.Name = "btnMultiGetModSteam";
+            btnMultiGetModSteam.Size = new System.Drawing.Size(119, 27);
+            btnMultiGetModSteam.TabIndex = 9;
+            btnMultiGetModSteam.Text = "Get Mod (Steam)";
+            btnMultiGetModSteam.UseVisualStyleBackColor = true;
+            btnMultiGetModSteam.Click += btnMultiGetModSteam_Click;
             // 
             // rbFindGamesMap
             // 
-            this.rbFindGamesMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rbFindGamesMap.AutoSize = true;
-            this.rbFindGamesMap.Location = new System.Drawing.Point(202, 6);
-            this.rbFindGamesMap.Name = "rbFindGamesMap";
-            this.rbFindGamesMap.Size = new System.Drawing.Size(46, 17);
-            this.rbFindGamesMap.TabIndex = 12;
-            this.rbFindGamesMap.Text = "Map";
-            this.rbFindGamesMap.UseVisualStyleBackColor = true;
-            this.rbFindGamesMap.CheckedChanged += new System.EventHandler(this.rbFindGames_CheckedChanged);
+            rbFindGamesMap.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            rbFindGamesMap.AutoSize = true;
+            rbFindGamesMap.Location = new System.Drawing.Point(240, 7);
+            rbFindGamesMap.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rbFindGamesMap.Name = "rbFindGamesMap";
+            rbFindGamesMap.Size = new System.Drawing.Size(49, 19);
+            rbFindGamesMap.TabIndex = 12;
+            rbFindGamesMap.Text = "Map";
+            rbFindGamesMap.UseVisualStyleBackColor = true;
+            rbFindGamesMap.CheckedChanged += rbFindGames_CheckedChanged;
             // 
             // btnMultiJoinGOG
             // 
-            this.btnMultiJoinGOG.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMultiJoinGOG.Enabled = false;
-            this.btnMultiJoinGOG.Location = new System.Drawing.Point(499, 3);
-            this.btnMultiJoinGOG.Name = "btnMultiJoinGOG";
-            this.btnMultiJoinGOG.Size = new System.Drawing.Size(76, 23);
-            this.btnMultiJoinGOG.TabIndex = 8;
-            this.btnMultiJoinGOG.Text = "Join (GOG)";
-            this.btnMultiJoinGOG.UseVisualStyleBackColor = true;
-            this.btnMultiJoinGOG.Click += new System.EventHandler(this.btnMultiJoinGOG_Click);
+            btnMultiJoinGOG.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnMultiJoinGOG.Enabled = false;
+            btnMultiJoinGOG.Location = new System.Drawing.Point(582, 3);
+            btnMultiJoinGOG.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMultiJoinGOG.Name = "btnMultiJoinGOG";
+            btnMultiJoinGOG.Size = new System.Drawing.Size(89, 27);
+            btnMultiJoinGOG.TabIndex = 8;
+            btnMultiJoinGOG.Text = "Join (GOG)";
+            btnMultiJoinGOG.UseVisualStyleBackColor = true;
+            btnMultiJoinGOG.Click += btnMultiJoinGOG_Click;
             // 
             // btnMultiJoinSteam
             // 
-            this.btnMultiJoinSteam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMultiJoinSteam.Enabled = false;
-            this.btnMultiJoinSteam.Location = new System.Drawing.Point(581, 3);
-            this.btnMultiJoinSteam.Name = "btnMultiJoinSteam";
-            this.btnMultiJoinSteam.Size = new System.Drawing.Size(76, 23);
-            this.btnMultiJoinSteam.TabIndex = 7;
-            this.btnMultiJoinSteam.Text = "Join (Steam)";
-            this.btnMultiJoinSteam.UseVisualStyleBackColor = true;
-            this.btnMultiJoinSteam.Click += new System.EventHandler(this.btnMultiJoinSteam_Click);
+            btnMultiJoinSteam.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnMultiJoinSteam.Enabled = false;
+            btnMultiJoinSteam.Location = new System.Drawing.Point(678, 3);
+            btnMultiJoinSteam.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMultiJoinSteam.Name = "btnMultiJoinSteam";
+            btnMultiJoinSteam.Size = new System.Drawing.Size(89, 27);
+            btnMultiJoinSteam.TabIndex = 7;
+            btnMultiJoinSteam.Text = "Join (Steam)";
+            btnMultiJoinSteam.UseVisualStyleBackColor = true;
+            btnMultiJoinSteam.Click += btnMultiJoinSteam_Click;
             // 
             // btnMultiRefresh
             // 
-            this.btnMultiRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMultiRefresh.Location = new System.Drawing.Point(663, 3);
-            this.btnMultiRefresh.Name = "btnMultiRefresh";
-            this.btnMultiRefresh.Size = new System.Drawing.Size(64, 23);
-            this.btnMultiRefresh.TabIndex = 6;
-            this.btnMultiRefresh.Text = "Refresh";
-            this.btnMultiRefresh.UseVisualStyleBackColor = true;
-            this.btnMultiRefresh.Click += new System.EventHandler(this.btnMultiRefresh_Click);
+            btnMultiRefresh.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnMultiRefresh.Location = new System.Drawing.Point(774, 3);
+            btnMultiRefresh.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMultiRefresh.Name = "btnMultiRefresh";
+            btnMultiRefresh.Size = new System.Drawing.Size(75, 27);
+            btnMultiRefresh.TabIndex = 6;
+            btnMultiRefresh.Text = "Refresh";
+            btnMultiRefresh.UseVisualStyleBackColor = true;
+            btnMultiRefresh.Click += btnMultiRefresh_Click;
             // 
             // tcMultiplayer
             // 
-            this.tcMultiplayer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tcMultiplayer.Controls.Add(this.tpMultiplayerBZ98R);
-            this.tcMultiplayer.Controls.Add(this.tpMultiplayerBZCC);
-            this.tcMultiplayer.Location = new System.Drawing.Point(6, 7);
-            this.tcMultiplayer.Name = "tcMultiplayer";
-            this.tcMultiplayer.SelectedIndex = 0;
-            this.tcMultiplayer.Size = new System.Drawing.Size(722, 265);
-            this.tcMultiplayer.TabIndex = 5;
-            this.tcMultiplayer.SelectedIndexChanged += new System.EventHandler(this.tcMultiplayer_SelectedIndexChanged);
+            tcMultiplayer.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tcMultiplayer.Controls.Add(tpMultiplayerBZ98R);
+            tcMultiplayer.Controls.Add(tpMultiplayerBZCC);
+            tcMultiplayer.Location = new System.Drawing.Point(7, 8);
+            tcMultiplayer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tcMultiplayer.Name = "tcMultiplayer";
+            tcMultiplayer.SelectedIndex = 0;
+            tcMultiplayer.Size = new System.Drawing.Size(842, 306);
+            tcMultiplayer.TabIndex = 5;
+            tcMultiplayer.SelectedIndexChanged += tcMultiplayer_SelectedIndexChanged;
             // 
             // tpMultiplayerBZ98R
             // 
-            this.tpMultiplayerBZ98R.Controls.Add(this.lvMultiplayerBZ98R);
-            this.tpMultiplayerBZ98R.Location = new System.Drawing.Point(4, 22);
-            this.tpMultiplayerBZ98R.Name = "tpMultiplayerBZ98R";
-            this.tpMultiplayerBZ98R.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMultiplayerBZ98R.Size = new System.Drawing.Size(714, 239);
-            this.tpMultiplayerBZ98R.TabIndex = 0;
-            this.tpMultiplayerBZ98R.Text = "BZ98R";
-            this.tpMultiplayerBZ98R.UseVisualStyleBackColor = true;
+            tpMultiplayerBZ98R.Controls.Add(lvMultiplayerBZ98R);
+            tpMultiplayerBZ98R.Location = new System.Drawing.Point(4, 24);
+            tpMultiplayerBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpMultiplayerBZ98R.Name = "tpMultiplayerBZ98R";
+            tpMultiplayerBZ98R.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpMultiplayerBZ98R.Size = new System.Drawing.Size(834, 278);
+            tpMultiplayerBZ98R.TabIndex = 0;
+            tpMultiplayerBZ98R.Text = "BZ98R";
             // 
             // lvMultiplayerBZ98R
             // 
-            this.lvMultiplayerBZ98R.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvMultiplayerBZ98R.FullRowSelect = true;
-            this.lvMultiplayerBZ98R.GridLines = true;
-            this.lvMultiplayerBZ98R.HideSelection = false;
-            this.lvMultiplayerBZ98R.Location = new System.Drawing.Point(3, 3);
-            this.lvMultiplayerBZ98R.MultiSelect = false;
-            this.lvMultiplayerBZ98R.Name = "lvMultiplayerBZ98R";
-            this.lvMultiplayerBZ98R.Size = new System.Drawing.Size(708, 233);
-            this.lvMultiplayerBZ98R.TabIndex = 0;
-            this.lvMultiplayerBZ98R.UseCompatibleStateImageBehavior = false;
-            this.lvMultiplayerBZ98R.View = System.Windows.Forms.View.Details;
-            this.lvMultiplayerBZ98R.VirtualMode = true;
-            this.lvMultiplayerBZ98R.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZ98R_SelectedIndexChanged);
+            lvMultiplayerBZ98R.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lvMultiplayerBZ98R.FullRowSelect = true;
+            lvMultiplayerBZ98R.GridLines = true;
+            lvMultiplayerBZ98R.Location = new System.Drawing.Point(4, 3);
+            lvMultiplayerBZ98R.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lvMultiplayerBZ98R.MultiSelect = false;
+            lvMultiplayerBZ98R.Name = "lvMultiplayerBZ98R";
+            lvMultiplayerBZ98R.Size = new System.Drawing.Size(825, 266);
+            lvMultiplayerBZ98R.TabIndex = 0;
+            lvMultiplayerBZ98R.UseCompatibleStateImageBehavior = false;
+            lvMultiplayerBZ98R.View = System.Windows.Forms.View.Details;
+            lvMultiplayerBZ98R.VirtualMode = true;
+            lvMultiplayerBZ98R.SelectedIndexChanged += lvMultiplayerBZ98R_SelectedIndexChanged;
             // 
             // tpMultiplayerBZCC
             // 
-            this.tpMultiplayerBZCC.Controls.Add(this.lvMultiplayerBZCC);
-            this.tpMultiplayerBZCC.Location = new System.Drawing.Point(4, 22);
-            this.tpMultiplayerBZCC.Name = "tpMultiplayerBZCC";
-            this.tpMultiplayerBZCC.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMultiplayerBZCC.Size = new System.Drawing.Size(714, 239);
-            this.tpMultiplayerBZCC.TabIndex = 1;
-            this.tpMultiplayerBZCC.Text = "BZCC";
-            this.tpMultiplayerBZCC.UseVisualStyleBackColor = true;
+            tpMultiplayerBZCC.Controls.Add(lvMultiplayerBZCC);
+            tpMultiplayerBZCC.Location = new System.Drawing.Point(4, 24);
+            tpMultiplayerBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpMultiplayerBZCC.Name = "tpMultiplayerBZCC";
+            tpMultiplayerBZCC.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpMultiplayerBZCC.Size = new System.Drawing.Size(834, 278);
+            tpMultiplayerBZCC.TabIndex = 1;
+            tpMultiplayerBZCC.Text = "BZCC";
             // 
             // lvMultiplayerBZCC
             // 
-            this.lvMultiplayerBZCC.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvMultiplayerBZCC.FullRowSelect = true;
-            this.lvMultiplayerBZCC.GridLines = true;
-            this.lvMultiplayerBZCC.HideSelection = false;
-            this.lvMultiplayerBZCC.Location = new System.Drawing.Point(3, 3);
-            this.lvMultiplayerBZCC.MultiSelect = false;
-            this.lvMultiplayerBZCC.Name = "lvMultiplayerBZCC";
-            this.lvMultiplayerBZCC.Size = new System.Drawing.Size(708, 233);
-            this.lvMultiplayerBZCC.TabIndex = 1;
-            this.lvMultiplayerBZCC.UseCompatibleStateImageBehavior = false;
-            this.lvMultiplayerBZCC.View = System.Windows.Forms.View.Details;
-            this.lvMultiplayerBZCC.VirtualMode = true;
-            this.lvMultiplayerBZCC.SelectedIndexChanged += new System.EventHandler(this.lvMultiplayerBZCC_SelectedIndexChanged);
+            lvMultiplayerBZCC.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lvMultiplayerBZCC.FullRowSelect = true;
+            lvMultiplayerBZCC.GridLines = true;
+            lvMultiplayerBZCC.Location = new System.Drawing.Point(4, 3);
+            lvMultiplayerBZCC.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lvMultiplayerBZCC.MultiSelect = false;
+            lvMultiplayerBZCC.Name = "lvMultiplayerBZCC";
+            lvMultiplayerBZCC.Size = new System.Drawing.Size(825, 266);
+            lvMultiplayerBZCC.TabIndex = 1;
+            lvMultiplayerBZCC.UseCompatibleStateImageBehavior = false;
+            lvMultiplayerBZCC.View = System.Windows.Forms.View.Details;
+            lvMultiplayerBZCC.VirtualMode = true;
+            lvMultiplayerBZCC.SelectedIndexChanged += lvMultiplayerBZCC_SelectedIndexChanged;
             // 
             // tpAudit
             // 
-            this.tpAudit.Controls.Add(this.txtAuditLog);
-            this.tpAudit.Controls.Add(this.btnRunAudit);
-            this.tpAudit.Location = new System.Drawing.Point(4, 22);
-            this.tpAudit.Name = "tpAudit";
-            this.tpAudit.Size = new System.Drawing.Size(734, 381);
-            this.tpAudit.TabIndex = 10;
-            this.tpAudit.Text = "Audit";
-            this.tpAudit.UseVisualStyleBackColor = true;
+            tpAudit.Controls.Add(txtAuditLog);
+            tpAudit.Controls.Add(btnRunAudit);
+            tpAudit.Location = new System.Drawing.Point(4, 24);
+            tpAudit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpAudit.Name = "tpAudit";
+            tpAudit.Size = new System.Drawing.Size(858, 455);
+            tpAudit.TabIndex = 10;
+            tpAudit.Text = "Audit";
             // 
             // txtAuditLog
             // 
-            this.txtAuditLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAuditLog.Font = new System.Drawing.Font("Consolas", 8.25F);
-            this.txtAuditLog.Location = new System.Drawing.Point(3, 32);
-            this.txtAuditLog.Name = "txtAuditLog";
-            this.txtAuditLog.ReadOnly = true;
-            this.txtAuditLog.Size = new System.Drawing.Size(728, 346);
-            this.txtAuditLog.TabIndex = 2;
-            this.txtAuditLog.Text = "";
-            this.txtAuditLog.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtAuditLog_LinkClicked);
+            txtAuditLog.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtAuditLog.Font = new System.Drawing.Font("Consolas", 8.25F);
+            txtAuditLog.Location = new System.Drawing.Point(4, 37);
+            txtAuditLog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtAuditLog.Name = "txtAuditLog";
+            txtAuditLog.ReadOnly = true;
+            txtAuditLog.Size = new System.Drawing.Size(849, 399);
+            txtAuditLog.TabIndex = 2;
+            txtAuditLog.Text = "";
+            txtAuditLog.LinkClicked += txtAuditLog_LinkClicked;
             // 
             // btnRunAudit
             // 
-            this.btnRunAudit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRunAudit.Location = new System.Drawing.Point(3, 3);
-            this.btnRunAudit.Name = "btnRunAudit";
-            this.btnRunAudit.Size = new System.Drawing.Size(728, 23);
-            this.btnRunAudit.TabIndex = 0;
-            this.btnRunAudit.Text = "Run Audit";
-            this.btnRunAudit.UseVisualStyleBackColor = true;
-            this.btnRunAudit.Click += new System.EventHandler(this.btnRunAudit_Click);
+            btnRunAudit.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnRunAudit.Location = new System.Drawing.Point(4, 3);
+            btnRunAudit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnRunAudit.Name = "btnRunAudit";
+            btnRunAudit.Size = new System.Drawing.Size(849, 27);
+            btnRunAudit.TabIndex = 0;
+            btnRunAudit.Text = "Run Audit";
+            btnRunAudit.UseVisualStyleBackColor = true;
+            btnRunAudit.Click += btnRunAudit_Click;
             // 
             // tpSettings
             // 
-            this.tpSettings.Controls.Add(this.groupBox6);
-            this.tpSettings.Controls.Add(this.groupBox5);
-            this.tpSettings.Controls.Add(this.btnFixSteamCmd);
-            this.tpSettings.Controls.Add(this.cbFallbackSteamCmdWindowHandling);
-            this.tpSettings.Controls.Add(this.groupBox4);
-            this.tpSettings.Controls.Add(this.groupBox3);
-            this.tpSettings.Controls.Add(this.groupBox2);
-            this.tpSettings.Controls.Add(this.groupBox1);
-            this.tpSettings.Location = new System.Drawing.Point(4, 22);
-            this.tpSettings.Name = "tpSettings";
-            this.tpSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tpSettings.Size = new System.Drawing.Size(734, 393);
-            this.tpSettings.TabIndex = 2;
-            this.tpSettings.Text = "Settings";
-            this.tpSettings.UseVisualStyleBackColor = true;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox5.Controls.Add(this.btnBZCCGogFind);
-            this.groupBox5.Controls.Add(this.txtBZCCGog);
-            this.groupBox5.Controls.Add(this.btnBZCCRGogApply);
-            this.groupBox5.Location = new System.Drawing.Point(6, 230);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(723, 50);
-            this.groupBox5.TabIndex = 19;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "GOG install of BZCC (only needed for multiplayer quicklaunch)";
-            // 
-            // btnBZCCGogFind
-            // 
-            this.btnBZCCGogFind.Location = new System.Drawing.Point(6, 19);
-            this.btnBZCCGogFind.Name = "btnBZCCGogFind";
-            this.btnBZCCGogFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZCCGogFind.TabIndex = 10;
-            this.btnBZCCGogFind.Text = "Quick Find";
-            this.btnBZCCGogFind.UseVisualStyleBackColor = true;
-            this.btnBZCCGogFind.Click += new System.EventHandler(this.btnBZCCGogFind_Click);
-            // 
-            // txtBZCCGog
-            // 
-            this.txtBZCCGog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZCCGog.Location = new System.Drawing.Point(86, 21);
-            this.txtBZCCGog.Name = "txtBZCCGog";
-            this.txtBZCCGog.Size = new System.Drawing.Size(569, 20);
-            this.txtBZCCGog.TabIndex = 11;
-            // 
-            // btnBZCCRGogApply
-            // 
-            this.btnBZCCRGogApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBZCCRGogApply.Location = new System.Drawing.Point(661, 19);
-            this.btnBZCCRGogApply.Name = "btnBZCCRGogApply";
-            this.btnBZCCRGogApply.Size = new System.Drawing.Size(57, 23);
-            this.btnBZCCRGogApply.TabIndex = 12;
-            this.btnBZCCRGogApply.Text = "Apply";
-            this.btnBZCCRGogApply.UseVisualStyleBackColor = true;
-            this.btnBZCCRGogApply.Click += new System.EventHandler(this.btnBZCCRGogApply_Click);
-            // 
-            // btnFixSteamCmd
-            // 
-            this.btnFixSteamCmd.Location = new System.Drawing.Point(6, 342);
-            this.btnFixSteamCmd.Name = "btnFixSteamCmd";
-            this.btnFixSteamCmd.Size = new System.Drawing.Size(179, 23);
-            this.btnFixSteamCmd.TabIndex = 18;
-            this.btnFixSteamCmd.Text = "Delete and Rebuild SteamCmd";
-            this.btnFixSteamCmd.UseVisualStyleBackColor = true;
-            this.btnFixSteamCmd.Click += new System.EventHandler(this.btnFixSteamCmd_Click);
-            // 
-            // cbFallbackSteamCmdWindowHandling
-            // 
-            this.cbFallbackSteamCmdWindowHandling.AutoSize = true;
-            this.cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(6, 371);
-            this.cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
-            this.cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(207, 17);
-            this.cbFallbackSteamCmdWindowHandling.TabIndex = 17;
-            this.cbFallbackSteamCmdWindowHandling.Text = "Fallback SteamCmd Window Handling";
-            this.cbFallbackSteamCmdWindowHandling.UseVisualStyleBackColor = true;
-            this.cbFallbackSteamCmdWindowHandling.Visible = false;
-            this.cbFallbackSteamCmdWindowHandling.CheckedChanged += new System.EventHandler(this.cbFallbackSteamCmdWindowHandling_CheckedChanged);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox4.Controls.Add(this.btnBZCCMyDocsFind);
-            this.groupBox4.Controls.Add(this.txtBZCCMyDocs);
-            this.groupBox4.Controls.Add(this.btnBZCCMyDocsApply);
-            this.groupBox4.Location = new System.Drawing.Point(6, 174);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(723, 50);
-            this.groupBox4.TabIndex = 13;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "BZCC Folder in My Docs/My Games";
-            // 
-            // btnBZCCMyDocsFind
-            // 
-            this.btnBZCCMyDocsFind.Location = new System.Drawing.Point(6, 19);
-            this.btnBZCCMyDocsFind.Name = "btnBZCCMyDocsFind";
-            this.btnBZCCMyDocsFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZCCMyDocsFind.TabIndex = 14;
-            this.btnBZCCMyDocsFind.Text = "Quick Find";
-            this.btnBZCCMyDocsFind.UseVisualStyleBackColor = true;
-            this.btnBZCCMyDocsFind.Click += new System.EventHandler(this.btnBZCCMyDocsFind_Click);
-            // 
-            // txtBZCCMyDocs
-            // 
-            this.txtBZCCMyDocs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZCCMyDocs.Location = new System.Drawing.Point(86, 21);
-            this.txtBZCCMyDocs.Name = "txtBZCCMyDocs";
-            this.txtBZCCMyDocs.Size = new System.Drawing.Size(569, 20);
-            this.txtBZCCMyDocs.TabIndex = 15;
-            // 
-            // btnBZCCMyDocsApply
-            // 
-            this.btnBZCCMyDocsApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBZCCMyDocsApply.Location = new System.Drawing.Point(661, 19);
-            this.btnBZCCMyDocsApply.Name = "btnBZCCMyDocsApply";
-            this.btnBZCCMyDocsApply.Size = new System.Drawing.Size(57, 23);
-            this.btnBZCCMyDocsApply.TabIndex = 16;
-            this.btnBZCCMyDocsApply.Text = "Apply";
-            this.btnBZCCMyDocsApply.UseVisualStyleBackColor = true;
-            this.btnBZCCMyDocsApply.Click += new System.EventHandler(this.btnBZCCMyDocsApply_Click);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.btnBZ98RGogFind);
-            this.groupBox3.Controls.Add(this.txtBZ98RGog);
-            this.groupBox3.Controls.Add(this.btnBZ98RGogApply);
-            this.groupBox3.Location = new System.Drawing.Point(6, 118);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(723, 50);
-            this.groupBox3.TabIndex = 9;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "GOG install of BZ98R";
-            // 
-            // btnBZ98RGogFind
-            // 
-            this.btnBZ98RGogFind.Location = new System.Drawing.Point(6, 19);
-            this.btnBZ98RGogFind.Name = "btnBZ98RGogFind";
-            this.btnBZ98RGogFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZ98RGogFind.TabIndex = 10;
-            this.btnBZ98RGogFind.Text = "Quick Find";
-            this.btnBZ98RGogFind.UseVisualStyleBackColor = true;
-            this.btnBZ98RGogFind.Click += new System.EventHandler(this.btnBZ98RGogFind_Click);
-            // 
-            // txtBZ98RGog
-            // 
-            this.txtBZ98RGog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZ98RGog.Location = new System.Drawing.Point(86, 21);
-            this.txtBZ98RGog.Name = "txtBZ98RGog";
-            this.txtBZ98RGog.Size = new System.Drawing.Size(569, 20);
-            this.txtBZ98RGog.TabIndex = 11;
-            // 
-            // btnBZ98RGogApply
-            // 
-            this.btnBZ98RGogApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBZ98RGogApply.Location = new System.Drawing.Point(661, 19);
-            this.btnBZ98RGogApply.Name = "btnBZ98RGogApply";
-            this.btnBZ98RGogApply.Size = new System.Drawing.Size(57, 23);
-            this.btnBZ98RGogApply.TabIndex = 12;
-            this.btnBZ98RGogApply.Text = "Apply";
-            this.btnBZ98RGogApply.UseVisualStyleBackColor = true;
-            this.btnBZ98RGogApply.Click += new System.EventHandler(this.txtBZ98RGogApply_Click);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.btnBZCCSteamFind);
-            this.groupBox2.Controls.Add(this.txtBZCCSteam);
-            this.groupBox2.Controls.Add(this.btnBZCCSteamApply);
-            this.groupBox2.Location = new System.Drawing.Point(6, 62);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(723, 50);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "steamapps folder that contains BZCC";
-            // 
-            // btnBZCCSteamFind
-            // 
-            this.btnBZCCSteamFind.Location = new System.Drawing.Point(6, 19);
-            this.btnBZCCSteamFind.Name = "btnBZCCSteamFind";
-            this.btnBZCCSteamFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZCCSteamFind.TabIndex = 6;
-            this.btnBZCCSteamFind.Text = "Quick Find";
-            this.btnBZCCSteamFind.UseVisualStyleBackColor = true;
-            this.btnBZCCSteamFind.Click += new System.EventHandler(this.btnBZCCSteamFind_Click);
-            // 
-            // txtBZCCSteam
-            // 
-            this.txtBZCCSteam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZCCSteam.Location = new System.Drawing.Point(86, 21);
-            this.txtBZCCSteam.Name = "txtBZCCSteam";
-            this.txtBZCCSteam.Size = new System.Drawing.Size(569, 20);
-            this.txtBZCCSteam.TabIndex = 7;
-            // 
-            // btnBZCCSteamApply
-            // 
-            this.btnBZCCSteamApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBZCCSteamApply.Location = new System.Drawing.Point(661, 19);
-            this.btnBZCCSteamApply.Name = "btnBZCCSteamApply";
-            this.btnBZCCSteamApply.Size = new System.Drawing.Size(57, 23);
-            this.btnBZCCSteamApply.TabIndex = 8;
-            this.btnBZCCSteamApply.Text = "Apply";
-            this.btnBZCCSteamApply.UseVisualStyleBackColor = true;
-            this.btnBZCCSteamApply.Click += new System.EventHandler(this.btnBZCCSteamApply_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.btnBZ98RSteamFind);
-            this.groupBox1.Controls.Add(this.txtBZ98RSteam);
-            this.groupBox1.Controls.Add(this.btnBZ98RSteamApply);
-            this.groupBox1.Location = new System.Drawing.Point(6, 6);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(723, 50);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "steamapps folder that contains BZ98R";
-            // 
-            // btnBZ98RSteamFind
-            // 
-            this.btnBZ98RSteamFind.Location = new System.Drawing.Point(6, 19);
-            this.btnBZ98RSteamFind.Name = "btnBZ98RSteamFind";
-            this.btnBZ98RSteamFind.Size = new System.Drawing.Size(74, 23);
-            this.btnBZ98RSteamFind.TabIndex = 2;
-            this.btnBZ98RSteamFind.Text = "Quick Find";
-            this.btnBZ98RSteamFind.UseVisualStyleBackColor = true;
-            this.btnBZ98RSteamFind.Click += new System.EventHandler(this.btnBZ98RSteamFind_Click);
-            // 
-            // txtBZ98RSteam
-            // 
-            this.txtBZ98RSteam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBZ98RSteam.Location = new System.Drawing.Point(86, 21);
-            this.txtBZ98RSteam.Name = "txtBZ98RSteam";
-            this.txtBZ98RSteam.Size = new System.Drawing.Size(569, 20);
-            this.txtBZ98RSteam.TabIndex = 3;
-            // 
-            // btnBZ98RSteamApply
-            // 
-            this.btnBZ98RSteamApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBZ98RSteamApply.Location = new System.Drawing.Point(661, 19);
-            this.btnBZ98RSteamApply.Name = "btnBZ98RSteamApply";
-            this.btnBZ98RSteamApply.Size = new System.Drawing.Size(57, 23);
-            this.btnBZ98RSteamApply.TabIndex = 4;
-            this.btnBZ98RSteamApply.Text = "Apply";
-            this.btnBZ98RSteamApply.UseVisualStyleBackColor = true;
-            this.btnBZ98RSteamApply.Click += new System.EventHandler(this.btnBZ98RSteamApply_Click);
-            // 
-            // tpTasks
-            // 
-            this.tpTasks.Controls.Add(this.pnlTasks);
-            this.tpTasks.Location = new System.Drawing.Point(4, 22);
-            this.tpTasks.Name = "tpTasks";
-            this.tpTasks.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTasks.Size = new System.Drawing.Size(734, 381);
-            this.tpTasks.TabIndex = 6;
-            this.tpTasks.Text = "Tasks";
-            this.tpTasks.UseVisualStyleBackColor = true;
-            // 
-            // pnlTasks
-            // 
-            this.pnlTasks.AutoScroll = true;
-            this.pnlTasks.AutoSize = true;
-            this.pnlTasks.ColumnCount = 1;
-            this.pnlTasks.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.pnlTasks.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTasks.Location = new System.Drawing.Point(3, 3);
-            this.pnlTasks.Name = "pnlTasks";
-            this.pnlTasks.RowCount = 1;
-            this.pnlTasks.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.pnlTasks.Size = new System.Drawing.Size(728, 375);
-            this.pnlTasks.TabIndex = 0;
-            this.pnlTasks.Resize += new System.EventHandler(this.pnlTasks_Resize);
-            // 
-            // tpLog
-            // 
-            this.tpLog.Controls.Add(this.txtLog);
-            this.tpLog.Location = new System.Drawing.Point(4, 22);
-            this.tpLog.Name = "tpLog";
-            this.tpLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLog.Size = new System.Drawing.Size(734, 381);
-            this.tpLog.TabIndex = 3;
-            this.tpLog.Text = "Log";
-            this.tpLog.UseVisualStyleBackColor = true;
-            // 
-            // txtLog
-            // 
-            this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLog.Location = new System.Drawing.Point(3, 3);
-            this.txtLog.Multiline = true;
-            this.txtLog.Name = "txtLog";
-            this.txtLog.ReadOnly = true;
-            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtLog.Size = new System.Drawing.Size(728, 375);
-            this.txtLog.TabIndex = 0;
-            // 
-            // tpLogSteamCmd
-            // 
-            this.tpLogSteamCmd.Controls.Add(this.txtLogSteamCmd);
-            this.tpLogSteamCmd.Location = new System.Drawing.Point(4, 22);
-            this.tpLogSteamCmd.Name = "tpLogSteamCmd";
-            this.tpLogSteamCmd.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLogSteamCmd.Size = new System.Drawing.Size(734, 381);
-            this.tpLogSteamCmd.TabIndex = 4;
-            this.tpLogSteamCmd.Text = "SteamCmd";
-            this.tpLogSteamCmd.UseVisualStyleBackColor = true;
-            // 
-            // txtLogSteamCmd
-            // 
-            this.txtLogSteamCmd.BackColor = System.Drawing.Color.Black;
-            this.txtLogSteamCmd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLogSteamCmd.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLogSteamCmd.ForeColor = System.Drawing.Color.White;
-            this.txtLogSteamCmd.Location = new System.Drawing.Point(3, 3);
-            this.txtLogSteamCmd.Name = "txtLogSteamCmd";
-            this.txtLogSteamCmd.ReadOnly = true;
-            this.txtLogSteamCmd.Size = new System.Drawing.Size(728, 375);
-            this.txtLogSteamCmd.TabIndex = 1;
-            this.txtLogSteamCmd.Text = "";
-            // 
-            // tpLogSteamCmdFull
-            // 
-            this.tpLogSteamCmdFull.Controls.Add(this.txtLogSteamCmdFull);
-            this.tpLogSteamCmdFull.Location = new System.Drawing.Point(4, 22);
-            this.tpLogSteamCmdFull.Name = "tpLogSteamCmdFull";
-            this.tpLogSteamCmdFull.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLogSteamCmdFull.Size = new System.Drawing.Size(734, 381);
-            this.tpLogSteamCmdFull.TabIndex = 5;
-            this.tpLogSteamCmdFull.Text = "SteamCmd Raw";
-            this.tpLogSteamCmdFull.UseVisualStyleBackColor = true;
-            // 
-            // txtLogSteamCmdFull
-            // 
-            this.txtLogSteamCmdFull.BackColor = System.Drawing.Color.Black;
-            this.txtLogSteamCmdFull.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLogSteamCmdFull.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLogSteamCmdFull.ForeColor = System.Drawing.Color.White;
-            this.txtLogSteamCmdFull.Location = new System.Drawing.Point(3, 3);
-            this.txtLogSteamCmdFull.Name = "txtLogSteamCmdFull";
-            this.txtLogSteamCmdFull.ReadOnly = true;
-            this.txtLogSteamCmdFull.Size = new System.Drawing.Size(728, 375);
-            this.txtLogSteamCmdFull.TabIndex = 2;
-            this.txtLogSteamCmdFull.Text = "";
-            // 
-            // tpAbout
-            // 
-            this.tpAbout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(37)))));
-            this.tpAbout.Controls.Add(this.label3);
-            this.tpAbout.Controls.Add(this.btnGithub);
-            this.tpAbout.Controls.Add(this.btnDiscord);
-            this.tpAbout.Controls.Add(this.btnSteamAward);
-            this.tpAbout.Controls.Add(this.logoPictureBox);
-            this.tpAbout.Location = new System.Drawing.Point(4, 22);
-            this.tpAbout.Name = "tpAbout";
-            this.tpAbout.Padding = new System.Windows.Forms.Padding(3);
-            this.tpAbout.Size = new System.Drawing.Size(734, 381);
-            this.tpAbout.TabIndex = 9;
-            this.tpAbout.Text = "About / Support";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(6, 137);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(127, 34);
-            this.label3.TabIndex = 41;
-            this.label3.Text = "Created By\r\nJohn \"Nielk1\" Klein";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // btnGithub
-            // 
-            this.btnGithub.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGithub.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnGithub.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.btnGithub.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGithub.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGithub.ForeColor = System.Drawing.Color.White;
-            this.btnGithub.Image = global::BZRModManager.Properties.Resources.github_icon;
-            this.btnGithub.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnGithub.Location = new System.Drawing.Point(140, 256);
-            this.btnGithub.Name = "btnGithub";
-            this.btnGithub.Size = new System.Drawing.Size(588, 119);
-            this.btnGithub.TabIndex = 40;
-            this.btnGithub.Text = "Source Code";
-            this.btnGithub.Click += new System.EventHandler(this.btnGithub_Click);
-            // 
-            // btnDiscord
-            // 
-            this.btnDiscord.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDiscord.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnDiscord.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.btnDiscord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDiscord.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDiscord.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(158)))), ((int)(((byte)(255)))));
-            this.btnDiscord.Image = global::BZRModManager.Properties.Resources.discord_icon;
-            this.btnDiscord.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDiscord.Location = new System.Drawing.Point(140, 131);
-            this.btnDiscord.Name = "btnDiscord";
-            this.btnDiscord.Size = new System.Drawing.Size(588, 119);
-            this.btnDiscord.TabIndex = 39;
-            this.btnDiscord.Text = "Community Discord";
-            this.btnDiscord.Click += new System.EventHandler(this.btnDiscord_Click);
-            // 
-            // btnSteamAward
-            // 
-            this.btnSteamAward.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSteamAward.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnSteamAward.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.btnSteamAward.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSteamAward.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSteamAward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(200)))), ((int)(((byte)(61)))));
-            this.btnSteamAward.Image = global::BZRModManager.Properties.Resources.award_icon;
-            this.btnSteamAward.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSteamAward.Location = new System.Drawing.Point(140, 6);
-            this.btnSteamAward.Name = "btnSteamAward";
-            this.btnSteamAward.Size = new System.Drawing.Size(588, 119);
-            this.btnSteamAward.TabIndex = 38;
-            this.btnSteamAward.Text = " Give a Steam Award";
-            this.btnSteamAward.Click += new System.EventHandler(this.btnSteamAward_Click);
-            // 
-            // logoPictureBox
-            // 
-            this.logoPictureBox.Image = global::BZRModManager.Properties.Resources.nielk1_eyes_128;
-            this.logoPictureBox.Location = new System.Drawing.Point(6, 6);
-            this.logoPictureBox.Name = "logoPictureBox";
-            this.logoPictureBox.Size = new System.Drawing.Size(128, 128);
-            this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.logoPictureBox.TabIndex = 37;
-            this.logoPictureBox.TabStop = false;
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
-            this.tsslSteamCmd,
-            this.toolStripStatusLabel5,
-            this.toolStripStatusLabel3,
-            this.tsslActiveTasks,
-            this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 434);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(766, 22);
-            this.statusStrip1.TabIndex = 1;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.AutoSize = false;
-            this.toolStripStatusLabel1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(67, 17);
-            this.toolStripStatusLabel1.Text = "SteamCmd";
-            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tsslSteamCmd
-            // 
-            this.tsslSteamCmd.Name = "tsslSteamCmd";
-            this.tsslSteamCmd.Size = new System.Drawing.Size(24, 17);
-            this.tsslSteamCmd.Text = "Off";
-            this.tsslSteamCmd.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // toolStripStatusLabel5
-            // 
-            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
-            this.toolStripStatusLabel5.Size = new System.Drawing.Size(290, 17);
-            this.toolStripStatusLabel5.Spring = true;
-            this.toolStripStatusLabel5.Text = "-";
-            // 
-            // toolStripStatusLabel3
-            // 
-            this.toolStripStatusLabel3.AutoSize = false;
-            this.toolStripStatusLabel3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(67, 17);
-            this.toolStripStatusLabel3.Text = "Busy Tasks";
-            this.toolStripStatusLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tsslActiveTasks
-            // 
-            this.tsslActiveTasks.Name = "tsslActiveTasks";
-            this.tsslActiveTasks.Size = new System.Drawing.Size(13, 17);
-            this.tsslActiveTasks.Text = "0";
-            this.tsslActiveTasks.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(290, 17);
-            this.toolStripStatusLabel2.Spring = true;
-            this.toolStripStatusLabel2.Text = "-";
-            // 
-            // ofdGOGBZCCASM
-            // 
-            this.ofdGOGBZCCASM.FileName = "battlezone2.exe";
+            tpSettings.Controls.Add(groupBox6);
+            tpSettings.Controls.Add(groupBox5);
+            tpSettings.Controls.Add(btnFixSteamCmd);
+            tpSettings.Controls.Add(cbFallbackSteamCmdWindowHandling);
+            tpSettings.Controls.Add(groupBox4);
+            tpSettings.Controls.Add(groupBox3);
+            tpSettings.Controls.Add(groupBox2);
+            tpSettings.Controls.Add(groupBox1);
+            tpSettings.Location = new System.Drawing.Point(4, 24);
+            tpSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpSettings.Name = "tpSettings";
+            tpSettings.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpSettings.Size = new System.Drawing.Size(858, 455);
+            tpSettings.TabIndex = 2;
+            tpSettings.Text = "Settings";
             // 
             // groupBox6
             // 
-            this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox6.Controls.Add(this.btnGitFind);
-            this.groupBox6.Controls.Add(this.txtGit);
-            this.groupBox6.Controls.Add(this.btnGitApply);
-            this.groupBox6.Location = new System.Drawing.Point(6, 286);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(723, 50);
-            this.groupBox6.TabIndex = 20;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "git.exe location";
-            // 
-            // txtGit
-            // 
-            this.txtGit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtGit.Location = new System.Drawing.Point(86, 21);
-            this.txtGit.Name = "txtGit";
-            this.txtGit.Size = new System.Drawing.Size(569, 20);
-            this.txtGit.TabIndex = 11;
-            // 
-            // btnGitApply
-            // 
-            this.btnGitApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGitApply.Location = new System.Drawing.Point(661, 19);
-            this.btnGitApply.Name = "btnGitApply";
-            this.btnGitApply.Size = new System.Drawing.Size(57, 23);
-            this.btnGitApply.TabIndex = 12;
-            this.btnGitApply.Text = "Apply";
-            this.btnGitApply.UseVisualStyleBackColor = true;
-            this.btnGitApply.Click += new System.EventHandler(this.btnGitApply_Click);
+            groupBox6.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox6.Controls.Add(btnGitFind);
+            groupBox6.Controls.Add(txtGit);
+            groupBox6.Controls.Add(btnGitApply);
+            groupBox6.Location = new System.Drawing.Point(7, 330);
+            groupBox6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox6.Name = "groupBox6";
+            groupBox6.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox6.Size = new System.Drawing.Size(844, 58);
+            groupBox6.TabIndex = 20;
+            groupBox6.TabStop = false;
+            groupBox6.Text = "git.exe location";
             // 
             // btnGitFind
             // 
-            this.btnGitFind.Location = new System.Drawing.Point(6, 19);
-            this.btnGitFind.Name = "btnGitFind";
-            this.btnGitFind.Size = new System.Drawing.Size(74, 23);
-            this.btnGitFind.TabIndex = 10;
-            this.btnGitFind.Text = "Quick Find";
-            this.btnGitFind.UseVisualStyleBackColor = true;
-            this.btnGitFind.Click += new System.EventHandler(this.btnGitFind_Click);
+            btnGitFind.Location = new System.Drawing.Point(7, 22);
+            btnGitFind.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnGitFind.Name = "btnGitFind";
+            btnGitFind.Size = new System.Drawing.Size(86, 27);
+            btnGitFind.TabIndex = 10;
+            btnGitFind.Text = "Quick Find";
+            btnGitFind.UseVisualStyleBackColor = true;
+            btnGitFind.Click += btnGitFind_Click;
+            // 
+            // txtGit
+            // 
+            txtGit.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtGit.Location = new System.Drawing.Point(100, 24);
+            txtGit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtGit.Name = "txtGit";
+            txtGit.Size = new System.Drawing.Size(663, 23);
+            txtGit.TabIndex = 11;
+            // 
+            // btnGitApply
+            // 
+            btnGitApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnGitApply.Location = new System.Drawing.Point(771, 22);
+            btnGitApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnGitApply.Name = "btnGitApply";
+            btnGitApply.Size = new System.Drawing.Size(66, 27);
+            btnGitApply.TabIndex = 12;
+            btnGitApply.Text = "Apply";
+            btnGitApply.UseVisualStyleBackColor = true;
+            btnGitApply.Click += btnGitApply_Click;
+            // 
+            // groupBox5
+            // 
+            groupBox5.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox5.Controls.Add(btnBZCCGogFind);
+            groupBox5.Controls.Add(txtBZCCGog);
+            groupBox5.Controls.Add(btnBZCCRGogApply);
+            groupBox5.Location = new System.Drawing.Point(7, 265);
+            groupBox5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox5.Size = new System.Drawing.Size(844, 58);
+            groupBox5.TabIndex = 19;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "GOG install of BZCC (only needed for multiplayer quicklaunch)";
+            // 
+            // btnBZCCGogFind
+            // 
+            btnBZCCGogFind.Location = new System.Drawing.Point(7, 22);
+            btnBZCCGogFind.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZCCGogFind.Name = "btnBZCCGogFind";
+            btnBZCCGogFind.Size = new System.Drawing.Size(86, 27);
+            btnBZCCGogFind.TabIndex = 10;
+            btnBZCCGogFind.Text = "Quick Find";
+            btnBZCCGogFind.UseVisualStyleBackColor = true;
+            btnBZCCGogFind.Click += btnBZCCGogFind_Click;
+            // 
+            // txtBZCCGog
+            // 
+            txtBZCCGog.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtBZCCGog.Location = new System.Drawing.Point(100, 24);
+            txtBZCCGog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtBZCCGog.Name = "txtBZCCGog";
+            txtBZCCGog.Size = new System.Drawing.Size(663, 23);
+            txtBZCCGog.TabIndex = 11;
+            // 
+            // btnBZCCRGogApply
+            // 
+            btnBZCCRGogApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnBZCCRGogApply.Location = new System.Drawing.Point(771, 22);
+            btnBZCCRGogApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZCCRGogApply.Name = "btnBZCCRGogApply";
+            btnBZCCRGogApply.Size = new System.Drawing.Size(66, 27);
+            btnBZCCRGogApply.TabIndex = 12;
+            btnBZCCRGogApply.Text = "Apply";
+            btnBZCCRGogApply.UseVisualStyleBackColor = true;
+            btnBZCCRGogApply.Click += btnBZCCRGogApply_Click;
+            // 
+            // btnFixSteamCmd
+            // 
+            btnFixSteamCmd.Location = new System.Drawing.Point(7, 395);
+            btnFixSteamCmd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnFixSteamCmd.Name = "btnFixSteamCmd";
+            btnFixSteamCmd.Size = new System.Drawing.Size(209, 27);
+            btnFixSteamCmd.TabIndex = 18;
+            btnFixSteamCmd.Text = "Delete and Rebuild SteamCmd";
+            btnFixSteamCmd.UseVisualStyleBackColor = true;
+            btnFixSteamCmd.Click += btnFixSteamCmd_Click;
+            // 
+            // cbFallbackSteamCmdWindowHandling
+            // 
+            cbFallbackSteamCmdWindowHandling.AutoSize = true;
+            cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(7, 428);
+            cbFallbackSteamCmdWindowHandling.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
+            cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(230, 19);
+            cbFallbackSteamCmdWindowHandling.TabIndex = 17;
+            cbFallbackSteamCmdWindowHandling.Text = "Fallback SteamCmd Window Handling";
+            cbFallbackSteamCmdWindowHandling.UseVisualStyleBackColor = true;
+            cbFallbackSteamCmdWindowHandling.Visible = false;
+            cbFallbackSteamCmdWindowHandling.CheckedChanged += cbFallbackSteamCmdWindowHandling_CheckedChanged;
+            // 
+            // groupBox4
+            // 
+            groupBox4.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox4.Controls.Add(btnBZCCMyDocsFind);
+            groupBox4.Controls.Add(txtBZCCMyDocs);
+            groupBox4.Controls.Add(btnBZCCMyDocsApply);
+            groupBox4.Location = new System.Drawing.Point(7, 201);
+            groupBox4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox4.Size = new System.Drawing.Size(844, 58);
+            groupBox4.TabIndex = 13;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "BZCC Folder in My Docs/My Games";
+            // 
+            // btnBZCCMyDocsFind
+            // 
+            btnBZCCMyDocsFind.Location = new System.Drawing.Point(7, 22);
+            btnBZCCMyDocsFind.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZCCMyDocsFind.Name = "btnBZCCMyDocsFind";
+            btnBZCCMyDocsFind.Size = new System.Drawing.Size(86, 27);
+            btnBZCCMyDocsFind.TabIndex = 14;
+            btnBZCCMyDocsFind.Text = "Quick Find";
+            btnBZCCMyDocsFind.UseVisualStyleBackColor = true;
+            btnBZCCMyDocsFind.Click += btnBZCCMyDocsFind_Click;
+            // 
+            // txtBZCCMyDocs
+            // 
+            txtBZCCMyDocs.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtBZCCMyDocs.Location = new System.Drawing.Point(100, 24);
+            txtBZCCMyDocs.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtBZCCMyDocs.Name = "txtBZCCMyDocs";
+            txtBZCCMyDocs.Size = new System.Drawing.Size(663, 23);
+            txtBZCCMyDocs.TabIndex = 15;
+            // 
+            // btnBZCCMyDocsApply
+            // 
+            btnBZCCMyDocsApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnBZCCMyDocsApply.Location = new System.Drawing.Point(771, 22);
+            btnBZCCMyDocsApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZCCMyDocsApply.Name = "btnBZCCMyDocsApply";
+            btnBZCCMyDocsApply.Size = new System.Drawing.Size(66, 27);
+            btnBZCCMyDocsApply.TabIndex = 16;
+            btnBZCCMyDocsApply.Text = "Apply";
+            btnBZCCMyDocsApply.UseVisualStyleBackColor = true;
+            btnBZCCMyDocsApply.Click += btnBZCCMyDocsApply_Click;
+            // 
+            // groupBox3
+            // 
+            groupBox3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox3.Controls.Add(btnBZ98RGogFind);
+            groupBox3.Controls.Add(txtBZ98RGog);
+            groupBox3.Controls.Add(btnBZ98RGogApply);
+            groupBox3.Location = new System.Drawing.Point(7, 136);
+            groupBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox3.Size = new System.Drawing.Size(844, 58);
+            groupBox3.TabIndex = 9;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "GOG install of BZ98R";
+            // 
+            // btnBZ98RGogFind
+            // 
+            btnBZ98RGogFind.Location = new System.Drawing.Point(7, 22);
+            btnBZ98RGogFind.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZ98RGogFind.Name = "btnBZ98RGogFind";
+            btnBZ98RGogFind.Size = new System.Drawing.Size(86, 27);
+            btnBZ98RGogFind.TabIndex = 10;
+            btnBZ98RGogFind.Text = "Quick Find";
+            btnBZ98RGogFind.UseVisualStyleBackColor = true;
+            btnBZ98RGogFind.Click += btnBZ98RGogFind_Click;
+            // 
+            // txtBZ98RGog
+            // 
+            txtBZ98RGog.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtBZ98RGog.Location = new System.Drawing.Point(100, 24);
+            txtBZ98RGog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtBZ98RGog.Name = "txtBZ98RGog";
+            txtBZ98RGog.Size = new System.Drawing.Size(663, 23);
+            txtBZ98RGog.TabIndex = 11;
+            // 
+            // btnBZ98RGogApply
+            // 
+            btnBZ98RGogApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnBZ98RGogApply.Location = new System.Drawing.Point(771, 22);
+            btnBZ98RGogApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZ98RGogApply.Name = "btnBZ98RGogApply";
+            btnBZ98RGogApply.Size = new System.Drawing.Size(66, 27);
+            btnBZ98RGogApply.TabIndex = 12;
+            btnBZ98RGogApply.Text = "Apply";
+            btnBZ98RGogApply.UseVisualStyleBackColor = true;
+            btnBZ98RGogApply.Click += txtBZ98RGogApply_Click;
+            // 
+            // groupBox2
+            // 
+            groupBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox2.Controls.Add(btnBZCCSteamFind);
+            groupBox2.Controls.Add(txtBZCCSteam);
+            groupBox2.Controls.Add(btnBZCCSteamApply);
+            groupBox2.Location = new System.Drawing.Point(7, 72);
+            groupBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox2.Size = new System.Drawing.Size(844, 58);
+            groupBox2.TabIndex = 5;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "steamapps folder that contains BZCC";
+            // 
+            // btnBZCCSteamFind
+            // 
+            btnBZCCSteamFind.Location = new System.Drawing.Point(7, 22);
+            btnBZCCSteamFind.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZCCSteamFind.Name = "btnBZCCSteamFind";
+            btnBZCCSteamFind.Size = new System.Drawing.Size(86, 27);
+            btnBZCCSteamFind.TabIndex = 6;
+            btnBZCCSteamFind.Text = "Quick Find";
+            btnBZCCSteamFind.UseVisualStyleBackColor = true;
+            btnBZCCSteamFind.Click += btnBZCCSteamFind_Click;
+            // 
+            // txtBZCCSteam
+            // 
+            txtBZCCSteam.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtBZCCSteam.Location = new System.Drawing.Point(100, 24);
+            txtBZCCSteam.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtBZCCSteam.Name = "txtBZCCSteam";
+            txtBZCCSteam.Size = new System.Drawing.Size(663, 23);
+            txtBZCCSteam.TabIndex = 7;
+            // 
+            // btnBZCCSteamApply
+            // 
+            btnBZCCSteamApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnBZCCSteamApply.Location = new System.Drawing.Point(771, 22);
+            btnBZCCSteamApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZCCSteamApply.Name = "btnBZCCSteamApply";
+            btnBZCCSteamApply.Size = new System.Drawing.Size(66, 27);
+            btnBZCCSteamApply.TabIndex = 8;
+            btnBZCCSteamApply.Text = "Apply";
+            btnBZCCSteamApply.UseVisualStyleBackColor = true;
+            btnBZCCSteamApply.Click += btnBZCCSteamApply_Click;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox1.Controls.Add(btnBZ98RSteamFind);
+            groupBox1.Controls.Add(txtBZ98RSteam);
+            groupBox1.Controls.Add(btnBZ98RSteamApply);
+            groupBox1.Location = new System.Drawing.Point(7, 7);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(844, 58);
+            groupBox1.TabIndex = 1;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "steamapps folder that contains BZ98R";
+            // 
+            // btnBZ98RSteamFind
+            // 
+            btnBZ98RSteamFind.Location = new System.Drawing.Point(7, 22);
+            btnBZ98RSteamFind.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZ98RSteamFind.Name = "btnBZ98RSteamFind";
+            btnBZ98RSteamFind.Size = new System.Drawing.Size(86, 27);
+            btnBZ98RSteamFind.TabIndex = 2;
+            btnBZ98RSteamFind.Text = "Quick Find";
+            btnBZ98RSteamFind.UseVisualStyleBackColor = true;
+            btnBZ98RSteamFind.Click += btnBZ98RSteamFind_Click;
+            // 
+            // txtBZ98RSteam
+            // 
+            txtBZ98RSteam.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtBZ98RSteam.Location = new System.Drawing.Point(100, 24);
+            txtBZ98RSteam.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtBZ98RSteam.Name = "txtBZ98RSteam";
+            txtBZ98RSteam.Size = new System.Drawing.Size(663, 23);
+            txtBZ98RSteam.TabIndex = 3;
+            // 
+            // btnBZ98RSteamApply
+            // 
+            btnBZ98RSteamApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnBZ98RSteamApply.Location = new System.Drawing.Point(771, 22);
+            btnBZ98RSteamApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnBZ98RSteamApply.Name = "btnBZ98RSteamApply";
+            btnBZ98RSteamApply.Size = new System.Drawing.Size(66, 27);
+            btnBZ98RSteamApply.TabIndex = 4;
+            btnBZ98RSteamApply.Text = "Apply";
+            btnBZ98RSteamApply.UseVisualStyleBackColor = true;
+            btnBZ98RSteamApply.Click += btnBZ98RSteamApply_Click;
+            // 
+            // tpTasks
+            // 
+            tpTasks.Controls.Add(pnlTasks);
+            tpTasks.Location = new System.Drawing.Point(4, 24);
+            tpTasks.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpTasks.Name = "tpTasks";
+            tpTasks.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpTasks.Size = new System.Drawing.Size(858, 455);
+            tpTasks.TabIndex = 6;
+            tpTasks.Text = "Tasks";
+            // 
+            // pnlTasks
+            // 
+            pnlTasks.AutoScroll = true;
+            pnlTasks.AutoSize = true;
+            pnlTasks.ColumnCount = 1;
+            pnlTasks.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            pnlTasks.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlTasks.Location = new System.Drawing.Point(4, 3);
+            pnlTasks.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlTasks.Name = "pnlTasks";
+            pnlTasks.RowCount = 1;
+            pnlTasks.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            pnlTasks.Size = new System.Drawing.Size(850, 449);
+            pnlTasks.TabIndex = 0;
+            pnlTasks.Resize += pnlTasks_Resize;
+            // 
+            // tpLog
+            // 
+            tpLog.Controls.Add(txtLog);
+            tpLog.Location = new System.Drawing.Point(4, 24);
+            tpLog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpLog.Name = "tpLog";
+            tpLog.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpLog.Size = new System.Drawing.Size(858, 455);
+            tpLog.TabIndex = 3;
+            tpLog.Text = "Log";
+            // 
+            // txtLog
+            // 
+            txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            txtLog.Location = new System.Drawing.Point(4, 3);
+            txtLog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtLog.Multiline = true;
+            txtLog.Name = "txtLog";
+            txtLog.ReadOnly = true;
+            txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            txtLog.Size = new System.Drawing.Size(850, 449);
+            txtLog.TabIndex = 0;
+            // 
+            // tpLogSteamCmd
+            // 
+            tpLogSteamCmd.Controls.Add(txtLogSteamCmd);
+            tpLogSteamCmd.Location = new System.Drawing.Point(4, 24);
+            tpLogSteamCmd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpLogSteamCmd.Name = "tpLogSteamCmd";
+            tpLogSteamCmd.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpLogSteamCmd.Size = new System.Drawing.Size(858, 455);
+            tpLogSteamCmd.TabIndex = 4;
+            tpLogSteamCmd.Text = "SteamCmd";
+            // 
+            // txtLogSteamCmd
+            // 
+            txtLogSteamCmd.BackColor = System.Drawing.Color.Black;
+            txtLogSteamCmd.Dock = System.Windows.Forms.DockStyle.Fill;
+            txtLogSteamCmd.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            txtLogSteamCmd.ForeColor = System.Drawing.Color.White;
+            txtLogSteamCmd.Location = new System.Drawing.Point(4, 3);
+            txtLogSteamCmd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtLogSteamCmd.Name = "txtLogSteamCmd";
+            txtLogSteamCmd.ReadOnly = true;
+            txtLogSteamCmd.Size = new System.Drawing.Size(850, 449);
+            txtLogSteamCmd.TabIndex = 1;
+            txtLogSteamCmd.Text = "";
+            // 
+            // tpLogSteamCmdFull
+            // 
+            tpLogSteamCmdFull.Controls.Add(txtLogSteamCmdFull);
+            tpLogSteamCmdFull.Location = new System.Drawing.Point(4, 24);
+            tpLogSteamCmdFull.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpLogSteamCmdFull.Name = "tpLogSteamCmdFull";
+            tpLogSteamCmdFull.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpLogSteamCmdFull.Size = new System.Drawing.Size(858, 455);
+            tpLogSteamCmdFull.TabIndex = 5;
+            tpLogSteamCmdFull.Text = "SteamCmd Raw";
+            // 
+            // txtLogSteamCmdFull
+            // 
+            txtLogSteamCmdFull.BackColor = System.Drawing.Color.Black;
+            txtLogSteamCmdFull.Dock = System.Windows.Forms.DockStyle.Fill;
+            txtLogSteamCmdFull.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            txtLogSteamCmdFull.ForeColor = System.Drawing.Color.White;
+            txtLogSteamCmdFull.Location = new System.Drawing.Point(4, 3);
+            txtLogSteamCmdFull.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtLogSteamCmdFull.Name = "txtLogSteamCmdFull";
+            txtLogSteamCmdFull.ReadOnly = true;
+            txtLogSteamCmdFull.Size = new System.Drawing.Size(850, 449);
+            txtLogSteamCmdFull.TabIndex = 2;
+            txtLogSteamCmdFull.Text = "";
+            // 
+            // tpAbout
+            // 
+            tpAbout.BackColor = System.Drawing.Color.FromArgb(37, 37, 37);
+            tpAbout.Controls.Add(label3);
+            tpAbout.Controls.Add(btnGithub);
+            tpAbout.Controls.Add(btnDiscord);
+            tpAbout.Controls.Add(btnSteamAward);
+            tpAbout.Controls.Add(logoPictureBox);
+            tpAbout.Location = new System.Drawing.Point(4, 24);
+            tpAbout.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpAbout.Name = "tpAbout";
+            tpAbout.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpAbout.Size = new System.Drawing.Size(858, 455);
+            tpAbout.TabIndex = 9;
+            tpAbout.Text = "About / Support";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label3.ForeColor = System.Drawing.Color.White;
+            label3.Location = new System.Drawing.Point(7, 158);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(127, 34);
+            label3.TabIndex = 41;
+            label3.Text = "Created By\r\nJohn \"Nielk1\" Klein";
+            label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // btnGithub
+            // 
+            btnGithub.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnGithub.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnGithub.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(54, 54, 54);
+            btnGithub.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnGithub.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnGithub.ForeColor = System.Drawing.Color.White;
+            btnGithub.Image = Properties.Resources.github_icon;
+            btnGithub.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnGithub.Location = new System.Drawing.Point(163, 295);
+            btnGithub.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnGithub.Name = "btnGithub";
+            btnGithub.Size = new System.Drawing.Size(686, 137);
+            btnGithub.TabIndex = 40;
+            btnGithub.Text = "Source Code";
+            btnGithub.Click += btnGithub_Click;
+            // 
+            // btnDiscord
+            // 
+            btnDiscord.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnDiscord.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnDiscord.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(54, 54, 54);
+            btnDiscord.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnDiscord.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnDiscord.ForeColor = System.Drawing.Color.FromArgb(140, 158, 255);
+            btnDiscord.Image = Properties.Resources.discord_icon;
+            btnDiscord.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnDiscord.Location = new System.Drawing.Point(163, 151);
+            btnDiscord.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnDiscord.Name = "btnDiscord";
+            btnDiscord.Size = new System.Drawing.Size(686, 137);
+            btnDiscord.TabIndex = 39;
+            btnDiscord.Text = "Community Discord";
+            btnDiscord.Click += btnDiscord_Click;
+            // 
+            // btnSteamAward
+            // 
+            btnSteamAward.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            btnSteamAward.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnSteamAward.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(54, 54, 54);
+            btnSteamAward.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnSteamAward.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnSteamAward.ForeColor = System.Drawing.Color.FromArgb(255, 200, 61);
+            btnSteamAward.Image = Properties.Resources.award_icon;
+            btnSteamAward.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnSteamAward.Location = new System.Drawing.Point(163, 7);
+            btnSteamAward.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSteamAward.Name = "btnSteamAward";
+            btnSteamAward.Size = new System.Drawing.Size(686, 137);
+            btnSteamAward.TabIndex = 38;
+            btnSteamAward.Text = " Give a Steam Award";
+            btnSteamAward.Click += btnSteamAward_Click;
+            // 
+            // logoPictureBox
+            // 
+            logoPictureBox.Image = Properties.Resources.nielk1_eyes_128;
+            logoPictureBox.Location = new System.Drawing.Point(7, 7);
+            logoPictureBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            logoPictureBox.Name = "logoPictureBox";
+            logoPictureBox.Size = new System.Drawing.Size(149, 148);
+            logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            logoPictureBox.TabIndex = 37;
+            logoPictureBox.TabStop = false;
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripStatusLabel1, tsslSteamCmd, toolStripStatusLabel5, toolStripStatusLabel3, tsslActiveTasks, toolStripStatusLabel2 });
+            statusStrip1.Location = new System.Drawing.Point(0, 504);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+            statusStrip1.Size = new System.Drawing.Size(894, 22);
+            statusStrip1.TabIndex = 1;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            toolStripStatusLabel1.AutoSize = false;
+            toolStripStatusLabel1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            toolStripStatusLabel1.Size = new System.Drawing.Size(67, 17);
+            toolStripStatusLabel1.Text = "SteamCmd";
+            toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tsslSteamCmd
+            // 
+            tsslSteamCmd.Name = "tsslSteamCmd";
+            tsslSteamCmd.Size = new System.Drawing.Size(24, 17);
+            tsslSteamCmd.Text = "Off";
+            tsslSteamCmd.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // toolStripStatusLabel5
+            // 
+            toolStripStatusLabel5.Name = "toolStripStatusLabel5";
+            toolStripStatusLabel5.Size = new System.Drawing.Size(353, 17);
+            toolStripStatusLabel5.Spring = true;
+            toolStripStatusLabel5.Text = "-";
+            // 
+            // toolStripStatusLabel3
+            // 
+            toolStripStatusLabel3.AutoSize = false;
+            toolStripStatusLabel3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            toolStripStatusLabel3.Size = new System.Drawing.Size(67, 17);
+            toolStripStatusLabel3.Text = "Busy Tasks";
+            toolStripStatusLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tsslActiveTasks
+            // 
+            tsslActiveTasks.Name = "tsslActiveTasks";
+            tsslActiveTasks.Size = new System.Drawing.Size(13, 17);
+            tsslActiveTasks.Text = "0";
+            tsslActiveTasks.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // toolStripStatusLabel2
+            // 
+            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            toolStripStatusLabel2.Size = new System.Drawing.Size(353, 17);
+            toolStripStatusLabel2.Spring = true;
+            toolStripStatusLabel2.Text = "-";
+            // 
+            // ofdGOGBZCCASM
+            // 
+            ofdGOGBZCCASM.FileName = "battlezone2.exe";
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(766, 456);
-            this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.tabControl1);
-            this.MinimumSize = new System.Drawing.Size(782, 483);
-            this.Name = "MainForm";
-            this.Text = "Battlezone Redux Mod Manager";
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.tabControl1.ResumeLayout(false);
-            this.tpBZ98R.ResumeLayout(false);
-            this.tpBZ98R.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.tpBZCC.ResumeLayout(false);
-            this.tpBZCC.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.tpFindMods.ResumeLayout(false);
-            this.tpFindMods.PerformLayout();
-            this.tcFindMods.ResumeLayout(false);
-            this.tpFindModsBZ98R.ResumeLayout(false);
-            this.tpFindModsBZCC.ResumeLayout(false);
-            this.tabMultiplayer.ResumeLayout(false);
-            this.tabMultiplayer.PerformLayout();
-            this.tcMultiplayer.ResumeLayout(false);
-            this.tpMultiplayerBZ98R.ResumeLayout(false);
-            this.tpMultiplayerBZCC.ResumeLayout(false);
-            this.tpAudit.ResumeLayout(false);
-            this.tpSettings.ResumeLayout(false);
-            this.tpSettings.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.tpTasks.ResumeLayout(false);
-            this.tpTasks.PerformLayout();
-            this.tpLog.ResumeLayout(false);
-            this.tpLog.PerformLayout();
-            this.tpLogSteamCmd.ResumeLayout(false);
-            this.tpLogSteamCmdFull.ResumeLayout(false);
-            this.tpAbout.ResumeLayout(false);
-            this.tpAbout.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).EndInit();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(894, 526);
+            Controls.Add(statusStrip1);
+            Controls.Add(tabControl1);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MinimumSize = new System.Drawing.Size(910, 551);
+            Name = "MainForm";
+            Text = "Battlezone Redux Mod Manager";
+            Load += MainForm_Load;
+            tabControl1.ResumeLayout(false);
+            tpBZ98R.ResumeLayout(false);
+            tpBZ98R.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
+            tpBZCC.ResumeLayout(false);
+            tpBZCC.PerformLayout();
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
+            tpFindMods.ResumeLayout(false);
+            tpFindMods.PerformLayout();
+            tcFindMods.ResumeLayout(false);
+            tpFindModsBZ98R.ResumeLayout(false);
+            tpFindModsBZCC.ResumeLayout(false);
+            tabMultiplayer.ResumeLayout(false);
+            tabMultiplayer.PerformLayout();
+            tcMultiplayer.ResumeLayout(false);
+            tpMultiplayerBZ98R.ResumeLayout(false);
+            tpMultiplayerBZCC.ResumeLayout(false);
+            tpAudit.ResumeLayout(false);
+            tpSettings.ResumeLayout(false);
+            tpSettings.PerformLayout();
+            groupBox6.ResumeLayout(false);
+            groupBox6.PerformLayout();
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
+            groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            tpTasks.ResumeLayout(false);
+            tpTasks.PerformLayout();
+            tpLog.ResumeLayout(false);
+            tpLog.PerformLayout();
+            tpLogSteamCmd.ResumeLayout(false);
+            tpLogSteamCmdFull.ResumeLayout(false);
+            tpAbout.ResumeLayout(false);
+            tpAbout.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)logoPictureBox).EndInit();
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
