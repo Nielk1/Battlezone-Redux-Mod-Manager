@@ -472,6 +472,8 @@ namespace BZRModManager
             try { mods = Mods[(int)appid].Values.ToList(); }
             finally { ModsLock.Release(); }
 
+            // Row instances whose display name changed this pass (refreshed together at the end).
+            List<ModItemBase> changed = new List<ModItemBase>();
             using SemaphoreSlim gate = new SemaphoreSlim(8);
             await Task.WhenAll(mods.Select(async mod =>
             {
@@ -495,11 +497,21 @@ namespace BZRModManager
                 if (item == null || string.IsNullOrWhiteSpace(item.Title)) return;
                 if (string.Equals(mod.WorkshopName, item.Title, StringComparison.Ordinal)) return;
                 mod.WorkshopName = item.Title;
-
-                // mod is the very instance inside the list's source, so a single
-                // row refresh picks up the coalesced name (cache-invalidated there).
-                UiInvoke(() => list.RefreshItem(mod));
+                lock (changed) changed.Add(mod);
             }).ToArray());
+
+            // Refresh the UI ONCE for everything that changed (a repaint re-renders every
+            // visible row, so per-mod refreshes would be O(mods x rows) UI work). Changed
+            // instances are the very objects in the list's source; their caches are
+            // invalidated here and the single repaint picks up the coalesced names.
+            if (changed.Count > 0)
+            {
+                UiInvoke(() =>
+                {
+                    foreach (var m in changed) m.ListViewItemCache = null;
+                    list.Refresh();
+                });
+            }
         }
 
         private bool DownloadMod(string text, UInt32 AppId)

@@ -1,4 +1,4 @@
-﻿using BZRModManager.ModItem;
+using BZRModManager.ModItem;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -195,7 +195,7 @@ namespace BZRModManager
             {
                 foreach (int idx in this.SelectedIndices)
                 {
-                    var item = source.ElementAt(idx);
+                    var item = source[idx];
                     if (item.InstalledGog != InstallStatus.Linked)
                     {
                         item.ToggleGog(); // this won't do anything unless we can, so it's safe to just crudely do this
@@ -208,7 +208,7 @@ namespace BZRModManager
             {
                 foreach (int idx in this.SelectedIndices)
                 {
-                    var item = source.ElementAt(idx);
+                    var item = source[idx];
                     if (item.InstalledSteam != InstallStatus.Linked)
                     {
                         item.ToggleSteam(); // this won't do anything unless we can, so it's safe to just crudely do this
@@ -221,7 +221,7 @@ namespace BZRModManager
             {
                 foreach (int idx in this.SelectedIndices)
                 {
-                    var item = source.ElementAt(idx);
+                    var item = source[idx];
                     if (item.InstalledGog == InstallStatus.Linked)
                     {
                         item.ToggleGog(); // this won't do anything unless we can, so it's safe to just crudely do this
@@ -234,7 +234,7 @@ namespace BZRModManager
             {
                 foreach (int idx in this.SelectedIndices)
                 {
-                    var item = source.ElementAt(idx);
+                    var item = source[idx];
                     if (item.InstalledSteam == InstallStatus.Linked)
                     {
                         item.ToggleSteam(); // this won't do anything unless we can, so it's safe to just crudely do this
@@ -252,7 +252,7 @@ namespace BZRModManager
                     {
                         foreach (int idx in SelectedItems)
                         {
-                            var item = source.ElementAt(idx);
+                            var item = source[idx];
                             if (!string.IsNullOrWhiteSpace(item.FilePath) && Directory.Exists(item.FilePath))
                                 Process.Start("explorer.exe", item.FilePath);
                         }
@@ -269,7 +269,7 @@ namespace BZRModManager
                         bool DidDelete = false;
                         foreach (int idx in SelectedItems)
                         {
-                            var item = source.ElementAt(idx);
+                            var item = source[idx];
                             if (item.InstalledGog == InstallStatus.Linked)
                                 item.ToggleGog();
                             if (item.InstalledSteam == InstallStatus.Linked)
@@ -435,7 +435,7 @@ namespace BZRModManager
         private void LinqListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             //ILinqListViewItem item = source[e.ItemIndex];
-            ILinqListViewItemMods item = source.ElementAt(e.ItemIndex);
+            ILinqListViewItemMods item = source[e.ItemIndex];
 
             if (item.ListViewItemCache != null)
             {

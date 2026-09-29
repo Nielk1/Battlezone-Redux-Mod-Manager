@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -37,7 +37,7 @@ namespace BZRModManager
         private void LinqListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             //ILinqListView2Item item = source[e.ItemIndex];
-            LinqListViewMultiplayerItem item = source.ElementAt(e.ItemIndex);
+            LinqListViewMultiplayerItem item = source[e.ItemIndex];
 
             if (item.ListViewItemCache != null)
             {
@@ -94,7 +94,7 @@ namespace BZRModManager
 
         public LinqListViewMultiplayerItem GetItemAtVirtualIndex(int index)
         {
-            return source.ElementAt(index);
+            return source[index];
         }
 
         //[Bindable(true)]

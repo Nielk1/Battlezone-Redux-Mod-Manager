@@ -303,6 +303,10 @@ namespace BZRModManager
                     // for the whole result set.
                     try
                     {
+                        // Row upserts are batched (see below): marshalling + re-sorting the
+                        // list per item would be O(items^2) UI work on a 1000+ item workshop.
+                        List<WorkshopMod> uiBatch = new List<WorkshopMod>();
+
                         await foreach (var mod in WorkshopContext.GetModsAsync(AppIdBZ98, null, cts.Token))
                         {
                             bool Added;
@@ -323,9 +327,25 @@ namespace BZRModManager
 
                             // UpsertItem is reference-safe: it matches by workshop ID and
                             // re-sorts, so this also refreshes rows replaced from the stream.
+                            uiBatch.Add(mod);
+                            if (uiBatch.Count >= 16)
+                            {
+                                var batch = uiBatch.ToList();
+                                uiBatch.Clear();
+                                UiInvoke(() =>
+                                {
+                                    foreach (var m in batch) lvFindModsBZ98R.UpsertItem(m);
+                                });
+                                await Task.Yield(); // let the message pump run between bursts
+                            }
+                        }
+
+                        if (uiBatch.Count > 0)
+                        {
+                            var batch = uiBatch.ToList();
                             UiInvoke(() =>
                             {
-                                lvFindModsBZ98R.UpsertItem(mod);
+                                foreach (var m in batch) lvFindModsBZ98R.UpsertItem(m);
                             });
                         }
                     }
