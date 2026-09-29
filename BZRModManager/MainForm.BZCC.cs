@@ -1,5 +1,6 @@
 ﻿using BZRModManager.ModItem;
 using IniParser;
+using IniParser.Configuration;
 using IniParser.Model;
 using Monitor.Core.Utilities;
 using SteamVent.Common;
@@ -482,8 +483,13 @@ namespace BZRModManager
                 {
                     try
                     {
-                        FileIniDataParser parser = new FileIniDataParser();
-                        IniData data = parser.ReadFile(LaunchIni);
+                        var parser = new IniDataParser();
+                        parser.Configuration.SkipInvalidLines = true;
+                        parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
+                        parser.Configuration.AllowDuplicateSections = true;
+                        parser.Configuration.AllowKeysWithoutSection = true;
+
+                        IniData data = parser.Parse(File.ReadAllText(LaunchIni));
                         string[] activeAddons = (data["config"]?["activeAddons"] ?? string.Empty).Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (activeAddons.Length == 0 || activeAddons.Last() != "bzrmm_bzccjoinfix")
                         {

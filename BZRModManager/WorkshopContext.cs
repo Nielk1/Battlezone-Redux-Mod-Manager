@@ -1,4 +1,4 @@
-﻿using CsQuery;
+﻿//using CsQuery;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +17,7 @@ namespace BZRModManager
         public static List<WorkshopMod> GetMods(int appid, string[] tags)
         {
             List<WorkshopMod> Mods = new List<WorkshopMod>();
-            WebClient client = new WebClient();
+            /*WebClient client = new WebClient();
 
             if (tags == null || tags.Length == 0)
                 tags = new string[] { null };
@@ -66,7 +66,7 @@ namespace BZRModManager
 
                     Thread.Sleep(1000);
                 }
-            }
+            }*/
 
             return Mods;
         }

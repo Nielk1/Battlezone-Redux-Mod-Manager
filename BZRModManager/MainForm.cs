@@ -1,4 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using BZRModManager.ModItem;
+using IniParser;
+using IniParser.Configuration;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using SteamVent.SteamCmd;
 using System;
@@ -8,14 +11,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
-using BZRModManager.ModItem;
-using IniParser;
-using System.Net;
 // .NET 8 added System.Reflection.MethodInvoker, which collides with System.Windows.Forms.MethodInvoker
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
@@ -244,6 +245,8 @@ namespace BZRModManager
             }
 
             TaskControl ctrl = new TaskControl(name, maxValue);
+
+            Interlocked.Increment(ref ActiveTasks);
 
             // Whatever container you currently use:
             pnlTasks.Controls.Add(ctrl);
@@ -1805,7 +1808,12 @@ namespace BZRModManager
                     if ((settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
                         WorkshopDestinations.Add(("Gog", "BZCC", AppIdBZCC, Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop")));
 
-                    FileIniDataParser parser = new FileIniDataParser();
+                    var parser = new IniDataParser();
+                    parser.Configuration.SkipInvalidLines = true;
+                    parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
+                    parser.Configuration.AllowDuplicateSections = true;
+                    parser.Configuration.AllowKeysWithoutSection = true;
+
                     foreach (var workshopDestination in WorkshopDestinations)
                     {
                         if (Directory.Exists(workshopDestination.Path))
@@ -1823,7 +1831,7 @@ namespace BZRModManager
                                     {
                                         try
                                         {
-                                            parser.ReadFile(iniFile);
+                                            parser.Parse(File.ReadAllText(iniFile));
                                             ModDirs.Add(folderName);
                                         }
                                         catch
@@ -1877,7 +1885,7 @@ namespace BZRModManager
                                     {
                                         try
                                         {
-                                            parser.ReadFile(iniFile);
+                                            parser.Parse(File.ReadAllText(iniFile));
                                         }
                                         catch
                                         {

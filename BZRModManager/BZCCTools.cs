@@ -1,4 +1,5 @@
 ﻿using IniParser;
+using IniParser.Configuration;
 using IniParser.Model;
 using System;
 using System.Collections.Generic;
@@ -25,8 +26,14 @@ namespace BZRModManager
         {
             string pathini = GetIni(path, workshopID);
             if (!File.Exists(pathini)) return null;
-            FileIniDataParser parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(pathini);
+
+            var parser = new IniDataParser();
+            parser.Configuration.SkipInvalidLines = true;
+            parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
+            parser.Configuration.AllowDuplicateSections = true;
+            parser.Configuration.AllowKeysWithoutSection = true;
+
+            IniData data = parser.Parse(File.ReadAllText(pathini));
             return data?["WORKSHOP"]?["modType"]?.Trim('"');
         }
 
@@ -34,8 +41,14 @@ namespace BZRModManager
         {
             string pathini = GetIni(path, workshopID);
             if (!File.Exists(pathini)) return null;
-            FileIniDataParser parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(pathini);
+
+            var parser = new IniDataParser();
+            parser.Configuration.SkipInvalidLines = true;
+            parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
+            parser.Configuration.AllowDuplicateSections = true;
+            parser.Configuration.AllowKeysWithoutSection = true;
+
+            IniData data = parser.Parse(File.ReadAllText(pathini));
             string prettyName = data?["MODMANAGER"]?["name"]?.Trim('"');
             if (!string.IsNullOrWhiteSpace(prettyName)) return prettyName;
             return data?["WORKSHOP"]?["modName"]?.Trim('"');
@@ -47,18 +60,24 @@ namespace BZRModManager
             Regex AnyHeader = new Regex("^\\[[^\\]]*\\]", RegexOptions.IgnoreCase);
 
             string[] paths = new string[] { GetIni(path, workshopID) };
-            FileIniDataParser parser = new FileIniDataParser();
+
+            var parser = new IniDataParser();
+            parser.Configuration.SkipInvalidLines = true;
+            parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
+            parser.Configuration.AllowDuplicateSections = true;
+            parser.Configuration.AllowKeysWithoutSection = true;
+
             bool hadIniParseError = false;
             string[] tags = paths.ToList().SelectMany(dr =>
             {
                 try
                 {
-                    IniData data = parser.ReadFile(dr);
+                    IniData data = parser.Parse(File.ReadAllText(dr));
                     return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
                 }
                 catch (IniParser.Exceptions.ParsingException)
                 {
-                    try
+                    /*try
                     {
                         // try more agressive parsing
                         string[] RawIniLines = File.ReadAllLines(dr);
@@ -82,7 +101,9 @@ namespace BZRModManager
                     {
                         hadIniParseError = true;
                         return new string[] { };
-                    }
+                    }*/
+                    hadIniParseError = true;
+                    return new string[] { };
                 }
             }).Where(dr => !string.IsNullOrWhiteSpace(dr)).GroupBy(dr => dr).OrderByDescending(dr => dr.Count()).ThenBy(dr => dr.Key).Select(dr => dr.Key).ToArray();
             if (hadIniParseError)
@@ -94,8 +115,14 @@ namespace BZRModManager
         {
             string pathini = GetIni(path, workshopID);
             if (!File.Exists(pathini)) return null;
-            FileIniDataParser parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(pathini);
+
+            var parser = new IniDataParser();
+            parser.Configuration.SkipInvalidLines = true;
+            parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
+            parser.Configuration.AllowDuplicateSections = true;
+            parser.Configuration.AllowKeysWithoutSection = true;
+
+            IniData data = parser.Parse(File.ReadAllText(pathini));
             return data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.Where(dr => dr != null && dr.Length > 0)?.ToArray() ?? new string[] { };
         }
 

@@ -19,10 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsQuery" Version="1.3.4" />
-    <PackageReference Include="ini-parser" Version="2.5.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="IniParser_Net8" Version="4.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.12" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,14 +54,10 @@
     <SteamVentNativeDir>$(MSBuildThisFileDirectory)..\Deps\SteamVent\SteamVent.SteamCmd\bin\$(Configuration)\net10.0</SteamVentNativeDir>
   </PropertyGroup>
 
-  <Target Name="CopySteamVentNativeRuntimeDeps" AfterTargets="PostBuildEvent"
-          Condition="Exists('$(SteamVentNativeDir)\steamcmdprox.exe')">
-    <Exec Command="copy /Y &quot;$(SteamVentNativeDir)\steamcmdinj.dll&quot; &quot;$(TargetDir)steamcmdinj.dll&quot;
-copy /Y &quot;$(SteamVentNativeDir)\steamcmdprox.exe&quot; &quot;$(TargetDir)\steamcmdprox.exe&quot;
-copy /Y &quot;$(SteamVentNativeDir)\steamcmdprox.pdb&quot; &quot;$(TargetDir)\steamcmdprox.pdb&quot;" />
+  <Target Name="CopySteamVentNativeRuntimeDeps" AfterTargets="PostBuildEvent" Condition="Exists('$(SteamVentNativeDir)\steamcmdprox.exe')">
+    <Exec Command="copy /Y &quot;$(SteamVentNativeDir)\steamcmdinj.dll&quot; &quot;$(TargetDir)steamcmdinj.dll&quot;&#xD;&#xA;copy /Y &quot;$(SteamVentNativeDir)\steamcmdprox.exe&quot; &quot;$(TargetDir)\steamcmdprox.exe&quot;&#xD;&#xA;copy /Y &quot;$(SteamVentNativeDir)\steamcmdprox.pdb&quot; &quot;$(TargetDir)\steamcmdprox.pdb&quot;" />
   </Target>
-  <Target Name="WarnMissingSteamVentNativeRuntimeDeps" AfterTargets="PostBuildEvent"
-          Condition="!Exists('$(SteamVentNativeDir)\steamcmdprox.exe')">
+  <Target Name="WarnMissingSteamVentNativeRuntimeDeps" AfterTargets="PostBuildEvent" Condition="!Exists('$(SteamVentNativeDir)\steamcmdprox.exe')">
     <Warning Text="SteamVent native runtime dependencies (steamcmdprox.exe, steamcmdinj.dll) were not found in '$(SteamVentNativeDir)'. Build the steamcmdinj/steamcmdprox C++ projects with Visual Studio to enable SteamCmd automation." />
   </Target>
 
