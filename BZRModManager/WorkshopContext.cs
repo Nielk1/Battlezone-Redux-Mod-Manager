@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,14 @@ namespace BZRModManager
         public static TimeSpan CacheDuration { get; set; } = TimeSpan.FromDays(1);
         public static string CacheDirectory { get; set; } = Path.Combine(AppContext.BaseDirectory, "cache");
 
+        // A definitive "this ID does not exist" answer (HTTP 404, an empty
+        // publishedfiledetails array, or result != 1) is cached as a self-describing
+        // sentinel, so a mistyped or deleted ID is not re-requested on every lookup.
+        // The window is short on purpose: an ID can start existing later (newly
+        // published or re-listed item), after which the next lookup refreshes normally.
+        public static TimeSpan NegativeCacheDuration { get; set; } = TimeSpan.FromHours(1);
+        internal const string NegativeCacheSentinel = "{\"not_found\":true}";
+
         internal static string ItemJsonCachePath(string id) => Path.Combine(CacheDirectory, "items", id + ".json");
         internal static string PreviewImageCachePath(string id) => Path.Combine(CacheDirectory, "previews", id + ".png");
 
@@ -70,6 +79,23 @@ namespace BZRModManager
                 if (!File.Exists(path)) return false;
                 data = File.ReadAllBytes(path);
                 return data.Length > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        // True when the cache file holds the negative ("not found") sentinel and is
+        // no older than NegativeCacheDuration.
+        internal static bool TryReadFreshNegativeCache(string path)
+        {
+            try
+            {
+                var info = new FileInfo(path);
+                if (!info.Exists) return false;
+                if (info.LastWriteTimeUtc + NegativeCacheDuration <= DateTime.UtcNow) return false;
+                return File.ReadAllText(path) == NegativeCacheSentinel;
             }
             catch (Exception)
             {
@@ -218,6 +244,11 @@ namespace BZRModManager
 
             var cachePath = ItemJsonCachePath(id);
             byte[] json;
+            if (TryReadFreshNegativeCache(cachePath))
+            {
+                // Steam recently said this ID does not exist; trust that for the negative window.
+                return null;
+            }
             if (TryReadFreshCache(cachePath, out json))
             {
                 // The cached entry is new enough: no web request.
@@ -230,22 +261,36 @@ namespace BZRModManager
                     WriteCache(cachePath, json);
                 }
                 catch (OperationCanceledException) { throw; }
-                catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
+                catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // Remember the 404 so lookups of this ID don't hammer the API.
+                    WriteCache(cachePath, Encoding.UTF8.GetBytes(NegativeCacheSentinel));
+                    return null;
+                }
                 catch (Exception)
                 {
                     // The network failed; a stale entry is better than nothing.
                     if (!TryReadAnyCache(cachePath, out json)) throw;
+                    // A stale "not found" is still the best answer we have.
+                    if (Encoding.UTF8.GetString(json) == NegativeCacheSentinel) return null;
                 }
             }
 
             using var document = JsonDocument.Parse(json);
             var response = Response(document);
             if (!response.TryGetProperty("publishedfiledetails", out var details) ||
-                details.ValueKind != JsonValueKind.Array || details.GetArrayLength() == 0) return null;
+                details.ValueKind != JsonValueKind.Array || details.GetArrayLength() == 0)
+            {
+                // Steam knows no such ID; remember that so we don't keep asking.
+                WriteCache(cachePath, Encoding.UTF8.GetBytes(NegativeCacheSentinel));
+                return null;
+            }
             foreach (var item in details.EnumerateArray())
             {
                 if (item.ValueKind == JsonValueKind.Object && Text(item, "publishedfileid") == id)
-                    return Text(item, "result") == "1" ? WorkshopMod.FromSteam(item) : null;
+                    if (Text(item, "result") == "1") return WorkshopMod.FromSteam(item);
+                    WriteCache(cachePath, Encoding.UTF8.GetBytes(NegativeCacheSentinel));
+                    return null;
             }
             throw new InvalidDataException("GetDetails returned a different published file ID.");
         }
