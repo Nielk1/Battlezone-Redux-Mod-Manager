@@ -376,6 +376,7 @@ namespace BZRModManager
 
     public interface ILinqListViewFindModsItem
     {
+        string ID { get; }
         string IconKey { get; }
         string Name { get; }
         string Author { get; }
