@@ -247,6 +247,7 @@ namespace BZRModManager
             TaskControl ctrl = new TaskControl(name, maxValue);
 
             Interlocked.Increment(ref ActiveTasks);
+            UpdateActiveTaskStatus();
 
             // Whatever container you currently use:
             pnlTasks.Controls.Add(ctrl);

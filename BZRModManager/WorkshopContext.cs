@@ -6,7 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BZRModManager
@@ -21,17 +24,95 @@ namespace BZRModManager
 
         private static readonly HttpClient Client = new HttpClient();
 
-        // Returns normal Workshop files, newest update first. Tags are ORed, as in the
-        // old browse calls; pass null or an empty array to get all files.
-        public static List<WorkshopMod> GetMods(int appid, string[] tags)
+        // Bounded parallelism for the per-item GetDetails enrichment pass: high enough to
+        // keep the Find Mods lists filling smoothly, low enough not to hammer Steam.
+        private const int EnrichParallelism = 8;
+
+        // ------------------------------------------------------------------
+        // Local cache
+        //
+        // Every item's GetDetails JSON (cache\items\<id>.json) and every preview image
+        // (cache\previews\<id>.png) is stored on disk. A file younger than CacheDuration
+        // is served as-is without any web request; otherwise it is refreshed, and when
+        // the refresh fails a stale copy is used if one exists.
+        // ------------------------------------------------------------------
+        public static TimeSpan CacheDuration { get; set; } = TimeSpan.FromDays(1);
+        public static string CacheDirectory { get; set; } = Path.Combine(AppContext.BaseDirectory, "cache");
+
+        internal static string ItemJsonCachePath(string id) => Path.Combine(CacheDirectory, "items", id + ".json");
+        internal static string PreviewImageCachePath(string id) => Path.Combine(CacheDirectory, "previews", id + ".png");
+
+        // True when the cache file exists, is no older than CacheDuration, and read back
+        // intact. Corrupt entries are treated as a miss.
+        internal static bool TryReadFreshCache(string path, out byte[] data)
+        {
+            data = null;
+            try
+            {
+                var info = new FileInfo(path);
+                if (!info.Exists) return false;
+                if (info.LastWriteTimeUtc + CacheDuration <= DateTime.UtcNow) return false;
+                data = File.ReadAllBytes(path);
+                return data.Length > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        // True when the cache file exists and read back intact, regardless of age.
+        internal static bool TryReadAnyCache(string path, out byte[] data)
+        {
+            data = null;
+            try
+            {
+                if (!File.Exists(path)) return false;
+                data = File.ReadAllBytes(path);
+                return data.Length > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        // Atomic write so a crash never leaves a half-written cache entry behind.
+        internal static void WriteCache(string path, byte[] data)
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                var tmp = path + ".tmp" + Guid.NewGuid().ToString("N");
+                File.WriteAllBytes(tmp, data);
+                if (File.Exists(path)) File.Replace(tmp, path, null);
+                else File.Move(tmp, path);
+            }
+            catch (Exception)
+            {
+                // Cache write failures are non-fatal; the data was still served to the caller.
+            }
+        }
+
+        internal static HttpClient ImageClient => Client;
+
+        // Async, streaming replacement for the old GetMods: yields one WorkshopMod at a
+        // time as the QueryFiles pages arrive, so the Find Mods lists can fill in over
+        // time instead of waiting for the whole result set. Tags are ORed, as in the
+        // old browse calls; pass null or an empty array to get all files. Every item is
+        // enriched through GetItemAsync, which is served from the JSON cache while the
+        // entry is still fresh.
+        public static async IAsyncEnumerable<WorkshopMod> GetModsAsync(int appid, string[] tags,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (appid <= 0) throw new ArgumentOutOfRangeException(nameof(appid));
 
-            var mods = new Dictionary<string, WorkshopMod>(StringComparer.Ordinal);
-            var cursor = "*";
-            var seenCursors = new HashSet<string>(StringComparer.Ordinal) { cursor };
             var requiredTags = tags?.Where(t => !string.IsNullOrWhiteSpace(t))
                 .Select(t => t.Trim()).Distinct(StringComparer.Ordinal).ToArray() ?? Array.Empty<string>();
+            var seenIds = new HashSet<string>(StringComparer.Ordinal);
+            var cursor = "*";
+            var seenCursors = new HashSet<string>(StringComparer.Ordinal) { cursor };
 
             while (true)
             {
@@ -47,40 +128,83 @@ namespace BZRModManager
                     request["match_all_tags"] = false;
                 }
 
-                using var document = Fetch("IPublishedFileService/QueryFiles/v1/", request);
-                var response = Response(document);
-                if (!response.TryGetProperty("publishedfiledetails", out var items))
+                var pageJson = await FetchRawAsync("IPublishedFileService/QueryFiles/v1/", request, cancellationToken);
+                var pageIds = new List<string>();
+                bool hasDetails;
+                string next;
+                using (var document = JsonDocument.Parse(pageJson))
                 {
-                    // Steam can omit the array on the terminal, empty page.
-                    if (Text(response, "next_cursor") == cursor) break;
-                    throw new InvalidDataException("QueryFiles omitted publishedfiledetails.");
+                    var response = Response(document);
+                    hasDetails = response.TryGetProperty("publishedfiledetails", out var items) &&
+                        items.ValueKind == JsonValueKind.Array;
+                    if (hasDetails)
+                    {
+                        foreach (var item in items.EnumerateArray())
+                        {
+                            if (item.ValueKind != JsonValueKind.Object ||
+                                (Text(item, "result") is string result && result != "1")) continue;
+                            var id = Text(item, "publishedfileid");
+                            if (!string.IsNullOrEmpty(id)) pageIds.Add(id);
+                        }
+                    }
+                    next = Text(response, "next_cursor");
                 }
-                if (items.ValueKind != JsonValueKind.Array)
-                    throw new InvalidDataException("QueryFiles returned invalid publishedfiledetails.");
-                if (items.GetArrayLength() == 0) break; // Steam may repeat this cursor.
 
-                foreach (var item in items.EnumerateArray())
+                // Steam can omit the array on the terminal, empty page (and may repeat the cursor).
+                if (!hasDetails || pageIds.Count == 0)
                 {
-                    if (item.ValueKind != JsonValueKind.Object ||
-                        (Text(item, "result") is string result && result != "1")) continue;
-                    var id = Text(item, "publishedfileid");
-                    if (!string.IsNullOrEmpty(id)) mods[id] = WorkshopMod.FromSteam(item);
+                    if (!hasDetails && next != cursor)
+                        throw new InvalidDataException("QueryFiles omitted publishedfiledetails.");
+                    break;
                 }
 
-                var next = Text(response, "next_cursor");
+                // Enrich every item on this page with GetItem (GetDetails). Fresh items are
+                // served from the JSON cache without any web request; a failure on a single
+                // item drops just that item instead of aborting the whole search.
+                using var gate = new SemaphoreSlim(EnrichParallelism);
+                var tasks = pageIds.Select(async id =>
+                {
+                    await gate.WaitAsync(cancellationToken);
+                    try
+                    {
+                        return await GetItemAsync(id, appid, cancellationToken);
+                    }
+                    catch (OperationCanceledException) { throw; }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("GetDetails failed for " + id + ": " + ex.Message);
+                        return null;
+                    }
+                    finally
+                    {
+                        gate.Release();
+                    }
+                }).ToArray();
+                await Task.WhenAll(tasks);
+
+                // Yield in page order so the list fills top-to-bottom.
+                for (int i = 0; i < tasks.Length; i++)
+                {
+                    var mod = tasks[i].Result;
+                    if (mod == null) continue;
+                    if (!seenIds.Add(mod.UniqueID)) continue; // Steam can repeat IDs across pages.
+                    // The preview image follows the same cache rules as the item JSON.
+                    await mod.EnsurePreviewImageAsync(cancellationToken);
+                    yield return mod;
+                }
+
                 if (string.IsNullOrEmpty(next)) break;
                 if (!seenCursors.Add(next))
                     throw new InvalidDataException("QueryFiles repeated a cursor on a nonempty page.");
                 cursor = next; // Pass the opaque cursor through without decoding it.
             }
-
-            //return mods.Values.OrderByDescending(m => m.TimeUpdated).ThenBy(m => m.ID, StringComparer.Ordinal).ToList();
-            return mods.Values.ToList();
         }
 
-        // Details include file_type (2 for a collection) and its immediate children.
-        // Returns null when Steam reports that the ID does not exist.
-        public static WorkshopMod GetItem(string id, int appid = 0)
+        // Async replacement for the old GetItem. Details include file_type (2 for a
+        // collection) and the immediate children. Returns null when Steam reports that
+        // the ID does not exist. Served from the JSON cache while the entry is fresh;
+        // falls back to a stale entry when the web request fails.
+        public static async Task<WorkshopMod> GetItemAsync(string id, int appid = 0, CancellationToken cancellationToken = default)
         {
             if (!ulong.TryParse(id, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed) || parsed == 0)
                 throw new ArgumentException("A positive decimal published file ID is required.", nameof(id));
@@ -91,25 +215,42 @@ namespace BZRModManager
                 ["publishedfileids"] = new[] { id }, ["includechildren"] = true
             };
             if (appid > 0) request["appid"] = appid;
-            JsonDocument document;
-            try { document = Fetch("IPublishedFileService/GetDetails/v1/", request); }
-            catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
 
-            using (document)
+            var cachePath = ItemJsonCachePath(id);
+            byte[] json;
+            if (TryReadFreshCache(cachePath, out json))
             {
-                var response = Response(document);
-                if (!response.TryGetProperty("publishedfiledetails", out var details) ||
-                    details.ValueKind != JsonValueKind.Array || details.GetArrayLength() == 0) return null;
-                foreach (var item in details.EnumerateArray())
-                {
-                    if (item.ValueKind == JsonValueKind.Object && Text(item, "publishedfileid") == id)
-                        return Text(item, "result") == "1" ? WorkshopMod.FromSteam(item) : null;
-                }
-                throw new InvalidDataException("GetDetails returned a different published file ID.");
+                // The cached entry is new enough: no web request.
             }
+            else
+            {
+                try
+                {
+                    json = await FetchRawAsync("IPublishedFileService/GetDetails/v1/", request, cancellationToken);
+                    WriteCache(cachePath, json);
+                }
+                catch (OperationCanceledException) { throw; }
+                catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound) { return null; }
+                catch (Exception)
+                {
+                    // The network failed; a stale entry is better than nothing.
+                    if (!TryReadAnyCache(cachePath, out json)) throw;
+                }
+            }
+
+            using var document = JsonDocument.Parse(json);
+            var response = Response(document);
+            if (!response.TryGetProperty("publishedfiledetails", out var details) ||
+                details.ValueKind != JsonValueKind.Array || details.GetArrayLength() == 0) return null;
+            foreach (var item in details.EnumerateArray())
+            {
+                if (item.ValueKind == JsonValueKind.Object && Text(item, "publishedfileid") == id)
+                    return Text(item, "result") == "1" ? WorkshopMod.FromSteam(item) : null;
+            }
+            throw new InvalidDataException("GetDetails returned a different published file ID.");
         }
 
-        private static JsonDocument Fetch(string path, object request)
+        private static async Task<byte[]> FetchRawAsync(string path, object request, CancellationToken cancellationToken)
         {
             if (!Uri.TryCreate(UrlPrefix, UriKind.Absolute, out var prefix) ||
                 (prefix.Scheme != Uri.UriSchemeHttps && prefix.Scheme != Uri.UriSchemeHttp) ||
@@ -119,10 +260,13 @@ namespace BZRModManager
             var url = UrlPrefix.TrimEnd('/') + "/" + path + "?input_json=" +
                 Uri.EscapeDataString(JsonSerializer.Serialize(request));
             if (!string.IsNullOrEmpty(ApiKey)) url += "&key=" + Uri.EscapeDataString(ApiKey);
-            using var response = Client.GetAsync(url).GetAwaiter().GetResult();
-            response.EnsureSuccessStatusCode();
-            using var stream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-            return JsonDocument.Parse(stream);
+
+            using var response = await Client.GetAsync(url, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+                throw new HttpRequestException(HttpRequestError.HttpProtocolError,
+                    "The Workshop API returned " + (int)response.StatusCode + ".",
+                    null, response.StatusCode);
+            return await response.Content.ReadAsByteArrayAsync(cancellationToken);
         }
 
         private static JsonElement Response(JsonDocument document)
@@ -145,8 +289,6 @@ namespace BZRModManager
                 _ => null
             };
         }
-
-        internal static HttpClient ImageClient => Client;
     }
 
     public class WorkshopMod : ILinqListViewFindModsItem
@@ -185,28 +327,63 @@ namespace BZRModManager
         public string RawJson { get; private set; }
 
         private Image largeIcon;
-        private bool iconAttempted;
+        private byte[] _imageBytes;
         private readonly object iconLock = new object();
+
+        // The preview bytes are loaded once by EnsurePreviewImageAsync (with the same
+        // cache rules as the item JSON); the icon is then decoded lazily with no network
+        // access, so virtual row rendering never blocks on a download.
         public Image LargeIcon
         {
             get
             {
                 lock (iconLock)
                 {
-                    if (!iconAttempted && !string.IsNullOrEmpty(Image))
+                    if (largeIcon == null && _imageBytes != null)
                     {
-                        iconAttempted = true;
                         try
                         {
-                            var bytes = WorkshopContext.ImageClient.GetByteArrayAsync(Image).GetAwaiter().GetResult();
-                            using var memory = new MemoryStream(bytes);
+                            using var memory = new MemoryStream(_imageBytes);
                             using var bitmap = new Bitmap(memory);
                             largeIcon = new Bitmap(bitmap); // Own the pixels after the stream closes.
                         }
-                        catch (Exception) { } // A preview is optional; keep the item usable.
+                        catch (Exception) { } // A corrupt preview is optional; keep the item usable.
                     }
                     return largeIcon;
                 }
+            }
+        }
+
+        // Loads the preview image honoring the shared cache rules: a fresh cache file is
+        // used without any web request, otherwise the image is downloaded and cached, and
+        // if the download fails a stale cache file is used when one exists.
+        public async Task EnsurePreviewImageAsync(CancellationToken cancellationToken = default)
+        {
+            if (_imageBytes != null || string.IsNullOrEmpty(Image) || string.IsNullOrEmpty(ID)) return;
+
+            var cachePath = WorkshopContext.PreviewImageCachePath(ID);
+            if (WorkshopContext.TryReadFreshCache(cachePath, out var cached) && cached.Length > 0)
+            {
+                _imageBytes = cached;
+                return;
+            }
+
+            try
+            {
+                using var response = await WorkshopContext.ImageClient.GetAsync(Image, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException("The preview image request returned " + (int)response.StatusCode + ".");
+                var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+                if (bytes.Length == 0) return;
+                _imageBytes = bytes;
+                WorkshopContext.WriteCache(cachePath, bytes);
+            }
+            catch (OperationCanceledException) { throw; }
+            catch (Exception)
+            {
+                // A preview is optional; a stale copy is better than nothing.
+                if (WorkshopContext.TryReadAnyCache(cachePath, out var stale) && stale.Length > 0)
+                    _imageBytes = stale;
             }
         }
 

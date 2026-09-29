@@ -1,6 +1,7 @@
 ﻿using BZRModManager.ModItem;
 using SteamVent.Common;
 using SteamVent.SteamCmd;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -272,41 +273,87 @@ namespace BZRModManager
         {
             if (Interlocked.CompareExchange(ref _findModsBZ98RRunning, 1, 0) == 1)
                 return;
+            var cts = new CancellationTokenSource();
             await Task.Run(async () =>
             {
                 try
                 {
                     TaskControl UpdateTaskControl = AddTask("Find BZ98 Mods", 0);
-                    List<WorkshopMod> ModsFound = WorkshopContext.GetMods(AppIdBZ98, null);
-                    List<ILinqListViewFindModsItem> findSnapshot;
                     List<string> AutoDownloadURLs = new List<string>();
+                    List<ILinqListViewFindModsItem> Removed = new List<ILinqListViewFindModsItem>();
 
+                    // Keys from a previous search that this search may retire if they no longer come back.
+                    HashSet<string> PreviousKeys;
                     await ModsLock.WaitAsync();
                     try
                     {
-                        FoundMods[AppIdBZ98].Clear();
-                        foreach (WorkshopMod mod in ModsFound)
-                        {
-                            mod.Known = Mods[AppIdBZ98].ContainsKey(mod.UniqueID);
-                            FoundMods[AppIdBZ98][mod.UniqueID] = mod;
-                            if (AutoDownload && !Mods[AppIdBZ98].ContainsKey(mod.UniqueID))
-                                AutoDownloadURLs.Add(mod.URL);
-                        }
-                        EndTask(UpdateTaskControl);
-                        FoundMods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                        findSnapshot = FoundMods[AppIdBZ98].Values.ToList<ILinqListViewFindModsItem>();
+                        PreviousKeys = new HashSet<string>(FoundMods[AppIdBZ98].Keys, StringComparer.Ordinal);
                     }
                     finally
                     {
                         ModsLock.Release();
                     }
 
-                    UiInvoke(() =>
+                    // Fill both the shared FoundMods dictionary and the list view incrementally,
+                    // as WorkshopContext streams the workshop (page by page) instead of waiting
+                    // for the whole result set.
+                    try
                     {
-                        lvFindModsBZ98R.BeginUpdate();
-                        lvFindModsBZ98R.DataSource = findSnapshot;
-                        lvFindModsBZ98R.EndUpdate();
-                    });
+                        await foreach (var mod in WorkshopContext.GetModsAsync(AppIdBZ98, null, cts.Token))
+                        {
+                            bool Added;
+                            await ModsLock.WaitAsync();
+                            try
+                            {
+                                Added = !FoundMods[AppIdBZ98].ContainsKey(mod.UniqueID);
+                                mod.Known = Mods[AppIdBZ98].ContainsKey(mod.UniqueID);
+                                if (Added && AutoDownload && !mod.Known)
+                                    AutoDownloadURLs.Add(mod.URL);
+                                FoundMods[AppIdBZ98][mod.UniqueID] = mod;
+                                PreviousKeys.Remove(mod.UniqueID);
+                            }
+                            finally
+                            {
+                                ModsLock.Release();
+                            }
+
+                            // UpsertItem is reference-safe: it matches by workshop ID and
+                            // re-sorts, so this also refreshes rows replaced from the stream.
+                            UiInvoke(() =>
+                            {
+                                lvFindModsBZ98R.UpsertItem(mod);
+                            });
+                        }
+                    }
+                    catch (OperationCanceledException) { }
+
+                    // Retire entries the search no longer returns.
+                    if (PreviousKeys.Count > 0)
+                    {
+                        await ModsLock.WaitAsync();
+                        try
+                        {
+                            foreach (string Key in PreviousKeys)
+                                if (FoundMods[AppIdBZ98].Remove(Key, out var Stale))
+                                    Removed.Add(Stale);
+                            FoundMods[AppIdBZ98].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                        }
+                        finally
+                        {
+                            ModsLock.Release();
+                        }
+
+                        if (Removed.Count > 0)
+                        {
+                            UiInvoke(() =>
+                            {
+                                foreach (var item in Removed)
+                                    lvFindModsBZ98R.RemoveItem(item);
+                            });
+                        }
+                    }
+
+                    EndTask(UpdateTaskControl);
 
                     // Kick off auto-downloads AFTER releasing ModsLock, so we never hold the lock across
                     // a modal dialog / long download.
@@ -315,6 +362,7 @@ namespace BZRModManager
                 }
                 finally
                 {
+                    cts.Dispose();
                     Interlocked.Exchange(ref _findModsBZ98RRunning, 0);
                 }
             });

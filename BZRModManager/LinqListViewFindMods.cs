@@ -271,6 +271,28 @@ namespace BZRModManager
             item.ListViewItemCache = lvi;
         }
 
+        // Adds or replaces a single item without rebinding the whole source (UI thread
+        // only). The Find Mods lists use this so the list can fill in as the async
+        // workshop stream arrives. Items are matched by their stable workshop ID.
+        public void UpsertItem(ILinqListViewFindModsItem item)
+        {
+            if (item == null) return;
+            int index = internal_source.FindIndex(dr => dr != null && string.Equals(dr.ID, item.ID, StringComparison.Ordinal));
+            if (index >= 0) internal_source[index] = item;
+            else internal_source.Add(item);
+            ApplySortAndFilter();
+        }
+
+        // Removes an item by its stable workshop ID without rebinding the whole source
+        // (UI thread only).
+        public void RemoveItem(ILinqListViewFindModsItem item)
+        {
+            if (item == null) return;
+            internal_source.RemoveAll(dr => dr == item ||
+                (dr != null && string.Equals(dr.ID, item.ID, StringComparison.Ordinal)));
+            ApplySortAndFilter();
+        }
+
         private List<ILinqListViewFindModsItem> source;
         private List<ILinqListViewFindModsItem> internal_source;
 

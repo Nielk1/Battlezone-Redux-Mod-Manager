@@ -379,47 +379,97 @@ namespace BZRModManager
         {
             if (Interlocked.CompareExchange(ref _findModsBZCCRunning, 1, 0) == 1)
                 return;
+            var cts = new CancellationTokenSource();
             await Task.Run(async () =>
             {
                 try
                 {
                     TaskControl UpdateTaskControl = AddTask("Find BZCC Mods", 0);
-                    List<WorkshopMod> ModsFound = WorkshopContext.GetMods(AppIdBZCC, new string[] { "config", "addon" }); // we only need these two as Asset type can be collected via dependency scan
-                    List<ILinqListViewFindModsItem> findSnapshot;
                     List<string> AutoDownloadURLs = new List<string>();
+                    List<ILinqListViewFindModsItem> Removed = new List<ILinqListViewFindModsItem>();
 
+                    // Keys from a previous search that this search may retire if they no longer come back.
+                    HashSet<string> PreviousKeys;
                     await ModsLock.WaitAsync();
                     try
                     {
-                        FoundMods[AppIdBZCC].Clear();
-                        foreach (WorkshopMod mod in ModsFound)
-                        {
-                            mod.Known = Mods[AppIdBZCC].ContainsKey(mod.UniqueID);
-                            FoundMods[AppIdBZCC][mod.UniqueID] = mod;
-                            if (AutoDownload && !Mods[AppIdBZCC].ContainsKey(mod.UniqueID))
-                                AutoDownloadURLs.Add(mod.URL);
-                        }
-                        EndTask(UpdateTaskControl);
-                        FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                        findSnapshot = FoundMods[AppIdBZCC].Values.ToList<ILinqListViewFindModsItem>();
+                        PreviousKeys = new HashSet<string>(FoundMods[AppIdBZCC].Keys, StringComparer.Ordinal);
                     }
                     finally
                     {
                         ModsLock.Release();
                     }
 
-                    UiInvoke(() =>
+                    // Fill both the shared FoundMods dictionary and the list view incrementally,
+                    // as WorkshopContext streams the workshop (page by page) instead of waiting
+                    // for the whole result set. We only need the "config"/"addon" tags as Asset
+                    // type can be collected via the dependency scan.
+                    try
                     {
-                        lvFindModsBZCC.BeginUpdate();
-                        lvFindModsBZCC.DataSource = findSnapshot;
-                        lvFindModsBZCC.EndUpdate();
-                    });
+                        await foreach (var mod in WorkshopContext.GetModsAsync(AppIdBZCC, new string[] { "config", "addon" }, cts.Token))
+                        {
+                            bool Added;
+                            await ModsLock.WaitAsync();
+                            try
+                            {
+                                Added = !FoundMods[AppIdBZCC].ContainsKey(mod.UniqueID);
+                                mod.Known = Mods[AppIdBZCC].ContainsKey(mod.UniqueID);
+                                if (Added && AutoDownload && !mod.Known)
+                                    AutoDownloadURLs.Add(mod.URL);
+                                FoundMods[AppIdBZCC][mod.UniqueID] = mod;
+                                PreviousKeys.Remove(mod.UniqueID);
+                            }
+                            finally
+                            {
+                                ModsLock.Release();
+                            }
 
+                            // UpsertItem is reference-safe: it matches by workshop ID and
+                            // re-sorts, so this also refreshes rows replaced from the stream.
+                            UiInvoke(() =>
+                            {
+                                lvFindModsBZCC.UpsertItem(mod);
+                            });
+                        }
+                    }
+                    catch (OperationCanceledException) { }
+
+                    // Retire entries the search no longer returns.
+                    if (PreviousKeys.Count > 0)
+                    {
+                        await ModsLock.WaitAsync();
+                        try
+                        {
+                            foreach (string Key in PreviousKeys)
+                                if (FoundMods[AppIdBZCC].Remove(Key, out var Stale))
+                                    Removed.Add(Stale);
+                            FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                        }
+                        finally
+                        {
+                            ModsLock.Release();
+                        }
+
+                        if (Removed.Count > 0)
+                        {
+                            UiInvoke(() =>
+                            {
+                                foreach (var item in Removed)
+                                    lvFindModsBZCC.RemoveItem(item);
+                            });
+                        }
+                    }
+
+                    EndTask(UpdateTaskControl);
+
+                    // Kick off auto-downloads AFTER releasing ModsLock, so we never hold the lock across
+                    // a modal dialog / long download.
                     foreach (string url in AutoDownloadURLs)
                         _ = DownloadMod(url, AppIdBZCC);
                 }
                 finally
                 {
+                    cts.Dispose();
                     Interlocked.Exchange(ref _findModsBZCCRunning, 0);
                 }
             });

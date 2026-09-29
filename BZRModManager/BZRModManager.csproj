@@ -15,6 +15,7 @@
   <ItemGroup>
     <!-- Legacy .NET Framework AssemblyInfo conflicts with the SDK-generated one -->
     <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Content Remove="C:\Users\Nielk1\.nuget\packages\iniparser_net8\4.0.0\contentFiles\any\net8.0\iniParser_Net8.ico" />
     <None Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
 
