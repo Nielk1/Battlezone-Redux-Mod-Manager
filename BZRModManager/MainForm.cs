@@ -140,6 +140,16 @@ namespace BZRModManager
             catch (ObjectDisposedException) { }
             catch (InvalidOperationException) { }
         }
+        private T UiInvoke<T>(Func<T> func)
+        {
+            if (func == null)
+                throw new ArgumentNullException(nameof(func));
+
+            if (InvokeRequired)
+                return (T)Invoke(func);
+
+            return func();
+        }
 
         ~MainForm()
         {
@@ -224,30 +234,39 @@ namespace BZRModManager
         }
 
         int ActiveTasks = 0;
-        public TaskControl AddTask(string Name, int MaxValue)
+        public TaskControl AddTask(string name, int maxValue)
         {
-            TaskControl ctrl = new TaskControl(Name, MaxValue);
-            UiInvoke(() =>
+            if (InvokeRequired)
             {
-                pnlTasks.Controls.Add(ctrl);
-                pnlTasks.Refresh();
-            });
-            Interlocked.Increment(ref ActiveTasks);
-            UpdateActiveTaskStatus();
+                return (TaskControl)Invoke(
+                    new Func<TaskControl>(
+                        () => AddTask(name, maxValue)));
+            }
+
+            TaskControl ctrl = new TaskControl(name, maxValue);
+
+            // Whatever container you currently use:
+            pnlTasks.Controls.Add(ctrl);
+            pnlTasks.Refresh();
+
             return ctrl;
         }
         public void EndTask(TaskControl ctrl)
         {
-            if (ctrl != null)
+            if (ctrl == null)
+                return;
+
+            if (InvokeRequired)
             {
-                UiInvoke(() =>
-                {
-                    pnlTasks.Controls.Remove(ctrl);
-                    pnlTasks.Refresh();
-                });
-                Interlocked.Decrement(ref ActiveTasks);
-                UpdateActiveTaskStatus();
+                BeginInvoke(new Action<TaskControl>(EndTask), ctrl);
+                return;
             }
+
+            pnlTasks.Controls.Remove(ctrl);
+            pnlTasks.Refresh();
+
+            Interlocked.Decrement(ref ActiveTasks);
+            UpdateActiveTaskStatus();
         }
 
         private void SetSteamCmdStatusText(string text)
