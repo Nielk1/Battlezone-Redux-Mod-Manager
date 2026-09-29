@@ -30,7 +30,27 @@ namespace BZRModManager
 
         private const int MAX_OTHER_STEAMCMD_ERROR = 5;
 
-        object ModStatus = new object();
+        // Single task-friendly lock guarding the shared Mods / FoundMods dictionaries. Replaces
+        // the old `ModStatus` object together with the per-dictionary managed locks. Async code
+        // awaits WaitAsync(); synchronous UI handlers use the blocking Wait(). It is never held
+        // across a UI marshalling call or across an await that could yield to a thread that also
+        // wants the lock (which is what would make a SemaphoreSlim deadlock).
+        private readonly SemaphoreSlim ModsLock = new SemaphoreSlim(1, 1);
+
+        // Lock-free, thread-safe "already running" guards (0 = idle, 1 = running). One per
+        // background operation. A click while the operation is in flight becomes a cheap no-op via
+        // Interlocked.CompareExchange instead of re-launching the same work. This replaces the old
+        // pattern of storing a Task field and polling its Task.Status to detect re-entry.
+        private int _updateBZ98RModListsRunning;
+        private int _updateBZ98RModsRunning;
+        private int _findModsBZ98RRunning;
+        private int _getMpGamesBZ98RRunning;
+        private int _updateBZCCModListsRunning;
+        private int _updateBZCCModsRunning;
+        private int _getDependenciesBZCCModsRunning;
+        private int _findModsBZCCRunning;
+        private int _getMpGamesBZCCRunning;
+        private int _modAuditRunning;
         Dictionary<int, Dictionary<string, ModItemBase>> Mods = new Dictionary<int, Dictionary<string, ModItemBase>>();
         Dictionary<int, Dictionary<string, WorkshopMod>> FoundMods = new Dictionary<int, Dictionary<string, WorkshopMod>>();
 
@@ -102,6 +122,25 @@ namespace BZRModManager
             SteamCmd.SteamCmdArgs += SteamCmdFull_Log;
         }
 
+        /// <summary>
+        /// Marshals <paramref name="action"/> to this form's UI thread *asynchronously* (BeginInvoke)
+        /// so the calling (worker) thread is never blocked waiting on the UI thread. This is the core
+        /// fix for the SteamCmd "no output / stall" deadlock: the old synchronous Control.Invoke parked
+        /// a worker thread until the UI thread ran, which circular-waited with the UI thread itself.
+        /// Runs inline when already on the UI thread and silently no-ops if the form is being torn down.
+        /// </summary>
+        private void UiInvoke(Action action)
+        {
+            if (action == null) return;
+            try
+            {
+                if (this.InvokeRequired) this.BeginInvoke(action);
+                else action();
+            }
+            catch (ObjectDisposedException) { }
+            catch (InvalidOperationException) { }
+        }
+
         ~MainForm()
         {
             steamcmd_log_writer.Close();
@@ -128,7 +167,7 @@ namespace BZRModManager
 
         private void Steam_SteamCmdOutput(object sender, string msg)
         {
-            this.Invoke((MethodInvoker)delegate
+            UiInvoke(() =>
             {
                 LogSteamCmd(msg, false);
             });
@@ -136,7 +175,7 @@ namespace BZRModManager
 
         private void Steam_SteamCmdOutputFull(object sender, string msg)
         {
-            this.Invoke((MethodInvoker)delegate
+            UiInvoke(() =>
             {
                 LogSteamCmdFull(msg, false);
             });
@@ -144,7 +183,7 @@ namespace BZRModManager
 
         private void Steam_SteamCmdArgs(object sender, string msg)
         {
-            this.Invoke((MethodInvoker)delegate
+            UiInvoke(() =>
             {
                 Log($"SteamCmd Started:\t\t{msg}");
                 LogSteamCmd(msg + "\r\n", true);
@@ -159,7 +198,7 @@ namespace BZRModManager
             switch (e.Status)
             {
                 case ESteamCmdStatus.Closed:
-                    this.Invoke((MethodInvoker)delegate
+                    UiInvoke(() =>
                     {
                         LogSteamCmd("\r\nEXIT\r\n\r\n", true);
                         LogSteamCmdFull("\r\nEXIT\r\n\r\n", true);
@@ -167,7 +206,7 @@ namespace BZRModManager
                     });
                     break;
                 default:
-                    this.Invoke((MethodInvoker)delegate
+                    UiInvoke(() =>
                     {
                         this.SetSteamCmdStatusText(e.Status.ToString());
                     });
@@ -177,46 +216,37 @@ namespace BZRModManager
 
         private void UpdateActiveTaskStatus()
         {
-            lock (ActiveTasksLock)
+            string text = Volatile.Read(ref ActiveTasks).ToString();
+            UiInvoke(() =>
             {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    tsslActiveTasks.Text = ActiveTasks.ToString();
-                });
-            }
+                tsslActiveTasks.Text = text;
+            });
         }
 
-        object ActiveTasksLock = new object();
         int ActiveTasks = 0;
         public TaskControl AddTask(string Name, int MaxValue)
         {
             TaskControl ctrl = new TaskControl(Name, MaxValue);
-            this.Invoke((MethodInvoker)delegate
+            UiInvoke(() =>
             {
                 pnlTasks.Controls.Add(ctrl);
                 pnlTasks.Refresh();
             });
-            lock (ActiveTasksLock)
-            {
-                ActiveTasks++;
-                UpdateActiveTaskStatus();
-            }
+            Interlocked.Increment(ref ActiveTasks);
+            UpdateActiveTaskStatus();
             return ctrl;
         }
         public void EndTask(TaskControl ctrl)
         {
             if (ctrl != null)
             {
-                this.Invoke((MethodInvoker)delegate
+                UiInvoke(() =>
                 {
                     pnlTasks.Controls.Remove(ctrl);
                     pnlTasks.Refresh();
                 });
-                lock (ActiveTasksLock)
-                {
-                    ActiveTasks--;
-                    UpdateActiveTaskStatus();
-                }
+                Interlocked.Decrement(ref ActiveTasks);
+                UpdateActiveTaskStatus();
             }
         }
 
@@ -327,7 +357,7 @@ namespace BZRModManager
                     }
                     try
                     {
-                        this?.Invoke((MethodInvoker)delegate
+                        UiInvoke(() =>
                         {
                             exitingStage = 3;
 
@@ -371,63 +401,36 @@ namespace BZRModManager
             }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
             this.Icon = Properties.Resources.modmanager;
             ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
-            new Thread(() =>
+            try
             {
-                SteamCmd.DownloadAsync().GetAwaiter().GetResult();
-                if (exitingStage > 1) return;
-                //this.Invoke((MethodInvoker)delegate
-                //{
-                    this.UpdateBZ98RModLists();
-                    this.UpdateBZCCModLists();
-                //});
-                EndTask(ActivatingSteamCmd);
-                ActivatingSteamCmd = null;
+                await SteamCmd.DownloadAsync();
+            }
+            catch { }
+            if (exitingStage > 1) return;
+            // Await the initial mod-list refreshes (both kick off concurrently and complete here).
+            await Task.WhenAll(this.UpdateBZ98RModListsAsync(), this.UpdateBZCCModListsAsync());
+            EndTask(ActivatingSteamCmd);
+            ActivatingSteamCmd = null;
 
-                if (ForceUpdateMode)
+            if (ForceUpdateMode)
+            {
+                UiInvoke(() =>
                 {
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        tabControl1.SelectedTab = tpTasks;
+                    tabControl1.SelectedTab = tpTasks;
 
-                        DisableEverything();
-                    });
+                    DisableEverything();
+                });
 
-                    while (!(UpdateBZ98RModListsTask == null || UpdateBZ98RModListsTask.IsCanceled || UpdateBZ98RModListsTask.IsCompleted || UpdateBZ98RModListsTask.IsFaulted)
-                        || !(UpdateBZCCModListsTask  == null || UpdateBZCCModListsTask.IsCanceled  || UpdateBZCCModListsTask.IsCompleted  || UpdateBZCCModListsTask.IsFaulted))
-                    {
-                        Thread.Sleep(1000);
-                    }
-                    Thread.Sleep(1000);
+                await Task.WhenAll(this.FindModsBZ98RAsync(true), this.FindModsBZCCAsync(true));
 
-                    FindModsBZ98R(true);
-                    FindModsBZCC(true);
+                await Task.WhenAll(this.UpdateBZ98RModsAsync(true), this.UpdateBZCCModsAsync(true), this.GetDependenciesBZCCModsAsync());
 
-                    while (!(FindModsBZ98RTask == null || FindModsBZ98RTask.IsCanceled || FindModsBZ98RTask.IsCompleted || FindModsBZ98RTask.IsFaulted)
-                        || !(FindModsBZCCTask  == null || FindModsBZCCTask.IsCanceled  || FindModsBZCCTask.IsCompleted  || FindModsBZCCTask.IsFaulted))
-                    {
-                        Thread.Sleep(1000);
-                    }
-                    Thread.Sleep(1000);
-
-                    this.UpdateBZ98RMods(true);
-                    this.UpdateBZCCMods(true);
-                    this.GetDependenciesBZCCMods();
-
-                    while (!(UpdateBZ98RModsTask         == null || UpdateBZ98RModsTask.IsCanceled         || UpdateBZ98RModsTask.IsCompleted         || UpdateBZ98RModsTask.IsFaulted)
-                        || !(UpdateBZCCModsTask          == null || UpdateBZCCModsTask.IsCanceled          || UpdateBZCCModsTask.IsCompleted          || UpdateBZCCModsTask.IsFaulted)
-                        || !(GetDependenciesBZCCModsTask == null || GetDependenciesBZCCModsTask.IsCanceled || GetDependenciesBZCCModsTask.IsCompleted || GetDependenciesBZCCModsTask.IsFaulted))
-                    {
-                        Thread.Sleep(1000);
-                    }
-                    Thread.Sleep(1000);
-
-                    Close();
-                }
-            }).Start();
+                UiInvoke(() => Close());
+            }
         }
 
         private void btnDownloadBZ98R_Click(object sender, EventArgs e) { if (DownloadMod(txtDownloadBZ98R.Text, AppIdBZ98)) txtDownloadBZ98R.Clear(); }
@@ -451,7 +454,7 @@ namespace BZRModManager
                 {
                     success = true;
                     TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - SteamCmd - {workshopID}", 0);
-                    Task.Factory.StartNew(() =>
+                    Task.Run(async () =>
                     {
                         SteamCmdException ex_ = null;
                         int OtherErrorCounter = 0;
@@ -460,7 +463,7 @@ namespace BZRModManager
                             ex_ = null;
                             try
                             {
-                                SteamCmd.WorkshopDownloadItemAsync(AppId, workshopID).GetAwaiter().GetResult();
+                                await SteamCmd.WorkshopDownloadItemAsync(AppId, workshopID);
                             }
                             catch (SteamCmdWorkshopDownloadException ex)
                             {
@@ -476,15 +479,15 @@ namespace BZRModManager
                         } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
 
 
-                        this.Invoke((MethodInvoker)delegate
+                        UiInvoke(() =>
                         {
                             switch (AppId)
                             {
                                 case AppIdBZ98:
-                                    UpdateBZ98RModLists();
+                                    _ = UpdateBZ98RModListsAsync();
                                     break;
                                 case AppIdBZCC:
-                                    UpdateBZCCModLists();
+                                    _ = UpdateBZCCModListsAsync();
                                     break;
                             }
                         });
@@ -510,18 +513,18 @@ namespace BZRModManager
                                 if (dlg.ShowDialog() == DialogResult.OK)
                                 {
                                     TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - Git - \"{text}\"", 0);
-                                    Task.Factory.StartNew(() =>
+                                    Task.Run(() =>
                                     {
                                         GitContext.WorkshopDownloadItem(settings.GitPath, AppId, text, dlg.Selected);
-                                        this.Invoke((MethodInvoker)delegate
+                                        UiInvoke(() =>
                                         {
                                             switch (AppId)
                                             {
                                                 case AppIdBZ98:
-                                                    UpdateBZ98RModLists();
+                                                    _ = UpdateBZ98RModListsAsync();
                                                     break;
                                                 case AppIdBZCC:
-                                                    UpdateBZCCModLists();
+                                                    _ = UpdateBZCCModListsAsync();
                                                     break;
                                             }
                                         });
@@ -545,15 +548,15 @@ namespace BZRModManager
             return success;
         }
 
-        private void btnRefreshBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RModLists(); }
-        private void btnRefreshBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCModLists(); }
+        private async void btnRefreshBZ98R_Click(object sender, EventArgs e) { await this.UpdateBZ98RModListsAsync(); }
+        private async void btnRefreshBZCC_Click(object sender, EventArgs e) { await this.UpdateBZCCModListsAsync(); }
 
-        private void btnUpdateBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RMods(false); }
-        private void btnHardUpdateBZ98R_Click(object sender, EventArgs e) { this.UpdateBZ98RMods(true); }
-        private void btnUpdateBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCMods(false); }
-        private void btnHardUpdateBZCC_Click(object sender, EventArgs e) { this.UpdateBZCCMods(true); }
+        private async void btnUpdateBZ98R_Click(object sender, EventArgs e) { await this.UpdateBZ98RModsAsync(false); }
+        private async void btnHardUpdateBZ98R_Click(object sender, EventArgs e) { await this.UpdateBZ98RModsAsync(true); }
+        private async void btnUpdateBZCC_Click(object sender, EventArgs e) { await this.UpdateBZCCModsAsync(false); }
+        private async void btnHardUpdateBZCC_Click(object sender, EventArgs e) { await this.UpdateBZCCModsAsync(true); }
 
-        private void btnDependenciesBZ98R_Click(object sender, EventArgs e) { this.GetDependenciesBZCCMods(); }
+        private async void btnDependenciesBZ98R_Click(object sender, EventArgs e) { await this.GetDependenciesBZCCModsAsync(); }
 
         private void LoadSettings()
         {
@@ -811,16 +814,16 @@ namespace BZRModManager
             catch { }
         }
 
-        private void btnFindMods_Click(object sender, EventArgs e)
+        private async void btnFindMods_Click(object sender, EventArgs e)
         {
             if (tcFindMods.SelectedTab == tpFindModsBZ98R)
             {
-                FindModsBZ98R();
+                await FindModsBZ98RAsync();
             }
 
             if (tcFindMods.SelectedTab == tpFindModsBZCC)
             {
-                FindModsBZCC();
+                await FindModsBZCCAsync();
             }
         }
 
@@ -847,10 +850,7 @@ namespace BZRModManager
         {
             if (tcFindMods.SelectedTab == tpFindModsBZ98R)
             {
-                if (FindModsBZ98RTask == null
-                 || FindModsBZ98RTask.IsCanceled
-                 || FindModsBZ98RTask.IsCompleted
-                 || FindModsBZ98RTask.IsFaulted)
+                if (Volatile.Read(ref _findModsBZ98RRunning) == 0)
                 {
                     List<ILinqListViewFindModsItem> Items = new List<ILinqListViewFindModsItem>();
                     foreach (int idx in lvFindModsBZ98R.SelectedIndices)
@@ -863,10 +863,7 @@ namespace BZRModManager
 
             if (tcFindMods.SelectedTab == tpFindModsBZCC)
             {
-                if (FindModsBZCCTask == null
-                 || FindModsBZCCTask.IsCanceled
-                 || FindModsBZCCTask.IsCompleted
-                 || FindModsBZCCTask.IsFaulted)
+                if (Volatile.Read(ref _findModsBZCCRunning) == 0)
                 {
                     List<ILinqListViewFindModsItem> Items = new List<ILinqListViewFindModsItem>();
                     foreach (int idx in lvFindModsBZCC.SelectedIndices)
@@ -883,36 +880,40 @@ namespace BZRModManager
             if (MessageBox.Show("This operation is very slow as SteamCmd will be removed and reloaded and all mods will be updated!\r\nContinue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
                 RemovingSteamCmd = AddTask($"Removing SteamCMD", 0);
-                new Thread(() =>
+                Task.Run(async () =>
                 {
                     SteamCmd.Purge();
                     EndTask(RemovingSteamCmd);
                     RemovingSteamCmd = null;
 
                     ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
-                    SteamCmd.DownloadAsync().GetAwaiter().GetResult();
-                    if (exitingStage > 1) return;
-                    this.Invoke((MethodInvoker)delegate
+                    try
                     {
-                        this.UpdateBZ98RModLists();
-                        this.UpdateBZCCModLists();
+                        await SteamCmd.DownloadAsync();
+                    }
+                    catch { }
+                    if (exitingStage > 1) return;
+                    UiInvoke(() =>
+                    {
+                        _ = this.UpdateBZ98RModListsAsync();
+                        _ = this.UpdateBZCCModListsAsync();
                     });
                     EndTask(ActivatingSteamCmd);
                     ActivatingSteamCmd = null;
-                }).Start();
+                });
             }
         }
 
-        private void btnMultiRefresh_Click(object sender, EventArgs e)
+        private async void btnMultiRefresh_Click(object sender, EventArgs e)
         {
             if (tcMultiplayer.SelectedTab == tpMultiplayerBZ98R)
             {
-                GetMpGamesBZ98R();
+                await GetMpGamesBZ98RAsync();
             }
 
             if (tcMultiplayer.SelectedTab == tpMultiplayerBZCC)
             {
-                GetMpGamesBZCC();
+                await GetMpGamesBZCCAsync();
             }
         }
 
@@ -1139,10 +1140,16 @@ namespace BZRModManager
                 MultiplayerGamelistData_Session session = Items.FirstOrDefault();
                 if (session?.Level?.Mod != null)
                     if (UInt64.TryParse(session.Level.Mod, out _))
-                        lock (ModStatus)
-                            lock (Mods[AppIdBZ98])
-                                if (!Mods[AppIdBZ98].ContainsKey(session.Level.Mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
-                                    Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}");
+                        ModsLock.Wait();
+                        try
+                        {
+                            if (!Mods[AppIdBZ98].ContainsKey(session.Level.Mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
+                                Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}");
+                        }
+                        finally
+                        {
+                            ModsLock.Release();
+                        }
             }
 
             if (tcMultiplayer.SelectedTab == tpMultiplayerBZCC)
@@ -1160,14 +1167,20 @@ namespace BZRModManager
                         if (UInt64.TryParse(mod, out _))
                             ModsIDs.Add(mod);
                 if(ModsIDs.Count > 0)
-                    lock (ModStatus)
-                        lock (Mods[AppIdBZCC])
-                            foreach(string mod in ModsIDs)
-                                if (!Mods[AppIdBZCC].ContainsKey(mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
-                                {
-                                    Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}");
-                                    break;
-                                }
+                    ModsLock.Wait();
+                    try
+                    {
+                        foreach(string mod in ModsIDs)
+                            if (!Mods[AppIdBZCC].ContainsKey(mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
+                            {
+                                Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}");
+                                break;
+                            }
+                    }
+                    finally
+                    {
+                        ModsLock.Release();
+                    }
             }
         }
 
@@ -1193,17 +1206,23 @@ namespace BZRModManager
                         {
                             case DialogResult.Yes:
                                 {
-                                    lock (ModStatus)
-                                        lock (Mods[AppIdBZ98])
-                                            if (Mods[AppIdBZ98].ContainsKey($"{session.Level.Mod}-Git")) // steam can only try to install from Git
-                                            {
-                                                if (Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].InstalledSteam != InstallStatus.Linked)
-                                                    Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].ToggleSteam();
-                                            }
-                                            else
-                                            {
-                                                failedToGetMod = true;
-                                            }
+                                    ModsLock.Wait();
+                                    try
+                                    {
+                                        if (Mods[AppIdBZ98].ContainsKey($"{session.Level.Mod}-Git")) // steam can only try to install from Git
+                                        {
+                                            if (Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].InstalledSteam != InstallStatus.Linked)
+                                                Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].ToggleSteam();
+                                        }
+                                        else
+                                        {
+                                            failedToGetMod = true;
+                                        }
+                                    }
+                                    finally
+                                    {
+                                        ModsLock.Release();
+                                    }
                                 }
                                 break;
                             case DialogResult.No:
@@ -1284,17 +1303,23 @@ namespace BZRModManager
                                 {
                                     foreach (string mod in MissingMods)
                                     {
-                                        lock (ModStatus)
-                                            lock (Mods[AppIdBZCC])
-                                                if (Mods[AppIdBZCC].ContainsKey($"{mod}-Git")) // steam can only try to install from Git
-                                                {
-                                                    if (Mods[AppIdBZCC][$"{mod}-Git"].InstalledSteam != InstallStatus.Linked)
-                                                        Mods[AppIdBZCC][$"{mod}-Git"].ToggleSteam();
-                                                }
-                                                else
-                                                {
-                                                    failedToGetMod = true;
-                                                }
+                                        ModsLock.Wait();
+                                        try
+                                        {
+                                            if (Mods[AppIdBZCC].ContainsKey($"{mod}-Git")) // steam can only try to install from Git
+                                            {
+                                                if (Mods[AppIdBZCC][$"{mod}-Git"].InstalledSteam != InstallStatus.Linked)
+                                                    Mods[AppIdBZCC][$"{mod}-Git"].ToggleSteam();
+                                            }
+                                            else
+                                            {
+                                                failedToGetMod = true;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            ModsLock.Release();
+                                        }
                                     }
                                 }
                                 break;
@@ -1369,27 +1394,33 @@ namespace BZRModManager
                             case DialogResult.Yes:
                                 {
                                     string padModId = UInt64.TryParse(session.Level.Mod, out _) ? session.Level.Mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') : null;
-                                    lock (ModStatus)
-                                        lock (Mods[AppIdBZ98])
-                                            if (padModId != null && Mods[AppIdBZ98].ContainsKey($"{padModId}-SteamCmd"))
-                                            {
-                                                if (Mods[AppIdBZ98][$"{padModId}-SteamCmd"].InstalledGog != InstallStatus.Linked)
-                                                    Mods[AppIdBZ98][$"{padModId}-SteamCmd"].ToggleGog();
-                                            }
-                                            else if (padModId != null && Mods[AppIdBZ98].ContainsKey($"{padModId}-Steam"))
-                                            {
-                                                if (Mods[AppIdBZ98][$"{padModId}-Steam"].InstalledGog != InstallStatus.Linked)
-                                                    Mods[AppIdBZ98][$"{padModId}-Steam"].ToggleGog();
-                                            }
-                                            else if (Mods[AppIdBZ98].ContainsKey($"{session.Level.Mod}-Git"))
-                                            {
-                                                if (Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].InstalledGog != InstallStatus.Linked)
-                                                    Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].ToggleGog();
-                                            }
-                                            else
-                                            {
-                                                failedToGetMod = true;
-                                            }
+                                    ModsLock.Wait();
+                                    try
+                                    {
+                                        if (padModId != null && Mods[AppIdBZ98].ContainsKey($"{padModId}-SteamCmd"))
+                                        {
+                                            if (Mods[AppIdBZ98][$"{padModId}-SteamCmd"].InstalledGog != InstallStatus.Linked)
+                                                Mods[AppIdBZ98][$"{padModId}-SteamCmd"].ToggleGog();
+                                        }
+                                        else if (padModId != null && Mods[AppIdBZ98].ContainsKey($"{padModId}-Steam"))
+                                        {
+                                            if (Mods[AppIdBZ98][$"{padModId}-Steam"].InstalledGog != InstallStatus.Linked)
+                                                Mods[AppIdBZ98][$"{padModId}-Steam"].ToggleGog();
+                                        }
+                                        else if (Mods[AppIdBZ98].ContainsKey($"{session.Level.Mod}-Git"))
+                                        {
+                                            if (Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].InstalledGog != InstallStatus.Linked)
+                                                Mods[AppIdBZ98][$"{session.Level.Mod}-Git"].ToggleGog();
+                                        }
+                                        else
+                                        {
+                                            failedToGetMod = true;
+                                        }
+                                    }
+                                    finally
+                                    {
+                                        ModsLock.Release();
+                                    }
                                 }
                                 break;
                             case DialogResult.No:
@@ -1471,27 +1502,33 @@ namespace BZRModManager
                                     foreach (string mod in MissingMods)
                                     {
                                         string padModId = UInt64.TryParse(mod, out _) ? mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') : null;
-                                        lock (ModStatus)
-                                            lock (Mods[AppIdBZCC])
-                                                if (padModId != null && Mods[AppIdBZCC].ContainsKey($"{padModId}-SteamCmd"))
-                                                {
-                                                    if (Mods[AppIdBZCC][$"{padModId}-SteamCmd"].InstalledGog != InstallStatus.Linked)
-                                                        Mods[AppIdBZCC][$"{padModId}-SteamCmd"].ToggleGog();
-                                                }
-                                                else if (padModId != null && Mods[AppIdBZCC].ContainsKey($"{padModId}-Steam"))
-                                                {
-                                                    if (Mods[AppIdBZCC][$"{padModId}-Steam"].InstalledGog != InstallStatus.Linked)
-                                                        Mods[AppIdBZCC][$"{padModId}-Steam"].ToggleGog();
-                                                }
-                                                else if (Mods[AppIdBZCC].ContainsKey($"{mod}-Git"))
-                                                {
-                                                    if (Mods[AppIdBZCC][$"{mod}-Git"].InstalledGog != InstallStatus.Linked)
-                                                        Mods[AppIdBZCC][$"{mod}-Git"].ToggleGog();
-                                                }
-                                                else
-                                                {
-                                                    failedToGetMod = true;
-                                                }
+                                        ModsLock.Wait();
+                                        try
+                                        {
+                                            if (padModId != null && Mods[AppIdBZCC].ContainsKey($"{padModId}-SteamCmd"))
+                                            {
+                                                if (Mods[AppIdBZCC][$"{padModId}-SteamCmd"].InstalledGog != InstallStatus.Linked)
+                                                    Mods[AppIdBZCC][$"{padModId}-SteamCmd"].ToggleGog();
+                                            }
+                                            else if (padModId != null && Mods[AppIdBZCC].ContainsKey($"{padModId}-Steam"))
+                                            {
+                                                if (Mods[AppIdBZCC][$"{padModId}-Steam"].InstalledGog != InstallStatus.Linked)
+                                                    Mods[AppIdBZCC][$"{padModId}-Steam"].ToggleGog();
+                                            }
+                                            else if (Mods[AppIdBZCC].ContainsKey($"{mod}-Git"))
+                                            {
+                                                if (Mods[AppIdBZCC][$"{mod}-Git"].InstalledGog != InstallStatus.Linked)
+                                                    Mods[AppIdBZCC][$"{mod}-Git"].ToggleGog();
+                                            }
+                                            else
+                                            {
+                                                failedToGetMod = true;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            ModsLock.Release();
+                                        }
                                     }
                                 }
                                 break;
@@ -1580,7 +1617,7 @@ namespace BZRModManager
 
             if (text != null)
             {
-                this.Invoke((MethodInvoker)delegate
+                UiInvoke(() =>
                 {
                     lock (txtLogSteamCmd)
                     {
@@ -1614,7 +1651,7 @@ namespace BZRModManager
              || ModAuditTask.IsCompleted
              || ModAuditTask.IsFaulted)
             {
-                this.Invoke((MethodInvoker)delegate
+                UiInvoke(() =>
                 {
                     btnRunAudit.Enabled = false;
                     txtAuditLog.Clear();
@@ -1659,7 +1696,8 @@ namespace BZRModManager
                         }
                         catch { }
 
-                    lock (ModStatus)
+                    ModsLock.Wait();
+                    try
                     {
                         {
                             var ModList = Mods[AppIdBZ98].ToList();
@@ -1728,6 +1766,10 @@ namespace BZRModManager
                             }
                             UpdateTaskControl.EndTask(subtask);
                         }
+                    }
+                    finally
+                    {
+                        ModsLock.Release();
                     }
 
                     List<(string Platform, string Game, int AppID, string Path)> WorkshopDestinations = new List<(string Platform, string Game, int AppID, string Path)>();
@@ -1841,7 +1883,7 @@ namespace BZRModManager
 
                     EndTask(UpdateTaskControl);
 
-                    this.Invoke((MethodInvoker)delegate
+                    UiInvoke(() =>
                     {
                         btnRunAudit.Enabled = true;
                     });

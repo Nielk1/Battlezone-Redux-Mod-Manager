@@ -12,6 +12,24 @@ namespace BZRModManager
 {
     public partial class TaskControl : UserControl
     {
+        /// <summary>
+        /// Marshals <paramref name="action"/> to this control's UI thread *asynchronously* (BeginInvoke)
+        /// so a calling (worker) thread is never blocked waiting on the UI thread. This removes the
+        /// synchronous Control.Invoke that was part of the SteamCmd output stall/deadlock.
+        /// Runs inline when already on the UI thread and silently no-ops if the control is being torn down.
+        /// </summary>
+        private void UiInvoke(Action action)
+        {
+            if (action == null) return;
+            try
+            {
+                if (this.InvokeRequired) this.BeginInvoke(action);
+                else action();
+            }
+            catch (ObjectDisposedException) { }
+            catch (InvalidOperationException) { }
+        }
+
         public override string Text
         {
             get
@@ -20,17 +38,10 @@ namespace BZRModManager
             }
             set
             {
-                if (this.Created)
-                {
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        lblText.Text = value;
-                    });
-                }
-                else
+                UiInvoke(() =>
                 {
                     lblText.Text = value;
-                }
+                });
             }
         }
 
@@ -44,17 +55,10 @@ namespace BZRModManager
             }
             set
             {
-                if (this.Created)
-                {
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        pbProg.Value = value;
-                    });
-                }
-                else
+                UiInvoke(() =>
                 {
                     pbProg.Value = value;
-                }
+                });
 
                 _Value = value;
             }
@@ -69,25 +73,7 @@ namespace BZRModManager
             }
             set
             {
-                if (this.Created)
-                {
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        if (value > 0)
-                        {
-                            pbProg.Maximum = value;
-                            pbProg.Value = _Value;
-                            pbProg.Style = ProgressBarStyle.Blocks;
-                        }
-                        else
-                        {
-                            pbProg.Maximum = 100;
-                            pbProg.Value = 100;
-                            pbProg.Style = ProgressBarStyle.Marquee;
-                        }
-                    });
-                }
-                else
+                UiInvoke(() =>
                 {
                     if (value > 0)
                     {
@@ -101,7 +87,7 @@ namespace BZRModManager
                         pbProg.Value = 100;
                         pbProg.Style = ProgressBarStyle.Marquee;
                     }
-                }
+                });
             }
         }
 
@@ -118,7 +104,7 @@ namespace BZRModManager
         public TaskControl AddTask(string Name, int MaxValue)
         {
             TaskControl ctrl = new TaskControl(Name, MaxValue);
-            this.Invoke((MethodInvoker)delegate
+            UiInvoke(() =>
             {
                 ctrl.Margin = new Padding(0);
                 pnlTasks.Controls.Add(ctrl);
@@ -131,7 +117,7 @@ namespace BZRModManager
         public void EndTask(TaskControl ctrl)
         {
             if (ctrl != null)
-                this.Invoke((MethodInvoker)delegate
+                UiInvoke(() =>
                 {
                     pnlTasks.Controls.Remove(ctrl);
                     FixHeight();

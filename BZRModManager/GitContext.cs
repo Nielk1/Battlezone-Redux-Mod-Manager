@@ -106,40 +106,55 @@ namespace BZRModManager
             }
         }
 
-        public static List<GitModStatus> WorkshopItemsOnDrive(int appId)
+        public static async IAsyncEnumerable<GitModStatus> WorkshopItemsOnDriveAsync(int appId)
         {
             string gitFolder = Path.Combine("git", appId.ToString());
-            if (!Directory.Exists(gitFolder)) return new List<GitModStatus>();
-            return Directory.EnumerateDirectories(gitFolder) // get individual mod folders
-                .SelectMany(dr => Directory.GetDirectories(dr)) // get branches
-                .Where(dr => File.Exists(Path.Combine(dr, "config.json")) || File.Exists(Path.Combine(dr, "baked", "config.json")))
-                .SelectMany(dr =>
+
+            if (!Directory.Exists(gitFolder))
+                yield break;
+
+            foreach (string modFolder in Directory.EnumerateDirectories(gitFolder)) // get individual mod folders
+            {
+                foreach (string dr in Directory.EnumerateDirectories(modFolder)) // get branches
                 {
                     string basePath = dr;
                     string jsonFile = Path.Combine(basePath, "config.json");
+
                     if (!File.Exists(jsonFile))
                     {
                         basePath = Path.Combine(basePath, "baked");
                         jsonFile = Path.Combine(basePath, "config.json");
-                    }
-                    GitModConfig data = JsonConvert.DeserializeObject<GitModConfig>(File.ReadAllText(jsonFile));
 
-                    return data.mods.Select(mod =>
+                        if (!File.Exists(jsonFile))
+                            continue;
+                    }
+
+                    GitModConfig data =
+                        JsonConvert.DeserializeObject<GitModConfig>(
+                            File.ReadAllText(jsonFile));
+
+                    foreach (var mod in data.mods)
                     {
-                        string ModName = mod.name;
-                        string ModWorkshopId = mod.workshopid;
-                        string ModPath = Path.Combine(basePath, mod.folder);
-                        string ModIni = Path.Combine(ModPath, ModWorkshopId + ".ini");
-                        if (!File.Exists(ModIni)) return null;
-                        return new GitModStatus()
+                        string modName = mod.name;
+                        string modWorkshopId = mod.workshopid;
+                        string modPath = Path.Combine(basePath, mod.folder);
+                        string modIni = Path.Combine(modPath, modWorkshopId + ".ini");
+
+                        if (!File.Exists(modIni))
+                            continue;
+
+                        yield return new GitModStatus()
                         {
                             GitPath = dr,
-                            ModName = ModName,
-                            ModWorkshopId = ModWorkshopId,
-                            ModPath = ModPath,
+                            ModName = modName,
+                            ModWorkshopId = modWorkshopId,
+                            ModPath = modPath,
                         };
-                    }).Where(dx => dx != null);
-                }).ToList();
+
+                        await Task.Yield();
+                    }
+                }
+            }
         }
 
         public static void Pull(string gitExePath, string gitPath)

@@ -16,248 +16,248 @@ namespace BZRModManager
 {
     public partial class MainForm
     {
-        Task UpdateBZCCModListsTask = null;
-        //TaskControl UpdateBZCCModListsTaskControl = null;
-        private void UpdateBZCCModLists()
+        private async Task UpdateBZCCModListsAsync()
         {
-            if (UpdateBZCCModListsTask == null
-              || UpdateBZCCModListsTask.IsCanceled
-              || UpdateBZCCModListsTask.IsCompleted
-              || UpdateBZCCModListsTask.IsFaulted)
+            if (Interlocked.CompareExchange(ref _updateBZCCModListsRunning, 1, 0) == 1)
+                return; // a scan is already in flight; do not re-enter
+            try
             {
-                //EndTask(UpdateBZCCModListsTaskControl);
                 TaskControl UpdateBZCCModListsTaskControl = AddTask("Update BZCC Mod List", 0);
-                UpdateBZCCModListsTask = Task.Factory.StartNew(() =>
+                List<ILinqListViewItemMods> modsSnapshot;
+                List<ILinqListViewFindModsItem> findSnapshot;
+                HashSet<string> FoundModIDs = new HashSet<string>();
+
+                await Task.WhenAll(
+                    ScanBZCC_SteamCmdAsync(UpdateBZCCModListsTaskControl, FoundModIDs),
+                    ScanBZCC_GitAsync(UpdateBZCCModListsTaskControl, FoundModIDs),
+                    ScanBZCC_SteamAsync(UpdateBZCCModListsTaskControl, FoundModIDs));
+
+                await ModsLock.WaitAsync();
+                try
                 {
-                    lock (ModStatus)
-                    {
-                        HashSet<string> FoundModIDs = new HashSet<string>();
+                    foreach (string KnownMod in Mods[AppIdBZCC].Keys.ToList())
+                        if (!FoundModIDs.Contains(KnownMod))
+                            Mods[AppIdBZCC].Remove(KnownMod);
+                    foreach (var kv in Mods[AppIdBZCC])
+                        if (FoundMods[AppIdBZCC].ContainsKey(kv.Key))
+                            FoundMods[AppIdBZCC][kv.Key].Known = true;
+                    Mods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                    modsSnapshot = Mods[AppIdBZCC].Values.ToList<ILinqListViewItemMods>();
+                    FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                    findSnapshot = FoundMods[AppIdBZCC].Values.ToList<ILinqListViewFindModsItem>();
+                }
+                finally
+                {
+                    ModsLock.Release();
+                }
 
-                        Semaphore loadSemaphore = new Semaphore(0, 3);
-                        Task.Factory.StartNew(() =>
-                        {
-                            try
-                            {
-                                TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (SteamCmd)", 0);
-                                List<WorkshopItemStatus> stats = SteamCmd.WorkshopStatusAsync(AppIdBZCC).GetAwaiter().GetResult();
-                                stats?.ForEach(dr =>
-                                {
-                                    string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
-                                    if (!Mods[AppIdBZCC].ContainsKey(ModId))
-                                    {
-                                        Mods[AppIdBZCC][ModId] = new SteamCmdMod(AppIdBZCC, dr);
-                                    }
-                                    else
-                                    {
-                                        ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
-                                    }
-                                    Mods[AppIdBZCC][ModId].HasUpdate = dr.HasUpdate;
-                                    Mods[AppIdBZCC][ModId].FolderOnlyDetection = dr.Detection.HasFlag(WorkshopItemStatus.WorkshopDetectionType.Folder);
-                                    FoundModIDs.Add(ModId);
-                                });
-                                UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
-                            }
-                            finally
-                            {
-                                loadSemaphore.Release();
-                            }
-                        });
+                EndTask(UpdateBZCCModListsTaskControl);
 
-                        Task.Factory.StartNew(() =>
-                        {
-                            try
-                            {
-                                TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Git)", 0);
-                                List<GitModStatus> stats = GitContext.WorkshopItemsOnDrive(AppIdBZCC);
-                                stats?.ForEach(dr =>
-                                {
-                                    string ModId = GitMod.GetUniqueId(dr.ModWorkshopId);
-                                    if (!Mods[AppIdBZCC].ContainsKey(ModId))
-                                    {
-                                        Mods[AppIdBZCC][ModId] = new GitMod(AppIdBZCC, dr);
-                                    }
-                                    else
-                                    {
-                                        ((GitMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
-                                    }
-                                    FoundModIDs.Add(ModId);
-                                });
-                                UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
-                            }
-                            finally
-                            {
-                                loadSemaphore.Release();
-                            }
-                        });
-
-                        if (settings.BZCCSteamPath != null)
-                        {
-                            Task.Factory.StartNew(() =>
-                            {
-                                try
-                                {
-                                    TaskControl UpdateTask = UpdateBZCCModListsTaskControl.AddTask("Update BZCC Mod List (Steam)", 0);
-                                    HashSet<UInt64> Dependencies = new HashSet<UInt64>();
-                                    SteamContext.WorkshopItemsOnDrive(settings.BZCCSteamPath, AppIdBZCC)?.ForEach(dr =>
-                                    {
-                                        string ModId = SteamMod.GetUniqueId(dr);
-                                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
-                                        {
-                                            SteamMod mod = new SteamMod(AppIdBZCC, dr);
-                                            Mods[AppIdBZCC][ModId] = mod;
-
-                                            string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, MainForm.AppIdBZCC);
-                                            string[] Deps = BZCCTools.GetAssetDependencies(Path.Combine(workshopFolder, mod.WorkshopId.ToString()));
-                                            if (Deps != null)
-                                            {
-                                                foreach (string Dep in Deps)
-                                                {
-                                                    UInt64 DepL;
-                                                    if (UInt64.TryParse(Dep, out DepL))
-                                                    {
-                                                        Dependencies.Add(DepL);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        FoundModIDs.Add(ModId);
-                                    });
-                                    foreach (var dr in Dependencies)
-                                    {
-                                        string ModId = SteamMod.GetUniqueId(dr);
-                                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
-                                        {
-                                            SteamMod mod = new SteamMod(AppIdBZCC, dr);
-                                            Mods[AppIdBZCC][ModId] = mod;
-                                        }
-                                    }
-                                    UpdateBZCCModListsTaskControl.EndTask(UpdateTask);
-                                }
-                                finally
-                                {
-                                    loadSemaphore.Release();
-                                }
-                            });
-                        }
-                        else
-                        {
-                            loadSemaphore.Release();
-                        }
-                        loadSemaphore.WaitOne();
-                        loadSemaphore.WaitOne();
-                        loadSemaphore.WaitOne();
-
-                        lock (Mods[AppIdBZCC])
-                        {
-                            foreach (string KnownMod in Mods[AppIdBZCC].Keys.ToList())
-                            {
-                                if (!FoundModIDs.Contains(KnownMod))
-                                    Mods[AppIdBZCC].Remove(KnownMod);
-                            }
-
-                            this.Invoke((MethodInvoker)delegate
-                            {
-                                lvModsBZCC.BeginUpdate();
-                                Mods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                lvModsBZCC.DataSource = Mods[AppIdBZCC].Values.ToList<ILinqListViewItemMods>();
-                                lvModsBZCC.EndUpdate();
-
-                                //lock (Mods[AppIdBZCC])
-                                {
-                                    //lock (FoundMods[AppIdBZCC]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
-                                    {
-                                        foreach (var kv in Mods[AppIdBZCC])
-                                        {
-                                            if (FoundMods[AppIdBZCC].ContainsKey(kv.Key))
-                                                FoundMods[AppIdBZCC][kv.Key].Known = true;
-                                        }
-                                        lvFindModsBZCC.BeginUpdate();
-                                        FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                        lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListViewFindModsItem>();
-                                        lvFindModsBZCC.EndUpdate();
-                                    }
-                                }
-
-                                EndTask(UpdateBZCCModListsTaskControl);
-                            });
-                        }
-                    }
+                UiInvoke(() =>
+                {
+                    lvModsBZCC.BeginUpdate();
+                    lvModsBZCC.DataSource = modsSnapshot;
+                    lvModsBZCC.EndUpdate();
+                    lvFindModsBZCC.BeginUpdate();
+                    lvFindModsBZCC.DataSource = findSnapshot;
+                    lvFindModsBZCC.EndUpdate();
                 });
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _updateBZCCModListsRunning, 0);
             }
         }
 
-        Task UpdateBZCCModsTask = null;
-        private void UpdateBZCCMods(bool agressive)
+        private async Task ScanBZCC_SteamCmdAsync(TaskControl parent, HashSet<string> FoundModIDs)
         {
-            if (UpdateBZCCModsTask == null
-              || UpdateBZCCModsTask.IsCanceled
-              || UpdateBZCCModsTask.IsCompleted
-              || UpdateBZCCModsTask.IsFaulted)
+            TaskControl UpdateTask = parent.AddTask("Update BZCC Mod List (SteamCmd)", 0);
+            try
             {
-                UpdateBZCCModsTask = Task.Factory.StartNew(() =>
+                List<WorkshopItemStatus> stats = await SteamCmd.WorkshopStatusAsync(AppIdBZCC);
+                if (stats != null)
                 {
-                    TaskControl UpdateTaskControl = AddTask("Update BZCC Mods", 0);
-                    lock (Mods[AppIdBZCC])
+                    await ModsLock.WaitAsync();
+                    try
                     {
-                        List<KeyValuePair<string, ModItemBase>> ModList = Mods[AppIdBZCC].ToList();
-                        UpdateTaskControl.Maximum = ModList.Count;
-                        object CounterClock = new object();
-                        int Counter = 0;
-                        List<KeyValuePair<string, ModItemBase>> NoUpdateMods = ModList.Where(dr => !(dr.Value is SteamCmdMod) && !(dr.Value is GitMod)).ToList();
-                        List<KeyValuePair<string, ModItemBase>> SteamCmdMods = ModList.Where(dr => (dr.Value is SteamCmdMod)).ToList();
-                        List<KeyValuePair<string, ModItemBase>> GitMods = ModList.Where(dr => (dr.Value is GitMod)).ToList();
-                        NoUpdateMods.ForEach(dr =>
+                        stats.ForEach(dr =>
                         {
-                            UpdateTaskControl.Value = ++Counter;
+                            string ModId = SteamCmdMod.GetUniqueId(dr.WorkshopId);
+                            if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                                Mods[AppIdBZCC][ModId] = new SteamCmdMod(AppIdBZCC, dr);
+                            else
+                                ((SteamCmdMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
+                            Mods[AppIdBZCC][ModId].HasUpdate = dr.HasUpdate;
+                            Mods[AppIdBZCC][ModId].FolderOnlyDetection = dr.Detection.HasFlag(WorkshopItemStatus.WorkshopDetectionType.Folder);
+                            FoundModIDs.Add(ModId);
                         });
-                        Semaphore MergeTasks = new Semaphore(0, 1);
-                        new Thread(() =>
+                    }
+                    finally
+                    {
+                        ModsLock.Release();
+                    }
+                }
+            }
+            finally
+            {
+                parent.EndTask(UpdateTask);
+            }
+        }
+
+        private async Task ScanBZCC_GitAsync(TaskControl parent, HashSet<string> FoundModIDs)
+        {
+            TaskControl UpdateTask = parent.AddTask("Update BZCC Mod List (Git)", 0);
+            try
+            {
+                await foreach (var dr in GitContext.WorkshopItemsOnDriveAsync(AppIdBZCC))
+                {
+                    await ModsLock.WaitAsync();
+                    try
+                    {
+                        string ModId = GitMod.GetUniqueId(dr.ModWorkshopId);
+                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                            Mods[AppIdBZCC][ModId] = new GitMod(AppIdBZCC, dr);
+                        else
+                            ((GitMod)Mods[AppIdBZCC][ModId]).Workshop = dr;
+                        FoundModIDs.Add(ModId);
+                    }
+                    finally
+                    {
+                        ModsLock.Release();
+                    }
+                }
+            }
+            finally
+            {
+                parent.EndTask(UpdateTask);
+            }
+        }
+
+        private async Task ScanBZCC_SteamAsync(TaskControl parent, HashSet<string> FoundModIDs)
+        {
+            if (settings.BZCCSteamPath == null)
+                return;
+            TaskControl UpdateTask = parent.AddTask("Update BZCC Mod List (Steam)", 0);
+            try
+            {
+                HashSet<UInt64> Dependencies = new HashSet<UInt64>();
+                await foreach (var dr in SteamContext.WorkshopItemsOnDriveAsync(settings.BZCCSteamPath, AppIdBZCC))
+                {
+                    await ModsLock.WaitAsync();
+                    try
+                    {
+                        string ModId = SteamMod.GetUniqueId(dr);
+                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
                         {
-                            try
+                            SteamMod mod = new SteamMod(AppIdBZCC, dr);
+                            Mods[AppIdBZCC][ModId] = mod;
+                            string workshopFolder = SteamContext.WorkshopFolder(MainForm.settings.BZCCSteamPath, MainForm.AppIdBZCC);
+                            string[] Deps = BZCCTools.GetAssetDependencies(Path.Combine(workshopFolder, mod.WorkshopId.ToString()));
+                            if (Deps != null)
                             {
-                                SteamCmdMods.ForEach(dr =>
+                                foreach (string Dep in Deps)
                                 {
-                                    SteamCmdMod modSteam = dr.Value as SteamCmdMod;
-                                    if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
-                                    {
-                                        if (modSteam != null)
-                                        {
-                                            TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
-                                            SteamCmdException ex_ = null;
-                                            int OtherErrorCounter = 0;
-                                            do
-                                            {
-                                                ex_ = null;
-                                                try
-                                                {
-                                                    SteamCmd.WorkshopDownloadItemAsync(AppIdBZCC, modSteam.Workshop.WorkshopId).GetAwaiter().GetResult();
-                                                }
-                                                catch (SteamCmdWorkshopDownloadException ex)
-                                                {
-                                                    ex_ = ex;
-                                                    if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
-                                                        OtherErrorCounter++;
-                                                }
-                                                catch (SteamCmdException ex)
-                                                {
-                                                    ex_ = ex;
-                                                    OtherErrorCounter++;
-                                                }
-                                            } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                                            UpdateTaskControl.EndTask(DownloadModTaskControl);
-                                        }
-                                    }
-                                    lock (CounterClock)
-                                    {
-                                        UpdateTaskControl.Value = ++Counter;
-                                    }
-                                });
+                                    UInt64 DepL;
+                                    if (UInt64.TryParse(Dep, out DepL))
+                                        Dependencies.Add(DepL);
+                                }
                             }
-                            finally
+                        }
+                        FoundModIDs.Add(ModId);
+                    }
+                    finally
+                    {
+                        ModsLock.Release();
+                    }
+                }
+                foreach (var dr in Dependencies)
+                {
+                    await ModsLock.WaitAsync();
+                    try
+                    {
+                        string ModId = SteamMod.GetUniqueId(dr);
+                        if (!Mods[AppIdBZCC].ContainsKey(ModId))
+                        {
+                            SteamMod mod = new SteamMod(AppIdBZCC, dr);
+                            Mods[AppIdBZCC][ModId] = mod;
+                        }
+                    }
+                    finally
+                    {
+                        ModsLock.Release();
+                    }
+                }
+            }
+            finally
+            {
+                parent.EndTask(UpdateTask);
+            }
+        }
+
+        private async Task UpdateBZCCModsAsync(bool agressive)
+        {
+            if (Interlocked.CompareExchange(ref _updateBZCCModsRunning, 1, 0) == 1)
+                return;
+            try
+            {
+                TaskControl UpdateTaskControl = AddTask("Update BZCC Mods", 0);
+
+                List<KeyValuePair<string, ModItemBase>> ModList;
+                await ModsLock.WaitAsync();
+                try { ModList = Mods[AppIdBZCC].ToList(); }
+                finally { ModsLock.Release(); }
+
+                UpdateTaskControl.Maximum = ModList.Count;
+                List<KeyValuePair<string, ModItemBase>> NoUpdateMods = ModList.Where(dr => !(dr.Value is SteamCmdMod) && !(dr.Value is GitMod)).ToList();
+                List<KeyValuePair<string, ModItemBase>> SteamCmdMods = ModList.Where(dr => (dr.Value is SteamCmdMod)).ToList();
+                List<KeyValuePair<string, ModItemBase>> GitMods = ModList.Where(dr => (dr.Value is GitMod)).ToList();
+
+                // Shared thread-safe progress counter (replaces lock(CounterClock) + ++Counter).
+                int counter = 0;
+                foreach (var dr in NoUpdateMods)
+                    UpdateTaskControl.Value = Interlocked.Increment(ref counter);
+
+                // SteamCmd downloads (async) and Git pulls (AsParallel, degree 2) run concurrently.
+                await Task.WhenAll(
+                    Task.Run(async () =>
+                    {
+                        foreach (var dr in SteamCmdMods)
+                        {
+                            SteamCmdMod modSteam = dr.Value as SteamCmdMod;
+                            if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
                             {
-                                MergeTasks.Release();
+                                if (modSteam != null)
+                                {
+                                    TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
+                                    SteamCmdException ex_ = null;
+                                    int OtherErrorCounter = 0;
+                                    do
+                                    {
+                                        ex_ = null;
+                                        try
+                                        {
+                                            await SteamCmd.WorkshopDownloadItemAsync(AppIdBZCC, modSteam.Workshop.WorkshopId);
+                                        }
+                                        catch (SteamCmdWorkshopDownloadException ex)
+                                        {
+                                            ex_ = ex;
+                                            if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
+                                                OtherErrorCounter++;
+                                        }
+                                        catch (SteamCmdException ex)
+                                        {
+                                            ex_ = ex;
+                                            OtherErrorCounter++;
+                                        }
+                                    } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+                                    UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                }
                             }
-                        }).Start();
+                            UpdateTaskControl.Value = Interlocked.Increment(ref counter);
+                        }
+                    }),
+                    Task.Run(() =>
+                    {
                         GitMods.AsParallel().WithDegreeOfParallelism(2).ForAll(dr =>
                         {
                             GitMod mod = dr.Value as GitMod;
@@ -267,171 +267,176 @@ namespace BZRModManager
                                 GitContext.Pull(settings.GitPath, mod.Workshop.GitPath);
                                 UpdateTaskControl.EndTask(DownloadModTaskControl);
                             }
-                            lock (CounterClock)
-                            {
-                                UpdateTaskControl.Value = ++Counter;
-                            }
+                            UpdateTaskControl.Value = Interlocked.Increment(ref counter);
                         });
-                        MergeTasks.WaitOne();
-                        EndTask(UpdateTaskControl);
+                    }));
 
-                        UpdateBZCCModLists();
-                    }
-                });
+                EndTask(UpdateTaskControl);
+
+                await this.UpdateBZCCModListsAsync();
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _updateBZCCModsRunning, 0);
             }
         }
 
-        Task GetDependenciesBZCCModsTask = null;
-        private void GetDependenciesBZCCMods()
+        private async Task GetDependenciesBZCCModsAsync()
         {
-            if (GetDependenciesBZCCModsTask == null
-              || GetDependenciesBZCCModsTask.IsCanceled
-              || GetDependenciesBZCCModsTask.IsCompleted
-              || GetDependenciesBZCCModsTask.IsFaulted)
+            if (Interlocked.CompareExchange(ref _getDependenciesBZCCModsRunning, 1, 0) == 1)
+                return;
+            try
             {
-                GetDependenciesBZCCModsTask = Task.Factory.StartNew(() =>
+                TaskControl UpdateTaskControl = AddTask("Get BZCC Mod Dependencies", 0);
+
+                List<string> SteamCmdDependencies = new List<string>();
+                HashSet<UInt64> DependenciesGotten = new HashSet<UInt64>();
+
+                // Gather asset dependencies off the UI thread (blocking file I/O), holding ModsLock
+                // only for the brief collection copy.
+                await Task.Run(() =>
                 {
-                    TaskControl UpdateTaskControl = AddTask("Get BZCC Mod Dependencies", 0);
-                    lock (Mods[AppIdBZCC])
+                    List<KeyValuePair<string, ModItemBase>> ModList;
+                    ModsLock.Wait();
+                    try { ModList = Mods[AppIdBZCC].ToList(); }
+                    finally { ModsLock.Release(); }
+
+                    UpdateTaskControl.Maximum = ModList.Count;
+                    int counter = 0;
+                    foreach (var dr in ModList)
                     {
-                        List<string> SteamCmdDependencies = new List<string>();
-                        HashSet<UInt64> DependenciesGotten = new HashSet<UInt64>();
-                        List<KeyValuePair<string, ModItemBase>> ModList = Mods[AppIdBZCC].ToList();
-                        UpdateTaskControl.Maximum = ModList.Count;
-                        int Counter = 0;
-                        ModList.ForEach(dr =>
+                        UpdateTaskControl.Value = ++counter;
+                        SteamCmdMod mod = dr.Value as SteamCmdMod;
+                        if (mod != null)
                         {
-                            UpdateTaskControl.Value = ++Counter;
-                            SteamCmdMod mod = dr.Value as SteamCmdMod;
-                            if (mod != null)
+                            string[] Dependencies = null;
+                            try
                             {
-                                string[] Dependencies = null;
-                                try
-                                {
-                                    Dependencies = BZCCTools.GetAssetDependencies($"steamcmd\\steamapps\\workshop\\content\\{mod.AppId}\\{mod.Workshop.WorkshopId}");
-                                }
-                                catch { }
-                                if (Dependencies != null)
-                                    SteamCmdDependencies.AddRange(Dependencies);
-                                DependenciesGotten.Add(mod.Workshop.WorkshopId);
+                                Dependencies = BZCCTools.GetAssetDependencies($"steamcmd\\steamapps\\workshop\\content\\{mod.AppId}\\{mod.Workshop.WorkshopId}");
                             }
-                        });
-                        EndTask(UpdateTaskControl);
-                        List<string> SteamCmdDependenciesList = SteamCmdDependencies.Distinct().ToList();
-                        UpdateTaskControl = AddTask("Download BZCC Mod Dependencies", SteamCmdDependenciesList.Count);
-                        object CounterClock = new object();
-                        Counter = 0;
-                        SteamCmdDependenciesList.ForEach(dr =>
-                        {
-                            UInt64 tmpLong = 0;
-                            if (UInt64.TryParse(dr, out tmpLong) && !DependenciesGotten.Contains(tmpLong))
-                            {
-                                TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {tmpLong}", 0);
-                                SteamCmdException ex_ = null;
-                                int OtherErrorCounter = 0;
-                                do
-                                {
-                                    ex_ = null;
-                                    try
-                                    {
-                                        SteamCmd.WorkshopDownloadItemAsync(AppIdBZCC, tmpLong).GetAwaiter().GetResult();
-                                    }
-                                    catch (SteamCmdWorkshopDownloadException ex)
-                                    {
-                                        ex_ = ex;
-                                        if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
-                                            OtherErrorCounter++;
-                                    }
-                                    catch (SteamCmdException ex)
-                                    {
-                                        ex_ = ex;
-                                        OtherErrorCounter++;
-                                    }
-                                } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                                UpdateTaskControl.EndTask(DownloadModTaskControl);
-                            }
-                            lock (CounterClock)
-                            {
-                                UpdateTaskControl.Value = ++Counter;
-                            }
-                        });
-                        EndTask(UpdateTaskControl);
-                        this.Invoke((MethodInvoker)delegate
-                        {
-                            UpdateBZCCModLists();
-                        });
+                            catch { }
+                            if (Dependencies != null)
+                                SteamCmdDependencies.AddRange(Dependencies);
+                            DependenciesGotten.Add(mod.Workshop.WorkshopId);
+                        }
                     }
                 });
-            }
-        }
+                EndTask(UpdateTaskControl);
 
-        Task FindModsBZCCTask = null;
-        private void FindModsBZCC(bool AutoDownload = false)
-        {
-            if (FindModsBZCCTask == null
-             || FindModsBZCCTask.IsCanceled
-             || FindModsBZCCTask.IsCompleted
-             || FindModsBZCCTask.IsFaulted)
-            {
-                FindModsBZCCTask = Task.Factory.StartNew(() =>
+                List<string> SteamCmdDependenciesList = SteamCmdDependencies.Distinct().ToList();
+                UpdateTaskControl = AddTask("Download BZCC Mod Dependencies", SteamCmdDependenciesList.Count);
+                int counter2 = 0;
+                foreach (var dr in SteamCmdDependenciesList)
                 {
-                    TaskControl UpdateTaskControl = AddTask("Find BZCC Mods", 0);
-                    List<WorkshopMod> ModsFound = WorkshopContext.GetMods(AppIdBZCC, new string[] { "config", "addon" }); // we only need these two as Asset type can be collected via dependency scan
-
-                    lock (ModStatus)
-                        lock (Mods[AppIdBZCC])
+                    UInt64 tmpLong = 0;
+                    if (UInt64.TryParse(dr, out tmpLong) && !DependenciesGotten.Contains(tmpLong))
+                    {
+                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {tmpLong}", 0);
+                        SteamCmdException ex_ = null;
+                        int OtherErrorCounter = 0;
+                        do
                         {
-                            //lock (FoundMods[AppIdBZCC]) // let's try using the mod collection as our lock context and ignore the FoundMods collection for locking
+                            ex_ = null;
+                            try
                             {
-                                FoundMods[AppIdBZCC].Clear();
-                                foreach (WorkshopMod mod in ModsFound)
-                                {
-                                    mod.Known = Mods[AppIdBZCC].ContainsKey(mod.UniqueID);
-                                    FoundMods[AppIdBZCC][mod.UniqueID] = mod;
-                                    if (AutoDownload && !Mods[AppIdBZCC].ContainsKey(mod.UniqueID)) // some sort of strange race condition or something, Known isn't right
-                                        DownloadMod(mod.URL, AppIdBZCC);
-                                }
-                                EndTask(UpdateTaskControl);
+                                await SteamCmd.WorkshopDownloadItemAsync(AppIdBZCC, tmpLong);
                             }
-
-                            this.Invoke((MethodInvoker)delegate
+                            catch (SteamCmdWorkshopDownloadException ex)
                             {
-                                lvFindModsBZCC.BeginUpdate();
-                                FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
-                                lvFindModsBZCC.DataSource = FoundMods[AppIdBZCC].Values.ToList<ILinqListViewFindModsItem>();
-                                lvFindModsBZCC.EndUpdate();
-                            });
-                        }
-                });
+                                ex_ = ex;
+                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
+                                    OtherErrorCounter++;
+                            }
+                            catch (SteamCmdException ex)
+                            {
+                                ex_ = ex;
+                                OtherErrorCounter++;
+                            }
+                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                    }
+                    UpdateTaskControl.Value = ++counter2;
+                }
+                EndTask(UpdateTaskControl);
+
+                await this.UpdateBZCCModListsAsync();
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _getDependenciesBZCCModsRunning, 0);
             }
         }
 
-        Task GetMpGamesBZCCTask = null;
-        private void GetMpGamesBZCC()
+        private async Task FindModsBZCCAsync(bool AutoDownload = false)
         {
-            if (GetMpGamesBZCCTask == null
-             || GetMpGamesBZCCTask.IsCanceled
-             || GetMpGamesBZCCTask.IsCompleted
-             || GetMpGamesBZCCTask.IsFaulted)
+            if (Interlocked.CompareExchange(ref _findModsBZCCRunning, 1, 0) == 1)
+                return;
+            try
             {
-                GetMpGamesBZCCTask = Task.Factory.StartNew(() =>
+                TaskControl UpdateTaskControl = AddTask("Find BZCC Mods", 0);
+                List<WorkshopMod> ModsFound = WorkshopContext.GetMods(AppIdBZCC, new string[] { "config", "addon" }); // we only need these two as Asset type can be collected via dependency scan
+                List<ILinqListViewFindModsItem> findSnapshot;
+                List<string> AutoDownloadURLs = new List<string>();
+
+                await ModsLock.WaitAsync();
+                try
                 {
-                    TaskControl UpdateTaskControl = AddTask("Find BZCC Multiplayer Games", 0);
-                    MultiplayerGamelistData data = MultiplayerSessionServer.GetMpGamesBZCC();
+                    FoundMods[AppIdBZCC].Clear();
+                    foreach (WorkshopMod mod in ModsFound)
+                    {
+                        mod.Known = Mods[AppIdBZCC].ContainsKey(mod.UniqueID);
+                        FoundMods[AppIdBZCC][mod.UniqueID] = mod;
+                        if (AutoDownload && !Mods[AppIdBZCC].ContainsKey(mod.UniqueID))
+                            AutoDownloadURLs.Add(mod.URL);
+                    }
                     EndTask(UpdateTaskControl);
+                    FoundMods[AppIdBZCC].Values.ToList().ForEach(dr => dr.ListViewItemCache = null);
+                    findSnapshot = FoundMods[AppIdBZCC].Values.ToList<ILinqListViewFindModsItem>();
+                }
+                finally
+                {
+                    ModsLock.Release();
+                }
 
-                    this.Invoke((MethodInvoker)delegate
-                    {
-                        if ((data.EndpointVersion ?? 0) > 0)
-                        {
-                            MessageBox.Show("Please update your mod manager to ensure the MP game list functions properly.\r\nThe API has been updated and may no longer be compatable.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        }
-
-                        lvMultiplayerBZCC.BeginUpdate();
-                        lvMultiplayerBZCC.DataSource = data;
-                        lvMultiplayerBZCC.EndUpdate();
-                    });
+                UiInvoke(() =>
+                {
+                    lvFindModsBZCC.BeginUpdate();
+                    lvFindModsBZCC.DataSource = findSnapshot;
+                    lvFindModsBZCC.EndUpdate();
                 });
+
+                foreach (string url in AutoDownloadURLs)
+                    _ = DownloadMod(url, AppIdBZCC);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _findModsBZCCRunning, 0);
+            }
+        }
+
+        private async Task GetMpGamesBZCCAsync()
+        {
+            if (Interlocked.CompareExchange(ref _getMpGamesBZCCRunning, 1, 0) == 1)
+                return;
+            try
+            {
+                TaskControl UpdateTaskControl = AddTask("Find BZCC Multiplayer Games", 0);
+                MultiplayerGamelistData data = await Task.Run(() => MultiplayerSessionServer.GetMpGamesBZCC());
+                EndTask(UpdateTaskControl);
+
+                UiInvoke(() =>
+                {
+                    if ((data.EndpointVersion ?? 0) > 0)
+                        MessageBox.Show("Please update your mod manager to ensure the MP game list functions properly.\r\nThe API has been updated and may no longer be compatable.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    lvMultiplayerBZCC.BeginUpdate();
+                    lvMultiplayerBZCC.DataSource = data;
+                    lvMultiplayerBZCC.EndUpdate();
+                });
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _getMpGamesBZCCRunning, 0);
             }
         }
 
@@ -441,7 +446,7 @@ namespace BZRModManager
             string sourceFolder = Path.GetFullPath(Path.Combine("fixes", "bzrmm_bzccjoinfix"));
 
             bool NeedFix = BZCCTools.NeedsJoinShellFix(path);
-            
+
             if (NeedFix)
             {
                 if (Directory.Exists(destinationFolder))
@@ -449,9 +454,7 @@ namespace BZRModManager
                     if (JunctionPoint.Exists(destinationFolder))
                     {
                         if (JunctionPoint.GetTarget(destinationFolder) != sourceFolder)
-                        {
                             JunctionPoint.Delete(destinationFolder);
-                        }
                     }
                     else
                     {
@@ -459,9 +462,7 @@ namespace BZRModManager
                     }
                 }
                 if (!Directory.Exists(destinationFolder))
-                {
                     JunctionPoint.Create(destinationFolder, sourceFolder, true);
-                }
 
                 string LaunchIni = Path.Combine(MainForm.settings.BZCCMyDocsPath, "launch.ini");
                 if (File.Exists(LaunchIni))
