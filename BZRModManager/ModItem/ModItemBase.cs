@@ -41,7 +41,30 @@ namespace BZRModManager.ModItem
         public abstract string FilePath { get; }
 
         public string IconKey { get { return UniqueID; } }
-        public string Name { get { return ToString(); } }
+        // Workshop metadata title, filled in by the name enrichment side-band as soon
+        // as WorkshopContext has it (usually instantly from the JSON cache).
+        public string WorkshopName { get; internal set; }
+
+        // The [MODMANAGER]::name override from the mod's own inis, when the author set one.
+        public virtual string ManagerName { get { return null; } }
+
+        // The name generated from the in-game inis (mission names, workshop ini names, ...).
+        public virtual string GeneratedName { get { return UniqueID; } }
+
+        // The raw Steam Workshop ID for this mod, when it has one, for metadata lookups.
+        public virtual string GetWorkshopId() { return null; }
+
+        public string Name { get
+            {
+                // Precedence: the mod's own [MODMANAGER]::name override, then the
+                // Workshop metadata title (arrives asynchronously), then the name
+                // generated from the in-game inis.
+                string manager = ManagerName;
+                if (!string.IsNullOrWhiteSpace(manager)) return manager;
+                string workshop = WorkshopName;
+                if (!string.IsNullOrWhiteSpace(workshop)) return workshop;
+                return GeneratedName;
+            } }
         public Image LargeIcon { get; set; }
         public Image SmallIcon { get; set; }
         public ListViewItem ListViewItemCache { get; set; }
@@ -50,8 +73,8 @@ namespace BZRModManager.ModItem
 
         public override string ToString()
         {
-            //if (Workshop != null) return Workshop.WorkshopId.ToString();
-            return "UNKNOWN MOD";
+            return Name;
+
         }
 
         public abstract void ToggleGog();

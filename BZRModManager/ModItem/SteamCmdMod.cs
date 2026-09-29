@@ -1,4 +1,4 @@
-﻿using Monitor.Core.Utilities;
+using Monitor.Core.Utilities;
 using SteamVent.Common;
 using SteamVent.SteamCmd;
 using System;
@@ -119,12 +119,33 @@ namespace BZRModManager.ModItem
             this.Workshop = Workshop;
         }
 
-        public override string ToString()
+        public override string ManagerName
         {
+            get
+            {
+                string contentPath = $"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}";
+                if (AppId == MainForm.AppIdBZ98)
+                {
+                    string[] names = BZ98RTools.GetModManagerNames(contentPath, out _);
+                    return names?.Length > 0 ? string.Join(" / ", names) : null;
+                }
+                if (AppId == MainForm.AppIdBZCC)
+                {
+                    return BZCCTools.GetModManagerName(contentPath);
+                }
+                return null;
+            }
+        }
+
+        public override string GeneratedName
+        {
+            get
+            {
+
             if (AppId == MainForm.AppIdBZ98)
             {
                 bool hadError;
-                string[] ModNames = BZ98RTools.GetModNames($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}", out hadError);
+                string[] ModNames = BZ98RTools.GetModMissionNames($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}", out hadError);
                 if (ModNames?.Length > 0)
                 {
                     return (hadError ? "!" : string.Empty) + string.Join(" / ", ModNames);
@@ -139,7 +160,7 @@ namespace BZRModManager.ModItem
             {
                 try
                 {
-                    string ModName = BZCCTools.GetModName($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                    string ModName = BZCCTools.GetGeneratedName($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                     if (ModName != null) return ModName;
                 }
                 catch
@@ -148,6 +169,12 @@ namespace BZRModManager.ModItem
                 }
             }
             return UniqueID;
+            }
+        }
+
+        public override string GetWorkshopId()
+        {
+            return Workshop != null ? Workshop.WorkshopId.ToString() : null;
         }
 
         public override void ToggleGog()

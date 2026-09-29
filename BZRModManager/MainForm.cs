@@ -458,6 +458,50 @@ namespace BZRModManager
 
         private void btnDownloadBZ98R_Click(object sender, EventArgs e) { if (DownloadMod(txtDownloadBZ98R.Text, AppIdBZ98)) txtDownloadBZ98R.Clear(); }
         private void btnDownloadBZCC_Click(object sender, EventArgs e) { if (DownloadMod(txtDownloadBZCC.Text, AppIdBZCC)) txtDownloadBZCC.Clear(); }
+        // Side-band, kicked off after UpdateBZ*ModListsAsync: for every installed mod with a
+        // workshop ID, resolve it through WorkshopContext (the JSON cache is served when
+        // fresh) and apply the workshop Title to mod.WorkshopName, refreshing its row in
+        // place. Name coalescing keeps any [MODMANAGER]::name override on top of this.
+        private async Task EnrichModNamesAsync(UInt32 appid)
+        {
+            LinqListViewMods list = appid == AppIdBZ98 ? lvModsBZ98R : (appid == AppIdBZCC ? lvModsBZCC : null);
+            if (list == null) return;
+
+            List<ModItemBase> mods;
+            await ModsLock.WaitAsync();
+            try { mods = Mods[(int)appid].Values.ToList(); }
+            finally { ModsLock.Release(); }
+
+            using SemaphoreSlim gate = new SemaphoreSlim(8);
+            await Task.WhenAll(mods.Select(async mod =>
+            {
+                string workshopID = mod.GetWorkshopId();
+                if (string.IsNullOrWhiteSpace(workshopID)) return;
+
+                await gate.WaitAsync();
+                WorkshopMod item = null;
+                try
+                {
+                    item = await WorkshopContext.GetItemAsync(workshopID, (int)appid);
+                }
+                catch (Exception)
+                {
+                    item = null;
+                }
+                finally
+                {
+                    gate.Release();
+                }
+                if (item == null || string.IsNullOrWhiteSpace(item.Title)) return;
+                if (string.Equals(mod.WorkshopName, item.Title, StringComparison.Ordinal)) return;
+                mod.WorkshopName = item.Title;
+
+                // mod is the very instance inside the list's source, so a single
+                // row refresh picks up the coalesced name (cache-invalidated there).
+                UiInvoke(() => list.RefreshItem(mod));
+            }).ToArray());
+        }
+
         private bool DownloadMod(string text, UInt32 AppId)
         {
             bool success = false;
@@ -479,6 +523,40 @@ namespace BZRModManager
                     TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - SteamCmd - {workshopID}", 0);
                     Task.Run(async () =>
                     {
+                        // Resolve the item through the workshop context (the JSON cache is
+                        // served when fresh). Collections can't be installed by SteamCmd:
+                        // download their children instead. Anything unresolvable falls
+                        // through to the single ID, letting SteamCmd figure it out.
+                        List<UInt64> DownloadIDs = new List<UInt64> { workshopID };
+                        WorkshopMod Item = null;
+                        try
+                        {
+                            Item = await WorkshopContext.GetItemAsync(workshopID.ToString(System.Globalization.CultureInfo.InvariantCulture), (int)AppId);
+                        }
+                        catch (Exception)
+                        {
+                            // Offline or malformed response: let SteamCmd try the ID as-is.
+                        }
+                        if (Item != null && Item.IsCollection)
+                        {
+                            List<UInt64> Children = new List<UInt64>();
+                            foreach (string Child in Item.Children)
+                                if (Child != null && UInt64.TryParse(Child, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out UInt64 ChildID)
+                                    && ChildID > 0 && !Children.Contains(ChildID))
+                                    Children.Add(ChildID);
+                            if (Children.Count > 0)
+                            {
+                                DownloadIDs = Children;
+                                DownloadModTaskControl.Text = $"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Collection - SteamCmd - {(Item.Title ?? workshopID.ToString(System.Globalization.CultureInfo.InvariantCulture))} ({DownloadIDs.Count})";
+                            }
+                        }
+                        else if (Item != null && !string.IsNullOrWhiteSpace(Item.Title))
+                        {
+                            DownloadModTaskControl.Text = $"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - SteamCmd - {Item.Title} ({workshopID.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
+                        }
+
+                        foreach (UInt64 DownloadID in DownloadIDs)
+                        {
                         SteamCmdException ex_ = null;
                         int OtherErrorCounter = 0;
                         do
@@ -486,7 +564,7 @@ namespace BZRModManager
                             ex_ = null;
                             try
                             {
-                                await SteamCmd.WorkshopDownloadItemAsync(AppId, workshopID);
+                                await SteamCmd.WorkshopDownloadItemAsync(AppId, DownloadID);
                             }
                             catch (SteamCmdWorkshopDownloadException ex)
                             {
@@ -500,6 +578,7 @@ namespace BZRModManager
                                 OtherErrorCounter++;
                             }
                         } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
+                        }
 
 
                         UiInvoke(() =>

@@ -66,6 +66,10 @@ namespace BZRModManager
                         lvFindModsBZCC.DataSource = findSnapshot;
                         lvFindModsBZCC.EndUpdate();
                     });
+
+                    // Side-band: fill in workshop metadata names as they arrive (cache-first),
+                    // refreshing each row in place when its display name changes.
+                    _ = EnrichModNamesAsync(AppIdBZCC);
                 }
                 finally
                 {

@@ -37,7 +37,7 @@ namespace BZRModManager
             return data?["WORKSHOP"]?["modType"]?.Trim('"');
         }
 
-        public static string GetModName(string path, string workshopID = null)
+        public static string GetModManagerName(string path, string workshopID = null)
         {
             string pathini = GetIni(path, workshopID);
             if (!File.Exists(pathini)) return null;
@@ -49,8 +49,22 @@ namespace BZRModManager
             parser.Configuration.AllowKeysWithoutSection = true;
 
             IniData data = parser.Parse(File.ReadAllText(pathini));
-            string prettyName = data?["MODMANAGER"]?["name"]?.Trim('"');
-            if (!string.IsNullOrWhiteSpace(prettyName)) return prettyName;
+            return data?["MODMANAGER"]?["name"]?.Trim('"');
+        }
+
+        // The in-game ini based name ([WORKSHOP]::modName).
+        public static string GetGeneratedName(string path, string workshopID = null)
+        {
+            string pathini = GetIni(path, workshopID);
+            if (!File.Exists(pathini)) return null;
+
+            var parser = new IniDataParser();
+            parser.Configuration.SkipInvalidLines = true;
+            parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
+            parser.Configuration.AllowDuplicateSections = true;
+            parser.Configuration.AllowKeysWithoutSection = true;
+
+            IniData data = parser.Parse(File.ReadAllText(pathini));
             return data?["WORKSHOP"]?["modName"]?.Trim('"');
         }
 

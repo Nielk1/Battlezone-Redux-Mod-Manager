@@ -173,7 +173,7 @@ namespace BZRModManager
         }
         private void ApplySortAndFilter()
         {
-            Console.WriteLine($"Sorting by {string.Join(",", sorts)}");
+            //Console.WriteLine($"Sorting by {string.Join(",", sorts)}");
 
             if (sorts.Count > 0)
             {

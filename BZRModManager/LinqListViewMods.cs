@@ -38,6 +38,15 @@ namespace BZRModManager
             base.ColumnWidthChanged += LinqListView_ColumnWidthChanged;
         }
 
+        // Re-renders a single row after its display data (e.g. Name) changed in place,
+        // e.g. when the workshop metadata title arrives late. UI thread only.
+        public void RefreshItem(ILinqListViewItemMods item)
+        {
+            if (item == null) return;
+            item.ListViewItemCache = null;
+            this.Refresh();
+        }
+
         private void LinqListView_ColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
         {
             ListChangedRecently = false;
@@ -323,7 +332,7 @@ namespace BZRModManager
         }
         private void ApplySortAndFilter()
         {
-            Console.WriteLine($"Sorting by {string.Join(",", sorts)}");
+            //Console.WriteLine($"Sorting by {string.Join(",", sorts)}");
 
             if (sorts.Count > 0)
             {

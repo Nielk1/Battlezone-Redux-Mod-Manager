@@ -73,6 +73,10 @@ namespace BZRModManager
                         lvFindModsBZ98R.DataSource = findSnapshot;
                         lvFindModsBZ98R.EndUpdate();
                     });
+
+                    // Side-band: fill in workshop metadata names as they arrive (cache-first),
+                    // refreshing each row in place when its display name changes.
+                    _ = EnrichModNamesAsync(AppIdBZ98);
                 }
                 finally
                 {

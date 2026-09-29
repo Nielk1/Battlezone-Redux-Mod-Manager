@@ -66,7 +66,7 @@ namespace BZRModManager
             }
         }
 
-        public static string[] GetModNames(string path, out bool error)
+        public static string[] GetModManagerNames(string path, out bool error)
         {
             try
             {
@@ -98,8 +98,30 @@ namespace BZRModManager
                     }
                 }).Where(dr => !string.IsNullOrWhiteSpace(dr)).Distinct().OrderBy(dr => dr).ToArray();
                 error = hadIniParseError;
-                if (niceNames.Length > 0) return niceNames;
-                niceNames = paths.ToList().Select(dr =>
+                return niceNames;
+            }
+            catch (System.IO.DirectoryNotFoundException)
+            {
+                error = true;
+                return null;
+            }
+        }
+
+        // The in-game ini based names ([DESCRIPTION]::missionName).
+        public static string[] GetModMissionNames(string path, out bool error)
+        {
+            try
+            {
+                IEnumerable<string> paths = GetInis(path);
+
+                var parser = new IniDataParser();
+                parser.Configuration.SkipInvalidLines = true;
+                parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
+                parser.Configuration.AllowDuplicateSections = true;
+                parser.Configuration.AllowKeysWithoutSection = true;
+
+                bool hadIniParseError = false;
+                string[] niceNames = paths.ToList().Select(dr =>
                 {
                     try
                     {
