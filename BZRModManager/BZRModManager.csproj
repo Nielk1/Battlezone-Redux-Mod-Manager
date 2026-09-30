@@ -10,6 +10,8 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <ApplicationIcon>Resources\modmanager.ico</ApplicationIcon>
+    <Version>1.0.1</Version>
+    <Copyright>Copyright © 2026 John &quot;Nielk1&quot; Klein</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,6 +37,10 @@
     <None Update="fixes\bzrmm_bzccjoinfix\bzrmm_bzccjoinfix.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +49,14 @@
     <Content Include="Resources\github_icon.png" />
     <None Include="Resources\modmanager.ico" />
     <None Include="Resources\discord_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <!--

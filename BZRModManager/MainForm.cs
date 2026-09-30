@@ -83,7 +83,7 @@ namespace BZRModManager
             pnlTasks.VerticalScroll.Visible = false;
             pnlTasks.AutoScroll = true;
 
-            this.Text += " - Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.Text += " - Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 #if DEBUG
             this.Text += " - DEV";
 #endif
@@ -1242,7 +1242,7 @@ namespace BZRModManager
                 Items.Add(lvPlayers.GetItemAtVirtualIndex(idx).URL);
             string URL = Items.FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(URL))
-                Process.Start(URL);
+                Process.Start(new ProcessStartInfo(URL) { UseShellExecute = true });
         }
 
         private void btnGetModSteamCmd_Click(object sender, EventArgs e)
@@ -1288,7 +1288,7 @@ namespace BZRModManager
                         try
                         {
                             if (!Mods[AppIdBZ98].ContainsKey(session.Level.Mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
-                                Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}");
+                                Process.Start(new ProcessStartInfo($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}") { UseShellExecute = true });
                         }
                         finally
                         {
@@ -1317,7 +1317,7 @@ namespace BZRModManager
                         foreach(string mod in ModsIDs)
                             if (!Mods[AppIdBZCC].ContainsKey(mod.PadLeft(UInt64.MaxValue.ToString().Length, '0') + "-Steam"))
                             {
-                                Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}");
+                                Process.Start(new ProcessStartInfo($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={session.Level.Mod}") { UseShellExecute = true });
                                 break;
                             }
                     }
@@ -1726,17 +1726,17 @@ namespace BZRModManager
 
         private void btnSteamAward_Click(object sender, EventArgs e)
         {
-            Process.Start(@"https://steamcommunity.com/sharedfiles/filedetails/?id=2270251770");
+            Process.Start(new ProcessStartInfo(@"https://steamcommunity.com/sharedfiles/filedetails/?id=2270251770") { UseShellExecute = true });
         }
 
         private void btnDiscord_Click(object sender, EventArgs e)
         {
-            Process.Start(@"http://discord.battlezone.report/");
+            Process.Start(new ProcessStartInfo(@"http://discord.battlezone.report/") { UseShellExecute = true });
         }
 
         private void btnGithub_Click(object sender, EventArgs e)
         {
-            Process.Start(@"https://github.com/Nielk1/Battlezone-Redux-Mod-Manager");
+            Process.Start(new ProcessStartInfo(@"https://github.com/Nielk1/Battlezone-Redux-Mod-Manager") { UseShellExecute = true });
         }
 
         private void btnRunAudit_Click(object sender, EventArgs e)
@@ -2072,7 +2072,7 @@ namespace BZRModManager
         private void txtAuditLog_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(e.LinkText))
-                Process.Start(e.LinkText);
+                Process.Start(new ProcessStartInfo(e.LinkText) { UseShellExecute = true });
         }
 
 

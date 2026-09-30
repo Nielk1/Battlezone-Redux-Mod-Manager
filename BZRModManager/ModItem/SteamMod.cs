@@ -332,7 +332,7 @@ namespace BZRModManager.ModItem
         {
             if (InstalledSteam == InstallStatus.Missing)
             {
-                Process.Start($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={WorkshopId}");
+                Process.Start(new ProcessStartInfo($@"steam://openurl/https://steamcommunity.com/sharedfiles/filedetails/?id={WorkshopId}") { UseShellExecute = true });
             }
         }
 
