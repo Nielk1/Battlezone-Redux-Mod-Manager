@@ -5,6 +5,22 @@ This application is designed to download and manage mods from the Steam Workshop
 
 To utilize the manager, directories must be properly configured. These directories are set via the Settings tab and in most cases can be set by clicking the "Quick Find" button followed by the "Apply" button to save the found value. Steam directories do not need to be set if you do not wish to sync mods from an existing steam installation to a Gog installation or install git based mods into Steam.
 
+## Installing Updating
+
+### Installing
+Unzip the binary archive from the [Latest Release](https://github.com/Nielk1/Battlezone-Redux-Mod-Manager/releases/latest) page.  Extract it to the location you'd like the manage to sit.  This location is important because it is where all your mods will download and take up space.  Moving the mods after they are installed is not advised.  If you would like to move the manager after mods are installed you should uninstall all mods (but keep them downloaded) before moving the folder.  This will prevent the junction points from becoming mangled.
+
+### Updating
+The update process is manual but it is not difficult.
+1. Delete everything except the `steamcmd`, `git`, and `fixes` folders.
+   * If you wish to delete these folders you should ensure all mods are uninstalled first or manually delete any junctions left in the game's mod folder.
+   * The `steamcmd` folder is a self contained SteamCmd instance.
+   * The `git` folder may not exist unless you used git based mods.
+   * The `fixes` folder is a mini-mod that is supposed to only be injected when launching directly into a multiplayer session in BZCC on specific versions with a UI bug, thus it is actually likely safe to remove, but leaving it and overwriting it is perfectly safe as well.
+2. **Optional**: Delete everything in the `steamcmd` folder except the `steamapps` directory.
+   * Generally this is not required, but if you do be sure to keep the `steamapps` subfolder unless you also uninstall all mods.  This is where all the normally downloaded mods reside.
+3. Extract the new release binary zip into the folder, ensure the files are positioned the same as the old removed files.
+
 ## Main Interface
 
 `Download` - Attempt to download a mod from the URL in the Mod URL box. Steam workshop URLs, workshop ID#s, or git URLs accepted.
