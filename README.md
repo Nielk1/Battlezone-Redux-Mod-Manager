@@ -10,6 +10,13 @@ To utilize the manager, directories must be properly configured. These directori
 ### Installing
 Unzip the binary archive from the [Latest Release](https://github.com/Nielk1/Battlezone-Redux-Mod-Manager/releases/latest) page.  Extract it to the location you'd like the manage to sit.  This location is important because it is where all your mods will download and take up space.  Moving the mods after they are installed is not advised.  If you would like to move the manager after mods are installed you should uninstall all mods (but keep them downloaded) before moving the folder.  This will prevent the junction points from becoming mangled.
 
+Example installation locations:
+* `C:\BZR Mod Manager`
+* `D:\Games\BZR\ModManger`
+* `D:\Program Files (loose)\BZR Mod Manager` (This is what I use, though some programs refuse to work in folders that start with "Program Files"
+
+Do not install this program to your Desktop or Documents or other general user location.  This is a data-heavy application (stores lots of mod data) so it should be properly located.  The directory paths should not be too deep just to keep things nice and stable.
+
 ### Updating
 The update process is manual but it is not difficult.
 1. Delete everything except the `steamcmd`, `git`, and `fixes` folders.
