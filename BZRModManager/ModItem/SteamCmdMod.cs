@@ -26,7 +26,7 @@ namespace BZRModManager.ModItem
                 {
                     if ((MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
                     {
-                        string sourceFolder = Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                        string sourceFolder = Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                         string destinationFolder = Path.Combine(MainForm.settings.BZ98RGogPath, "mods", Workshop.WorkshopId.ToString());
 
                         if (!Directory.Exists(destinationFolder)) return InstallStatus.Uninstalled;
@@ -38,7 +38,7 @@ namespace BZRModManager.ModItem
                 {
                     if ((MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
                     {
-                        string sourceFolder = Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                        string sourceFolder = Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                         string destinationFolder = Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", Workshop.WorkshopId.ToString());
 
                         if (!Directory.Exists(destinationFolder)) return InstallStatus.Uninstalled;
@@ -57,7 +57,7 @@ namespace BZRModManager.ModItem
                 if (AppId == MainForm.AppIdBZ98)
                 {
                     bool hadError;
-                    string[] ModTypes = BZ98RTools.GetModTypes($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}", out hadError);
+                    string[] ModTypes = BZ98RTools.GetModTypes(Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}"), out hadError);
                     if (ModTypes?.Length > 0)
                     {
                         return (hadError ? "!" : string.Empty) + string.Join(", ", ModTypes);
@@ -71,7 +71,7 @@ namespace BZRModManager.ModItem
                 {
                     try
                     {
-                        string ModType = BZCCTools.GetModType($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                        string ModType = BZCCTools.GetModType(Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}"));
                         if (ModType != null) return ModType;
                     }
                     catch
@@ -88,12 +88,12 @@ namespace BZRModManager.ModItem
             {
                 if (AppId == MainForm.AppIdBZ98)
                 {
-                    string[] ModTags = BZ98RTools.GetModTags($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                    string[] ModTags = BZ98RTools.GetModTags(Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}"));
                     return ModTags;
                 }
                 if (AppId == MainForm.AppIdBZCC)
                 {
-                    string[] ModTags = BZCCTools.GetModTags($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                    string[] ModTags = BZCCTools.GetModTags(Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}"));
                     return ModTags;
                 }
                 return new string[] { "UNKNON" };
@@ -108,7 +108,7 @@ namespace BZRModManager.ModItem
             get
             {
                 if (AppId == MainForm.AppIdBZ98 || AppId == MainForm.AppIdBZCC)
-                    return Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                    return Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                 return null;
             }
         }
@@ -123,7 +123,7 @@ namespace BZRModManager.ModItem
         {
             get
             {
-                string contentPath = $"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}";
+                string contentPath = Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                 if (AppId == MainForm.AppIdBZ98)
                 {
                     string[] names = BZ98RTools.GetModManagerNames(contentPath, out _);
@@ -145,7 +145,7 @@ namespace BZRModManager.ModItem
             if (AppId == MainForm.AppIdBZ98)
             {
                 bool hadError;
-                string[] ModNames = BZ98RTools.GetModMissionNames($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}", out hadError);
+                string[] ModNames = BZ98RTools.GetModMissionNames(Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}"), out hadError);
                 if (ModNames?.Length > 0)
                 {
                     return (hadError ? "!" : string.Empty) + string.Join(" / ", ModNames);
@@ -160,7 +160,7 @@ namespace BZRModManager.ModItem
             {
                 try
                 {
-                    string ModName = BZCCTools.GetGeneratedName($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                    string ModName = BZCCTools.GetGeneratedName(Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}"));
                     if (ModName != null) return ModName;
                 }
                 catch
@@ -185,7 +185,7 @@ namespace BZRModManager.ModItem
                 {
                     if ((MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
                     {
-                        string sourceFolder = Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                        string sourceFolder = Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                         string destinationFolder = Path.Combine(MainForm.settings.BZ98RGogPath, "mods", Workshop.WorkshopId.ToString());
 
                         if (Directory.Exists(destinationFolder)) return;
@@ -203,7 +203,7 @@ namespace BZRModManager.ModItem
                 {
                     if ((MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
                     {
-                        string sourceFolder = Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                        string sourceFolder = Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                         string destinationFolder = Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", Workshop.WorkshopId.ToString());
 
                         if (Directory.Exists(destinationFolder)) return;
@@ -224,7 +224,7 @@ namespace BZRModManager.ModItem
                 {
                     if ((MainForm.settings?.BZ98RGogPath?.Length ?? 0) > 0)
                     {
-                        string sourceFolder = Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                        string sourceFolder = Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                         string destinationFolder = Path.Combine(MainForm.settings.BZ98RGogPath, "mods", Workshop.WorkshopId.ToString());
 
                         if (!Directory.Exists(destinationFolder)) return;
@@ -236,7 +236,7 @@ namespace BZRModManager.ModItem
                 {
                     if ((MainForm.settings?.BZCCMyDocsPath?.Length ?? 0) > 0)
                     {
-                        string sourceFolder = Path.GetFullPath($"steamcmd\\steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
+                        string sourceFolder = Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{AppId}\\{Workshop.WorkshopId}");
                         string destinationFolder = Path.Combine(MainForm.settings.BZCCMyDocsPath, "gogWorkshop", Workshop.WorkshopId.ToString());
 
                         if (!Directory.Exists(destinationFolder)) return;

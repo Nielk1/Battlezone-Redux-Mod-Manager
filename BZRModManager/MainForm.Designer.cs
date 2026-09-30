@@ -87,6 +87,16 @@
             txtAuditLog = new System.Windows.Forms.RichTextBox();
             btnRunAudit = new System.Windows.Forms.Button();
             tpSettings = new System.Windows.Forms.TabPage();
+            tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            panel1 = new System.Windows.Forms.Panel();
+            cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
+            btnFixSteamCmd = new System.Windows.Forms.Button();
+            btnReinstallAllMods = new System.Windows.Forms.Button();
+            btnUninstallAllMods = new System.Windows.Forms.Button();
+            groupBox7 = new System.Windows.Forms.GroupBox();
+            btnSteamCmdInstallDirFind = new System.Windows.Forms.Button();
+            txtSteamCmdInstallDir = new System.Windows.Forms.TextBox();
+            btnSteamCmdInstallDirApply = new System.Windows.Forms.Button();
             groupBox6 = new System.Windows.Forms.GroupBox();
             btnGitFind = new System.Windows.Forms.Button();
             txtGit = new System.Windows.Forms.TextBox();
@@ -95,8 +105,6 @@
             btnBZCCGogFind = new System.Windows.Forms.Button();
             txtBZCCGog = new System.Windows.Forms.TextBox();
             btnBZCCRGogApply = new System.Windows.Forms.Button();
-            btnFixSteamCmd = new System.Windows.Forms.Button();
-            cbFallbackSteamCmdWindowHandling = new System.Windows.Forms.CheckBox();
             groupBox4 = new System.Windows.Forms.GroupBox();
             btnBZCCMyDocsFind = new System.Windows.Forms.Button();
             txtBZCCMyDocs = new System.Windows.Forms.TextBox();
@@ -150,6 +158,9 @@
             tpMultiplayerBZCC.SuspendLayout();
             tpAudit.SuspendLayout();
             tpSettings.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
+            panel1.SuspendLayout();
+            groupBox7.SuspendLayout();
             groupBox6.SuspendLayout();
             groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
@@ -944,21 +955,149 @@
             // 
             // tpSettings
             // 
-            tpSettings.Controls.Add(groupBox6);
-            tpSettings.Controls.Add(groupBox5);
-            tpSettings.Controls.Add(btnFixSteamCmd);
-            tpSettings.Controls.Add(cbFallbackSteamCmdWindowHandling);
-            tpSettings.Controls.Add(groupBox4);
-            tpSettings.Controls.Add(groupBox3);
-            tpSettings.Controls.Add(groupBox2);
-            tpSettings.Controls.Add(groupBox1);
+            tpSettings.AutoScroll = true;
+            tpSettings.Controls.Add(tableLayoutPanel3);
             tpSettings.Location = new System.Drawing.Point(4, 24);
             tpSettings.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             tpSettings.Name = "tpSettings";
-            tpSettings.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            tpSettings.Padding = new System.Windows.Forms.Padding(4, 3, 25, 3);
             tpSettings.Size = new System.Drawing.Size(858, 455);
             tpSettings.TabIndex = 2;
             tpSettings.Text = "Settings";
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tableLayoutPanel3.AutoSize = true;
+            tableLayoutPanel3.ColumnCount = 1;
+            tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tableLayoutPanel3.Controls.Add(panel1, 0, 7);
+            tableLayoutPanel3.Controls.Add(groupBox7, 0, 6);
+            tableLayoutPanel3.Controls.Add(groupBox6, 0, 5);
+            tableLayoutPanel3.Controls.Add(groupBox5, 0, 4);
+            tableLayoutPanel3.Controls.Add(groupBox4, 0, 3);
+            tableLayoutPanel3.Controls.Add(groupBox3, 0, 2);
+            tableLayoutPanel3.Controls.Add(groupBox2, 0, 1);
+            tableLayoutPanel3.Controls.Add(groupBox1, 0, 0);
+            tableLayoutPanel3.Location = new System.Drawing.Point(0, 0);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 8;
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tableLayoutPanel3.Size = new System.Drawing.Size(841, 512);
+            tableLayoutPanel3.TabIndex = 13;
+            // 
+            // panel1
+            // 
+            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panel1.Controls.Add(cbFallbackSteamCmdWindowHandling);
+            panel1.Controls.Add(btnFixSteamCmd);
+            panel1.Controls.Add(btnReinstallAllMods);
+            panel1.Controls.Add(btnUninstallAllMods);
+            panel1.Location = new System.Drawing.Point(0, 448);
+            panel1.Margin = new System.Windows.Forms.Padding(0);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(841, 62);
+            panel1.TabIndex = 24;
+            // 
+            // cbFallbackSteamCmdWindowHandling
+            // 
+            cbFallbackSteamCmdWindowHandling.AutoSize = true;
+            cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(4, 36);
+            cbFallbackSteamCmdWindowHandling.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
+            cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(230, 19);
+            cbFallbackSteamCmdWindowHandling.TabIndex = 17;
+            cbFallbackSteamCmdWindowHandling.Text = "Fallback SteamCmd Window Handling";
+            cbFallbackSteamCmdWindowHandling.UseVisualStyleBackColor = true;
+            cbFallbackSteamCmdWindowHandling.Visible = false;
+            cbFallbackSteamCmdWindowHandling.CheckedChanged += cbFallbackSteamCmdWindowHandling_CheckedChanged;
+            // 
+            // btnFixSteamCmd
+            // 
+            btnFixSteamCmd.Location = new System.Drawing.Point(4, 3);
+            btnFixSteamCmd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnFixSteamCmd.Name = "btnFixSteamCmd";
+            btnFixSteamCmd.Size = new System.Drawing.Size(209, 27);
+            btnFixSteamCmd.TabIndex = 18;
+            btnFixSteamCmd.Text = "Delete and Rebuild SteamCmd";
+            btnFixSteamCmd.UseVisualStyleBackColor = true;
+            btnFixSteamCmd.Click += btnFixSteamCmd_Click;
+            // 
+            // btnReinstallAllMods
+            // 
+            btnReinstallAllMods.Location = new System.Drawing.Point(617, 3);
+            btnReinstallAllMods.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnReinstallAllMods.Name = "btnReinstallAllMods";
+            btnReinstallAllMods.Size = new System.Drawing.Size(220, 27);
+            btnReinstallAllMods.TabIndex = 23;
+            btnReinstallAllMods.Text = "Reinstall Saved Mods";
+            btnReinstallAllMods.UseVisualStyleBackColor = true;
+            btnReinstallAllMods.Click += btnReinstallAllMods_Click;
+            // 
+            // btnUninstallAllMods
+            // 
+            btnUninstallAllMods.Location = new System.Drawing.Point(329, 3);
+            btnUninstallAllMods.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnUninstallAllMods.Name = "btnUninstallAllMods";
+            btnUninstallAllMods.Size = new System.Drawing.Size(280, 27);
+            btnUninstallAllMods.TabIndex = 22;
+            btnUninstallAllMods.Text = "Uninstall All Installed Mods (Save List)";
+            btnUninstallAllMods.UseVisualStyleBackColor = true;
+            btnUninstallAllMods.Click += btnUninstallAllMods_Click;
+            // 
+            // groupBox7
+            // 
+            groupBox7.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox7.Controls.Add(btnSteamCmdInstallDirFind);
+            groupBox7.Controls.Add(txtSteamCmdInstallDir);
+            groupBox7.Controls.Add(btnSteamCmdInstallDirApply);
+            groupBox7.Location = new System.Drawing.Point(4, 387);
+            groupBox7.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox7.Name = "groupBox7";
+            groupBox7.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox7.Size = new System.Drawing.Size(833, 58);
+            groupBox7.TabIndex = 21;
+            groupBox7.TabStop = false;
+            groupBox7.Text = "SteamCmd data location (+force_install_dir)";
+            // 
+            // btnSteamCmdInstallDirFind
+            // 
+            btnSteamCmdInstallDirFind.Location = new System.Drawing.Point(7, 22);
+            btnSteamCmdInstallDirFind.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSteamCmdInstallDirFind.Name = "btnSteamCmdInstallDirFind";
+            btnSteamCmdInstallDirFind.Size = new System.Drawing.Size(86, 27);
+            btnSteamCmdInstallDirFind.TabIndex = 10;
+            btnSteamCmdInstallDirFind.Text = "Browse";
+            btnSteamCmdInstallDirFind.UseVisualStyleBackColor = true;
+            btnSteamCmdInstallDirFind.Click += btnSteamCmdInstallDirFind_Click;
+            // 
+            // txtSteamCmdInstallDir
+            // 
+            txtSteamCmdInstallDir.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtSteamCmdInstallDir.Location = new System.Drawing.Point(100, 24);
+            txtSteamCmdInstallDir.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtSteamCmdInstallDir.Name = "txtSteamCmdInstallDir";
+            txtSteamCmdInstallDir.Size = new System.Drawing.Size(652, 23);
+            txtSteamCmdInstallDir.TabIndex = 11;
+            // 
+            // btnSteamCmdInstallDirApply
+            // 
+            btnSteamCmdInstallDirApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnSteamCmdInstallDirApply.Location = new System.Drawing.Point(760, 22);
+            btnSteamCmdInstallDirApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSteamCmdInstallDirApply.Name = "btnSteamCmdInstallDirApply";
+            btnSteamCmdInstallDirApply.Size = new System.Drawing.Size(66, 27);
+            btnSteamCmdInstallDirApply.TabIndex = 12;
+            btnSteamCmdInstallDirApply.Text = "Apply";
+            btnSteamCmdInstallDirApply.UseVisualStyleBackColor = true;
+            btnSteamCmdInstallDirApply.Click += btnSteamCmdInstallDirApply_Click;
             // 
             // groupBox6
             // 
@@ -966,11 +1105,11 @@
             groupBox6.Controls.Add(btnGitFind);
             groupBox6.Controls.Add(txtGit);
             groupBox6.Controls.Add(btnGitApply);
-            groupBox6.Location = new System.Drawing.Point(7, 330);
+            groupBox6.Location = new System.Drawing.Point(4, 323);
             groupBox6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox6.Name = "groupBox6";
             groupBox6.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox6.Size = new System.Drawing.Size(844, 58);
+            groupBox6.Size = new System.Drawing.Size(833, 58);
             groupBox6.TabIndex = 20;
             groupBox6.TabStop = false;
             groupBox6.Text = "git.exe location";
@@ -992,13 +1131,13 @@
             txtGit.Location = new System.Drawing.Point(100, 24);
             txtGit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtGit.Name = "txtGit";
-            txtGit.Size = new System.Drawing.Size(663, 23);
+            txtGit.Size = new System.Drawing.Size(652, 23);
             txtGit.TabIndex = 11;
             // 
             // btnGitApply
             // 
             btnGitApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnGitApply.Location = new System.Drawing.Point(771, 22);
+            btnGitApply.Location = new System.Drawing.Point(760, 22);
             btnGitApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnGitApply.Name = "btnGitApply";
             btnGitApply.Size = new System.Drawing.Size(66, 27);
@@ -1013,11 +1152,11 @@
             groupBox5.Controls.Add(btnBZCCGogFind);
             groupBox5.Controls.Add(txtBZCCGog);
             groupBox5.Controls.Add(btnBZCCRGogApply);
-            groupBox5.Location = new System.Drawing.Point(7, 265);
+            groupBox5.Location = new System.Drawing.Point(4, 259);
             groupBox5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox5.Name = "groupBox5";
             groupBox5.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox5.Size = new System.Drawing.Size(844, 58);
+            groupBox5.Size = new System.Drawing.Size(833, 58);
             groupBox5.TabIndex = 19;
             groupBox5.TabStop = false;
             groupBox5.Text = "GOG install of BZCC (only needed for multiplayer quicklaunch)";
@@ -1039,13 +1178,13 @@
             txtBZCCGog.Location = new System.Drawing.Point(100, 24);
             txtBZCCGog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtBZCCGog.Name = "txtBZCCGog";
-            txtBZCCGog.Size = new System.Drawing.Size(663, 23);
+            txtBZCCGog.Size = new System.Drawing.Size(652, 23);
             txtBZCCGog.TabIndex = 11;
             // 
             // btnBZCCRGogApply
             // 
             btnBZCCRGogApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnBZCCRGogApply.Location = new System.Drawing.Point(771, 22);
+            btnBZCCRGogApply.Location = new System.Drawing.Point(760, 22);
             btnBZCCRGogApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnBZCCRGogApply.Name = "btnBZCCRGogApply";
             btnBZCCRGogApply.Size = new System.Drawing.Size(66, 27);
@@ -1054,41 +1193,17 @@
             btnBZCCRGogApply.UseVisualStyleBackColor = true;
             btnBZCCRGogApply.Click += btnBZCCRGogApply_Click;
             // 
-            // btnFixSteamCmd
-            // 
-            btnFixSteamCmd.Location = new System.Drawing.Point(7, 395);
-            btnFixSteamCmd.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnFixSteamCmd.Name = "btnFixSteamCmd";
-            btnFixSteamCmd.Size = new System.Drawing.Size(209, 27);
-            btnFixSteamCmd.TabIndex = 18;
-            btnFixSteamCmd.Text = "Delete and Rebuild SteamCmd";
-            btnFixSteamCmd.UseVisualStyleBackColor = true;
-            btnFixSteamCmd.Click += btnFixSteamCmd_Click;
-            // 
-            // cbFallbackSteamCmdWindowHandling
-            // 
-            cbFallbackSteamCmdWindowHandling.AutoSize = true;
-            cbFallbackSteamCmdWindowHandling.Location = new System.Drawing.Point(7, 428);
-            cbFallbackSteamCmdWindowHandling.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            cbFallbackSteamCmdWindowHandling.Name = "cbFallbackSteamCmdWindowHandling";
-            cbFallbackSteamCmdWindowHandling.Size = new System.Drawing.Size(230, 19);
-            cbFallbackSteamCmdWindowHandling.TabIndex = 17;
-            cbFallbackSteamCmdWindowHandling.Text = "Fallback SteamCmd Window Handling";
-            cbFallbackSteamCmdWindowHandling.UseVisualStyleBackColor = true;
-            cbFallbackSteamCmdWindowHandling.Visible = false;
-            cbFallbackSteamCmdWindowHandling.CheckedChanged += cbFallbackSteamCmdWindowHandling_CheckedChanged;
-            // 
             // groupBox4
             // 
             groupBox4.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupBox4.Controls.Add(btnBZCCMyDocsFind);
             groupBox4.Controls.Add(txtBZCCMyDocs);
             groupBox4.Controls.Add(btnBZCCMyDocsApply);
-            groupBox4.Location = new System.Drawing.Point(7, 201);
+            groupBox4.Location = new System.Drawing.Point(4, 195);
             groupBox4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox4.Name = "groupBox4";
             groupBox4.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox4.Size = new System.Drawing.Size(844, 58);
+            groupBox4.Size = new System.Drawing.Size(833, 58);
             groupBox4.TabIndex = 13;
             groupBox4.TabStop = false;
             groupBox4.Text = "BZCC Folder in My Docs/My Games";
@@ -1110,13 +1225,13 @@
             txtBZCCMyDocs.Location = new System.Drawing.Point(100, 24);
             txtBZCCMyDocs.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtBZCCMyDocs.Name = "txtBZCCMyDocs";
-            txtBZCCMyDocs.Size = new System.Drawing.Size(663, 23);
+            txtBZCCMyDocs.Size = new System.Drawing.Size(652, 23);
             txtBZCCMyDocs.TabIndex = 15;
             // 
             // btnBZCCMyDocsApply
             // 
             btnBZCCMyDocsApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnBZCCMyDocsApply.Location = new System.Drawing.Point(771, 22);
+            btnBZCCMyDocsApply.Location = new System.Drawing.Point(760, 22);
             btnBZCCMyDocsApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnBZCCMyDocsApply.Name = "btnBZCCMyDocsApply";
             btnBZCCMyDocsApply.Size = new System.Drawing.Size(66, 27);
@@ -1131,11 +1246,11 @@
             groupBox3.Controls.Add(btnBZ98RGogFind);
             groupBox3.Controls.Add(txtBZ98RGog);
             groupBox3.Controls.Add(btnBZ98RGogApply);
-            groupBox3.Location = new System.Drawing.Point(7, 136);
+            groupBox3.Location = new System.Drawing.Point(4, 131);
             groupBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox3.Name = "groupBox3";
             groupBox3.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox3.Size = new System.Drawing.Size(844, 58);
+            groupBox3.Size = new System.Drawing.Size(833, 58);
             groupBox3.TabIndex = 9;
             groupBox3.TabStop = false;
             groupBox3.Text = "GOG install of BZ98R";
@@ -1157,13 +1272,13 @@
             txtBZ98RGog.Location = new System.Drawing.Point(100, 24);
             txtBZ98RGog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtBZ98RGog.Name = "txtBZ98RGog";
-            txtBZ98RGog.Size = new System.Drawing.Size(663, 23);
+            txtBZ98RGog.Size = new System.Drawing.Size(652, 23);
             txtBZ98RGog.TabIndex = 11;
             // 
             // btnBZ98RGogApply
             // 
             btnBZ98RGogApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnBZ98RGogApply.Location = new System.Drawing.Point(771, 22);
+            btnBZ98RGogApply.Location = new System.Drawing.Point(760, 22);
             btnBZ98RGogApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnBZ98RGogApply.Name = "btnBZ98RGogApply";
             btnBZ98RGogApply.Size = new System.Drawing.Size(66, 27);
@@ -1178,11 +1293,11 @@
             groupBox2.Controls.Add(btnBZCCSteamFind);
             groupBox2.Controls.Add(txtBZCCSteam);
             groupBox2.Controls.Add(btnBZCCSteamApply);
-            groupBox2.Location = new System.Drawing.Point(7, 72);
+            groupBox2.Location = new System.Drawing.Point(4, 67);
             groupBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox2.Name = "groupBox2";
             groupBox2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox2.Size = new System.Drawing.Size(844, 58);
+            groupBox2.Size = new System.Drawing.Size(833, 58);
             groupBox2.TabIndex = 5;
             groupBox2.TabStop = false;
             groupBox2.Text = "steamapps folder that contains BZCC";
@@ -1204,13 +1319,13 @@
             txtBZCCSteam.Location = new System.Drawing.Point(100, 24);
             txtBZCCSteam.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtBZCCSteam.Name = "txtBZCCSteam";
-            txtBZCCSteam.Size = new System.Drawing.Size(663, 23);
+            txtBZCCSteam.Size = new System.Drawing.Size(652, 23);
             txtBZCCSteam.TabIndex = 7;
             // 
             // btnBZCCSteamApply
             // 
             btnBZCCSteamApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnBZCCSteamApply.Location = new System.Drawing.Point(771, 22);
+            btnBZCCSteamApply.Location = new System.Drawing.Point(760, 22);
             btnBZCCSteamApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnBZCCSteamApply.Name = "btnBZCCSteamApply";
             btnBZCCSteamApply.Size = new System.Drawing.Size(66, 27);
@@ -1225,11 +1340,11 @@
             groupBox1.Controls.Add(btnBZ98RSteamFind);
             groupBox1.Controls.Add(txtBZ98RSteam);
             groupBox1.Controls.Add(btnBZ98RSteamApply);
-            groupBox1.Location = new System.Drawing.Point(7, 7);
+            groupBox1.Location = new System.Drawing.Point(4, 3);
             groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox1.Size = new System.Drawing.Size(844, 58);
+            groupBox1.Size = new System.Drawing.Size(833, 58);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "steamapps folder that contains BZ98R";
@@ -1251,13 +1366,13 @@
             txtBZ98RSteam.Location = new System.Drawing.Point(100, 24);
             txtBZ98RSteam.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtBZ98RSteam.Name = "txtBZ98RSteam";
-            txtBZ98RSteam.Size = new System.Drawing.Size(663, 23);
+            txtBZ98RSteam.Size = new System.Drawing.Size(652, 23);
             txtBZ98RSteam.TabIndex = 3;
             // 
             // btnBZ98RSteamApply
             // 
             btnBZ98RSteamApply.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnBZ98RSteamApply.Location = new System.Drawing.Point(771, 22);
+            btnBZ98RSteamApply.Location = new System.Drawing.Point(760, 22);
             btnBZ98RSteamApply.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnBZ98RSteamApply.Name = "btnBZ98RSteamApply";
             btnBZ98RSteamApply.Size = new System.Drawing.Size(66, 27);
@@ -1554,6 +1669,11 @@
             tpAudit.ResumeLayout(false);
             tpSettings.ResumeLayout(false);
             tpSettings.PerformLayout();
+            tableLayoutPanel3.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            groupBox7.ResumeLayout(false);
+            groupBox7.PerformLayout();
             groupBox6.ResumeLayout(false);
             groupBox6.PerformLayout();
             groupBox5.ResumeLayout(false);
@@ -1677,6 +1797,12 @@
         private System.Windows.Forms.Button btnBZCCGogFind;
         private System.Windows.Forms.TextBox txtBZCCGog;
         private System.Windows.Forms.Button btnBZCCRGogApply;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.Button btnSteamCmdInstallDirFind;
+        private System.Windows.Forms.TextBox txtSteamCmdInstallDir;
+        private System.Windows.Forms.Button btnSteamCmdInstallDirApply;
+        private System.Windows.Forms.Button btnUninstallAllMods;
+        private System.Windows.Forms.Button btnReinstallAllMods;
         private System.Windows.Forms.TabPage tpAbout;
         private System.Windows.Forms.Button btnGithub;
         private System.Windows.Forms.Button btnDiscord;
@@ -1690,6 +1816,8 @@
         private System.Windows.Forms.Button btnGitFind;
         private System.Windows.Forms.TextBox txtGit;
         private System.Windows.Forms.Button btnGitApply;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

@@ -70,8 +70,8 @@ namespace BZRModManager
 
         public static string[] GetModTags(string path, string workshopID = null)
         {
-            Regex TargetHeader = new Regex("^\\[WORKSHOP\\]", RegexOptions.IgnoreCase);
-            Regex AnyHeader = new Regex("^\\[[^\\]]*\\]", RegexOptions.IgnoreCase);
+            //Regex TargetHeader = new Regex("^\\[WORKSHOP\\]", RegexOptions.IgnoreCase);
+            //Regex AnyHeader = new Regex("^\\[[^\\]]*\\]", RegexOptions.IgnoreCase);
 
             string[] paths = new string[] { GetIni(path, workshopID) };
 

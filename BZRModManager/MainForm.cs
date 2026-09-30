@@ -72,6 +72,9 @@ namespace BZRModManager
             this.ForceUpdateMode = ForceUpdateMode;
 
             LoadSettings();
+            // Apply the SteamCmd data location setting (if any) so that every SteamCmd
+            // launch gets `+force_install_dir` first. Null/empty → the argument is omitted.
+            SteamCmd.ForceInstallDir = string.IsNullOrWhiteSpace(settings.SteamCmdInstallDir) ? null : settings.SteamCmdInstallDir.Trim();
             //SteamCmd.ShowProcessWindow = settings.FallbackSteamCmdHandling;
             InitializeComponent();
             cbFallbackSteamCmdWindowHandling.Checked = settings.FallbackSteamCmdHandling;
@@ -713,6 +716,7 @@ namespace BZRModManager
                 txtBZCCMyDocs.Text = settings.BZCCMyDocsPath;
                 txtBZCCGog.Text = settings.BZCCGogPath;
                 txtGit.Text = settings.GitPath;
+                txtSteamCmdInstallDir.Text = settings.SteamCmdInstallDir;
             }
         }
 

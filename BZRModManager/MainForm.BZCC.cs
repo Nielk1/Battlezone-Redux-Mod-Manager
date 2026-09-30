@@ -349,7 +349,7 @@ namespace BZRModManager
                             string[] Dependencies = null;
                             try
                             {
-                                Dependencies = BZCCTools.GetAssetDependencies($"steamcmd\\steamapps\\workshop\\content\\{mod.AppId}\\{mod.Workshop.WorkshopId}");
+                                Dependencies = BZCCTools.GetAssetDependencies(Path.Combine(SteamContext.SteamCmdRoot, $"steamapps\\workshop\\content\\{mod.AppId}\\{mod.Workshop.WorkshopId}"));
                             }
                             catch { }
                             if (Dependencies != null)

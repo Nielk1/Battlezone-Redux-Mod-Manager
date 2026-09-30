@@ -10,6 +10,23 @@ namespace BZRModManager
 {
     class SteamContext
     {
+        /// <summary>
+        /// The root directory that holds SteamCmd's data (steamapps, etc.). Honors the configured
+        /// <c>+force_install_dir</c> location when one is set, otherwise the default "steamcmd"
+        /// folder next to the application (the same relative folder SteamVent launches from).
+        /// </summary>
+        public static string SteamCmdRoot
+        {
+            get
+            {
+                if (MainForm.settings != null && !string.IsNullOrWhiteSpace(MainForm.settings.SteamCmdInstallDir))
+                    return Path.GetFullPath(MainForm.settings.SteamCmdInstallDir.Trim());
+
+                return Path.GetFullPath("steamcmd");
+            }
+        }
+
+
         public static string WorkshopFolder(string steamPath, int appId)
         {
             return Path.Combine(steamPath, "workshop", "content", appId.ToString());
