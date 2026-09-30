@@ -24,6 +24,8 @@ namespace BZRModManager
                     TaskControl UpdateBZ98RModListsTaskControl = AddTask("Update BZ98 Mod List", 0);
                     List<ILinqListViewItemMods> modsSnapshot;
                     List<ILinqListViewFindModsItem> findSnapshot;
+                    try
+                    {
                     HashSet<string> FoundModIDs = new HashSet<string>();
 
                     // Scan all three sources concurrently. Each scan serializes its own writes to the
@@ -61,7 +63,11 @@ namespace BZRModManager
                         ModsLock.Release();
                     }
 
-                    EndTask(UpdateBZ98RModListsTaskControl);
+                    }
+                    finally
+                    {
+                        EndTask(UpdateBZ98RModListsTaskControl);
+                    }
 
                     // Marshal ONLY the pure UI refresh asynchronously, outside all locks.
                     UiInvoke(() =>
@@ -193,6 +199,8 @@ namespace BZRModManager
                 try
                 {
                     TaskControl UpdateTaskControl = AddTask("Update BZ98 Mods", 0);
+                    try
+                    {
 
                     List<KeyValuePair<string, ModItemBase>> ModList;
                     await ModsLock.WaitAsync();
@@ -220,6 +228,8 @@ namespace BZRModManager
                                     if (modSteam != null)
                                     {
                                         TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
+                                        try
+                                        {
                                         SteamCmdException ex_ = null;
                                         int OtherErrorCounter = 0;
                                         do
@@ -241,7 +251,11 @@ namespace BZRModManager
                                                 OtherErrorCounter++;
                                             }
                                         } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                        }
+                                        finally
+                                        {
+                                            UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                        }
                                     }
                                 }
                                 UpdateTaskControl.Value = Interlocked.Increment(ref counter);
@@ -255,14 +269,24 @@ namespace BZRModManager
                                 if (mod != null)
                                 {
                                     TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - Git - {mod.Workshop.ModWorkshopId} - {mod.Name}", 0);
-                                    GitContext.Pull(settings.GitPath, mod.Workshop.GitPath);
-                                    UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                    try
+                                    {
+                                        GitContext.Pull(settings.GitPath, mod.Workshop.GitPath);
+                                    }
+                                    finally
+                                    {
+                                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                    }
                                 }
                                 UpdateTaskControl.Value = Interlocked.Increment(ref counter);
                             });
                         }));
 
-                    EndTask(UpdateTaskControl);
+                    }
+                    finally
+                    {
+                        EndTask(UpdateTaskControl);
+                    }
 
                     await this.UpdateBZ98RModListsAsync();
                 }
@@ -284,6 +308,8 @@ namespace BZRModManager
                 {
                     TaskControl UpdateTaskControl = AddTask("Find BZ98 Mods", 0);
                     List<string> AutoDownloadURLs = new List<string>();
+                    try
+                    {
                     List<ILinqListViewFindModsItem> Removed = new List<ILinqListViewFindModsItem>();
 
                     // Keys from a previous search that this search may retire if they no longer come back.
@@ -377,7 +403,11 @@ namespace BZRModManager
                         }
                     }
 
-                    EndTask(UpdateTaskControl);
+                    }
+                    finally
+                    {
+                        EndTask(UpdateTaskControl);
+                    }
 
                     // Kick off auto-downloads AFTER releasing ModsLock, so we never hold the lock across
                     // a modal dialog / long download.
@@ -401,8 +431,15 @@ namespace BZRModManager
                 try
                 {
                     TaskControl UpdateTaskControl = AddTask("Find BZ98 Multiplayer Games", 0);
-                    MultiplayerGamelistData data = await Task.Run(() => MultiplayerSessionServer.GetMpGamesBZ98R());
-                    EndTask(UpdateTaskControl);
+                    MultiplayerGamelistData data;
+                    try
+                    {
+                        data = await Task.Run(() => MultiplayerSessionServer.GetMpGamesBZ98R());
+                    }
+                    finally
+                    {
+                        EndTask(UpdateTaskControl);
+                    }
 
                     UiInvoke(() =>
                     {

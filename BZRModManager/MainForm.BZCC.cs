@@ -29,6 +29,8 @@ namespace BZRModManager
                     TaskControl UpdateBZCCModListsTaskControl = AddTask("Update BZCC Mod List", 0);
                     List<ILinqListViewItemMods> modsSnapshot;
                     List<ILinqListViewFindModsItem> findSnapshot;
+                    try
+                    {
                     HashSet<string> FoundModIDs = new HashSet<string>();
 
                     await Task.WhenAll(
@@ -55,7 +57,11 @@ namespace BZRModManager
                         ModsLock.Release();
                     }
 
-                    EndTask(UpdateBZCCModListsTaskControl);
+                    }
+                    finally
+                    {
+                        EndTask(UpdateBZCCModListsTaskControl);
+                    }
 
                     UiInvoke(() =>
                     {
@@ -212,6 +218,8 @@ namespace BZRModManager
                 try
                 {
                     TaskControl UpdateTaskControl = AddTask("Update BZCC Mods", 0);
+                    try
+                    {
 
                     List<KeyValuePair<string, ModItemBase>> ModList;
                     await ModsLock.WaitAsync();
@@ -240,6 +248,8 @@ namespace BZRModManager
                                     if (modSteam != null)
                                     {
                                         TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
+                                        try
+                                        {
                                         SteamCmdException ex_ = null;
                                         int OtherErrorCounter = 0;
                                         do
@@ -261,7 +271,11 @@ namespace BZRModManager
                                                 OtherErrorCounter++;
                                             }
                                         } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                        }
+                                        finally
+                                        {
+                                            UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                        }
                                     }
                                 }
                                 UpdateTaskControl.Value = Interlocked.Increment(ref counter);
@@ -275,14 +289,24 @@ namespace BZRModManager
                                 if (mod != null)
                                 {
                                     TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - Git - {mod.Workshop.ModWorkshopId} - {mod.Name}", 0);
-                                    GitContext.Pull(settings.GitPath, mod.Workshop.GitPath);
-                                    UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                    try
+                                    {
+                                        GitContext.Pull(settings.GitPath, mod.Workshop.GitPath);
+                                    }
+                                    finally
+                                    {
+                                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                    }
                                 }
                                 UpdateTaskControl.Value = Interlocked.Increment(ref counter);
                             });
                         }));
 
-                    EndTask(UpdateTaskControl);
+                    }
+                    finally
+                    {
+                        EndTask(UpdateTaskControl);
+                    }
 
                     await this.UpdateBZCCModListsAsync();
                 }
@@ -300,9 +324,10 @@ namespace BZRModManager
             try
             {
                 TaskControl UpdateTaskControl = AddTask("Get BZCC Mod Dependencies", 0);
-
                 List<string> SteamCmdDependencies = new List<string>();
                 HashSet<UInt64> DependenciesGotten = new HashSet<UInt64>();
+                try
+                {
 
                 // Gather asset dependencies off the UI thread (blocking file I/O), holding ModsLock
                 // only for the brief collection copy.
@@ -333,10 +358,16 @@ namespace BZRModManager
                         }
                     }
                 });
-                EndTask(UpdateTaskControl);
+                }
+                finally
+                {
+                    EndTask(UpdateTaskControl);
+                }
 
                 List<string> SteamCmdDependenciesList = SteamCmdDependencies.Distinct().ToList();
                 UpdateTaskControl = AddTask("Download BZCC Mod Dependencies", SteamCmdDependenciesList.Count);
+                try
+                {
                 int counter2 = 0;
                 foreach (var dr in SteamCmdDependenciesList)
                 {
@@ -344,6 +375,8 @@ namespace BZRModManager
                     if (UInt64.TryParse(dr, out tmpLong) && !DependenciesGotten.Contains(tmpLong))
                     {
                         TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {tmpLong}", 0);
+                        try
+                        {
                         SteamCmdException ex_ = null;
                         int OtherErrorCounter = 0;
                         do
@@ -365,11 +398,19 @@ namespace BZRModManager
                                 OtherErrorCounter++;
                             }
                         } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                        UpdateTaskControl.EndTask(DownloadModTaskControl);
+                        }
+                        finally
+                        {
+                            UpdateTaskControl.EndTask(DownloadModTaskControl);
+                        }
                     }
                     UpdateTaskControl.Value = ++counter2;
                 }
-                EndTask(UpdateTaskControl);
+                }
+                finally
+                {
+                    EndTask(UpdateTaskControl);
+                }
 
                 await this.UpdateBZCCModListsAsync();
             }
@@ -390,6 +431,8 @@ namespace BZRModManager
                 {
                     TaskControl UpdateTaskControl = AddTask("Find BZCC Mods", 0);
                     List<string> AutoDownloadURLs = new List<string>();
+                    try
+                    {
                     List<ILinqListViewFindModsItem> Removed = new List<ILinqListViewFindModsItem>();
 
                     // Keys from a previous search that this search may retire if they no longer come back.
@@ -484,7 +527,11 @@ namespace BZRModManager
                         }
                     }
 
-                    EndTask(UpdateTaskControl);
+                    }
+                    finally
+                    {
+                        EndTask(UpdateTaskControl);
+                    }
 
                     // Kick off auto-downloads AFTER releasing ModsLock, so we never hold the lock across
                     // a modal dialog / long download.
@@ -508,8 +555,15 @@ namespace BZRModManager
                 try
                 {
                     TaskControl UpdateTaskControl = AddTask("Find BZCC Multiplayer Games", 0);
-                    MultiplayerGamelistData data = await Task.Run(() => MultiplayerSessionServer.GetMpGamesBZCC());
-                    EndTask(UpdateTaskControl);
+                    MultiplayerGamelistData data;
+                    try
+                    {
+                        data = await Task.Run(() => MultiplayerSessionServer.GetMpGamesBZCC());
+                    }
+                    finally
+                    {
+                        EndTask(UpdateTaskControl);
+                    }
 
                     UiInvoke(() =>
                     {

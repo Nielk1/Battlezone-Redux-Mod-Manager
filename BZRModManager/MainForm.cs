@@ -430,14 +430,20 @@ namespace BZRModManager
             ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
             try
             {
-                await SteamCmd.DownloadAsync();
+                try
+                {
+                    await SteamCmd.DownloadAsync();
+                }
+                catch { }
+                if (exitingStage > 1) return;
+                // Await the initial mod-list refreshes (both kick off concurrently and complete here).
+                await Task.WhenAll(this.UpdateBZ98RModListsAsync(), this.UpdateBZCCModListsAsync());
             }
-            catch { }
-            if (exitingStage > 1) return;
-            // Await the initial mod-list refreshes (both kick off concurrently and complete here).
-            await Task.WhenAll(this.UpdateBZ98RModListsAsync(), this.UpdateBZCCModListsAsync());
-            EndTask(ActivatingSteamCmd);
-            ActivatingSteamCmd = null;
+            finally
+            {
+                EndTask(ActivatingSteamCmd);
+                ActivatingSteamCmd = null;
+            }
 
             if (ForceUpdateMode)
             {
@@ -535,6 +541,8 @@ namespace BZRModManager
                     TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - SteamCmd - {workshopID}", 0);
                     Task.Run(async () =>
                     {
+                        try
+                        {
                         // Resolve the item through the workshop context (the JSON cache is
                         // served when fresh). Collections can't be installed by SteamCmd:
                         // download their children instead. Anything unresolvable falls
@@ -605,7 +613,11 @@ namespace BZRModManager
                                     break;
                             }
                         });
-                        EndTask(DownloadModTaskControl);
+                        }
+                        finally
+                        {
+                            EndTask(DownloadModTaskControl);
+                        }
                     });
                 }
             }
@@ -629,6 +641,8 @@ namespace BZRModManager
                                     TaskControl DownloadModTaskControl = AddTask($"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - Git - \"{text}\"", 0);
                                     Task.Run(() =>
                                     {
+                                        try
+                                        {
                                         GitContext.WorkshopDownloadItem(settings.GitPath, AppId, text, dlg.Selected);
                                         UiInvoke(() =>
                                         {
@@ -642,7 +656,11 @@ namespace BZRModManager
                                                     break;
                                             }
                                         });
-                                        EndTask(DownloadModTaskControl);
+                                        }
+                                        finally
+                                        {
+                                            EndTask(DownloadModTaskControl);
+                                        }
                                     });
                                 }
                             }
@@ -996,24 +1014,36 @@ namespace BZRModManager
                 RemovingSteamCmd = AddTask($"Removing SteamCMD", 0);
                 Task.Run(async () =>
                 {
-                    SteamCmd.Purge();
-                    EndTask(RemovingSteamCmd);
-                    RemovingSteamCmd = null;
+                    try
+                    {
+                        SteamCmd.Purge();
+                    }
+                    finally
+                    {
+                        EndTask(RemovingSteamCmd);
+                        RemovingSteamCmd = null;
+                    }
 
                     ActivatingSteamCmd = AddTask($"Activating SteamCMD", 0);
                     try
                     {
-                        await SteamCmd.DownloadAsync();
+                        try
+                        {
+                            await SteamCmd.DownloadAsync();
+                        }
+                        catch { }
+                        if (exitingStage > 1) return;
+                        UiInvoke(() =>
+                        {
+                            _ = this.UpdateBZ98RModListsAsync();
+                            _ = this.UpdateBZCCModListsAsync();
+                        });
                     }
-                    catch { }
-                    if (exitingStage > 1) return;
-                    UiInvoke(() =>
+                    finally
                     {
-                        _ = this.UpdateBZ98RModListsAsync();
-                        _ = this.UpdateBZCCModListsAsync();
-                    });
-                    EndTask(ActivatingSteamCmd);
-                    ActivatingSteamCmd = null;
+                        EndTask(ActivatingSteamCmd);
+                        ActivatingSteamCmd = null;
+                    }
                 });
             }
         }
@@ -1774,12 +1804,16 @@ namespace BZRModManager
                 ModAuditTask = Task.Factory.StartNew(() =>
                 {
                     TaskControl UpdateTaskControl = AddTask("Auditing", 0);
+                    try
+                    {
 
                     LogAuditItem("Mod Audit", true);
 
                     {
                         WebClient client = new WebClient();
                         TaskControl subtask = UpdateTaskControl.AddTask("Downloading Audit Data", 2);
+                        try
+                        {
                         try
                         {
                             client.DownloadFile(@"https://gamelistassets.iondriver.com/bz98r/audit.json", $"bz98r_audit.json");
@@ -1792,7 +1826,11 @@ namespace BZRModManager
                         }
                         catch { }
                         subtask.Value = 2;
-                        UpdateTaskControl.EndTask(subtask);
+                        }
+                        finally
+                        {
+                            UpdateTaskControl.EndTask(subtask);
+                        }
                     }
 
                     Dictionary<string, AuditData> BZ98R_Audit = new Dictionary<string, AuditData>();
@@ -1816,6 +1854,8 @@ namespace BZRModManager
                         {
                             var ModList = Mods[AppIdBZ98].ToList();
                             TaskControl subtask = UpdateTaskControl.AddTask("Checking BZ98 Mods", ModList.Count);
+                            try
+                            {
                             int progress = 0;
                             foreach (var mod in ModList)
                             {
@@ -1844,12 +1884,18 @@ namespace BZRModManager
                                 progress++;
                                 subtask.Value = progress;
                             }
-                            UpdateTaskControl.EndTask(subtask);
+                            }
+                            finally
+                            {
+                                UpdateTaskControl.EndTask(subtask);
+                            }
                         }
 
                         {
                             var ModList = Mods[AppIdBZCC].ToList();
                             TaskControl subtask = UpdateTaskControl.AddTask("Checking BZCC Mods", ModList.Count);
+                            try
+                            {
                             int progress = 0;
                             foreach (var mod in ModList)
                             {
@@ -1878,7 +1924,11 @@ namespace BZRModManager
                                 progress++;
                                 subtask.Value = progress;
                             }
-                            UpdateTaskControl.EndTask(subtask);
+                            }
+                            finally
+                            {
+                                UpdateTaskControl.EndTask(subtask);
+                            }
                         }
                     }
                     finally
@@ -1911,6 +1961,8 @@ namespace BZRModManager
                         if (Directory.Exists(workshopDestination.Path))
                         {
                             TaskControl subtask = UpdateTaskControl.AddTask($"Checking Installed {workshopDestination.Platform} {workshopDestination.Game} Mods", 0);
+                            try
+                            {
 
                             if (workshopDestination.AppID == AppIdBZCC)
                             {
@@ -1995,17 +2047,24 @@ namespace BZRModManager
                                     }
                                 }
                             }
-
-                            UpdateTaskControl.EndTask(subtask);
+                            }
+                            finally
+                            {
+                                UpdateTaskControl.EndTask(subtask);
+                            }
                         }
                     }
 
-                    EndTask(UpdateTaskControl);
-
-                    UiInvoke(() =>
+                    }
+                    finally
                     {
-                        btnRunAudit.Enabled = true;
-                    });
+                        EndTask(UpdateTaskControl);
+                        // Re-enable the audit button even if auditing threw, so it can be retried.
+                        UiInvoke(() =>
+                        {
+                            btnRunAudit.Enabled = true;
+                        });
+                    }
                 });
             }
         }
