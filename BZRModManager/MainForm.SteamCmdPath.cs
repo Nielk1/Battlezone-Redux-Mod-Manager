@@ -337,8 +337,8 @@ namespace BZRModManager
             Directory.CreateDirectory(destinationRoot);
 
             // only the content files need to move
-            string dir = Path.Combine(sourceRoot, "steamapps", "workshop", "content");
-            string dest = Path.Combine(destinationRoot, "steamapps", "workshop", "content");
+            string dir = Path.Combine(sourceRoot, "steamapps", "workshop");
+            string dest = Path.Combine(destinationRoot, "steamapps", "workshop");
             if (Directory.Exists(dir))
                 MoveDirectory(dir, dest);
         }
