@@ -40,13 +40,20 @@ namespace BZRModManager
         public static TimeSpan CacheDuration { get; set; } = TimeSpan.FromDays(1);
         public static string CacheDirectory { get; set; } = Path.Combine(AppContext.BaseDirectory, "cache");
 
-        // A definitive "this ID does not exist" answer (HTTP 404, an empty
+        // A definitive "this ID does not exist" answer (an item_not_found /
+        // appid_not_allowed error body, a 403/404 status, an empty
         // publishedfiledetails array, or result != 1) is cached as a self-describing
-        // sentinel, so a mistyped or deleted ID is not re-requested on every lookup.
-        // The window is short on purpose: an ID can start existing later (newly
-        // published or re-listed item), after which the next lookup refreshes normally.
+        // sentinel, so a mistyped or deleted ID is not re-requested on every lookup
+        // (the server debounces, but the cache is what keeps local lookups cheap).
+        // appid_not_allowed can never resolve for us (we query without an AppID), so
+        // it is cached for a long time; every other negative expires after
+        // NegativeCacheDuration, after which the next lookup re-queries normally
+        // (an ID can start existing later: newly published or re-listed item).
+        // A bad sentinel can always be removed by deleting the cache file.
         public static TimeSpan NegativeCacheDuration { get; set; } = TimeSpan.FromHours(1);
+        public static TimeSpan PermanentNegativeCacheDuration { get; set; } = TimeSpan.FromDays(3650);
         internal const string NegativeCacheSentinel = "{\"not_found\":true}";
+        internal const string PermanentNegativeCacheSentinel = "{\"not_found\":true,\"permanent\":true}";
 
         internal static string ItemJsonCachePath(string id) => Path.Combine(CacheDirectory, "items", id + ".json");
         internal static string PreviewImageCachePath(string id) => Path.Combine(CacheDirectory, "previews", id + ".png");
@@ -86,7 +93,7 @@ namespace BZRModManager
             }
         }
 
-        // True when the cache file holds the negative ("not found") sentinel and is
+        // True when the cache file holds the generic ("not found") sentinel and is
         // no older than NegativeCacheDuration.
         internal static bool TryReadFreshNegativeCache(string path)
         {
@@ -103,11 +110,44 @@ namespace BZRModManager
             }
         }
 
+        // True when the cache file holds the permanent negative sentinel (an ID that
+        // can never resolve for this app, e.g. an appid_not_allowed item) and is
+        // still inside its long window.
+        internal static bool HasPermanentNegativeCache(string path)
+        {
+            try
+            {
+                var info = new FileInfo(path);
+                if (!info.Exists) return false;
+                if (info.LastWriteTimeUtc + PermanentNegativeCacheDuration <= DateTime.UtcNow) return false;
+                return File.ReadAllText(path) == PermanentNegativeCacheSentinel;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        internal static bool IsNegativeSentinel(byte[] data)
+        {
+            if (data == null || data.Length != NegativeCacheSentinelBytes.Length) return false;
+            for (int i = 0; i < data.Length; i++)
+                if (data[i] != NegativeCacheSentinelBytes[i]) return false;
+            return true;
+        }
+
         // Atomic write so a crash never leaves a half-written cache entry behind.
+        // Sentinel entries never overwrite existing real data, so an unexpected
+        // response (or an empty body) can only ever *add* a negative, never clobber
+        // a good cache entry.
         internal static void WriteCache(string path, byte[] data)
         {
             try
             {
+                if (IsNegativeSentinel(data))
+                {
+                    if (File.Exists(path)) return;
+                }
                 var dir = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                 var tmp = path + ".tmp" + Guid.NewGuid().ToString("N");
@@ -120,6 +160,9 @@ namespace BZRModManager
                 // Cache write failures are non-fatal; the data was still served to the caller.
             }
         }
+
+        static readonly byte[] NegativeCacheSentinelBytes = Encoding.UTF8.GetBytes(NegativeCacheSentinel);
+        static readonly byte[] PermanentNegativeCacheSentinelBytes = Encoding.UTF8.GetBytes(PermanentNegativeCacheSentinel);
 
         internal static HttpClient ImageClient => Client;
 
@@ -244,27 +287,44 @@ namespace BZRModManager
 
             var cachePath = ItemJsonCachePath(id);
             byte[] json;
-            if (TryReadFreshNegativeCache(cachePath))
+            if (TryReadFreshNegativeCache(cachePath) || HasPermanentNegativeCache(cachePath))
             {
-                // Steam recently said this ID does not exist; trust that for the negative window.
+                // This ID is known to be unresolvable; trust that for the negative window.
                 return null;
             }
-            if (TryReadFreshCache(cachePath, out json))
+            if (TryReadFreshCache(cachePath, out json) && !IsNegativeSentinel(json))
             {
                 // The cached entry is new enough: no web request.
             }
             else
             {
+                // A negative sentinel is only honored inside its own window (checked
+                // above); a stale one is a miss, so the ID is re-queried for real.
                 try
                 {
                     json = await FetchRawAsync("IPublishedFileService/GetDetails/v1/", request, cancellationToken);
                     WriteCache(cachePath, json);
                 }
                 catch (OperationCanceledException) { throw; }
-                catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+                catch (WorkshopApiException ex) when (ex.StatusCode is HttpStatusCode.Forbidden or HttpStatusCode.NotFound)
                 {
-                    // Remember the 404 so lookups of this ID don't hammer the API.
-                    WriteCache(cachePath, Encoding.UTF8.GetBytes(NegativeCacheSentinel));
+                    // A definitive "not found / access restricted" answer; remember it so
+                    // lookups of this ID don't hammer the API.
+                    if (ex.ErrorBody != null)
+                    {
+                        if (HasErrorCode(ex.ErrorBody, "appid_not_allowed") && appid == 0)
+                        {
+                            // We query without an AppID, so this can never resolve for us.
+                            WriteCache(cachePath, PermanentNegativeCacheSentinelBytes);
+                            return null;
+                        }
+                        if (HasErrorCode(ex.ErrorBody, "item_not_found"))
+                        {
+                            WriteCache(cachePath, NegativeCacheSentinelBytes);
+                            return null;
+                        }
+                    }
+                    WriteCache(cachePath, NegativeCacheSentinelBytes);
                     return null;
                 }
                 catch (Exception)
@@ -272,27 +332,41 @@ namespace BZRModManager
                     // The network failed; a stale entry is better than nothing.
                     if (!TryReadAnyCache(cachePath, out json)) throw;
                     // A stale "not found" is still the best answer we have.
-                    if (Encoding.UTF8.GetString(json) == NegativeCacheSentinel) return null;
+                    if (IsNegativeSentinel(json)) return null;
                 }
             }
 
-            using var document = JsonDocument.Parse(json);
-            var response = Response(document);
-            if (!response.TryGetProperty("publishedfiledetails", out var details) ||
-                details.ValueKind != JsonValueKind.Array || details.GetArrayLength() == 0)
+            var document = JsonDocument.Parse(json);
+            if (!TryGetDetailsResponse(document, out var details))
             {
-                // Steam knows no such ID; remember that so we don't keep asking.
-                WriteCache(cachePath, Encoding.UTF8.GetBytes(NegativeCacheSentinel));
+                // Definitive not found (result != 1 or no publishedfiledetails);
+                // remember that so we don't keep asking.
+                WriteCache(cachePath, NegativeCacheSentinelBytes);
                 return null;
             }
             foreach (var item in details.EnumerateArray())
             {
                 if (item.ValueKind == JsonValueKind.Object && Text(item, "publishedfileid") == id)
                     if (Text(item, "result") == "1") return WorkshopMod.FromSteam(item);
-                    WriteCache(cachePath, Encoding.UTF8.GetBytes(NegativeCacheSentinel));
+                    WriteCache(cachePath, NegativeCacheSentinelBytes);
                     return null;
             }
             throw new InvalidDataException("GetDetails returned a different published file ID.");
+        }
+
+        // The .NET 5+ HttpRequestException no longer carries the HTTP response, so a
+        // definitive-error body (e.g. {"error":"appid_not_allowed",...}) is kept on
+        // this derived type instead.
+        private sealed class WorkshopApiException : HttpRequestException
+        {
+            public string ErrorBody { get; }
+            public WorkshopApiException(HttpStatusCode statusCode, string errorBody)
+                : base(HttpRequestError.HttpProtocolError,
+                    "The Workshop API returned " + (int)statusCode + ".",
+                    null, statusCode)
+            {
+                ErrorBody = errorBody;
+            }
         }
 
         private static async Task<byte[]> FetchRawAsync(string path, object request, CancellationToken cancellationToken)
@@ -308,10 +382,57 @@ namespace BZRModManager
 
             using var response = await Client.GetAsync(url, cancellationToken);
             if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException(HttpRequestError.HttpProtocolError,
-                    "The Workshop API returned " + (int)response.StatusCode + ".",
-                    null, response.StatusCode);
+            {
+                // Best-effort capture of a small error body so the caller can tell a
+                // definitive not found from a transient failure (the status code alone
+                // is not enough for appid_not_allowed-style answers).
+                string body = null;
+                try
+                {
+                    using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+                    using var reader = new StreamReader(stream, Encoding.UTF8, false, 8192, leaveOpen: true);
+                    var buffer = new char[8192];
+                    var count = reader.Read(buffer, 0, buffer.Length);
+                    body = new string(buffer, 0, count);
+                }
+                catch (OperationCanceledException) { throw; }
+                catch (Exception) { /* A missing body is fine; the status code still drives the negative. */ }
+                throw new WorkshopApiException(response.StatusCode, body);
+            }
             return await response.Content.ReadAsByteArrayAsync(cancellationToken);
+        }
+
+        // GetDetails-specific validation: a response that exists but reports
+        // result != 1 or carries no publishedfiledetails is a definitive
+        // "not found" (false), while a body with no response object at all is
+        // malformed (throw) and must never be negative-cached.
+        internal static bool TryGetDetailsResponse(JsonDocument document, out JsonElement details)
+        {
+            details = default;
+            if (!document.RootElement.TryGetProperty("response", out var response) || response.ValueKind != JsonValueKind.Object)
+                throw new InvalidDataException("The Workshop API returned no response object.");
+            if (Text(response, "result") is string result && result != "1") return false;
+            if (!response.TryGetProperty("publishedfiledetails", out details) ||
+                details.ValueKind != JsonValueKind.Array || details.GetArrayLength() == 0)
+                return false;
+            return true;
+        }
+
+        // True when the body is {"error": "<expected>", ...}, as the proxy returns
+        // for definitive not-found answers.
+        internal static bool HasErrorCode(string body, string expected)
+        {
+            if (string.IsNullOrWhiteSpace(body)) return false;
+            try
+            {
+                using var document = JsonDocument.Parse(body);
+                return document.RootElement.ValueKind == JsonValueKind.Object &&
+                    Text(document.RootElement, "error") == expected;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private static JsonElement Response(JsonDocument document)
