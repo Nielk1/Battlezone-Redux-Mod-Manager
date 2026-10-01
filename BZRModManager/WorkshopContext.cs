@@ -316,8 +316,7 @@ namespace BZRModManager
 
         private static JsonElement Response(JsonDocument document)
         {
-            if (!document.RootElement.TryGetProperty("response", out var response) ||
-                response.ValueKind != JsonValueKind.Object)
+            if (!document.RootElement.TryGetProperty("response", out var response) || response.ValueKind != JsonValueKind.Object)
                 throw new InvalidDataException("The Workshop API returned no response object.");
             if (Text(response, "result") is string result && result != "1")
                 throw new InvalidDataException("The Workshop API returned result " + result + ".");

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -209,6 +210,9 @@ namespace BZRModManager
             }
         }
 
+        readonly Regex Regex_WorkshopError_FileNotFound = new Regex(@"Download item \d failed \(File Not Found\)\.");
+        readonly Regex Regex_WorkshopError_AccessDenied = new Regex(@"Download item \d failed \(Access Denied\)\.");
+
         private async Task UpdateBZCCModsAsync(bool agressive)
         {
             if (Interlocked.CompareExchange(ref _updateBZCCModsRunning, 1, 0) == 1)
@@ -262,8 +266,15 @@ namespace BZRModManager
                                             catch (SteamCmdWorkshopDownloadException ex)
                                             {
                                                 ex_ = ex;
-                                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
+                                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item ")
+                                                && Regex_WorkshopError_FileNotFound.IsMatch(ex_.Message)
+                                                && Regex_WorkshopError_AccessDenied.IsMatch(ex_.Message)) {
                                                     OtherErrorCounter++;
+                                                }
+                                                else
+                                                {
+                                                    
+                                                }
                                             }
                                             catch (SteamCmdException ex)
                                             {
