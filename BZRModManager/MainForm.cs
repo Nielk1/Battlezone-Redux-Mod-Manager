@@ -31,6 +31,13 @@ namespace BZRModManager
 
         private const int MAX_OTHER_STEAMCMD_ERROR = 5;
 
+        // Throttling ("No Connection") mitigation: before every retry we pause, backing off harder
+        // after each throttle hit, and give up entirely after this many hits (reporting the rest
+        // as failed) so we stop hammering a server that is clearly rate-limiting us.
+        private const int MAX_THROTTLE_STRIKES = 3;
+        private const int BASE_BACKOFF_MS = 3000;
+        private const int MAX_BACKOFF_MS = 60000;
+
         // Single task-friendly lock guarding the shared Mods / FoundMods dictionaries. Replaces
         // the old `ModStatus` object together with the per-dictionary managed locks. Async code
         // awaits WaitAsync(); synchronous UI handlers use the blocking Wait(). It is never held
@@ -526,9 +533,13 @@ namespace BZRModManager
         /// <summary>
         /// Download a set of workshop items in a single SteamCmd run (one process, not one per
         /// item), showing real determinate progress on <paramref name="task"/> (its maximum is
-        /// set to the item count) and retrying any items that fail. <paramref name="onItemResolved"/>
-        /// is invoked once per distinct item as SteamCmd reports it, so callers can tick a shared
-        /// parent counter incrementally. Returns the ids that still could not be downloaded.
+        /// set to the item count) and retrying any items that fail, with per-failure policy:
+        /// permanent failures (e.g. "File Not Found", "Access Denied") are not retried; a throttle
+        /// signal ("No Connection") aborts the run immediately (killing the running SteamCmd) and
+        /// backs off before retrying, giving up after <see cref="MAX_THROTTLE_STRIKES"/> hits; other
+        /// transient failures are retried with a delay. <paramref name="onItemResolved"/> is invoked
+        /// once per distinct item as SteamCmd reports it, so callers can tick a shared parent counter
+        /// incrementally. Returns the ids that could not be downloaded.
         /// </summary>
         private async Task<List<UInt64>> DownloadWorkshopBatchAsync(
             UInt32 AppId,
@@ -551,15 +562,24 @@ namespace BZRModManager
                 return new List<UInt64>();
 
             int total = all.Count;
-            var resolved = new HashSet<UInt64>(); // ids already reported by SteamCmd (either way)
+            var resolved = new HashSet<UInt64>();   // distinct ids SteamCmd has reported (either way)
+            var permanent = new HashSet<UInt64>();  // "unobtainable" items -- never retried again
             List<UInt64> pending = new List<UInt64>(all);
 
             // Known endpoint -> a real, proportional bar instead of an indeterminate marquee.
             task.SetProgress(0, total);
 
+            int backoffMs = BASE_BACKOFF_MS;
+            int throttleStrikes = 0;
+
             for (int attempt = 1; attempt <= MAX_OTHER_STEAMCMD_ERROR && pending.Count > 0; attempt++)
             {
-                var failed = new List<UInt64>();
+                if (attempt > 1)
+                    await Task.Delay(backoffMs); // polite pause before every retry (throttle mitigation)
+
+                var succeeded = new HashSet<UInt64>();
+                bool throttled = false;
+
                 await foreach (var result in SteamCmd.WorkshopDownloadItemsAsync(AppId, pending))
                 {
                     if (result.PublishedFileId != 0)
@@ -569,19 +589,45 @@ namespace BZRModManager
                             task.Value = Math.Min(total, resolved.Count);
                             onItemResolved?.Invoke();
                         }
-                        if (!result.Success)
-                            failed.Add(result.PublishedFileId);
+
+                        if (result.Success)
+                        {
+                            succeeded.Add(result.PublishedFileId);
+                            continue;
+                        }
+
+                        // "File Not Found" / "Access Denied" won't succeed on retry -- drop them now
+                        // so we stop sending pointless (and throttle-inducing) requests for them.
+                        if (result.FailureKind == SteamCmdContext.WorkshopItemFailureKind.Permanent)
+                            permanent.Add(result.PublishedFileId);
+                    }
+
+                    // Steam is throttling us: stop this run immediately. Breaking disposes the
+                    // iterator, which kills the still-running SteamCmd, so no more requests go out.
+                    if (result.FailureKind == SteamCmdContext.WorkshopItemFailureKind.Throttling)
+                    {
+                        throttled = true;
+                        break;
                     }
                 }
 
-                // Retry only the items that failed (and that SteamCmd named); a failure without an
-                // id has nothing specific to retry.
-                pending = failed.Where(id => id != 0).Distinct().ToList();
+                // Next round: everything not already succeeded and not permanently unobtainable.
+                pending = pending.Where(id => !succeeded.Contains(id) && !permanent.Contains(id)).ToList();
+
+                if (throttled)
+                {
+                    throttleStrikes++;
+                    backoffMs = Math.Min(backoffMs * 2, MAX_BACKOFF_MS); // back off harder each hit
+                    if (throttleStrikes >= MAX_THROTTLE_STRIKES)
+                        break; // the server is clearly rate-limiting us; stop and report the rest failed
+                }
             }
 
-            // Fully resolved (downloaded or repeatedly failed) -> a full bar.
+            // Fully resolved (downloaded, permanently failed, or throttled-gave-up) -> a full bar.
             task.Value = total;
-            return pending.Where(id => id != 0).ToList();
+
+            // Report everything that didn't succeed: the permanent failures and anything still pending.
+            return permanent.Concat(pending).Distinct().ToList();
         }
 
         private bool DownloadMod(string text, UInt32 AppId)
