@@ -220,45 +220,38 @@ namespace BZRModManager
                     await Task.WhenAll(
                         Task.Run(async () =>
                         {
+                            // Collect the workshop ids that actually need (re)downloading; the rest
+                            // count toward the parent progress immediately (nothing to do).
+                            List<UInt64> toDownload = new List<UInt64>();
                             foreach (var dr in SteamCmdMods)
                             {
                                 SteamCmdMod modSteam = dr.Value as SteamCmdMod;
-                                if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
+                                if (modSteam == null)
                                 {
-                                    if (modSteam != null)
-                                    {
-                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
-                                        try
-                                        {
-                                        SteamCmdException ex_ = null;
-                                        int OtherErrorCounter = 0;
-                                        do
-                                        {
-                                            ex_ = null;
-                                            try
-                                            {
-                                                await SteamCmd.WorkshopDownloadItemAsync(AppIdBZ98, modSteam.Workshop.WorkshopId);
-                                            }
-                                            catch (SteamCmdWorkshopDownloadException ex)
-                                            {
-                                                ex_ = ex;
-                                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
-                                                    OtherErrorCounter++;
-                                            }
-                                            catch (SteamCmdException ex)
-                                            {
-                                                ex_ = ex;
-                                                OtherErrorCounter++;
-                                            }
-                                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                                        }
-                                        finally
-                                        {
-                                            UpdateTaskControl.EndTask(DownloadModTaskControl);
-                                        }
-                                    }
+                                    UpdateTaskControl.Value = Interlocked.Increment(ref counter);
+                                    continue;
                                 }
-                                UpdateTaskControl.Value = Interlocked.Increment(ref counter);
+                                if (agressive || modSteam.HasUpdate || modSteam.FolderOnlyDetection)
+                                    toDownload.Add(modSteam.Workshop.WorkshopId);
+                                else
+                                    UpdateTaskControl.Value = Interlocked.Increment(ref counter);
+                            }
+
+                            if (toDownload.Count > 0)
+                            {
+                                // One SteamCmd run for the whole set, with real per-item progress on
+                                // the child; the parent counter ticks per item as they resolve.
+                                TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZ98 Mods - SteamCmd ({toDownload.Count})", toDownload.Count);
+                                try
+                                {
+                                    await DownloadWorkshopBatchAsync(
+                                        AppIdBZ98, toDownload, DownloadModTaskControl,
+                                        onItemResolved: () => UpdateTaskControl.Value = Interlocked.Increment(ref counter));
+                                }
+                                finally
+                                {
+                                    UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                }
                             }
                         }),
                         Task.Run(() =>

@@ -523,6 +523,67 @@ namespace BZRModManager
             }
         }
 
+        /// <summary>
+        /// Download a set of workshop items in a single SteamCmd run (one process, not one per
+        /// item), showing real determinate progress on <paramref name="task"/> (its maximum is
+        /// set to the item count) and retrying any items that fail. <paramref name="onItemResolved"/>
+        /// is invoked once per distinct item as SteamCmd reports it, so callers can tick a shared
+        /// parent counter incrementally. Returns the ids that still could not be downloaded.
+        /// </summary>
+        private async Task<List<UInt64>> DownloadWorkshopBatchAsync(
+            UInt32 AppId,
+            IEnumerable<UInt64> ids,
+            TaskControl task,
+            Action onItemResolved = null)
+        {
+            // Distinct, valid ids, preserving first-seen order.
+            var all = new List<UInt64>();
+            var seen = new HashSet<UInt64>();
+            if (ids != null)
+            {
+                foreach (var id in ids)
+                {
+                    if (id >= 100000 && seen.Add(id))
+                        all.Add(id);
+                }
+            }
+            if (all.Count == 0)
+                return new List<UInt64>();
+
+            int total = all.Count;
+            var resolved = new HashSet<UInt64>(); // ids already reported by SteamCmd (either way)
+            List<UInt64> pending = new List<UInt64>(all);
+
+            // Known endpoint -> a real, proportional bar instead of an indeterminate marquee.
+            task.SetProgress(0, total);
+
+            for (int attempt = 1; attempt <= MAX_OTHER_STEAMCMD_ERROR && pending.Count > 0; attempt++)
+            {
+                var failed = new List<UInt64>();
+                await foreach (var result in SteamCmd.WorkshopDownloadItemsAsync(AppId, pending))
+                {
+                    if (result.PublishedFileId != 0)
+                    {
+                        if (resolved.Add(result.PublishedFileId))
+                        {
+                            task.Value = Math.Min(total, resolved.Count);
+                            onItemResolved?.Invoke();
+                        }
+                        if (!result.Success)
+                            failed.Add(result.PublishedFileId);
+                    }
+                }
+
+                // Retry only the items that failed (and that SteamCmd named); a failure without an
+                // id has nothing specific to retry.
+                pending = failed.Where(id => id != 0).Distinct().ToList();
+            }
+
+            // Fully resolved (downloaded or repeatedly failed) -> a full bar.
+            task.Value = total;
+            return pending.Where(id => id != 0).ToList();
+        }
+
         private bool DownloadMod(string text, UInt32 AppId)
         {
             bool success = false;
@@ -578,30 +639,14 @@ namespace BZRModManager
                             DownloadModTaskControl.Text = $"Download {(AppId == AppIdBZ98 ? "BZ98" : AppId == AppIdBZCC ? "BZCC" : AppId.ToString())} Mod - SteamCmd - {Item.Title} ({workshopID.ToString(System.Globalization.CultureInfo.InvariantCulture)})";
                         }
 
-                        foreach (UInt64 DownloadID in DownloadIDs)
-                        {
-                        SteamCmdException ex_ = null;
-                        int OtherErrorCounter = 0;
-                        do
-                        {
-                            ex_ = null;
-                            try
-                            {
-                                await SteamCmd.WorkshopDownloadItemAsync(AppId, DownloadID);
-                            }
-                            catch (SteamCmdWorkshopDownloadException ex)
-                            {
-                                ex_ = ex;
-                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
-                                    OtherErrorCounter++;
-                            }
-                            catch (SteamCmdException ex)
-                            {
-                                ex_ = ex;
-                                OtherErrorCounter++;
-                            }
-                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                        }
+                        // One SteamCmd run for the whole set (not one process per item). The
+                        // endpoint is known -- the number of items -- so the helper drives a real
+                        // (determinate) progress bar on DownloadModTaskControl, and any items that
+                        // fail are retried. The out-of-band mod-list refresh below runs once, after
+                        // every download has settled (so its ACF/mod-folder reads see stable data).
+                        List<UInt64> failedIds = await DownloadWorkshopBatchAsync(AppId, DownloadIDs, DownloadModTaskControl);
+                        if (failedIds.Count > 0)
+                            DownloadModTaskControl.Text = $"{DownloadModTaskControl.Text}  ({failedIds.Count} failed: {string.Join(", ", failedIds)})";
 
 
                         UiInvoke(() =>

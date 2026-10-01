@@ -210,9 +210,6 @@ namespace BZRModManager
             }
         }
 
-        readonly Regex Regex_WorkshopError_FileNotFound = new Regex(@"Download item \d failed \(File Not Found\)\.");
-        readonly Regex Regex_WorkshopError_AccessDenied = new Regex(@"Download item \d failed \(Access Denied\)\.");
-
         private async Task UpdateBZCCModsAsync(bool agressive)
         {
             if (Interlocked.CompareExchange(ref _updateBZCCModsRunning, 1, 0) == 1)
@@ -244,52 +241,38 @@ namespace BZRModManager
                     await Task.WhenAll(
                         Task.Run(async () =>
                         {
+                            // Collect the workshop ids that actually need (re)downloading; the rest
+                            // count toward the parent progress immediately (nothing to do).
+                            List<UInt64> toDownload = new List<UInt64>();
                             foreach (var dr in SteamCmdMods)
                             {
                                 SteamCmdMod modSteam = dr.Value as SteamCmdMod;
-                                if (agressive || (modSteam?.HasUpdate ?? false) || (modSteam?.FolderOnlyDetection ?? false))
+                                if (modSteam == null)
                                 {
-                                    if (modSteam != null)
-                                    {
-                                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {modSteam.Workshop.WorkshopId} - {modSteam.Name}", 0);
-                                        try
-                                        {
-                                        SteamCmdException ex_ = null;
-                                        int OtherErrorCounter = 0;
-                                        do
-                                        {
-                                            ex_ = null;
-                                            try
-                                            {
-                                                await SteamCmd.WorkshopDownloadItemAsync(AppIdBZCC, modSteam.Workshop.WorkshopId);
-                                            }
-                                            catch (SteamCmdWorkshopDownloadException ex)
-                                            {
-                                                ex_ = ex;
-                                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item ")
-                                                && Regex_WorkshopError_FileNotFound.IsMatch(ex_.Message)
-                                                && Regex_WorkshopError_AccessDenied.IsMatch(ex_.Message)) {
-                                                    OtherErrorCounter++;
-                                                }
-                                                else
-                                                {
-                                                    
-                                                }
-                                            }
-                                            catch (SteamCmdException ex)
-                                            {
-                                                ex_ = ex;
-                                                OtherErrorCounter++;
-                                            }
-                                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                                        }
-                                        finally
-                                        {
-                                            UpdateTaskControl.EndTask(DownloadModTaskControl);
-                                        }
-                                    }
+                                    UpdateTaskControl.Value = Interlocked.Increment(ref counter);
+                                    continue;
                                 }
-                                UpdateTaskControl.Value = Interlocked.Increment(ref counter);
+                                if (agressive || modSteam.HasUpdate || modSteam.FolderOnlyDetection)
+                                    toDownload.Add(modSteam.Workshop.WorkshopId);
+                                else
+                                    UpdateTaskControl.Value = Interlocked.Increment(ref counter);
+                            }
+
+                            if (toDownload.Count > 0)
+                            {
+                                // One SteamCmd run for the whole set, with real per-item progress on
+                                // the child; the parent counter ticks per item as they resolve.
+                                TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mods - SteamCmd ({toDownload.Count})", toDownload.Count);
+                                try
+                                {
+                                    await DownloadWorkshopBatchAsync(
+                                        AppIdBZCC, toDownload, DownloadModTaskControl,
+                                        onItemResolved: () => UpdateTaskControl.Value = Interlocked.Increment(ref counter));
+                                }
+                                finally
+                                {
+                                    UpdateTaskControl.EndTask(DownloadModTaskControl);
+                                }
                             }
                         }),
                         Task.Run(() =>
@@ -379,44 +362,15 @@ namespace BZRModManager
                 UpdateTaskControl = AddTask("Download BZCC Mod Dependencies", SteamCmdDependenciesList.Count);
                 try
                 {
-                int counter2 = 0;
+                // One SteamCmd run for every dependency (a known endpoint -> real progress bar).
+                List<UInt64> depIds = new List<UInt64>();
                 foreach (var dr in SteamCmdDependenciesList)
-                {
-                    UInt64 tmpLong = 0;
-                    if (UInt64.TryParse(dr, out tmpLong) && !DependenciesGotten.Contains(tmpLong))
-                    {
-                        TaskControl DownloadModTaskControl = UpdateTaskControl.AddTask($"Download BZCC Mod - SteamCmd - {tmpLong}", 0);
-                        try
-                        {
-                        SteamCmdException ex_ = null;
-                        int OtherErrorCounter = 0;
-                        do
-                        {
-                            ex_ = null;
-                            try
-                            {
-                                await SteamCmd.WorkshopDownloadItemAsync(AppIdBZCC, tmpLong);
-                            }
-                            catch (SteamCmdWorkshopDownloadException ex)
-                            {
-                                ex_ = ex;
-                                if (!ex_.Message.StartsWith("ERROR! Timeout downloading item "))
-                                    OtherErrorCounter++;
-                            }
-                            catch (SteamCmdException ex)
-                            {
-                                ex_ = ex;
-                                OtherErrorCounter++;
-                            }
-                        } while (ex_ != null && OtherErrorCounter < MAX_OTHER_STEAMCMD_ERROR);
-                        }
-                        finally
-                        {
-                            UpdateTaskControl.EndTask(DownloadModTaskControl);
-                        }
-                    }
-                    UpdateTaskControl.Value = ++counter2;
-                }
+                    if (UInt64.TryParse(dr, out UInt64 tmpLong) && !DependenciesGotten.Contains(tmpLong))
+                        depIds.Add(tmpLong);
+
+                List<UInt64> failedIds = await DownloadWorkshopBatchAsync(AppIdBZCC, depIds, UpdateTaskControl);
+                if (failedIds.Count > 0)
+                    UpdateTaskControl.Text = $"{UpdateTaskControl.Text}  ({failedIds.Count} failed: {string.Join(", ", failedIds)})";
                 }
                 finally
                 {
