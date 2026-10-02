@@ -10,7 +10,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <ApplicationIcon>Resources\modmanager.ico</ApplicationIcon>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <Copyright>Copyright © 2026 John &quot;Nielk1&quot; Klein</Copyright>
   </PropertyGroup>
 
