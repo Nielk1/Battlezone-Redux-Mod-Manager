@@ -381,12 +381,25 @@ namespace BZRModManager
                 //    e.Cancel = true;
                 //}
 
-                // normal wait till it closes loop
+                // Abort any in-flight / stuck SteamCmd download and release everything blocked on the
+                // readiness gate, so a hung download can't hold the UI hostage.
+                SteamCmd.Shutdown();
+
+                // Only a live steamcmd process (Starting/Active) is worth a bounded grace period to
+                // finish cleanly; a pure download needs none since Shutdown() already aborted it.
+                bool commandInProgress = SteamCmd.Status is ESteamCmdStatus.Starting or ESteamCmdStatus.Active;
+
+                // bounded wait (was an unbounded busy-loop that could hang forever on a stuck download)
                 new Thread(() =>
                 {
-                    while (SteamCmd.Status != ESteamCmdStatus.Closed)// && SteamCmd.Active)
+                    if (commandInProgress)
                     {
-                        Thread.Sleep(100);
+                        var grace = System.Diagnostics.Stopwatch.StartNew();
+                        const int graceMs = 15000;
+                        while (SteamCmd.Status != ESteamCmdStatus.Closed && grace.ElapsedMilliseconds < graceMs)
+                        {
+                            Thread.Sleep(100);
+                        }
                     }
                     try
                     {
@@ -413,11 +426,6 @@ namespace BZRModManager
                     }
                 }).Start();
 
-                //new Thread(() =>
-                //{
-                //    SteamCmd.Shutdown();
-                //}).Start();
-
                 e.Cancel = true;
 
                 exitingStage = 2;
@@ -434,6 +442,26 @@ namespace BZRModManager
             }
         }
 
+        /// <summary>
+        /// Logs and reports a failed SteamCmd download/activation to the user. Call this (and then
+        /// stop) whenever DownloadAsync() throws so the failure is visible instead of being silently
+        /// swallowed.
+        /// </summary>
+        private void ReportSteamCmdActivationFailure(Exception ex)
+        {
+            string detail = ex.Message;
+            if (ex is SteamCmdDownloadException download && download.InnerException != null)
+                detail = $"{download.Message}\r\n{download.InnerException.Message}".Trim();
+
+            Log($"SteamCmd activation failed: {detail}");
+            UiInvoke(() => MessageBox.Show(
+                $"SteamCmd could not be downloaded or installed:\r\n\r\n{detail}\r\n\r\n" +
+                "Check your network connection (and that steamcmd.zip is reachable),\r\n" +
+                "then use the \"Fix SteamCmd\" button to retry.",
+                "SteamCmd Activation Failed",
+                MessageBoxButtons.OK, MessageBoxIcon.Error));
+        }
+
         private async void MainForm_Load(object sender, EventArgs e)
         {
             this.Icon = Properties.Resources.modmanager;
@@ -444,7 +472,18 @@ namespace BZRModManager
                 {
                     await SteamCmd.DownloadAsync();
                 }
-                catch { }
+                catch (OperationCanceledException)
+                {
+                    // The app is shutting down (or the wait was cancelled) -- don't pop an error box.
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // SteamCmd could not be obtained (download/extract failed). Report it and stop;
+                    // the mod-list refreshes below would only fail against a missing binary.
+                    ReportSteamCmdActivationFailure(ex);
+                    return;
+                }
                 if (exitingStage > 1) return;
                 // Await the initial mod-list refreshes (both kick off concurrently and complete here).
                 await Task.WhenAll(this.UpdateBZ98RModListsAsync(), this.UpdateBZCCModListsAsync());
@@ -1126,7 +1165,15 @@ namespace BZRModManager
                         {
                             await SteamCmd.DownloadAsync();
                         }
-                        catch { }
+                        catch (OperationCanceledException)
+                        {
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            ReportSteamCmdActivationFailure(ex);
+                            return;
+                        }
                         if (exitingStage > 1) return;
                         UiInvoke(() =>
                         {
