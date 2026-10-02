@@ -16,7 +16,8 @@ namespace BZRModManager
     {
         private static IEnumerable<string> GetInis(string path)
         {
-            IEnumerable<string> paths = Directory.EnumerateFiles(path, "*.ini", SearchOption.TopDirectoryOnly);
+            IEnumerable<string> paths = Directory.EnumerateFiles(path, "*.ini", SearchOption.TopDirectoryOnly)
+                .Append(Path.Combine(path, "mod.ini"));
             return paths;
         }
 
@@ -39,10 +40,11 @@ namespace BZRModManager
                     {
                         try
                         {
-                            // This will now successfully return data even if 90% of the file is corrupt,
-                            // as long as it can extract valid parts.
-                            IniData data = parser.Parse(File.ReadAllText(dr));
-                            return data?["WORKSHOP"]?["mapType"]?.Trim('"');
+                            if (File.Exists(dr))
+                            {
+                                IniData data = parser.Parse(File.ReadAllText(dr));
+                                return data?["WORKSHOP"]?["mapType"]?.Trim('"');
+                            }
                         }
                         catch (System.Exception)
                         {
@@ -50,6 +52,7 @@ namespace BZRModManager
                             hadIniParseError = true;
                             return null;
                         }
+                        return null;
                     })
                     .Where(dr => !string.IsNullOrWhiteSpace(dr))
                     .Distinct()
@@ -83,8 +86,13 @@ namespace BZRModManager
                 {
                     try
                     {
-                        IniData data = parser.Parse(File.ReadAllText(dr));
-                        return data?["MODMANAGER"]?["name"]?.Trim('"');
+                        if (File.Exists(dr))
+                        {
+                            IniData data = parser.Parse(File.ReadAllText(dr));
+                            string? specialname = data?["MODMANAGER"]?["name"]?.Trim('"');
+                            if (!string.IsNullOrEmpty(specialname))
+                                return specialname;
+                        }
                     }
                     catch (IniParser.Exceptions.ParsingException)
                     {
@@ -96,6 +104,7 @@ namespace BZRModManager
                         hadIniParseError = true;
                         return null;
                     }
+                    return null;
                 }).Where(dr => !string.IsNullOrWhiteSpace(dr)).Distinct().OrderBy(dr => dr).ToArray();
                 error = hadIniParseError;
                 return niceNames;
@@ -125,8 +134,11 @@ namespace BZRModManager
                 {
                     try
                     {
-                        IniData data = parser.Parse(File.ReadAllText(dr));
-                        return data?["DESCRIPTION"]?["missionName"]?.Trim('"');
+                        if (File.Exists(dr))
+                        {
+                            IniData data = parser.Parse(File.ReadAllText(dr));
+                            return data?["DESCRIPTION"]?["missionName"]?.Trim('"');
+                        }
                     }
                     catch (IniParser.Exceptions.ParsingException)
                     {
@@ -154,6 +166,7 @@ namespace BZRModManager
                         hadIniParseError = true;
                         return null;
                     }
+                    return null;
                 }).Where(dr => !string.IsNullOrWhiteSpace(dr)).Distinct().OrderBy(dr => dr).ToArray();
                 error = hadIniParseError;
                 return niceNames;
@@ -182,8 +195,11 @@ namespace BZRModManager
                 {
                     try
                     {
-                        IniData data = parser.Parse(File.ReadAllText(dr));
-                        return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
+                        if (File.Exists(dr))
+                        {
+                            IniData data = parser.Parse(File.ReadAllText(dr));
+                            return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
+                        }
                     }
                     catch (IniParser.Exceptions.ParsingException)
                     {
@@ -211,6 +227,7 @@ namespace BZRModManager
                         hadIniParseError = true;
                         return new string[] { };
                     }
+                    return new string[] { };
                 }).Where(dr => !string.IsNullOrWhiteSpace(dr)).GroupBy(dr => dr).OrderByDescending(dr => dr.Count()).ThenBy(dr => dr.Key).Select(dr => dr.Key).ToArray();
                 if (hadIniParseError)
                     return new string[] { "PARSE ERROR" }.Union(tags).ToArray();

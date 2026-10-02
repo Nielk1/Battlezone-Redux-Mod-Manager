@@ -15,111 +15,129 @@ namespace BZRModManager
 {
     class BZCCTools
     {
-        private static string GetIni(string path, string workshopID)
+        private static IEnumerable<string> GetInis(string path, string workshopID)
         {
-            if(workshopID != null) return Path.Combine(path, workshopID + ".ini");
-            string ID = Path.GetFileName(path);
-            return Path.Combine(path, ID + ".ini");
+            List<string> paths = new List<string>();
+            if(workshopID != null) paths.Add(Path.Combine(path, workshopID + ".ini"));
+            paths.Add(Path.Combine(path, $"{Path.GetFileName(path)}.ini"));
+            paths.Add(Path.Combine(path, "mod.ini"));
+            return paths.Distinct();
         }
 
         public static string GetModType(string path, string workshopID = null)
         {
-            string pathini = GetIni(path, workshopID);
-            if (!File.Exists(pathini)) return null;
-
             var parser = new IniDataParser();
             parser.Configuration.SkipInvalidLines = true;
             parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
             parser.Configuration.AllowDuplicateSections = true;
             parser.Configuration.AllowKeysWithoutSection = true;
 
-            IniData data = parser.Parse(File.ReadAllText(pathini));
-            return data?["WORKSHOP"]?["modType"]?.Trim('"');
+            try
+            {
+                var paths = GetInis(path, workshopID);
+
+                foreach(string pathini in paths)
+                {
+                    if (File.Exists(pathini)){
+                        IniData data = parser.Parse(File.ReadAllText(pathini));
+                        return data?["WORKSHOP"]?["modType"]?.Trim('"');
+                    }
+                }
+
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return null;
+            }
+            return null;
         }
 
         public static string GetModManagerName(string path, string workshopID = null)
         {
-            string pathini = GetIni(path, workshopID);
-            if (!File.Exists(pathini)) return null;
-
             var parser = new IniDataParser();
             parser.Configuration.SkipInvalidLines = true;
             parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
             parser.Configuration.AllowDuplicateSections = true;
             parser.Configuration.AllowKeysWithoutSection = true;
 
-            IniData data = parser.Parse(File.ReadAllText(pathini));
-            return data?["MODMANAGER"]?["name"]?.Trim('"');
+            try
+            {
+                var paths = GetInis(path, workshopID);
+
+                foreach(string pathini in paths)
+                {
+                    if (File.Exists(pathini)){
+                        IniData data = parser.Parse(File.ReadAllText(pathini));
+                        string? specialname = data?["MODMANAGER"]?["name"]?.Trim('"');
+                        if (!string.IsNullOrEmpty(specialname))
+                            return specialname;
+                    }
+                }
+
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return null;
+            }
+            return null;
         }
 
         // The in-game ini based name ([WORKSHOP]::modName).
         public static string GetGeneratedName(string path, string workshopID = null)
         {
-            string pathini = GetIni(path, workshopID);
-            if (!File.Exists(pathini)) return null;
-
             var parser = new IniDataParser();
             parser.Configuration.SkipInvalidLines = true;
             parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
             parser.Configuration.AllowDuplicateSections = true;
             parser.Configuration.AllowKeysWithoutSection = true;
 
-            IniData data = parser.Parse(File.ReadAllText(pathini));
-            return data?["WORKSHOP"]?["modName"]?.Trim('"');
+            try
+            {
+                var paths = GetInis(path, workshopID);
+
+                foreach(string pathini in paths)
+                {
+                    if (File.Exists(pathini)){
+                        IniData data = parser.Parse(File.ReadAllText(pathini));
+                        return data?["WORKSHOP"]?["modName"]?.Trim('"');
+                    }
+                }
+
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return null;
+            }
+            return null;
         }
 
         public static string[] GetModTags(string path, string workshopID = null)
         {
-            //Regex TargetHeader = new Regex("^\\[WORKSHOP\\]", RegexOptions.IgnoreCase);
-            //Regex AnyHeader = new Regex("^\\[[^\\]]*\\]", RegexOptions.IgnoreCase);
+            var paths = GetInis(path, workshopID);
 
-            string[] paths = new string[] { GetIni(path, workshopID) };
-
+            bool hadIniParseError = false;
             var parser = new IniDataParser();
             parser.Configuration.SkipInvalidLines = true;
             parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
             parser.Configuration.AllowDuplicateSections = true;
             parser.Configuration.AllowKeysWithoutSection = true;
 
-            bool hadIniParseError = false;
-            string[] tags = paths.ToList().SelectMany(dr =>
+            string[] tags = null;
+            foreach(string dr in paths)
             {
                 try
                 {
-                    IniData data = parser.Parse(File.ReadAllText(dr));
-                    return data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
+                    if (File.Exists(dr)) {
+                        IniData data = parser.Parse(File.ReadAllText(dr));
+                        tags = data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.ToArray() ?? new string[] { };
+                        break;
+                    }
                 }
                 catch (IniParser.Exceptions.ParsingException)
                 {
-                    /*try
-                    {
-                        // try more agressive parsing
-                        string[] RawIniLines = File.ReadAllLines(dr);
-                        RawIniLines = RawIniLines.SkipWhile(line => !TargetHeader.IsMatch(line)).TakeWhile(line => !AnyHeader.IsMatch(line) || TargetHeader.IsMatch(line)).ToArray();
-                        IniData data = parser.Parser.Parse(string.Join("\r\n", RawIniLines));
-                        var retVal = data?["WORKSHOP"]?["customtags"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim()) ?? new string[] { };
-                        hadIniParseError = true; // we still had an error as we had to use agressive selection
-                        return retVal;
-                    }
-                    catch (IniParser.Exceptions.ParsingException)
-                    {
-                        hadIniParseError = true;
-                        return new string[] { };
-                    }
-                    catch (System.IO.FileNotFoundException)
-                    {
-                        hadIniParseError = true;
-                        return new string[] { };
-                    }
-                    catch (System.IO.DirectoryNotFoundException)
-                    {
-                        hadIniParseError = true;
-                        return new string[] { };
-                    }*/
                     hadIniParseError = true;
-                    return new string[] { };
                 }
-            }).Where(dr => !string.IsNullOrWhiteSpace(dr)).GroupBy(dr => dr).OrderByDescending(dr => dr.Count()).ThenBy(dr => dr.Key).Select(dr => dr.Key).ToArray();
+            }
             if (hadIniParseError)
                 return new string[] { "PARSE ERROR" }.Union(tags).ToArray();
             return tags;
@@ -127,17 +145,34 @@ namespace BZRModManager
 
         public static string[] GetAssetDependencies(string path, string workshopID = null)
         {
-            string pathini = GetIni(path, workshopID);
-            if (!File.Exists(pathini)) return null;
+            var paths = GetInis(path, workshopID);
 
+            bool hadIniParseError = false;
             var parser = new IniDataParser();
             parser.Configuration.SkipInvalidLines = true;
             parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
             parser.Configuration.AllowDuplicateSections = true;
             parser.Configuration.AllowKeysWithoutSection = true;
 
-            IniData data = parser.Parse(File.ReadAllText(pathini));
-            return data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.Where(dr => dr != null && dr.Length > 0)?.ToArray() ?? new string[] { };
+            string[] assetDependencies = null;
+            foreach(string dr in paths)
+            {
+                try
+                {
+                    if (File.Exists(dr)) {
+                        IniData data = parser.Parse(File.ReadAllText(dr));
+                        assetDependencies = data?["WORKSHOP"]?["assetDependencies"]?.Trim('"')?.Split(',')?.Select(dx => dx.Trim())?.Where(dr => dr != null && dr.Length > 0)?.ToArray() ?? new string[] { };
+                        break;
+                    }
+                }
+                catch (IniParser.Exceptions.ParsingException)
+                {
+                    hadIniParseError = true;
+                }
+            }
+            //if (hadIniParseError)
+            //    return new string[] { "PARSE ERROR" }.Union(assetDependencies).ToArray();
+            return assetDependencies;
         }
 
         /// <summary>
