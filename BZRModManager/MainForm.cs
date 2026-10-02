@@ -367,6 +367,11 @@ namespace BZRModManager
 
                 if (SteamCmd.Status == ESteamCmdStatus.Closed)
                 {
+                    try
+                    {
+                        Task.Run(async () => await SteamCmd.CleanJunkDataAsync()).GetAwaiter().GetResult();
+                    }
+                    catch{}
                     return; // exit nicely
                 }
             }
@@ -425,6 +430,11 @@ namespace BZRModManager
                     {
                         //SteamCmd.ForceKill();
                     }
+                    try
+                    {
+                        Task.Run(async () => await SteamCmd.CleanJunkDataAsync()).GetAwaiter().GetResult();
+                    }
+                    catch{}
                 }).Start();
 
                 e.Cancel = true;
