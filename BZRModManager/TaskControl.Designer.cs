@@ -28,57 +28,71 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblText = new System.Windows.Forms.Label();
-            this.pbProg = new System.Windows.Forms.ProgressBar();
-            this.pnlTasks = new System.Windows.Forms.TableLayoutPanel();
-            this.SuspendLayout();
+            lblText = new System.Windows.Forms.Label();
+            pbProg = new System.Windows.Forms.ProgressBar();
+            pnlTasks = new System.Windows.Forms.TableLayoutPanel();
+            panel1 = new System.Windows.Forms.Panel();
+            panel1.SuspendLayout();
+            SuspendLayout();
             // 
             // lblText
             // 
-            this.lblText.AutoSize = true;
-            this.lblText.Location = new System.Drawing.Point(0, 0);
-            this.lblText.Name = "lblText";
-            this.lblText.Size = new System.Drawing.Size(35, 13);
-            this.lblText.TabIndex = 0;
-            this.lblText.Text = "label1";
+            lblText.AutoSize = true;
+            lblText.Location = new System.Drawing.Point(0, 0);
+            lblText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblText.Name = "lblText";
+            lblText.Size = new System.Drawing.Size(38, 15);
+            lblText.TabIndex = 0;
+            lblText.Text = "label1";
             // 
             // pbProg
             // 
-            this.pbProg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbProg.Location = new System.Drawing.Point(3, 16);
-            this.pbProg.Name = "pbProg";
-            this.pbProg.Size = new System.Drawing.Size(4994, 23);
-            this.pbProg.TabIndex = 1;
+            pbProg.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            pbProg.Location = new System.Drawing.Point(0, 0);
+            pbProg.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pbProg.Name = "pbProg";
+            pbProg.Size = new System.Drawing.Size(5824, 25);
+            pbProg.TabIndex = 1;
             // 
             // pnlTasks
             // 
-            this.pnlTasks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlTasks.ColumnCount = 1;
-            this.pnlTasks.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.pnlTasks.Location = new System.Drawing.Point(0, 45);
-            this.pnlTasks.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlTasks.Name = "pnlTasks";
-            this.pnlTasks.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.pnlTasks.RowCount = 1;
-            this.pnlTasks.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.pnlTasks.Size = new System.Drawing.Size(5000, 0);
-            this.pnlTasks.TabIndex = 2;
+            pnlTasks.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            pnlTasks.ColumnCount = 1;
+            pnlTasks.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            pnlTasks.Location = new System.Drawing.Point(0, 52);
+            pnlTasks.Margin = new System.Windows.Forms.Padding(0);
+            pnlTasks.Name = "pnlTasks";
+            pnlTasks.Padding = new System.Windows.Forms.Padding(12, 0, 0, 0);
+            pnlTasks.RowCount = 1;
+            pnlTasks.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            pnlTasks.Size = new System.Drawing.Size(5833, 0);
+            pnlTasks.TabIndex = 2;
+            // 
+            // panel1
+            // 
+            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            panel1.Controls.Add(pbProg);
+            panel1.Location = new System.Drawing.Point(4, 18);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(5826, 27);
+            panel1.TabIndex = 1;
             // 
             // TaskControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Controls.Add(this.lblText);
-            this.Controls.Add(this.pbProg);
-            this.Controls.Add(this.pnlTasks);
-            this.Name = "TaskControl";
-            this.Size = new System.Drawing.Size(5000, 45);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            Controls.Add(lblText);
+            Controls.Add(panel1);
+            Controls.Add(pnlTasks);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "TaskControl";
+            Size = new System.Drawing.Size(5833, 52);
+            panel1.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -87,5 +101,6 @@
         private System.Windows.Forms.Label lblText;
         private System.Windows.Forms.ProgressBar pbProg;
         private System.Windows.Forms.TableLayoutPanel pnlTasks;
+        private System.Windows.Forms.Panel panel1;
     }
 }
