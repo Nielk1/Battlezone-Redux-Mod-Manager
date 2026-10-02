@@ -137,16 +137,22 @@ namespace BZRModManager
         }
 
         // Atomic write so a crash never leaves a half-written cache entry behind.
-        // Sentinel entries never overwrite existing real data, so an unexpected
-        // response (or an empty body) can only ever *add* a negative, never clobber
-        // a good cache entry.
+        // A negative sentinel must never clobber an existing *real* entry (an
+        // unexpected response or an empty body can only ever *add* a "not found",
+        // never erase good data) and must never downgrade a permanent sentinel.
+        // When the existing entry is itself the generic negative sentinel we *do*
+        // rewrite it, so its expiry window restarts - otherwise a stale sentinel
+        // would never be refreshed and the ID would be re-queried on every lookup
+        // after the first negative window had elapsed.
         internal static void WriteCache(string path, byte[] data)
         {
             try
             {
-                if (IsNegativeSentinel(data))
+                if (IsNegativeSentinel(data) &&
+                    TryReadAnyCache(path, out var existing) &&
+                    !IsNegativeSentinel(existing))
                 {
-                    if (File.Exists(path)) return;
+                    return;
                 }
                 var dir = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
