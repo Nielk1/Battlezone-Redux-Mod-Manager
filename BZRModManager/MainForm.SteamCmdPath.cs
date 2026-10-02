@@ -148,6 +148,7 @@ namespace BZRModManager
 
             settings.SteamCmdInstallDir = string.Equals(newFull, defaultRoot, StringComparison.OrdinalIgnoreCase) ? null : newFull;
             SteamCmd.ForceInstallDir = settings.SteamCmdInstallDir; // null/empty → no +force_install_dir argument
+            //SteamCmd.WaitWhenNotReady = true;
             SaveSettings();
 
             Log($"SteamCmd data location changed to {(settings.SteamCmdInstallDir ?? defaultRoot)}{(moved ? " (data moved)" : "")}");
