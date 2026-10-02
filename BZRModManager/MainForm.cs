@@ -486,6 +486,10 @@ namespace BZRModManager
                     return;
                 }
                 if (exitingStage > 1) return;
+
+                // Regularly clean junk
+                await SteamCmd.CleanJunkDataAsync();
+
                 // Await the initial mod-list refreshes (both kick off concurrently and complete here).
                 await Task.WhenAll(this.UpdateBZ98RModListsAsync(), this.UpdateBZCCModListsAsync());
             }
