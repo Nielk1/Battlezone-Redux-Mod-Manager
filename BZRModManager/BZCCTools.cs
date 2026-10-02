@@ -147,7 +147,6 @@ namespace BZRModManager
         {
             var paths = GetInis(path, workshopID);
 
-            bool hadIniParseError = false;
             var parser = new IniDataParser();
             parser.Configuration.SkipInvalidLines = true;
             parser.Configuration.DuplicatePropertiesBehaviour = IniParserConfiguration.EDuplicatePropertiesBehaviour.AllowAndKeepLastValue;
@@ -167,11 +166,10 @@ namespace BZRModManager
                 }
                 catch (IniParser.Exceptions.ParsingException)
                 {
-                    hadIniParseError = true;
+                    // A mod that cannot even be read has no readable dependencies;
+                    // the INI integrity audit reports the unreadable INI itself.
                 }
             }
-            //if (hadIniParseError)
-            //    return new string[] { "PARSE ERROR" }.Union(assetDependencies).ToArray();
             return assetDependencies;
         }
 

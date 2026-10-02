@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace BZRModManager.Audit
@@ -62,6 +63,37 @@ namespace BZRModManager.Audit
             if (appId == MainForm.AppIdBZ98) return "BZ98R";
             if (appId == MainForm.AppIdBZCC) return "BZCC";
             return appId.ToString();
+        }
+    }
+
+    /// <summary>
+    /// Workshop id validation shared by the audits.
+    /// </summary>
+    public static class WorkshopIds
+    {
+        /// <summary>
+        /// Workshop ids are 64 bit values, but the ids Steam actually issues are
+        /// far smaller. Anything above this ("not even in the valid range") is a
+        /// placeholder or typo'd id and can never be a real workshop mod, so it
+        /// is classified as invalid without ever being asked of Steam.
+        /// </summary>
+        public const ulong MaxPlausibleWorkshopId = 999_999_999_999UL;
+
+        /// <summary>True when the text is a positive decimal number (whether or not it is a plausible workshop id).</summary>
+        public static bool IsNumeric(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return false;
+            return ulong.TryParse(id.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out _);
+        }
+
+        /// <summary>True when the id is a plausible live workshop id (numeric, non-zero, in range).</summary>
+        public static bool IsValid(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return false;
+            return ulong.TryParse(id.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out ulong n)
+                && n > 0 && n <= MaxPlausibleWorkshopId;
         }
     }
 
