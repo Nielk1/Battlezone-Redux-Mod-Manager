@@ -19,11 +19,12 @@ Do not install this program to your Desktop or Documents or other general user l
 
 ### Updating
 The update process is manual but it is not difficult.
-1. Delete everything except the `steamcmd`, `git`, and `fixes` folders.
+1. Delete everything except the `steamcmd`, `git`, and `fixes` folders and `settings.json` file.
    * If you wish to delete these folders you should ensure all mods are uninstalled first or manually delete any junctions left in the game's mod folder.
    * The `steamcmd` folder is a self contained SteamCmd instance.
    * The `git` folder may not exist unless you used git based mods.
    * The `fixes` folder is a mini-mod that is supposed to only be injected when launching directly into a multiplayer session in BZCC on specific versions with a UI bug, thus it is actually likely safe to remove, but leaving it and overwriting it is perfectly safe as well.
+   * The `settings.json` file contains your settings.
 2. **Optional**: Delete everything in the `steamcmd` folder except the `steamapps` directory.
    * Generally this is not required, but if you do be sure to keep the `steamapps` subfolder unless you also uninstall all mods.  This is where all the normally downloaded mods reside.
 3. Extract the new release binary zip into the folder, ensure the files are positioned the same as the old removed files.
